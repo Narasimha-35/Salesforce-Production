@@ -109,6 +109,16 @@
                             </apex:selectList>
                         </div>
                         <br/>
+                        <div>
+                            <span>Potential Deal : </span>
+                            <apex:inputCheckbox value="{!appointment.Potential_Deal__c}"></apex:inputCheckbox>
+                        </div>
+                        <br/>
+                        <div>
+                            <span>STP Forecast Date : </span>
+                            <apex:inputField value="{!appointment.STP_Forecast_Date__c}"></apex:inputField>
+                        </div>
+                        <br/>
                         <div id="oppStage{!appointment.Id}">
                             <span>Opportunity Stage : </span>
                             <apex:selectList value="{! appointment.Opportunity__r.StageName}" size="1" onchange="oppoStatusOnChange(this, '{!appointment.Id}')">

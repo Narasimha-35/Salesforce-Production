@@ -32,7 +32,7 @@ public class BrokerAppointmentReportBrokerController {
             if (user != null) {
                 currentUserManager = user.ManagerId;
                 Datetime currentTime = System.now();
-                List<Appointment__c> appointments = [Select Id, Name, Opp_Owner_Email__c, Account_Id__c, Appointment_Status__c, Broker_Email__c, Appointment_Type__c, Appointment_Date_and_Time__c, Account_Name_Text__c, Account_Email__c, Phone__c, Mobile__c, Postal_Code__c, Street_Address__c, State__c, City__c, Pre_Sales_User__c, Opportunity__c, Opportunity__r.Future_Followed_Date__c, Opportunity__r.Second_Appointment_Date__c, Opportunity__r.Description, Opportunity__r.StageName, Opportunity__r.Closed_Lost_Reason__c From Appointment__c where Broker_Email__c = :user.Email and Appointment_Status__c = 'Allocated' and Appointment_Date_and_Time__c < :currentTime order by Appointment_Date_and_Time__c DESC];
+                List<Appointment__c> appointments = [Select Id, Name, Opp_Owner_Email__c, Account_Id__c, Appointment_Status__c, Broker_Email__c, Appointment_Type__c, Appointment_Date_and_Time__c, Account_Name_Text__c, Account_Email__c, Phone__c, Mobile__c, Postal_Code__c, Street_Address__c, State__c, City__c, Pre_Sales_User__c, Opportunity__c, Opportunity__r.Future_Followed_Date__c, Opportunity__r.Second_Appointment_Date__c, Opportunity__r.Description, Opportunity__r.StageName, Opportunity__r.Closed_Lost_Reason__c, Potential_Deal__c, STP_Forecast_Date__c From Appointment__c where Broker_Email__c = :user.Email and Appointment_Status__c = 'Allocated' and Appointment_Date_and_Time__c < :currentTime order by Appointment_Date_and_Time__c DESC];
                 return appointments;
             }
         } 
