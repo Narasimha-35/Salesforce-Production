@@ -1,0 +1,527 @@
+<apex:page controller="acfBankInformationDetails_broker" showHeader="false" standardStylesheets="false" id="pid" docType="html-5.0" cache="false" sidebar="false">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<title>Bank Info Details</title>
+
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.min.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
+
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+
+
+<apex:includeScript value="{!URLFOR($Resource.acfNewResources,'acfNewResources/js/bootstrap-datepicker.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.acfNewResources,'acfNewResources/js/bootstrap-datepicker.min.js')}"/>
+
+<script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+
+<!--
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+
+<script type="text/javascript">
+    function queryData(strfilter)
+    {         
+       Visualforce.remoting.Manager.invokeAction(
+             '{!$RemoteAction.acfBankInformationDetails_broker.AutoCompleteBanklList}',strfilter,
+             function(result, event)
+             {                      
+                 //if success
+                 if(event.status){ 
+                     var data = {results: []}
+                     data.results = result;
+                    // alert(data.results);
+                     BindBankList(data.results);                  
+                 }
+                 else{
+                      alert('Invalid Field/Object API Name : '+event.message);
+                 }
+                
+             }, 
+              {escape: true}
+        );
+    } 
+    
+    function BindBankList(arrBankList)
+    {
+        var strBankListHtml = '';
+       // alert(arrBankList);
+        for(var i=0; i<arrBankList.length; i++)
+        {
+            strBankListHtml = strBankListHtml + '<li value="'+arrBankList[i].acfBank_Name__c+'"><span class="bank-img"><img src="{!$Label.acfSite_Url}'+arrBankList[i].acfImage_URL__c+'" height="70px;" width="auto"/></span><span style="vertical-align: center;padding-left:10px;"><b class="bnkName">'+arrBankList[i].acfBank_Name__c+'</b></span><span class="BnkOpt" style="display:none;">'+arrBankList[i].acfBankSlugName__c+'</span></li>';
+        }
+        
+        //alert(strBankListHtml);
+        $('.bank-list_2').html(strBankListHtml);
+                
+        $('.bank-list_2 li').click(function(){
+            $('input[id$=textId]').val($(this).find('.bnkName').text());
+            $('input[id$=bankHdnId]').val($(this).find('.BnkOpt').text());
+            bankSelectMethod();
+        });
+        
+        
+    }
+    
+</script>
+
+<style type="text/css">
+
+input[type=checkbox].css-checkbox + label.css-label{
+    margin-top:25px;
+}
+
+body{
+    background-color: #f5f5f5;
+}
+#header-menu #header-menu-ul>li{
+    margin-right:0px;
+}
+.ShowAllBtnheightEqualizer
+{
+margin-top:0px!important;
+}
+.plcholder_61:before {
+          left:28px;
+          top: 14px;
+          color: #999;
+}
+/************************************************************************************New Bank Detail pages here*************************************************************************************************/
+.new-bank-details .slide-heading{
+color:#1f8acb;
+font-family: 'open_sanslight';
+font-size:2em;    
+}
+.new-bank-details  .set-up-row{
+    margin:0px 0px 0px 0px;
+}
+.new-bank-details label.label-color{
+color: #999999;
+font-size: 1.2em;
+text-transform:capitalize;
+}
+.new-bank-details .upd-bold{
+padding-right:5px;
+}
+
+.new-bank-details p.bnk-stmnt-prgph{
+font-family: 'open_sanslight';
+font-weight:bold;       
+color:#666666;
+font-size:0.96em;
+padding-bottom:20px;
+}
+.up_width{
+    width:150%;
+}
+
+@media all and (min-width: 320px) and (max-width: 800px){
+.new-bank-details .btn-virifie{
+margin-top: 10px!important;
+width:100%!important;
+}
+.up_width{
+    width:100%;
+}
+}
+
+/********for statement section here********/
+.new-bank-details .new-statment-sec:first-child{
+    padding-top:25px;
+}
+.new-statment-sec{
+display:inline-block;
+padding-bottom:20px;
+width:100%;
+}
+.new-statment-sec .h3,
+.new-statment-sec .h4,
+.new-statment-sec .dlr_amnt{
+color:#223972;
+font-family: 'open_sanslight';
+font-size:1.4em;
+font-weight:bold;
+line-height:28px;
+}
+.new-statment-sec .h4{
+color:#9f9c9c;
+font-size:0.95em;
+font-weight:400;
+}
+.new-statment-sec .dlr_amnt{
+color:#1f8acb;
+font-weight:600;
+text-align:right;
+}
+.clck-loans{
+font-family: 'open_sanslight';  
+color:#223972;
+font-size:0.9em;
+font-weight:bold;
+}
+
+/******************For statement retrival close here**********/
+.setup-box.new-bank-stmnt-retrival{
+min-height:inherit;
+height:auto;
+padding:55px 0px;
+}
+.setup-box.new-bank-stmnt-retrival .upd-bold{
+padding-right:5px;
+}
+.setup-box.new-bank-stmnt-retrival  .h3{
+color: #1f8acb;
+font-family: 'open_sanslight';
+padding-top:0px;
+padding-bottom:15px;
+}
+.loader-img img {
+text-align:center;
+position:relative;
+padding-left:40%;
+display:inline-block;
+}
+
+.loader-img:after{
+font-family:arial;
+font-size:0.95em;
+display:inline-block;
+content:'Uploading';
+color:#999999;
+vertical-align: top;
+line-height: 30px;
+}
+
+.btn-virifie{
+display:inline-block;
+}
+/************************************************************************************New Bank Detail pages close here*************************************************************************************************/
+
+/***************************************************************************************Submited statment classeh here****************************************************/
+
+
+.stmnt-sbmtd-prg p{
+font-family: 'open_sanslight';      
+color:#223972;
+font-size:1.2em;
+text-align:justify;
+padding-top:15px;
+}
+.stmnt-sbmtd-prg p span{
+font-weight:bold;
+}
+/***************************************************************************************Submited statment classes close hre********************************************************/
+
+ul.bank-list_2{
+  background-color: #fff;
+  padding: 10px 5px;
+  list-style:none;
+  margin:0px;
+  display:block;
+  clear:both;
+}
+ul.bank-list_2 li{
+padding:5px;
+}
+ul.bank-list_2 li span.bank-img img{
+height:30px;
+padding-right:10px;
+}
+ul.bank-list_2 li:hover{
+background-color:#eee;
+}
+
+</style>
+
+</head>
+
+<body id="bd">
+<main class="container-fluid" style="padding:0;" id="mn">
+    <header class="row-fluid">
+        <c:BrokeracfHeader ></c:BrokeracfHeader>
+    </header>
+    
+    
+<div class="clearfix"></div>
+
+<section class="row" >
+    <div class="container container_cstm">       
+        <section class="post_login">       
+            <article class="col-md-8 post_log_back" style="min-height: 483px;">          
+                <section class="row-fluid slider id-slider">              
+                    <div class="row-fluid">     
+                  <apex:outputPanel id="pnlMain">               
+                <apex:form id="frmBank" rendered="{!(intStepNumber == 1)}">
+                <apex:actionFunction name="hidepopup" action="{!hidepopup}"  rerender="abc"/>
+                <!-- Popup in case of bank not found---> 
+                <apex:outputPanel rendered="{!BankNotFound}" id="bankpopup">
+                    <div id="confirmPopup" Class="pop-up-form "> 
+                        <div class="faded" id="reqCallFadedId">&nbsp;</div>
+                        <div class="setup-box" id="idSetupBox" >
+                        <article>
+                            <h2 class="slide-heading id-veryfi-heading" style="font-size: 1.3em;text-align: center;"><apex:outputText value="{!$Label['acfBankNotFoundErrorMsg']}" escape="false"/></h2>
+                        </article>  
+                        <div class="set-up-row auto">
+                            <apex:commandButton value="Continue" styleClass="btn faq-btn prf-submit-btn center-block" action="{!skipMethod}"/> 
+                        </div>
+                        <div class="clearfix"></div> 
+                        </div>
+                    </div>
+                <script>
+                    $(document).ready(function(){
+                        $('[id=reqCallFadedId]').click(function(){
+                            $('#confirmPopup').hide();
+                            hidepopup();
+                        });
+                    });
+                </script>
+                </apex:outputPanel>
+                   
+                    <apex:actionFunction action="{!SelectBankName}" status="RegLoadstatus" name="bankSelectMethod" rerender="pnlMain"/>
+                       <apex:inputHidden id="bankHdnId" value="{!strBankSlugName}"/>
+                        <div class="col-sm-12 col-sm-offset-0 col-md-8  new-bank-details">
+                            <article class="up_width">
+                                <h2 class="slide-heading id-veryfi-heading text-center"> <apex:outputText value="{!mapBankstepSequance[intStepNumber].acfHeader_Text__c}" escape="false" />  
+                                
+                               <!--Please select your<span class="upd-bold">bank</span>--></h2>
+                               <p class="text-center bnk-stmnt-prgph">{!mapBankstepSequance[intStepNumber].acfDescription_Text__c}</p>
+                            </article>
+                        </div>
+                        <div class="col-sm-12 col-sm-offset-0 col-md-8 col-md-offset-2 new-bank-details">
+                            
+                            <div class="clearfix"></div>
+                         <apex:outputPanel rendered="{!if(strErrorMsg != null && strErrorMsg != '', true,false)}" style="color:red;margin-top:20px;"><p>{!strErrorMsg}</p></apex:outputPanel>
+                        <div class="set-up-row">
+                             <div  class="set-up-box col-md-12  col-sm-12">
+                             <!--<input type="text" id ="textId" name="user" class="set-up-box col-md-8  col-sm-12" value="Type to search here" onblur="if (this.value == '') {this.value = 'Type to search here';}" onfocus="if (this.value == 'Type to search here') {this.value = '';}"/> -->
+                             <apex:inputText id="textId" value="{!strBankName}" onBlur="if (this.placeholder == '') {this.placeholder = 'or type to search here';}" onFocus="if (this.placeholder == 'or type to search here') {this.placeholder = '';}" html-placeholder="or type to search here"/>
+                             <a href="#" class="search_icon">&nbsp;</a>
+                             </div>
+
+                             <ul class="bank-list_2">
+                             <!--<apex:repeat value="{!lstbank}" var="obj1" id="rptBanks">
+                               <li value="{!obj1.acfBank_Name__c}"><span class="bank-img"><img src="{!$Label.acfSite_Url}{!obj1.acfImage_URL__c}"/></span></li>
+                             </apex:repeat>  -->                                                                                                                                                             
+                            </ul> 
+                            <apex:actionstatus id="RegLoadstatus" starttext="verifying...">
+                                <apex:facet name="start">
+                                    Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute;"/>                      
+                                </apex:facet>
+                            </apex:actionStatus>
+                            <script>
+                                        $('.bank-img').click(function() {                       
+                                                var obj = $(this).context;
+                                                $('input[id$=textId]').val(obj.innerText) ;
+                                        });
+                                        
+                                        $('input[id$=textId]').attr('autocomplete','off');
+                                        
+                                        $('[id$=textId]').keyup(function(){
+                                                //alert($(this).val()); 
+                                                queryData($(this).val());
+                                        });
+                            </script>                     
+                            </div>   
+                           <div class="col-md-6">
+                                <apex:commandLink id="btnSelectBank" value="Show All" styleclass="btn-virifie ShowAllBtnheightEqualizer" oncomplete="queryData('%');" reRender="pnlMain" status="RegLoadstatus"/>
+                           </div>
+                           <div class="col-md-6">
+                               <apex:commandButton action="{!skipMethod}" value="Skip" styleClass="btn-virifie btn-light_blue ShowAllBtnheightEqualizer"/> 
+                           </div>
+                          <!-- <a href="#" class="c_fnd_bank"> Can't find your bank? </a> -->
+                             <div class="clearfix"></div> 
+                           <apex:commandLink styleClass="c_fnd_bank col-md-12" value="Can't find your bank?" action="{!skipMethod}" rerender="pnlMain" status="RegLoadstatus"/>                
+                           
+                        </div>  
+                </apex:form> 
+              
+                
+                <!-- Page - 2 -->            
+                
+                <apex:form id="frmLogin" rendered="{!(intStepNumber == 2)}">
+                  
+                   <div class="col-sm-12 col-sm-offset-0 col-md-8  new-bank-details">
+                    <article class="up_width">
+                        <h2 class="slide-heading id-veryfi-heading text-center"><apex:outputText value="{!mapBankstepSequance[intStepNumber].acfHeader_Text__c}" escape="false" /> <!--Please enter your st. george <br/>online<span class="upd-bold">banking details</span>--></h2>
+                         <p class="text-center bnk-stmnt-prgph">{!mapBankstepSequance[intStepNumber].acfDescription_Text__c}</p>
+                      </article>
+                   </div>
+                  <div class="col-md-8 col-md-offset-2 col-sm-12 new-bank-details">
+                     
+                   <div class="clearfix"></div>
+                   <apex:outputPanel rendered="{!if(strErrorMsg != null && strErrorMsg != '', true,false)}" style="color:red;margin-top:20px;"><p>{!strErrorMsg}</p></apex:outputPanel>       
+                    <apex:repeat value="{!lstCredentials}" var="credVar">
+                     <div class="set-up-row">
+                      <apex:outputPanel rendered="{!credVar.type != 'select'&& credVar.type != 'captcha'}">
+                                <div  class="set-up-box col-md-12  col-sm-12">
+                                    <apex:inputText id="txtUserName"  value="{!credVar.Name}" onblur="if (this.value == '') {this.value = '{!credVar.Name}';}" onFocus="if (this.value == '{!credVar.Name}') {this.value = '';}" rendered="{!credVar.type != 'password'}"/>
+                                    <apex:inputSecret id="txtPassword" value="{!credVar.Name}" html-placeholder="{!credVar.Name}" rendered="{!credVar.type == 'password'}"/>
+                                </div>
+                      </apex:outputPanel>  
+                      <apex:outputPanel rendered="{!captchaImgUrl != null && captchaImgUrl != '' && credVar.type == 'captcha'}">  
+                          <apex:image url="{!captchaImgUrl}" style="margin-bottom: 10px;"/>
+                                <apex:inputText id="txtCaptcha" styleclass="set-up-box center-block" value="{!credVar.Name}" onblur="if (this.value == '') {this.value = '{!credVar.Name}';}" onFocus="if (this.value == '{!credVar.Name}') {this.value = '';}"/>
+                      </apex:outputPanel> 
+                     </div>    
+                      <apex:outputPanel rendered="{!credVar.type == 'select'}">  
+                         <!--  <div class="set-up-row">
+                              <select multiple="" style="height:25px; border:1px #ccc solid; position:relative; padding:2px; border-radius:2px; outline:none; color:#223972; font-size:1.2em;">
+                                  <option value="volvo">1</option>
+                                  <option value="saab">2</option>
+                                  <option value="opel">3</option>
+                                  <option value="audi">4</option>
+                                </select>  
+                           </div>   --> 
+                        <div class="set-up-row">
+                        <label class="label-color">{!credVar.Name}:</label>
+                                <apex:selectList style="height:25px; border:1px #ccc solid; position:relative; padding:2px; border-radius:2px; outline:none; color:#223972; font-size:1.2em;" value="{!strSelectedOption}" multiselect="false">
+                                    <apex:selectOption itemValue="{!credVar.values.one}" itemLabel="1"></apex:selectOption>
+                                    <apex:selectOption itemValue="{!credVar.values.two}" itemLabel="2"></apex:selectOption>
+                                    <apex:selectOption itemValue="{!credVar.values.three}" itemLabel="3"></apex:selectOption>
+                                    <apex:selectOption itemValue="{!credVar.values.four}" itemLabel="4"></apex:selectOption>
+                                </apex:selectList>
+                         </div>  
+                       </apex:outputPanel>       
+                 </apex:repeat> 
+                 <div class="col-md-6">
+                           <apex:commandButton id="gobackbtn1" value="Go Back" action="{!gobackmethod}" styleclass="btn-virifie" rerender="pnlMain" status="RegLoadstatus1"/>
+                 </div>
+                 <div class="col-md-6">
+                     <apex:commandButton id="btnLogin" value="Submit" action="{!BankLogin}" styleclass="btn-virifie" rerender="pnlMain" status="RegLoadstatus1"/> 
+                     <apex:actionstatus id="RegLoadstatus1" starttext="verifying...">
+                       <apex:facet name="start">
+                          Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute;"/>                      
+                        </apex:facet>
+                     </apex:actionStatus>
+                 </div>
+                                
+                 </div>  
+                </apex:form>
+                
+                
+                <!-- Page - 3 -->   
+                
+                <apex:form id="frmSend" rendered="{!(intStepNumber == 3)}">
+                <div class="col-sm-12 col-sm-offset-0 col-md-8  new-bank-details">
+                  <article class="up_width">
+                        <h2 class="slide-heading id-veryfi-heading text-center"><apex:outputText value="{!mapBankstepSequance[intStepNumber].acfHeader_Text__c}" escape="false" /><!--Please select accounts you would like <br/>to retrieve online<span class="upd-bold">bank statements</span>from--></h2>
+                        <p class="text-center bnk-stmnt-prgph">{!mapBankstepSequance[intStepNumber].acfDescription_Text__c}</p>
+                       <!--  <p class="bnk-stmnt-prgph text-center">We recommend including all accounts so that your application can be assessed more quickly</p> -->
+                   </article> 
+                </div>
+                <div class="col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0 col-xs-12 col-xs-offset-0 new-bank-details">                    
+                <div class="clearfix"></div>
+                <apex:variable var="count" value="{!0}"/>
+                <apex:outputPanel rendered="{!if(strErrorMsg != null && strErrorMsg != '', true,false)}" style="color:red;margin-top:20px;" id="fetchPnlId"><p>{!strErrorMsg}</p></apex:outputPanel>
+                <apex:repeat value="{!lstBankAccounts}" var="acc" id="bankAccId">
+                           <div class="new-statment-sec">
+                            <div class="col-md-1 col-xs-1 col-sm-1">
+                               <div class="row-fluid">
+                                     <!--   <input type="checkbox" name="radiog_lite" id="check{!count}" class="css-checkbox"  checked="checked"/> -->
+                                   <apex:inputCheckbox value="{!acc.chk_box}" styleClass="css-checkbox" id="checkId"/>
+                                      <label for="pid:frmSend:bankAccId:{!count}:checkId" class="css-label ">&nbsp;</label>
+                                </div>
+                            </div>
+                                <div class="col-md-6 col-xs-6 col-sm-6">
+                                    <div class="row-fluid"> 
+                                        <hgroup>
+                                            <h3 class="h3">
+                                             <!--   apex:inputCheckbox value="{!acc.chk_box}" styleClass="css-checkbox"/>-->
+                                                {!acc.name}
+                                            </h3>
+                                            <h4 class="h4">Acc: {!acc.accountNumber}   BSB: {!acc.bsb}</h4>
+                                        </hgroup>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4 col-xs-4 col-sm-4">
+                                    <div class="row-fluid">
+                                        <p class="dlr_amnt">{!acc.balance}</p>
+                                    </div>
+                                </div>  
+                            </div>
+                            <apex:variable var="count" value="{!count + 1}"/>
+                        </apex:repeat>
+          
+                        <p class="clck-loans text-center">210 days of statements will be retrieved and sent to <strong>Click Loans</strong></p>                             
+                        <div class="clearfix"></div>
+                        <div class="col-md-6">
+                          <apex:commandButton id="gobackbtn" value="Go Back" action="{!gobackmethod}" styleclass="btn-virifie" rerender="pnlMain" status="RegLoadstatus2"/>
+                        </div>
+                        <div class="col-md-6">
+                            <apex:commandButton id="btnSend" value="Send" action="{!FetchStatements}" styleclass="btn-virifie" rerender="pnlMain,fetchPnlId" status="RegLoadstatus2"/>                                     
+                            <apex:actionstatus id="RegLoadstatus2" starttext="verifying...">
+                            <apex:facet name="start">
+                                  Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute;"/>                      
+                            </apex:facet>
+                            </apex:actionStatus>
+                        </div>
+                          
+                </div>  
+                </apex:form> 
+                
+                <!-- Page - 4 -->   
+                
+                <apex:form rendered="{!(intStepNumber == 4)}">
+                <div class="col-sm-12 col-sm-offset-0 col-md-8  new-bank-details">
+                  <article class="up_width">
+                        <h2 class="slide-heading id-veryfi-heading text-center"><apex:outputText value="{!mapBankstepSequance[intStepNumber].acfHeader_Text__c}" escape="false" /><!--<span class="upd-bold">Statements</span>Submitted--></h2>
+                        <p class="text-center bnk-stmnt-prgph">{!mapBankstepSequance[intStepNumber].acfDescription_Text__c}</p>
+                  </article>
+                 </div>
+                    <div class="col-sm-12 col-md-8 col-md-offset-2 new-bank-details">
+                        
+                        <div class="clearfix"></div>
+                         <div class="stmnt-sbmtd-prg text-center">
+                            <p>We have retrieved 210 days of statements for<br/> selected accounts, and sent them to <span>Click Loans</span><br/>  on your behalf.    
+                            The secure session with your bank has been closed.</p>
+                           
+                         </div>   
+                        <div class="clearfix"></div>
+                        <!--<a href="#" class="btn-virifie">Continue</a>   -->  
+                        <div class="col-md-offset-3 col-md-9">
+                            <apex:commandLink action="{!redirectToNextpage}" styleClass="btn-virifie" value="Continue"/>      
+                        </div>  
+                                  
+                    </div>                                                         
+                </apex:form>       
+                
+              </apex:outputPanel>
+                  <div class="col-md-12" style="text-align: center;margin-top: 10px;">
+                   <!--- <script src="//cdn.ywxi.net/js/inline.js?w=81"></script>---->
+                        <a target="_blank" href="https://www.mcafeesecure.com/verify?host=www.clickloans.com.au">
+                            <img class="mfes-trustmark mfes-trustmark-hover" border="0" src="https://cdn.ywxi.net/meter/www.clickloans.com.au/102.gif" width="81" height="33" title="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams" alt="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams"  />
+                        </a>
+                 </div>
+                 <div class="col-md-6" style="margin-top: 10px;">
+                      <!-- GeoTrust QuickSSL [tm] Smart  Icon tag. Do not edit. -->
+                           <script language="javascript" type="text/javascript" src="//smarticon.geotrust.com/si.js"></script>
+                      <!-- end  GeoTrust Smart Icon tag -->
+                 </div> 
+              </div>
+             
+              </section>    
+            </article> <!--left panel close here-->
+    <c:ClickQuoteDetail_partner />
+        </section>
+        
+  </div><!--container close-->
+</section><!--row fluid close-->
+ <!---Footer start here---------------> 
+               <footer class="footer april_footer row">
+                <c:BrokerFooter ></c:BrokerFooter>
+            </footer>
+
+
+</main>
+</body>
+</apex:page>

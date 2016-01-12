@@ -1,0 +1,10 @@
+<apex:page controller="WLJumioSuccess" sidebar="false" showHeader="false" action="{!UpdateSuccessOnLead}" id="pid">
+<script>
+ //var pgname = '{!retUrlPage}';
+ //alert('hi');
+ setTimeout(function(){top.location.href="{!siteURL}{!retUrlPage}",2000})
+</script>  
+<apex:form id="frmId">
+    <apex:inputHidden value="{!retUrlPage}" id="textId"/>
+</apex:form>
+</apex:page>

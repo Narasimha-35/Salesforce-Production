@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>acfCMSPage</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>acfCMSPage</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Click Loans</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>acfAttachmentId__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Attachment Id</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfCMS_Page__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>CMS Page</label>
+        <referenceTo>acfCMS_Page__c</referenceTo>
+        <relationshipName>Content_Management_System</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>acfDescriptionAttachmentID__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Description Attachment ID</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfDescriptionImageURL__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <formula>IF(  acfDescriptionAttachmentID__c &lt;&gt; null, &quot;/servlet/servlet.FileDownload?file=&quot;&amp; acfDescriptionAttachmentID__c , &quot;&quot;)</formula>
+        <label>Description Image URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfDescription__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>131072</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>acfHeader_Sequance__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Header Sequance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfHeadingRemoveSpace__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <formula>SUBSTITUTE( acfHeading__c , &apos; &apos;, &apos;&apos;)</formula>
+        <label>Heading Remove Space</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfHeading_Caption__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Heading Caption</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfHeading__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Heading</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfImageURL__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <formula>IF( acfAttachmentId__c  &lt;&gt; null, &quot;/servlet/servlet.FileDownload?file=&quot;&amp;acfAttachmentId__c, &quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Heading Image URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfIs_Checked__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Is Active</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfLink_URL__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Link URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>acfMoreDetailURL__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>More Detail URL</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfPageName__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Page Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>acfLogin</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Post Login</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Common</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acfSectionName__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Section Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Footer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Footer Links</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Footer Link Content</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dashboard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Registration Popup</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>OTP Popup</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Resend OTP Popup</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>About Us</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Preliminary Quote</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acfSequence__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Sequence</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfShort_Description__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Short Description</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <label>Click Loans Content Management System</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>acfIs_Checked__c</columns>
+        <columns>acfSectionName__c</columns>
+        <columns>acfPageName__c</columns>
+        <columns>acfSequence__c</columns>
+        <columns>acfHeading__c</columns>
+        <columns>acfHeadingRemoveSpace__c</columns>
+        <columns>acfDescription__c</columns>
+        <columns>acfAttachmentId__c</columns>
+        <columns>acfDescriptionAttachmentID__c</columns>
+        <columns>acfImageURL__c</columns>
+        <columns>acfMoreDetailURL__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>cms-{000000}</displayFormat>
+        <label>Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Content Management System</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>acfHeading__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>acfPageName__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>acfSectionName__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>acfSequence__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

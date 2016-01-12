@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Click Loans</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>acfActive__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Active</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfDescription__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>131072</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>acf_Source__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Source</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Jumio</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Bank Statement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Others</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>clickDocument_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Document Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Income - Self Employed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Income - PAYG</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Credit History</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Loan / Debt Conduct</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Property</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>Click Loans Document Master</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>clickDocument_Type__c</columns>
+        <columns>acfActive__c</columns>
+        <columns>acfDescription__c</columns>
+        <columns>acf_Source__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Document Master</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Document_name_rule_for_hardcoded_names</fullName>
+        <active>false</active>
+        <description>This rule used to make bank statements and identity verification document names as read only.</description>
+        <errorConditionFormula>If(AND(ISCHANGED(Name),OR((PRIORVALUE(Name) = &apos;Bank Stmt&apos;),(PRIORVALUE(Name) = &apos;Identity Verification&apos;))),true,false)</errorConditionFormula>
+        <errorDisplayField>Name</errorDisplayField>
+        <errorMessage>You don&apos;t have access to edit this field.</errorMessage>
+    </validationRules>
+</CustomObject>

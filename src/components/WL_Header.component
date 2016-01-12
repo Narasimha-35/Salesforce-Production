@@ -1,0 +1,204 @@
+<apex:component controller="WLHeader">
+    <style>
+    .displaynone
+    {
+        display:none;
+    }
+    .csdisplaynone
+    {
+      display:none;
+    }
+    @media (max-width: 800px){
+.header{
+min-height:70px!important;
+}
+.header .logo img {
+  margin-top: 0px;
+  width: 100px;
+  height: 40px;
+} 
+  
+    }
+    
+    </style>
+   <head>
+    <script>
+        function LoginPopUP()
+        {
+          alert('Hello');
+        }  
+        
+      $(document).ready(function ()
+      {
+        $('#supportId').click(function () 
+        {
+          $('#customerSupportPopUp').removeClass('csdisplaynone'); 
+        });
+        
+        $('.mobsupport').click(function () 
+        {
+          $('#customerSupportPopUp').removeClass('csdisplaynone'); 
+          $(".sb-slidebar").removeClass("add-sb-sdbar");
+          $(".container-fluid").removeClass("add-body-sdbar");
+        });
+        
+        $('#csdivfaded').click(function () 
+        {
+          $('#customerSupportPopUp').addClass('csdisplaynone');
+        }); 
+        
+        $('#MemberLogin').click(function () 
+        {
+          $('#MemberLoginPopUp').removeClass('csdisplaynone');
+        });
+        $('.memberlogin_mobile').click(function () 
+        {
+          $('#MemberLoginPopUp').removeClass('csdisplaynone');
+          $(".sb-slidebar").removeClass("add-sb-sdbar");
+          $(".container-fluid").removeClass("add-body-sdbar");
+        });
+        $('#divfaded').click(function () 
+        {
+          $('#MemberLoginPopUp').addClass('csdisplaynone');
+          $('.mobsupport').addClass('csdisplaynone');  
+        });
+        
+        $('.pop-close').click(function () 
+        { 
+            $('#MemberLoginPopUp').addClass('csdisplaynone');
+            $('#customerSupportPopUp').addClass('csdisplaynone');
+        });      
+       });      
+       
+    function openfun()
+    {
+         $('#menu_section').removeClass('displaynone');
+    }
+    
+    function ResetCookies()
+    {
+        ResetCookies();
+    }
+    </script>
+   
+    <script>
+    (function(f,b){
+        var c;
+        f.hj=f.hj||function(){(f.hj.q=f.hj.q||[]).push(arguments)};
+        f._hjSettings={hjid:14934, hjsv:3};
+        c=b.createElement("script");c.async=1;
+        c.src="//static.hotjar.com/c/hotjar-14934.js?sv=3";
+        b.getElementsByTagName("head")[0].appendChild(c); 
+    })(window,document);
+   </script> 
+   </head>
+   
+   
+   
+   <apex:form >
+    <apex:actionFunction action="{!clearUserSessionCookies}" name="ResetCookies"/>
+   </apex:form> 
+  
+   <c:WL_TalkToHuman ></c:WL_TalkToHuman>
+    <div class="header">
+        <div class="container">
+            <div class="row-fluid">
+            <section class="col-xs-3 about_response">
+               <div class="menu_left"><span></span></div>
+            </section>
+            <h1 class="col-md-4 col-xs-7">
+                <div class="logo">
+                    <apex:outputpanel rendered="{!isLoggedIn == false}">
+                        <a href="{!strURLPrefix}Acfhome"><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" alt="WL Refi"/></a>
+                    </apex:outputpanel>
+                    <apex:outputpanel rendered="{!isLoggedIn == true}">
+                        <a href="{!strURLPrefix}Acfdashboard"><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" alt="WL Refi"/></a>
+                    </apex:outputpanel>
+                </div>
+            </h1>
+            
+          <section class="col-md-8 col-xs-2">
+           <aside>
+                <a href="#" class="responsive-menu" id="responsive" onclick="openfun();">&nbsp;</a>
+                    <ul class="sub-response" id="sub-res">
+                        <li><a href="#">TALK TO A HUMAN</a></li>
+                        <apex:outputpanel rendered="{!isLoggedIn == true}"><li> <a href="{!strURLPrefix}secur/logout.jsp" oncomplete ="ResetCookies();" class="sign_in">SIGN OUT</a></li></apex:outputpanel>
+                       <!-- <li><a href="#">Sign In</a></li> -->
+                    </ul>
+                    
+                     <apex:outputPanel rendered="{!pge_name == 'acfdashBoard'}" >
+                    <a href="#" class="{!if(pge_name == 'acfhome','responsive-menu_white','responsive-menu')}" id="responsive" onclick="openfun();">&nbsp;</a>
+                    <ul class="sub-response" id="sub-res">
+                        <li><a href="#myModal3" data-toggle="modal" id="mob_talktohumanId">Talk to a Human</a></li>
+                        <li><a href="{!strURLPrefix}wlEditProfile">Edit Profile</a></li>
+                        <li>
+                          <apex:outputpanel rendered="{!isLoggedIn == false}"><a href="#myModal" data-toggle="modal" id="mob_memberLoginId">Sign In</a></apex:outputpanel>
+                          <apex:outputpanel rendered="{!isLoggedIn == true}"> <a href="{!strURLPrefix}secur/logout.jsp" oncomplete="ResetCookies();">Sign Out</a></apex:outputpanel>
+                        </li>
+                    </ul>
+                    
+                    <div class="top-tab">
+                       
+                       <nav class="col-md-12 dash_edit_top">
+                            <div class="row">
+                                <a href="{!strURLPrefix}wlEditProfile" class="edit">Edit Profile</a>                    
+                                <apex:outputpanel rendered="{!isLoggedIn == false}"> <a href="#myModal" data-toggle="modal" class="sign_in memebrloginClass">Sign In</a> </apex:outputpanel>
+                                <apex:outputpanel rendered="{!isLoggedIn == true}"> <a href="{!strURLPrefix}secur/logout.jsp" oncomplete="ResetCookies();" class="sign_in">Log Out</a> </apex:outputpanel>
+                            </div>  
+                       </nav>
+                        <div class="clearfix"></div>
+                             
+                         <ul class="col-md-12">
+                               <li style="float:right;"><a href="#myModal3" data-toggle="modal" id="talktohumanId" class="thumanClass">Talk to a Human</a></li>
+                         <!--  <li><a href="/WLEditProfile">Edit Profile</a></li>
+                            <li>
+                                 <apex:outputpanel rendered="{!isLoggedIn == false}"> <a href="#myModal" data-toggle="modal" class="sign_in">Sign In</a> </apex:outputpanel>
+                                 <apex:outputpanel rendered="{!isLoggedIn == true}"> <a href="/ACFWL/secur/logout.jsp" class="sign_in">Sign Out</a> </apex:outputpanel>
+                            </li> -->
+                        </ul>
+                    </div><!--top-tab close-->
+               </apex:outputPanel>
+                            
+                <div class="top-tab">
+                    <ul>
+                        <li><a href="#" id="supportId">TALK TO A HUMAN</a></li>
+                        <apex:outputpanel rendered="{!isLoggedIn == true}"> <li><a href="{!strURLPrefix}secur/logout.jsp" oncomplete="ResetCookies();" class="sign_in">SIGN OUT</a></li></apex:outputpanel>
+                        <!--<li><a href="#" class="sign_in">Sign In</a></li>-->
+                    </ul>
+                </div>
+            </aside>   
+         </section>
+            
+        </div>
+        </div>
+    </div><!--header close-->
+    <!-- <div class="header">
+        <div class="container">
+            <div class="row-fluid">
+            <h1 class="col-md-4">
+                <div class="logo">
+                   <apex:outputpanel rendered="{!if(pge_name=="acfpreloginquestions" || pge_name=="acf_topproducts",true,false)}"><a href="/acflogin"><img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="WL Refi"/></a></apex:outputpanel>
+                   <apex:outputpanel rendered="{!if(pge_name=="acfpreloginquestions" || pge_name=="acf_topproducts",false,true)}"><a href="/acfloandashboard"><img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="WL Refi"/></a></apex:outputpanel>           
+                </div>
+            </h1>
+          <section class="col-md-8">
+              <div class="top-login">
+                 <apex:outputpanel rendered="{!If(pge_name=="acfbankinformationdetails" || pge_name=="acfeditprofile" || pge_name=="acfjumiointegration" || pge_name=="acfid_verification" || pge_name=="acfpreloginquestions" || pge_name=="acfpostloginquestions" || pge_name=="acffeatures" || pge_name=="acfhowitworks" || pge_name=="acflogin" || pge_name == "acf_topproducts" || pge_name == 'acfresetpassword' || pge_name == "exception" ,false,true)}" style=""> <a href="/acfeditprofile" class="member-login" target="_blank"><span class="sprite editlogin">&nbsp;</span>EDIT PROFILE</a >  </apex:outputpanel>                  
+                  <apex:outputpanel rendered="{!If(pge_name=="acfpreloginquestions" || pge_name=="acffeatures" || pge_name=="acfhowitworks" || pge_name=="acflogin" || pge_name == "acf_topproducts" || AND(pge_name == "exception", isloggedin <> true),false,true)}"><a href="/secur/logout.jsp" class="member-login">SIGN OUT</a></apex:outputpanel>
+              </div>
+              <div class="clearfix"></div>
+ 
+            <aside>
+                <a href="#" class="responsive-menu responsive_menu_april" id="responsive">&nbsp;</a>                          
+                <div class="top-tab id-verification">
+                    <ul>
+                        <li><a href="#" id="supportId">TALK TO A HUMAN</a></li>
+                        <apex:outputpanel rendered="{!If(pge_name=="acffeatures" || pge_name=="acflogin",true,false)}"><li><a href="/acfhowitworks" target="_blank">HOW IT WORKS</a></li></apex:outputpanel>
+                    </ul>
+                </div>
+            </aside>    
+         </section>   
+        </div>
+        </div>
+    </div>-->
+</apex:component>

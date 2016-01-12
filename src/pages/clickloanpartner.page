@@ -1,0 +1,739 @@
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" standardStylesheets="false" controller="Saasfocus_ClickLoanPartnerController"  action="{!getPageval}">
+<link rel="stylesheet" href="{!$Resource.testStaticResource}/css/datepicker.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/> 
+
+<script>
+
+function Validate()
+{
+  //alert('Hello');  
+  var error=0;
+  var accname= $('[id$="name"]').val();
+  var email= $('[id$="email"]').val();
+  var mobile= $('[id$="mobile"]').val();
+  var oppname= $('[id$="oppname"]').val();
+  var closedate= $('[id$="closedate"]').val();
+  var stage= $('[id$="stage"]').val();
+  var Transaction= $('[id$="Transaction"]').val();
+  var lender= $('[id$="lender"]').val();
+  var loanvalue= $('[id$="loanvalue"]').val();
+  var loantype= $('[id$="loantype"]').val();
+  var personalloan= $('[id$="personalloan"]').val();
+  var creditcard= $('[id$="creditcard"]').val();
+  var carloan = $('[id$="carloan"]').val();
+  var reg=/^([\w-]+(?:\.[+ \w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+  if(accname=='')
+  {
+       $('[id$="name_error"]').html('Please enter Account name');
+              error=error+1;
+  }
+  else
+  {
+      $('[id$="name_error"]').html('');        
+  }
+  
+  if(email=='')
+  {
+       $('[id$="email_error"]').html('Please enter email');
+              error=error+1;
+  
+  }
+   else if(reg.test(email)==false)
+          {
+              $('[id$="email_error"]').html('Please enter valid email id'); 
+              error=error+1;
+          }
+  else
+  {
+      $('[id$="email_error"]').html('');  
+  }
+  if(mobile=='')
+  {
+       $('[id$="mobile_error"]').html('Please enter mobile number');
+              error=error+1;
+  
+  }
+   else if(isNaN(mobile)==true )
+  {
+      $('[id$="mobile_error"]').html('Please enter correct phone number');
+      error=error+1;
+  }
+  else
+  {
+      $('[id$="mobile_error"]').html('');  
+  }
+  
+   
+  
+   if(Transaction=='')
+  {
+       $('[id$="Transaction_error"]').html('Please select Transaction type');
+              error=error+1;
+  
+  }
+  else
+  {
+      $('[id$="Transaction_error"]').html('');  
+  }  
+  
+  
+   if(lender=='')
+  {
+       $('[id$="lender_error"]').html('Please select lender');
+              error=error+1;
+  
+  }
+  else
+  {
+      $('[id$="lender_error"]').html('');  
+  }
+  
+  
+   if(loanvalue=='')
+  {
+       $('[id$="loanvalue_error"]').html('Please enter Loan value');
+              error=error+1;
+  
+  }
+  else if(isNaN(loanvalue))
+  {
+      $('[id$="loanvalue_error"]').html('Please enter correct currency');
+      error=error+1;
+  }
+  else
+  {
+      $('[id$="loanvalue_error"]').html('');  
+  }
+  
+  
+   if(loantype=='')
+  {
+       $('[id$="loantype_error"]').html('Please select Loan type');
+              error=error+1;
+  
+  }
+  else
+  {
+      $('[id$="loantype_error"]').html('');  
+  }
+  
+  
+  
+  
+      
+  
+   if(error==0)
+    {
+    
+    $('[id$="btnid"]').click();
+
+    return true;
+    
+    }  
+    else
+    {
+      return false;
+    }
+    
+  
+}
+
+
+
+function filter(){
+    inp = $('#inputdata').val().toLowerCase();
+    // This should ignore first row with th inside
+    $('.datatable').each(function() {
+        if(inp .length>2 || inp .length==0)
+        {
+        var _this = $(this);
+        var title = _this.find(".accountName").text().toLowerCase();
+
+        
+        if (title.indexOf(inp) < 0) {
+            _this.hide();
+        }else{
+                _this.show();
+        }
+        }
+        
+        
+    });
+}
+</script>
+
+
+
+
+<style>
+.errMsg{
+  color:red;
+}
+
+.table tr td:nth-child(1){
+min-width: 221px;
+font-weight: bold !important;
+}
+.componentSec .detailList tr td{
+    padding: 8px 3px !important;
+}
+.table tr td{
+border: none !important;
+padding: 5px;
+}
+
+.table tr td:nth-child(2){
+min-width: 300px;
+
+}
+.table select{
+padding: 5px 13px;
+border: 1px solid #ccc;
+border-radius: 5px;
+
+}
+
+.section{
+max-width:50%;
+float:left;
+
+}
+#custom-bootstrap-menu.navbar-default .navbar-brand {
+    color: rgba(119, 119, 119, 1);
+}
+#custom-bootstrap-menu.navbar-default {
+    font-size: 14px;
+    background-color: rgba(250, 250, 250, 1);
+    border-width: 1px;
+    border-radius: 4px;
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+    color: rgba(119, 119, 119, 1);
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: rgba(51, 51, 51, 1);
+    background-color: rgba(217, 208, 208, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: rgba(85, 85, 85, 1);
+    background-color: rgba(231, 231, 231, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle {
+    border-color: #ddd;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus {
+    background-color: #ddd;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+    background-color: #888;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+    background-color: #fafafa;
+}
+.center-block {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.input-group .icon-addon .form-control {
+    border-radius: 0;
+}
+
+.icon-addon {
+    position: relative;
+    color: #555;
+    display: block;
+}
+
+.Processing
+        {
+          position: fixed;
+          background: url('/img/loading32.gif');
+          background-repeat: no-repeat;
+          background-position: center;
+          width: 95%;
+          height: 95%;
+          z-index: 1004;
+          left: 5%;
+          top: 2%;
+        }
+
+.icon-addon:after,
+.icon-addon:before {
+    display: table;
+    content: " ";
+}
+
+.icon-addon:after {
+    clear: both;
+}
+
+.icon-addon.addon-md .glyphicon,
+.icon-addon .glyphicon, 
+.icon-addon.addon-md .fa,
+.icon-addon .fa {
+    position: absolute;
+    z-index: 2;
+    left: 10px;
+    font-size: 14px;
+    width: 20px;
+    margin-left: -2.5px;
+    text-align: center;
+    padding: 10px 0;
+    top: 1px
+}
+
+.icon-addon.addon-lg .form-control {
+    line-height: 1.33;
+    height: 46px;
+    font-size: 18px;
+    padding: 10px 16px 10px 40px;
+}
+
+.icon-addon.addon-sm .form-control {
+    height: 30px;
+    padding: 5px 10px 5px 28px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.icon-addon.addon-lg .fa,
+.icon-addon.addon-lg .glyphicon {
+    font-size: 18px;
+    margin-left: 0;
+    left: 11px;
+    top: 4px;
+}
+
+.icon-addon.addon-md .form-control,
+.icon-addon .form-control {
+    padding-left: 30px;
+    float: left;
+    font-weight: normal;
+}
+
+.icon-addon.addon-sm .fa,
+.icon-addon.addon-sm .glyphicon {
+    margin-left: 0;
+    font-size: 12px;
+    left: 5px;
+    top: -1px
+}
+
+.icon-addon .form-control:focus + .glyphicon,
+.icon-addon:hover .glyphicon,
+.icon-addon .form-control:focus + .fa,
+.icon-addon:hover .fa {
+    color: #2580db;
+}
+.crtAcnt tr td{ padding:5px 2px;}
+</style>
+
+
+                                  
+<div id="custom-bootstrap-menu" class="navbar navbar-default " role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header col-md-6">
+           <div class="form-group">
+                <div class="icon-addon addon-md">
+                    
+                    <apex:actionStatus id="status" startStyleClass="Processing" style="z-index:9999999999999999"/>
+                    <input type="text" name="inputdata" class="form-control col-md-5" id="inputdata" style="margin-top: 10px; float:left; width:50%;" onkeyup="filter()"/>   
+                    <!--<input type="button"  value="go" style="display:none;" />-->
+                    <input type="button" value="Create Account" id="btncreateaccount" style="float:left;margin-top: 10px;margin-left: 9px;display:inline-block;color:#444;border:1px solid #CCC;background:#DDD;box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);cursor:pointer;vertical-align:middle;max-width: 200px;padding: 5px;text-align: center;"  data-toggle="modal" data-target="#myModalaccount"/>
+                    <!--<apex:actionFunction action="{!getPageval}" name="searchAccount" reRender="op1" status="id_status"/>-->
+                  
+                           
+                    <label for="email" class="glyphicon glyphicon-search" style="margin-top: 10px;" rel="tooltip" title="email"></label>
+                    
+                </div>
+            </div>
+            
+            <apex:actionStatus id="id_status" startText="Processing..." startStyleClass="color:red;">
+            <apex:facet name="start">
+            <div style="text-align:center;width:100%;height:100%;opacity:0.2;background-color:#000;position:fixed;left:0px;top:0px;z-index:99;">
+                <img style="position: relative;top: 127px;width:300px" src="{!URLFOR($Resource.AppointmentImage)}"  />
+            </div>    
+            </apex:facet>
+            </apex:actionStatus>
+            
+             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder2">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            
+        </div><apex:form >
+        <div class="collapse navbar-collapse navbar-menubuilder2">
+            <ul class="nav navbar-nav navbar-right">
+                <li><apex:commandLink value="All" action="{!getPageval}" reRender="op1" status="id_status">
+                    <apex:param value="All" assignTo="{!opptype}"/>
+                    </apex:commandlink>
+                </li>
+                <li><apex:commandLink value="In Progress" action="{!getPageval}" reRender="op1" status="id_status">
+                <apex:param value="In Progress" assignTo="{!opptype}"/>
+                    </apex:commandlink>
+                </li>
+                <li><apex:commandLink value="Dashboard" action="{!getPageval}" reRender="op1"  status="id_status">
+                <apex:param value="Dashboard" assignTo="{!opptype}"/>
+                    </apex:commandlink>
+                </li>
+                <li><apex:commandLink value="Submitted " action="{!getPageval}" reRender="op1" status="id_status" >
+                <apex:param value="Submitted" assignTo="{!opptype}"/>
+                    </apex:commandlink>
+                </li>
+                <li><apex:commandLink value="Approved" action="{!getPageval}" reRender="op1" status="id_status" >
+                <apex:param value="Approved" assignTo="{!opptype}"/>
+                    </apex:commandlink>
+                </li>
+                <li><apex:commandlink value="Settled"  action="{!getPageval}" reRender="op1" status="id_status" >
+                <apex:param value="Settled" assignTo="{!opptype}"/>
+                    </apex:commandlink>
+                </li>
+            </ul>
+        </div></apex:form>
+    </div>
+</div>
+<apex:form id="onenew">
+<div class="container-fluid " >  
+
+        <apex:pageBlock >
+              <apex:variable value="{!1}" var="count"/>
+            <apex:outputpanel id="op1"> 
+            <div class="col-md-6">
+            
+            
+            <apex:repeat value="{!pvallst}" var="lst">
+          
+            <div class="datatable">
+            <div class="col-md-12" >
+              <div class="col-md-6">
+                <table class="table">  
+                 
+
+                <tr>                           
+                <td>
+                    <apex:outputText value="{!lst.name}" styleClass="accountName"/></td>
+                </tr>
+                <tr>
+                    <td>{!lst.address}</td>
+                </tr>
+                 <tr><td>Current Lender: </td><td ><apex:outputText label="Current Lender: " value="{!lst.CurrentLender}"/></td></tr>
+                 <tr><td>Current Loan Size: </td><td ><apex:outputText label="Current Loan Size: " value="{!lst.CurrentLoanSize}"/></td></tr>
+                 <tr><td>Transaction Type: </td><td ><apex:outputText label="Transaction Type: " value="{!lst.TransactionType}"/> </td></tr>
+                 <tr><td>Last Appointment: </td><td ><apex:outputText label="Last Appointment: " value=" {!lst.lastappointment}"/>                 
+                     </td></tr>
+                 <tr><td>Opportunity Status: </td><td ><apex:outputText label="Opportunity Status:" value="{!lst.opportunitystatus}"/></td></tr>
+                 <tr><td>Opportunity Stage: </td><td ><apex:outputText label="Opportunity Status:" value="{!lst.oppstage}"/></td></tr>
+                 
+                 <tr><td><apex:outputPanel rendered="{!if(lst.type=='new',true,false)}" layout="blocked" id="one">
+                <apex:SelectList size="1" value="{!lst.transtypeoptn}" >
+                        <apex:selectOptions value="{!selectlist}"></apex:selectOptions>
+                        <apex:actionSupport event="onchange" reRender="id_cmdbtn" status="id_status"/>
+                    </apex:SelectList></apex:outputPanel> 
+                </td>
+                <td colspan="2">
+                <apex:outputPanel id="id_cmdbtn">
+                
+                <apex:commandButton value="Start Click loan Application"  oncomplete="goTop();" action="{!startclickloan}"  rendered="{!if(lst.type=='new',true,false)}" reRender="op2" style="display:inline-block;color:#444;border:1px solid #CCC;background:#DDD;box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);cursor:pointer;vertical-align:middle;max-width: 200px;padding: 5px;text-align: center;" status="id_status">
+ 
+                <apex:param value="{!lst.oppid}" name="oppid" assignTo="{!oppoid}"/>
+                <apex:param value="{!lst.AccId}" name="cmpAccid" assignTo="{!cmpAccid}"/>
+                <apex:param value="{!lst.transtypeoptn}" name="cmpLnType"  assignTo="{!cmpLnType}"/>
+                </apex:commandButton>
+                </apex:outputPanel></td></tr>
+                
+                
+                <tr><td><apex:commandLink value="Show Details"   oncomplete="opnDetails();" status="id_status"  action="{!showDetails}" rendered="{!if(lst.type=='pending',true,false)}" reRender="quespopup" style="display:inline-block;color:#444;border:1px solid #CCC;background:#DDD;box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);cursor:pointer;vertical-align:middle;max-width: 200px;padding: 5px;text-align: center;" >
+                <apex:param value="{!lst.AccId}" name="cmpAccidnew2" assignTo="{!aid2}"/>
+                 <apex:param value="2" name="cmpAccid" assignTo="{!detail}"/>
+                </apex:commandLink>
+                </td>
+                <td colspan="2">                  
+                <apex:outputLink value="/apex/BrokerClickPostloginQuestionnaires?cid={!lst.AccId}" rendered="{!if(lst.type=='pending',true,false)}" style="color:black">
+                     <span style="display:inline-block;color:#444;border:1px solid #CCC;background:#DDD;box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);cursor:pointer;vertical-align:middle;max-width: 200px;padding: 5px;text-align: center;">Edit Click loan Application</span>   
+                </apex:outputLink></td>
+                <!--<td>
+                <apex:commandButton value="Add Required Document" action="{!showDoc}" status="id_status" oncomplete="opnDoc();" rendered="{!if(lst.type=='pending',true,false)}" style="display:inline-block;color:#444;border:1px solid #CCC;background:#DDD;box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);cursor:pointer;vertical-align:middle;max-width: 200px;padding: 5px;text-align: center;">
+                <apex:param value="{!lst.AccId}" name="cmpAccId2" assignTo="{!cmppaccid}"/>
+                </apex:commandButton>
+                </td>-->
+                </tr>
+                
+               <tr><td><apex:commandLink value="Show Details" oncomplete="opnDetails();" action="{!showDetails}" reRender="quespopup" rendered="{!if(lst.type=='existing',true,false)}" style="display:inline-block;color:#444;border:1px solid #CCC;background:#DDD;box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);cursor:pointer;vertical-align:middle;max-width: 200px;padding: 5px;text-align: center;" status="id_status" >
+               <apex:param value="{!lst.AccId}" name="cmpAccid" assignTo="{!aid}"/>
+               <apex:param value="1" name="cmpAccide" assignTo="{!detail}"/>
+                </apex:commandLink>
+               </td><td colspan="2"> 
+               <apex:outputLink value="/apex/BrokerClickDashboard?cid={!lst.AccId}" rendered="{!if(lst.type=='existing',true,false)}" style="color:black">
+                     <span style="display:inline-block;color:#444;border:1px solid #CCC;background:#DDD;box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);cursor:pointer;vertical-align:middle;max-width: 200px;padding: 5px;text-align: center;">View Click loan Application</span>   
+                </apex:outputLink></td>
+                <!--<td><apex:commandButton value="Add Required Document" status="id_status" action="{!showDoc}" oncomplete="opnDoc();" rendered="{!if(lst.type=='existing',true,false)}" style="display:inline-block;color:#444;border:1px solid #CCC;background:#DDD;box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);cursor:pointer;vertical-align:middle;max-width: 200px;padding: 5px;text-align: center;">
+                <apex:param value="{!lst.AccId}" name="cmpAccId2" assignTo="{!cmppaccid}"/>
+                </apex:commandButton></td>-->
+                </tr>
+                
+               
+                
+                
+                 
+        
+        
+                                        </table>
+           
+
+                           </div>
+                     </div>
+                     
+            
+            
+          
+          <apex:variable value="{!count+1}" var="count"/>
+    </div>
+                        
+              
+           </apex:repeat>
+
+           </div> 
+           
+            
+               
+            
+            
+           </apex:outputpanel>
+           
+           
+        </apex:pageBlock>
+         
+    </div></apex:form>
+    <!--modal-->
+    <apex:form >
+    <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">PreLoginQuestions
+     </h4>
+
+        </div>
+
+        <div class="modal-body">          
+
+        <apex:outputpanel id="op2" layout="block">  
+       <!-- <c:googlAPIComponent ></c:googlAPIComponent> -->
+                 <div style="col-md-6">                  
+                 <div class="componentSec">
+
+                  <c:acf_PreLoginQuestion cmpAccId="{!cmpAccId}" cmpLnType="{!cmpLnType}" ></c:acf_PreLoginQuestion>
+                  </div>
+                  
+            </div> 
+        </apex:outputpanel>   
+        </div>
+        
+      </div>
+    </div>
+  </div></apex:form>
+ 
+  
+
+<apex:form >
+    <div class="modal fade" id="myModalaccount" role="dialog">
+    <div class="modal-dialog modal-lg" style="height:550px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Create Account
+     </h4>
+
+        </div>
+
+        <div class="modal-body">          
+
+        <apex:outputpanel id="op2" layout="block">  
+       <!-- <c:googlAPIComponent ></c:googlAPIComponent> -->
+                 <div style="col-md-6">                  
+                 <div class="componentSec">
+                  <table class="crtAcnt">
+                  <tr><th><u>Account Details</u></th></tr> 
+                  <tr><td></td></tr> 
+                  <tr><th>Account Name</th><td >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<apex:inputtext value="{!LastName}" id="name"/><br/><span class="errMsg" id="name_error"></span></td></tr>
+                  <tr><th>Email</th><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<apex:inputField value="{!accobj.PersonEmail}" id="email"/><br/><span class="errMsg" id="email_error"></span></td></tr>
+                  <tr><th>Mobile</th><td><b>+61</b><apex:inputtext value="{!mobile}" id="mobile"/><br/><span class="errMsg" id="mobile_error"></span></td></tr>
+                  <tr><td><hr/></td><td><hr/></td></tr>
+                  <tr><th><u>Opportunity Details</u></th></tr>
+                  <tr><td></td></tr>
+                  <tr><th>Transaction Type</th><td><apex:inputField value="{!oppobj.Transaction_Type__c}" id="Transaction"/><br/><span class="errMsg" id="Transaction_error"></span></td></tr>
+                  <tr><th>Current Lender</th><td><apex:inputField value="{!oppobj.Current_Lender__c}" id="lender"/><br/><span class="errMsg" id="lender_error"></span></td></tr>
+                  
+                  <tr><th>Current Loan Type</th><td><apex:inputField value="{!oppobj.Current_Loan_Type__c}" id="loantype"/><br/><span class="errMsg" id="loantype_error"></span></td></tr>
+                  <tr><th>Current Loan Value</th><td><apex:inputField value="{!oppobj.Current_Loan_Value__c}" id="loanvalue"/><br/><span class="errMsg" id="loanvalue_error"></span></td></tr>
+                  <tr><td>&nbsp;</td><td>
+                  <apex:commandButton value="Create Account" action="{!createAccount}"  onclick="return Validate();"  status="act_status"/>
+                  <apex:commandButton value="Create Accountnew"   id="btnid"  status="act_status" oncomplete="return validate();"  style="display:none"/>
+                  
+                   <apex:actionStatus id="act_status" startText="Processing..." startStyleClass="color:red;" >
+                        <apex:facet name="start">
+                        
+                            <img style="height:50px;width:50px;" src="{!URLFOR($Resource.AppointmentImage)}"  />
+                        
+                        </apex:facet>
+                        </apex:actionStatus>
+                  
+                  </td></tr>
+                  
+                  
+                  
+                  </table> 
+                  </div>
+                  
+            </div> 
+        </apex:outputpanel>   
+        </div>
+        
+      </div>
+    </div>
+  </div></apex:form>
+  
+  
+  
+  <apex:form >
+    
+    <div class="modal fade" id="Modalquestion" role="dialog">
+    <div class="modal-dialog modal-lg" style="height:550px;overflow-y:scroll">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Prelogin , Post Login Questions and Answers
+     </h4>
+
+        </div>
+        <apex:outputPanel id="quespopup">  
+        <div class="modal-body">          
+
+        <apex:outputpanel id="op2" layout="block">  
+       <!-- <c:googlAPIComponent ></c:googlAPIComponent> -->
+                 <div style="col-md-6">                  
+                 <div class="componentSec">
+                  <table class="crtAcnt">
+                  
+                  <tr><td colspan="2"><b><u>PreLogin Questions and Answers</u></b></td></tr><br/><br/>
+                  <tr><td height="15" colsan="2"></td></tr>
+                  <apex:outputPanel layout="none" rendered="{!if(detail==1,true,false)}">
+                  <tr><th>Current Lender</th><td><apex:outputField value="{!accpostloginques[0].ACF_BankName__pc}"/></td><th>Postal Code</th><td><apex:outputField value="{!accpostloginques[0].acfPostal_Code__pc}"/></td></tr>
+                  <tr><th>Current Rate</th><td><apex:outputField value="{!accpostloginques[0].acfCurrent_Rate__pc}"/></td><th>Approx House Worth</th><td><apex:outputField value="{!accpostloginques[0].acfApproximately_how_much_is_your_house__pc}"/></td></tr>
+                  <tr><th>Why are you refinancing?</th><td><apex:outputField value="{!accpostloginques[0].acfWhy_are_you_refinancing__pc}"/></td><th>Postal Code</th><td><apex:outputField value="{!accpostloginques[0].acfPostal_Code__pc}"/></td></tr>
+                  <tr><th>What is your current payment type?</th><td><apex:outputField value="{!accpostloginques[0].acfWhat_is_your_current_payment_type__pc}"/></td><th>Is this loan for an investment property</th><td><apex:outputField value="{!accpostloginques[0].click_Is_this_loan_for_an_investment_p__pc}"/></td></tr>
+                  <tr><th>Employment Type</th><td><apex:outputField value="{!accpostloginques[0].acf_Applicant_Employment_Type__pc}"/></td><th>What Year Tax Return do you Have?</th><td><apex:outputField value="{!accpostloginques[0].acfWhat_Year_Tax_Return_do_you_Have_App2__pc}"/></td></tr>
+                  </apex:outputPanel>
+                  
+                  <apex:outputPanel layout="none" rendered="{!if(detail==2,true,false)}">
+                  <tr><th>Current Lender</th><td><apex:outputField value="{!lstLeadpreques[0].Current_Lender__c}"/></td><th>Loan Amount</th><td><apex:outputField value="{!lstLeadpreques[0].acfLoan_Amount__c}"/></td></tr>
+                  <tr><th>Why are you refinancing?</th><td><apex:outputField value="{!lstLeadpreques[0].acfWhy_are_you_refinancing__c}"/></td><th>Approx House Worth</th><td><apex:outputField value="{!lstLeadpreques[0].acfApproximately_how_much_is_your_house__c}"/></td></tr>
+                  <tr><th>How is your current credit history</th><td><apex:outputField value="{!lstLeadpreques[0].acfHow_is_your_current_credit_history__c}"/></td><th>What is your current payment type</th><td><apex:outputField value="{!lstLeadpreques[0].acfWhat_is_your_current_payment_type__c}"/></td></tr>
+                  <tr><th>Employment Type</th><td><apex:outputField value="{!lstLeadpreques[0].acfEmployment_Type__c}"/></td><th>What is your postcode?</th><td><apex:outputField value="{!lstLeadpreques[0].acfWhat_is_your_postcode__c}"/></td></tr>
+                  <tr><th>Last 2 years Tax Return or ATO NOA
+                      <br/><br/>
+                      </th><td><apex:outputField value="{!lstLeadpreques[0].acfLast_2_years_Tax_Return_or_ATO_NOA__c}"/></td></tr>
+                  </apex:outputPanel>
+                  
+                  <tr><td><b><u>Postlogin Questions and Answer</u></b></td></tr>
+                  <tr><td height="15" colsan="2"></td></tr>
+                  <tr><td><b><u>First applicant</u></b></td></tr>
+                  <tr><td height="15" colsan="2"></td></tr>
+                  <tr><th>Applicant1 name</th><td><apex:outputField value="{!accpostloginques[0].name}"/></td><th>Email</th><td><apex:outputField value="{!accpostloginques[0].PersonEmail}"/></td></tr>
+                  <tr><th>Phone number</th><td><apex:outputField value="{!accpostloginques[0].Phone}"/></td><th>Mobile number</th><td><apex:outputField value="{!accpostloginques[0].PersonMobilePhone}"/></td></tr>
+                  <tr><th>Are there any more properties?</th><td><apex:outputField value="{!accpostloginques[0].Acf_Are_there_any_more_properties__pc}"/></td><th>What is the address?</th><td><apex:outputField value="{!accpostloginques[0].acfWhat_is_your_postcode__pc}"/></td></tr>
+                  <tr><th>Number Of Applicants</th><td><apex:outputField value="{!accpostloginques[0].acfNumber_Of_Applicants__pc}"/></td><th>App 1 Monthly Expenses</th><td><apex:outputField value="{!accpostloginques[0].clickApp_1_Monthly_Expenses__pc}"/></td></tr>
+                  <tr><th>DOB</th><td><apex:outputField value="{!accpostloginques[0].acf_applicant_DOB__pc}"/></td><th>Marital Status</th><td><apex:outputField value="{!accpostloginques[0].acf_applicant_Marital_Status__pc}"/></td></tr>
+                  <tr><th>Dependants</th><td><apex:outputField value="{!accpostloginques[0].acf_Applicant_Dependants__pc}"/></td><th>Dependant1 Age</th><td><apex:outputField value="{!accpostloginques[0].acfDependant1_Age__pc}"/></td></tr>
+                  <tr><th>Dependant2 Age</th><td><apex:outputField value="{!accpostloginques[0].acfDependant2_Age__pc}"/></td><th>Dependant3 Age</th><td><apex:outputField value="{!accpostloginques[0].acfDependant3_Age__pc}"/></td></tr>
+                  <tr><th>Dependant4 Age</th><td><apex:outputField value="{!accpostloginques[0].acfDependant4_Age__pc}"/></td><th>Dependant5 Age</th><td><apex:outputField value="{!accpostloginques[0].acfDependant5_Age__pc}"/></td></tr>
+                  <tr><th>Residency status</th><td><apex:outputField value="{!accpostloginques[0].acf_applicant_Residency_status__pc}"/></td><th>Annual Salary</th><td><apex:outputField value="{!accpostloginques[0].acf_applicant_Monthlly_Salary__pc}"/></td></tr>
+                  <tr><th>Employer Name</th><td><apex:outputField value="{!accpostloginques[0].acf_applicant_Employer_Name__pc}"/></td><th>Current Role</th><td><apex:outputField value="{!accpostloginques[0].Current_Role__pc}"/></td></tr>
+                  <tr><th>How Long have you been employed</th><td><apex:outputField value="{!accpostloginques[0].acf_How_Long_have_you_been_employed__pc}"/></td><th>Business Name</th><td><apex:outputField value="{!accpostloginques[0].acfBusiness_Name_or_ABN_autofill__pc}"/></td></tr>
+                  <tr><th>How Long</th><td><apex:outputField value="{!accpostloginques[0].acf_How_Long__pc}"/></td><th>Annual profit / income</th><td><apex:outputField value="{!accpostloginques[0].acfAnnual_profit_income__pc}"/></td></tr>
+                  <tr><th>acfEconsent</th><td><apex:outputField value="{!accpostloginques[0].acfEconsent__pc}"/></td></tr>
+                  <tr><td height="15" colsan="2"></td></tr>
+                  <apex:outputPanel layout="none" rendered="{!if(accpostloginques[0].acfNumber_Of_Applicants__pc=='2',true,false)}">
+                  <tr><td><b><u>Second applicant</u></b></td></tr>
+                  <tr><td height="15" colsan="2"></td></tr>
+                  <tr><th>Applicant2 Name</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Name__pc}"/></td><th>DOB</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_DOB__pc}"/></td></tr>
+                  <tr><th>Applicant2 Email</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_email__pc}"/></td><th>Applicant2 Phone number</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_phone__pc}"/></td></tr>
+                  <tr><th>Applicant2 Marital Status</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Marital_Status__pc}"/></td><th>App 1 Monthly Expenses</th><td><apex:outputField value="{!accpostloginques[0].clickApp_2_Monthly_Expenses__pc}"/></td></tr>
+                  <tr><th>Applicant2 Dependents</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Dependents__pc}"/></td><th>Applicant2 dependent1 Age</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_dependent1_Age__pc}"/></td></tr>
+                  <tr><th>Applicant2 Dependant2 Age</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_dependent2_Age__pc}"/></td><th>Applicant2 Dependant3 Age</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_dependent3_Age__pc}"/></td></tr>
+                  <tr><th>Applicant2 Dependant4 Age</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_dependent4_Age__pc}"/></td><th>Applicant2 Dependant5 Age</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_dependent5_Age__pc}"/></td></tr>
+                  <tr><th>Applicant2 Residency status</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Residency_status__pc}"/></td><th>Applicant2 Annual Salary</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Monthly_Salary__pc}"/></td></tr>
+                  <tr><th>Applicant2 Employer Name</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Employer_Name__pc}"/></td><th>Current Role App 2</th><td><apex:outputField value="{!accpostloginques[0].clickCurrent_Role_App_2__pc}"/></td></tr>
+                  <tr><th>App2 How Long have you been employed </th><td><apex:outputField value="{!accpostloginques[0].acfApp2_How_Long_have_you_been_employed__pc}"/></td><th>App2 Business Name</th><td><apex:outputField value="{!accpostloginques[0].acfApp2_Business_Name_or_ABN_autofill__pc}"/></td></tr>
+                  <tr><th>Applicant2 Annual profit / income </th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Annual_profit_income__pc}"/></td><th>acfEconsent_App2</th><td><apex:outputField value="{!accpostloginques[0].acfEconsent_App2__pc}"/></td></tr>
+                  </apex:outputPanel>
+ 
+                  
+                  </table> 
+                  </div>
+                  
+            </div> 
+        </apex:outputpanel>   
+         
+        </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </div>
+ 
+  </apex:form>
+  
+   
+ 
+  
+    
+    
+   <script>
+    $('.dateFormat').hide(); 
+    </script>  
+   <script>
+   function showdiv(count)
+   {
+        $('.section'+count).removeClass('hide');
+
+        return false;   
+   }
+   function goTop()
+   {
+       $('#myModal').modal('toggle');
+        $('#myModal').modal('show');
+
+   }
+   function opnDetails()
+   {
+        $('#Modalquestion').modal('toggle');
+        $('#Modalquestion').modal('show');
+       
+   }
+   
+   function opnDoc()
+   {
+       $('#DocModal').modal('toggle');
+        $('#DocModal').modal('show');
+   }
+   
+   </script>
+    
+
+
+</apex:page>

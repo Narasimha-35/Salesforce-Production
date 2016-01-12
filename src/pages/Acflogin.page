@@ -1,0 +1,155 @@
+<apex:page controller="WLLoginController" showHeader="false" standardStylesheets="false" >
+    <c:WLHTMLResourceLink ></c:WLHTMLResourceLink>
+    <style type="text/css">
+body{
+background-color:#e7eaef;
+}
+.login_section{
+width:100%;
+max-width:370px;
+margin:80px auto 120px auto;
+height:400px;
+}
+.iner_login{
+background-color:#fff;
+border-radius:1px;
+border:1px #c9cfd8 solid;
+padding:40px 25px;
+display:inline-block;
+width:100%;
+}
+.custom_login_form{
+padding-top:65px;
+font-family:"Open Sans Bold";
+font-size:14px;
+}
+.form-group_login{
+margin-bottom:20px;
+}
+.form-group_login input{
+background-color:#f3f5f7;
+border-radius:3px;
+}
+label.forg_pass{
+color:#818991;
+padding-top:15px;
+}
+.cstm_btn_submit{
+  font-family: 'OpenSans-Semibold';
+    float:right;
+    margin-top:10px;
+    background-color:#4cb07a;
+    text-transform:uppercase;
+    font-size:0.9em;
+}
+
+
+/***for custom check box here**/
+input[type=checkbox].css-checkbox {
+position:absolute; z-index:-1000; left:-1000px; overflow: hidden; clip: rect(0 0 0 0); height:1px; width:1px; 
+margin:-1px; padding:0; border:0;
+}
+
+input[type=checkbox].css-checkbox + label.css-label, input[type=checkbox].css-checkbox + label.css-label.clr {
+font-family:"Open Sans Bold";
+color:#464646;
+font-size:1em;
+padding-left:35px;
+height:20px; 
+display:inline-block;
+line-height:20px;
+background-repeat:no-repeat;
+background-position: 0 0;
+vertical-align:middle;
+cursor:pointer;
+width:auto!important;
+margin-top:0px!important;
+
+}
+
+input[type=checkbox].css-checkbox:checked + label.css-label, input[type=checkbox].css-checkbox + label.css-label.chk {
+background-position: 0 -20px;
+}
+label.css-label {
+background-image:url(images/checkbox.jpg);
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+
+}
+</style>
+  <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" />
+  <script>
+      $(document).ready(function(){
+          $('#fgp').click(function(){
+              $("#secLogin").hide();
+              $("#secForgot").show();
+          });
+          
+          $('#sign').click(function(){
+              $("#secLogin").show();
+              $("#secForgot").hide();
+          });
+      });
+  </script>
+  
+  <apex:form >
+      
+  <body>
+    <main class="container-fluid">
+        <section class="login_section">
+            <div class="iner_login">
+                <h3 class="col-md-12">
+                    <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" class="img-responsive center-block" alt="img"/><br/>
+                </h3>
+                
+                <div style="{!if(operatingSec == 'login','display:block;','display:none;')}" id="secLogin">
+                    <span style="color:red" id="idMsg">{!strmsgs}</span >
+                    <form role="form" class="col-md-12 custom_login_form">
+                        <div class="form-group form-group_login">
+                            <label for="email">Username &nbsp;</label>
+                            <apex:inputText styleclass="form-control" id="email" value="{!username}"/>
+                        </div>
+                        
+                        <div class="form-group form-group_login">
+                            <label for="password">Password &nbsp;</label>
+                            <apex:inputSecret styleclass="form-control" id="password" value="{!password}"/>
+                        </div>
+                        
+                        
+                    
+                    <div class="form-group">
+                    <label class="forg_pass" id="fgp">Forgot Password</label>
+                    <apex:commandButton styleclass="cstm_btn_submit btn btn-success" action="{!Userlogin}" value="{!$Label.site.login_button}"/>
+                    
+                    </div>
+                    
+                    </form>
+                </div>
+                
+                <div  id="secForgot" style="{!if(operatingSec == 'forgetPass','display:block;','display:none;')}" >
+                    <div role="form" class="col-md-12 custom_login_form" >
+                        <span style="color:red" id="idMsg">{!fstrmsgs}</span >
+                        <apex:outputPanel rendered="{!!success }" >
+                        <div class="form-group form-group_login">
+                            <label for="email">Username &nbsp;</label>
+                            <apex:inputText styleclass="form-control" id="femail" value="{!fusername}"/>
+                        </div>
+                        </apex:outputPanel>
+                        <div class="form-group">
+                            <label class="forg_pass" id="sign">Sign-in</label>
+                            <apex:commandButton styleclass="cstm_btn_submit btn btn-success" action="{!UserforgotPassword}" value="Reset Password" rendered="{!!success}" />
+                        </div>
+                    </div >
+                </div>
+            </div>
+        </section><!--section  close-->
+    
+    
+    </main><!--main div close-->
+  </body>
+  </apex:form>
+</apex:page>

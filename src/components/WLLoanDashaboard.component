@@ -1,0 +1,327 @@
+<apex:component controller="wlLoanDashboardController"  >
+<html >
+<style>
+    .displaynone{
+        display:none;
+     }
+    ul.cond_apprvl_list li:before{
+     float: left;
+     margin-top: 6px;
+     margin-right: 20px!important;;
+    }
+
+</style>
+<script>
+    var totalshownOpt;
+    $(document).ready(function()
+    {
+        $('.detailToggle').click(function()
+        {
+            if($(this).hasClass('cross_icon'))
+            {
+                $(this).removeClass('cross_icon');
+                $(this).addClass( 'accordian_icon' );
+                $(this).next().next().next().next().removeClass('in');
+            }
+            else
+            {
+                 $(this).removeClass('accordian_icon');
+                $(this).addClass( 'cross_icon' );
+                $(this).next().next().next().next().addClass('in');
+            }
+        });
+        
+        totalshownOpt = 0;
+        for(;totalshownOpt < 3; totalshownOpt++)
+        {
+            $('[id=prod'+ totalshownOpt +']').removeClass('displaynone');
+        }
+        
+        
+    });
+    
+    function viewall(){
+        var all = totalshownOpt;
+        for(;all < 5 ; all++)
+        {
+            $('[id=prod'+ all +']').removeClass('displaynone');
+        }
+    }
+    
+</script>
+<body>
+   <!-- <div class="tab-pane fade active in" id="tab1default"> -->
+        <apex:outputPanel rendered="{!!IsApplication}">
+        <hgroup class="dash_tab_hdng">
+            <h3 class="col-md-12 col-xs-11 col-sm-11">Your loan is now {!strDescription}</h3>
+            <h4 class="col-md-11">Please see the details of your approval below. Feel free to contact your mortgage expert with any questions, otherwise please complete the conditions of approval where applicable</h4>
+        </hgroup>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!IsApplication == true}">
+            <hgroup class="dash_tab_hdng">
+                <h3 class="col-md-12 col-xs-11 col-sm-11">{!$label['Loan_Dashboard_Appliaction_Taken']}</h3>
+            </hgroup>
+        </apex:outputPanel>
+        <div class="clearfix"></div>
+        <div class="cstm_border_btm dash_row_10">&nbsp;</div>
+        
+        <apex:outputPanel rendered="{!if(DateConditionallyApproved <> null,true,false)}"><hgroup class="col-md-12 dat_condtnl"><h3 class="col-md-12">Date Conditionally Approved: </h3><h4 class="col-md-12">{!DateConditionallyApproved}</h4></hgroup></apex:outputPanel>
+        <apex:outputPanel rendered="{!if(DateFormallyApproved <> null,true,false)}"><hgroup class="col-md-12 dat_condtnl"><h3 class="col-md-12">Date Formally Approved: </h3><h4 class="col-md-12">{!DateFormallyApproved}</h4></hgroup></apex:outputPanel>
+        <apex:outputPanel rendered="{!if(DateDocsGenerated <> null,true,false)}"><hgroup class="col-md-12 dat_condtnl"><h3 class="col-md-12">Date Docs  Generated: </h3><h4 class="col-md-12">{!DateDocsGenerated}</h4></hgroup></apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!if(strConditionsOfApproval <> null,true,false)}">
+        <hgroup class="col-md-12 dat_condtnl">
+            <h3>Conditions of Approval:</h3>
+        </hgroup>
+        <ul class="cond_apprvl_list list-unstyled col-md-12">
+            <apex:outputtext value="{!strConditionsOfApproval}" escape="false"/>
+            <!--<li>House and Lot 10 hectares</li>
+            <li>ANZ Personal Loan 51234-8279 for $31,399 paid out</li>
+            <li>Shiella Williamson</li>-->
+        </ul>
+        <div class="clearfix"></div>
+        </apex:outputPanel>
+        <apex:outputPanel id="CurrentLoanpnlid" rendered="{!!IsApplication}">
+           <apex:outputPanel rendered="{!isCurrentLoanPanelDisplay}">
+             <section class="dash_heading RecLoan" style="margin-top: 15px;display: inline-block;">
+              <span class="sprite_2 accordian_icon detailToggle" >&nbsp;</span>
+            <div class="col-md-4 dash_h_colum col-xs-5 col-sm-5">
+                <hgroup>
+                    <h3>{!objCurrentLoanDetails.decRate}%</h3>
+                    <h4>{!objCurrentLoanDetails.decComparisionRate}%</h4>
+                    <h5>COMPARISON RATE</h5>
+                    <h6>${!objCurrentLoanDetails.decMonthlyPayment} Monthly</h6><br/>
+                    <h4>{!objCurrentLoanDetails.strBankName} Monthly</h4>
+                </hgroup>
+            </div><!--firsr colum close here-->
+            <div class="col-md-8 col-xs-7 col-sm-7">
+            <hgroup class="col-md-12 dat_condtnl">
+                <h3 class="dash_npdng_top">{!objCurrentLoanDetails.ProductName}</h3>
+            </hgroup>                            
+               <ul class="cond_apprvl_list list-unstyled col-md-12 line_he_25">
+                <apex:outputPanel rendered="{!AND(objCurrentLoanDetails.Feature_1 <> null,objCurrentLoanDetails.Feature_1 <> '')}"><li>{!objCurrentLoanDetails.Feature_1}</li></apex:outputPanel>
+                <apex:outputPanel rendered="{!AND(objCurrentLoanDetails.Feature_2 <> null,objCurrentLoanDetails.Feature_2 <> '')}"><li>{!objCurrentLoanDetails.Feature_2}</li></apex:outputPanel>
+                <apex:outputPanel rendered="{!AND(objCurrentLoanDetails.Feature_3 <> null,objCurrentLoanDetails.Feature_3 <> '')}"><li>{!objCurrentLoanDetails.Feature_3}</li></apex:outputPanel>
+            </ul>
+            </div>
+            <div class="cstm_border_btm dash_row_10">&nbsp;</div>  
+                
+            <section id="collapse1" class="table panel-collapse collapse cstm_cllapse">
+                <article class="col-md-4 col-xs-12 col-sm-12">
+                    <hgroup class="row click_fee">
+                        <div class="col-md-12">
+                            <h3 class="h_heading">Click Fees</h3>
+                        </div>
+                    </hgroup>                                    
+                    <hgroup class="row click_fee">
+                        <h4 class="col-md-8 col-xs-5 col-sm-5">Application Fee</h4>
+                        <h5 class="col-md-4 col-xs-7 col-sm-7">${!objCurrentLoanDetails.ApplicationFee}</h5>
+                    </hgroup>
+                    <hgroup class="row click_fee">
+                        <h4 class="col-md-8 col-xs-5 col-sm-5">Monthly Fee</h4>
+                        <h5 class="col-md-4 col-xs-7 col-sm-7">${!objCurrentLoanDetails.MonthlyFee}</h5>
+                    </hgroup>
+                    <hgroup class="row click_fee">
+                        <h4 class="col-md-8 col-xs-5 col-sm-5">Annual Fee</h4>
+                        <h5 class="col-md-4 col-xs-7 col-sm-7">${!objCurrentLoanDetails.AnnualFee}</h5>
+                    </hgroup>
+                    <hgroup class="row click_fee">
+                        <h4 class="col-md-8 col-xs-5 col-sm-5">Establishment Fees</h4>
+                        <h5 class="col-md-4 col-xs-7 col-sm-7">${!objCurrentLoanDetails.EstablishmentFee}</h5>
+                    </hgroup>
+                     <hgroup class="row click_fee">
+                        <h4 class="col-md-8 col-xs-5 col-sm-5">Mortgage Risk Fees</h4>
+                        <h5 class="col-md-4 col-xs-7 col-sm-7">${!objCurrentLoanDetails.MortgageRiskFee}</h5>
+                    </hgroup>
+                    <hgroup class="row click_fee">
+                        <h4 class="col-md-8 col-xs-5 col-sm-5">Title Protection Fee</h4>
+                        <h5 class="col-md-4 col-xs-7 col-sm-7">${!objCurrentLoanDetails.TitleProtectionFee}</h5>
+                    </hgroup>
+                <!--    <hgroup class="row click_fee">
+                        <h4 class="col-md-8 col-xs-5 col-sm-5">Ongoing Fees</h4>
+                        <h5 class="col-md-4 col-xs-7 col-sm-7">${!objCurrentLoanDetails.OngoingFees}</h5>
+                    </hgroup>
+                    
+                    <hgroup class="row click_fee">
+                        <h4 class="col-md-8 col-xs-5 col-sm-5">Total Fee</h4>
+                        <h5 class="col-md-4 col-xs-7 col-sm-7">${!objCurrentLoanDetails.TotalFee}</h5>
+                    </hgroup>           -->                                                                                                                                                                                         
+                </article><!--article close -->
+                
+                <article class="col-md-3 col-md-offset-1 col-xs-12 col-xs-offset-0 col-sm-12 col-sm-offset-0">
+                 <div>
+                    <hgroup class="row click_fee">
+                        <h3 class="col-md-12 h_heading">Third Party Fees</h3>
+                    </hgroup>                                    
+                    <hgroup class="row click_fee">
+                        <h4 class="col-md-8 col-xs-5 col-sm-5">Legal Fees</h4>
+                        <h5 class="col-md-4 col-xs-7 col-sm-7">${!objCurrentLoanDetails.LegalFees}</h5>
+                    </hgroup>
+                    <hgroup class="row click_fee">
+                        <h4 class="col-md-8 col-xs-5 col-sm-5">Valuation Fee</h4>
+                        <h5 class="col-md-4 col-xs-7 col-sm-7">${!objCurrentLoanDetails.ValuationFee}</h5>
+                    </hgroup>
+                  </div>
+                </article><!--article close -->
+                
+                <article class="col-md-3 col-md-offset-1 col-xs-12 col-xs-offset-0 col-sm-12 col-sm-offset-0">
+                  <div>
+                    <hgroup class="row click_fee click_fee_check">
+                        <h4 class="col-md-12"><span class="{!if(objCurrentLoanDetails.AddRepayments == true,'check_icon','uncheck_icon')}"></span>Add Repayments</h4>
+                    </hgroup>
+                                                      
+                    <hgroup class="row click_fee click_fee_check">                                     
+                        <h4 class="col-md-12"><span class="{!if(objCurrentLoanDetails.DebitCard == true,'check_icon','uncheck_icon')}"></span>Debit Card</h4>
+                    </hgroup>
+                    
+                    <hgroup class="row click_fee click_fee_check">                                     
+                        <h4 class="col-md-12"><span class="{!if(objCurrentLoanDetails.Redraw == true,'check_icon','uncheck_icon')}"></span>Redraw</h4>
+                    </hgroup>
+                    
+                    <hgroup class="row click_fee click_fee_check">                                     
+                        <h4 class="col-md-12"><span class="{!if(objCurrentLoanDetails.InterestOnly == true,'check_icon','uncheck_icon')}"></span>Interest Only</h4>
+                    </hgroup>  
+                    
+                    <hgroup class="row click_fee click_fee_check">                                     
+                        <h4 class="col-md-12"><span class="{!if(objCurrentLoanDetails.OffsetAccount == true,'check_icon','uncheck_icon')}"></span>Offset Account</h4>
+                    </hgroup>
+                    
+                    <hgroup class="row click_fee click_fee_check">                                     
+                        <h4 class="col-md-12"><span class="{!if(objCurrentLoanDetails.MultipleSplits == true,'check_icon','uncheck_icon')}"></span>Multiple Splits</h4>
+                    </hgroup>                                                                                                                                                                      
+                   </div> 
+                </article><!--article close --> 
+                <div class="cstm_border_btm dash_row_10 collaps_border">&nbsp;</div>                                                                                       
+             </section>
+            </section>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <apex:outputpanel id="optLoanDashBoard" rendered="{!if(IsApplication == true,true,false)}"> 
+        <apex:variable value="{!0}" var="Count"/> 
+        <apex:repeat value="{!lstWrapperProduct}" var="pvar">  
+        <section class="dash_heading RecLoan displaynone" id="prod{!Count}" >
+        <span class="sprite_2 accordian_icon detailToggle" >&nbsp;</span>
+        <div class="col-md-4 dash_h_colum col-xs-5 col-sm-5">
+            <hgroup>
+                <h3>{!pvar.decRate}%</h3>
+                <h4>{!pvar.decComparisionRate}%</h4>
+                <h5>COMPARISON RATE</h5>
+                <h6>${!pvar.decMonthlyPayment} Monthly</h6><br/>
+                <h4>{!pvar.strBankName}</h4>
+            </hgroup>
+        </div><!--firsr colum close here-->
+        <div class="col-md-8 col-xs-7 col-sm-7">
+        <hgroup class="dat_condtnl col-md-12">
+            <h3 class="dash_npdng_top">{!pvar.ProductName}</h3>
+        </hgroup>                            
+           <ul class="cond_apprvl_list list-unstyled col-md-12 line_he_25">
+            <apex:outputPanel rendered="{!AND(pvar.Feature_1 <> null,pvar.Feature_1 <> '')}"><li>{!pvar.Feature_1}</li></apex:outputPanel>
+            <apex:outputPanel rendered="{!AND(pvar.Feature_2 <> null,pvar.Feature_2 <> '')}"><li>{!pvar.Feature_2}</li></apex:outputPanel>
+            <apex:outputPanel rendered="{!AND(pvar.Feature_3 <> null,pvar.Feature_3 <> '')}"><li>{!pvar.Feature_3}</li></apex:outputPanel>
+        </ul>
+        </div>
+        <div class="cstm_border_btm dash_row_10">&nbsp;</div>  
+            
+        <section id="collapse1" class="table panel-collapse collapse cstm_cllapse">
+            <article class="col-md-4 col-xs-12 col-sm-12">
+                <hgroup class="row click_fee">
+                    <div class="col-md-12">
+                        <h3 class="h_heading">Click Fees</h3>
+                    </div>
+                </hgroup>                                
+                <hgroup class="row click_fee">
+                    <h4 class="col-md-8 col-xs-5 col-sm-5">ApplicationFee</h4>
+                    <h5 class="col-md-4 col-xs-7 col-sm-7">${!pvar.ApplicationFee}</h5>
+                </hgroup>
+                <hgroup class="row click_fee">
+                    <h4 class="col-md-8 col-xs-5 col-sm-5">Monthly Fee</h4>
+                    <h5 class="col-md-4 col-xs-7 col-sm-7">${!pvar.MonthlyFee}</h5>
+                </hgroup>
+                <hgroup class="row click_fee">
+                    <h4 class="col-md-8 col-xs-5 col-sm-5">Annual Fee</h4>
+                    <h5 class="col-md-4 col-xs-7 col-sm-7">${!pvar.AnnualFee}</h5>
+                </hgroup>
+                <hgroup class="row click_fee">
+                    <h4 class="col-md-8 col-xs-5 col-sm-5">Establishment Fees</h4>
+                    <h5 class="col-md-4 col-xs-7 col-sm-7">${!pvar.EstablishmentFee}</h5>
+                </hgroup>
+                <hgroup class="row click_fee">
+                    <h4 class="col-md-8 col-xs-5 col-sm-5">Mortgage Risk Fees</h4>
+                    <h5 class="col-md-4 col-xs-7 col-sm-7">${!pvar.MortgageRiskFee}</h5>
+                </hgroup>
+                <hgroup class="row click_fee">
+                    <h4 class="col-md-8 col-xs-5 col-sm-5">Title Protection Fee</h4>
+                    <h5 class="col-md-4 col-xs-7 col-sm-7">${!pvar.TitleProtectionFee}</h5>
+                </hgroup>     
+               <!-- <hgroup class="row click_fee">
+                    <h4 class="col-md-8 col-xs-5 col-sm-5">Ongoing Fees</h4>
+                    <h5 class="col-md-4 col-xs-7 col-sm-7">${!pvar.OngoingFees}</h5>
+                </hgroup>
+                
+                <hgroup class="row click_fee">
+                    <h4 class="col-md-8 col-xs-5 col-sm-5">Total Fee</h4>
+                    <h5 class="col-md-4 col-xs-7 col-sm-7">${!pvar.TotalFee}</h5>
+                </hgroup>    -->                                                                                                                                                                                                  
+            </article><!--article close -->
+            
+           <article class="col-md-3 col-md-offset-1 col-xs-12 col-xs-offset-0 col-sm-12 col-sm-offset-0">
+             <div>
+                <hgroup class="row click_fee">
+                    <h3 class="col-md-12 h_heading">Third Party Fees</h3>
+                </hgroup>                                    
+                <hgroup class="row click_fee">
+                    <h4 class="col-md-8 col-xs-5 col-sm-5">Legal Fees</h4>
+                    <h5 class="col-md-4 col-xs-7 col-sm-7">${!pvar.LegalFees}</h5>
+                </hgroup>
+                <hgroup class="row click_fee">
+                    <h4 class="col-md-8 col-xs-5 col-sm-5">Valuation Fee</h4>
+                    <h5 class="col-md-4 col-xs-7 col-sm-7">${!pvar.ValuationFee}</h5>
+                </hgroup>
+              </div>
+            </article><!--article close -->
+            
+            <article class="col-md-3 col-md-offset-1 col-xs-12 col-xs-offset-0 col-sm-12 col-sm-offset-0">
+              <div>
+                <hgroup class="row click_fee click_fee_check">
+                    <h4 class="col-md-12"><span class="{!if(pvar.AddRepayments == true,'check_icon','uncheck_icon')}"></span>Add Repayments</h4>
+                </hgroup>
+                                                  
+                <hgroup class="row click_fee click_fee_check">                                     
+                    <h4 class="col-md-12"><span class="{!if(pvar.DebitCard == true,'check_icon','uncheck_icon')}"></span>Debit Card</h4>
+                </hgroup>
+                
+                <hgroup class="row click_fee click_fee_check">                                     
+                    <h4 class="col-md-12"><span class="{!if(pvar.Redraw == true,'check_icon','uncheck_icon')}"></span>Redraw</h4>
+                </hgroup>
+                
+                <hgroup class="row click_fee click_fee_check">                                     
+                    <h4 class="col-md-12"><span class="{!if(pvar.InterestOnly == true,'check_icon','uncheck_icon')}"></span>Interest Only</h4>
+                </hgroup>  
+                
+                <hgroup class="row click_fee click_fee_check">                                     
+                    <h4 class="col-md-12"><span class="{!if(pvar.OffsetAccount == true,'check_icon','uncheck_icon')}"></span>Offset Account</h4>
+                </hgroup>
+                
+                <hgroup class="row click_fee click_fee_check">                                     
+                    <h4 class="col-md-12"><span class="{!if(pvar.MultipleSplits == true,'check_icon','uncheck_icon')}"></span>Multiple Splits</h4>
+                </hgroup>                                                                                                                                                                      
+               </div> 
+            </article><!--article close --> 
+            <div class="cstm_border_btm dash_row_10 collaps_border">&nbsp;</div>                                                                                       
+        </section>
+        
+   
+    </section>
+          <apex:variable value="{!Count+1}" var="Count"/>  
+          </apex:repeat>
+          <a onclick="viewall();" class="col-md-12 col-xs-12 col-sm-12 dash_show_more" >Show More</a>
+        </apex:outputpanel>
+        
+   <!-- </div>   --> 
+   <!--first div section close-->
+
+</body>
+</html>
+</apex:component>

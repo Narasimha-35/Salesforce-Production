@@ -1,0 +1,249 @@
+<apex:component controller="acfDashboardDocumentController_broker" allowDML="true" id="comp">
+<head>
+<style type="text/css">
+    @font-face {
+        font-family: 'open_sanslight';
+        src: url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.eot')}");
+        src: url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.eot?#iefix')}") format('embedded-opentype'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.woff2')}") format('woff2'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.woff')}") format('woff'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.ttf')}") format('truetype'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.svg#open_sanslight')}") format('svg');
+        font-weight: normal;
+        font-style: normal;    
+    }
+    
+    .sprite{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .input-box + ul.bank-list li:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    a.mcafee:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}"); 
+    }
+    .button{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 28px no-repeat;
+    }
+    .button.getstarted{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 20px no-repeat;
+    }
+    .work-list .cate-box span.quote:before,
+    .work-list .cate-box span.application:before,
+    .work-list .cate-box span.disclousure:before,
+    .work-list .cate-box span.docs:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}"); 
+    }
+    a.viewmore:after,
+    a.viewmore-feature:after{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .footer-social a.f-icon,
+    .footer-social a.link-icon,
+    .footer-social a.t-icon,
+    .footer-social a.u-icon{
+        background:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    a.responsive-menu{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .button.getstarted{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
+    }
+    .button.question{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
+    }
+    .baner-colum span.anzbank:before,
+    .baner-colum span.westpack:before,
+    .baner-colum span.nab:before,
+    .baner-colum span.cwb:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .set-up-row  .set-up-box + span{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    p.creat-acount:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .porf-row {
+     margin-top: 25px;
+    }
+    .displaynone
+    {
+        display:none;
+    }
+    .fileDragupload
+    {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        height: 100%;
+    }
+    .linkClass{
+     font-family: 'open_sanslight';
+     font-size: 0.95em;
+    
+     text-decoration: none;
+     color: #1f8acb;
+     padding: 0px 10px;
+     font-weight: bold;
+     margin-left: 0px;
+     padding-left: 0px;
+    }
+    
+    /******************replace in stylesheet following code*************/
+.prf-submit-btn{margin-left:0px!important; margin-right:10px;}
+@media all and (min-width: 320px) and (max-width: 800px){
+.porf-row .prf-lble{display:block; width:auto;}
+.porf-row .prf-submit-btn{width:100%;}
+}
+
+/************here is changes for upload image page***************/
+     #selectFileMobID{display:none;}
+     @media all and (min-width:320px) and (max-width: 800px){
+    #browsecompId,#drageImgId{display:none;}
+    #selectFileMobID{display:block;}
+    .email-upload p{display:none;}
+     }
+     
+     .panel{
+background-color:transparent;
+}
+.cstm_panel_body{
+background-color:#fff!important;
+}
+</style>
+
+<script>
+ $(document).ready(function ()
+ {
+     $('#changepass').click(function () 
+        {
+          $('#changepwdPopUp').removeClass('displaynone');          
+          $('.messageCell').css('display','none');
+          $('[id$=member_login_strmsg]').remove();
+          $('[id$=current_lender_strmsg]').remove();
+          SetPopupLocation();
+        });
+        $('#divfaded12').click(function () 
+        {
+          $('#changepwdPopUp').addClass('displaynone');
+        });
+        
+        $(window).resize(function(){
+                SetPopupLocation();
+        });
+        
+  $('#DivFaded').click(function () 
+        {
+          $('#divUploadDocument').addClass('displaynone');
+        });
+  if(('{!IsError}')=='true')
+        {
+          $('#divUploadDocument').removeClass('displaynone');
+        }
+ $('.btnOnline').click(function () 
+        { 
+          $('#divUploadDocument').removeClass('displaynone');
+        }); 
+  $('.pop-close').click(function () 
+    { 
+            $('#changepwdPopUp').addClass('displaynone');
+             $('#divUploadDocument').addClass('displaynone'); 
+   });       
+     
+  });
+  
+  function SetPopupLocation()
+    {
+        var ww =  ($('.header').width() / 2) - ($('.setup-box').width() / 2);
+        $('.setup-box').css('left', ww + 'px');
+    }
+    
+  function UploadDraggableDocument(){
+      $('#uploadDocumentLoader').removeClass('displaynone');
+      UploadDraggableFile();
+  }
+  
+  
+  function uploadindex(indexval){
+     
+     
+  }
+  
+</script>
+<!-- document.getElementById('pg:CDD:comp:frmDocument:ind').value = indexval;  -->
+</head>
+
+<body id="body">
+<apex:form id="fm">
+<script>
+function UploadDocument(indexval)
+  {  
+       document.getElementById('pg:CDD:comp:fm:hdnDocumentName').value = indexval;
+       $('#uploadDocumentLoader').removeClass('displaynone');
+       UploadDocuments();
+  }
+  function deleteImg(indexval){
+       document.getElementById('pg:CDD:comp:fm:hdnDocumentName').value = indexval;
+       DeleteDoc();
+  }
+  
+  function DocPreview(indexval){
+      document.getElementById('pg:CDD:comp:fm:hdnDocumentName').value = indexval;
+      previewdoc();
+  }
+  
+</script>
+<apex:pageMessages ></apex:pageMessages>
+<apex:actionStatus startStyleClass="creat-loader" id="ProcessStatus"></apex:actionStatus>
+
+<apex:actionFunction action="{!UploadDocumentsNotification}" name="UploadDocumentsNotification" status="ProcessStatus"  />
+<apex:actionFunction action="{!uploadDoc}" name="UploadDocuments" status="ProcessStatus" />
+<apex:actionFunction action="{!UploadDragableFile}" name="UploadDraggableFile" status="ProcessStatus" />
+<apex:actionFunction action="{!DeleteDoc}" name="DeleteDoc" status="ProcessStatus" />
+<apex:actionFunction action="{!previewdoc}" name="previewdoc" status="ProcessStatus" />
+
+<apex:inputHidden id="hdnDocumentName" value="{!IndexNo}"/>
+
+    <hgroup class="dash_tab_hdng">
+        <h3 class="col-md-5 col-xs-12">Document</h3>
+        <h3 class="col-md-6 col-xs-12 text-center" id="upload_text">Upload</h3>
+       <div class="cstm_border_btm dash_row_10">&nbsp;</div>                                
+    </hgroup>
+    
+    <apex:variable value="{!0}" var="Count"/> 
+    <apex:repeat value="{!lstWrapperDocumnets}" var="doc"> 
+    <section class="dash_doc">
+        <div class="col-md-6 col-xs-12 h4">{!doc.objRequiredDocumnets.Name}</div>
+        <div class="col-md-6 col-xs-12">
+            <apex:outputPanel rendered="{!if(OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Awaited',AND(doc.objRequiredDocumnets.acfStatus__c == 'Not Verified',doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c)),true,false)}">
+                <a href="#" class="col-md-8 col-xs-8 doc_btn_done active"></a>
+                <apex:outputPanel rendered="{!if(OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'),true,false)}">
+                    <a href="{!doc.imageURL}" target="_blank" onclick="DocPreview('{!Count}');" data-toggle="modal" ><span class="upload_doc btnOnline">&nbsp;</span></a>
+                    <a href="#" onclick="deleteImg('{!Count}');return false;"><span class="delete_doc btnDelete" >&nbsp;</span></a> 
+                </apex:outputPanel>
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!if(OR(doc.objRequiredDocumnets.acfStatus__c == 'Pending',AND(doc.objRequiredDocumnets.acfStatus__c == 'Not Verified',doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false)),true,false)}">
+                   <!-- <a class="custom-file-input col-md-8 col-xs-12 btnOnline" href="#" data-toggle="modal" name="{!Count}"  onclick="UploadDocument();"  ></a>  -->
+                   <apex:inputFile value="{!attach.body}" fileName="{!attach.name}" contentType="{!attach.contentType}" styleclass="custom-file-input col-md-8 col-xs-12" id="inptFileUpload" onchange="UploadDocument('{!Count}');" > </apex:inputFile>
+            </apex:outputPanel> 
+        </div>
+       <div class="cstm_border_btm dash_row_10">&nbsp;</div>                                
+    </section>
+    <apex:variable value="{!Count+1}" var="Count"/>
+    </apex:repeat>
+    <div class="clearfix"></div>
+    
+     </apex:form>
+  </body>
+
+<!--Pop up close here-->
+</apex:component>

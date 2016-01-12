@@ -1,0 +1,98 @@
+<apex:component controller="acfContactUsController" allowDML="true">
+<style>
+.plcholder_61 input {
+   padding-left: 40px!important;
+}
+</style>
+<!-- popup starts here -->
+<div class="modal" id="myModel5">
+    <div class="modal-dialog">
+      <div class="modal-content popup_modalcontent cstm_pop_cont">
+        <div class="modal-header cstm_modal_header">
+          <button type="button" class="close pop_close gray_col" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title text-center">Contact Us</h4>
+        </div>
+        <div class="modal-body">
+          <apex:form styleclass="form-horizontal" id="frmPopUpId">
+               <apex:outputPanel rendered="{!if(strErrMsg != null && strErrMsg <> '',true,false)}" id="ErrrPanelId" style="{!if(isCaseGenerated == true,'color:#74A1F0;','color:red;')} margin-left:40%;">{!strErrMsg}</apex:outputPanel>                   
+                <div class="form-group cstm_form_grp">
+                  <label class="control-label col-md-2 col-md-offset-1" for="Name">Name</label>
+                  <div class="col-md-8 col-xs-12">
+                    <apex:inputText value="{!strusrName}" onBlur="if (this.placeholder == '') {this.placeholder = 'Name';}" onFocus="if (this.placeholder == 'Name') {this.placeholder = '';}" styleClass="form-control cstm_input" html-placeholder="Name"/>
+                  </div>
+                </div>
+                
+                <div class="form-group cstm_form_grp">
+                  <label class="control-label col-md-2 col-md-offset-1" for="email">Email</label>
+                  <div class="col-md-8 col-xs-12">
+                   <apex:inputText value="{!strUsrEmail}" html-placeholder="Enter Email" onBlur="if (this.placeholder == '') {this.placeholder = 'Enter Email';}" onFocus="if (this.placeholder == 'Enter Email') {this.placeholder = '';}" styleClass="form-control cstm_input"/>
+                  </div>
+                </div> 
+                
+                <div class="form-group cstm_form_grp">
+                  <label class="control-label col-md-2 col-md-offset-1 " for="Phone">Phone</label>
+                  <div class="col-md-8 col-xs-12 plcholder_61 clsOnlynumeric">
+                   <apex:inputText value="{!strUsrPhone}" html-placeholder="Phone Number" onBlur="if (this.placeholder == '') {this.placeholder = 'Phone Number';}" onFocus="if (this.placeholder == 'Phone Number') {this.placeholder = '';}" styleClass="form-control cstm_input"/>
+                  </div>
+                </div>  
+                
+                            <script>
+                                    $('.clsOnlynumeric').keypress(function(e) {
+                                        var keyCode;
+                                        if (window.event) // IE
+                                        {
+                                            keyCode = e.keyCode;
+                                        }
+                                        else if (e.which) // Netscape/Firefox/Opera
+                                        {
+                                            keyCode = e.which;
+                                        }
+                                        //alert(keyCode == undefined);
+                                       // alert($(this).val());            
+                                        return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8));
+                                    });
+                              </script>  
+                
+                <div class="form-group cstm_form_grp">
+                  <label class="control-label col-md-2 col-md-offset-1" for="Phone">How can we help you?</label>
+                  <div class="col-md-8 col-xs-12 ">
+                   <apex:inputTextarea value="{!strQues}" styleclass="form-control cstm_input" rows="2"/>
+                  </div>
+                </div>                               
+                
+                <div class="form-group">        
+                  <div class="col-md-offset-4 col-md-5 col-xs-12 col-xs-offset-0">
+                   <apex:commandButton value="Submit" action="{!CreateCaseMethod}" styleClass="btn btn-default col-md-12 col-xs-12 cstm_btn_input" reRender="frmPopUpId" status="caseCreationStatus1"/>
+                    <apex:actionstatus id="caseCreationStatus1" starttext="verifying">
+                     <apex:facet name="start">
+                         <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>                      
+                     </apex:facet>
+                    </apex:actionStatus>   
+                  </div>
+                </div>
+                
+                <p class="creat-acount">Don’t worry, it’s free and your details are safe with us</p>
+          </apex:form>       
+        </div>
+      </div>
+    </div>
+</div>
+<!--Pop up close here-->
+<aside class="col-md-4 col-xs-12">
+    <section class="row">
+        <div class="col-md-11 col-xs-12 april_cont_text">
+            <h5>{!$Label['acfContact_Us_label']}</h5>
+            <apex:outputPanel rendered="{!isFAQpage}">
+                <p class="send_msg_aprl"><a href="#myModel5" id="sendmsgPopUpId" data-toggle="modal">Send us a message</a></p>
+            </apex:outputPanel>
+            <p>Email:<a href="mailto:{!objMortgageExpert.acfEmail__c}">{!objMortgageExpert.acfEmail__c}</a></p>
+            <p>Phone:<span><i class="skype">&nbsp;</i>{!objMortgageExpert.Mobile_del__c}</span></p>
+            <p>Fax: {!objMortgageExpert.acfFax__c}</p>
+            <p class="opt_bold">Operating Hours:</p>
+            <p>{!objMortgageExpert.acfOperating_Day_From__c} - {!objMortgageExpert.acfOperating_Day_To__c}</p>
+            <p>{!objMortgageExpert.acfOperating_Time_From__c} to  {!objMortgageExpert.acfOperating_Time_To__c}</p>
+            <p class="mgtop15">{!objMortgageExpert.acfAddress__c}</p>
+        </div>
+    </section>
+</aside>
+</apex:component>

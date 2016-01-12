@@ -1,0 +1,134 @@
+<apex:page docType="html-5.0" cache="false" standardStylesheets="false" showHeader="false" controller="WLContactus">
+<head>
+<c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<title>Contact Us</title>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+<script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
+ <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+ <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
+ <script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+<!--
+<link href="{!URLFOR($Resource.acfResources, 'acfResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/js.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/nav.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/html5.js')}"></script>
+-->
+
+<style>
+    body{background-color:#fff;}
+    .plcholder_61:before {
+          left:28px;
+          top: 14px;
+          color: #999;
+    }
+    .header{box-shadow:none;}
+</style>
+</head>
+<c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
+<body>
+<main class="container-fluid ">
+<header class="row">
+<div class="header">
+  <c:WLHeader ></c:WLHeader>
+</div>
+</header><!--row fluid close-->
+<div class="clearfix"></div>
+<section class="row aprl_heading">
+    <div class="container container_cstm">
+        <header class="apel_text_head">{!strPagetitle}</header>
+    </div>
+</section><!--secton how work close-->
+
+<section class="row">
+    <div class="container container_cstm">        
+        <section class="col-md-12 april_contact">               
+            <p class="conact_cap_april"><apex:outputtext value="{!strDescription}" escape="false"/></p>
+        </section>
+        
+        <section>
+            <article class="col-md-8 col-xs-12 april_form_sec">
+                <div class="row">
+                      <apex:form styleClass="form-horizontal" id="frmId"> 
+                       <apex:outputPanel rendered="{!if(strErrorMsg != null && strErrorMsg <> '',true,false)}" id="ErrPanelId" style="{!if(isCaseCreated == true,'color:#74A1F0;','color:red;')} margin-left:40%;">{!strErrorMsg}</apex:outputPanel>                                       
+                       <div class="form-group">
+                            <label for="Name" class="control-label col-md-4 cstm_label">Name</label>
+                            <div class="col-md-8">
+                               <apex:inputText value="{!strUserName}" onBlur="if (this.placeholder == '') {this.placeholder = 'Name';}" onFocus="if (this.placeholder == 'Name') {this.placeholder = '';}" styleClass="form-control cstm_control" html-placeholder="Name"/>
+                                <!--<input type="text" name="name" class="form-control cstm_control" value="Name" onBlur="if (this.value == '') {this.value = 'Name';}" onFocus="if (this.value == 'Name') {this.value = '';}"/>-->
+                            </div>
+                       </div> 
+                       
+                       <div class="form-group">
+                            <label for="Email" class="control-label col-md-4 cstm_label">Email</label>
+                            <div class="col-md-8">
+                                <apex:inputText value="{!strUserEmail}" html-placeholder="Enter Email" onBlur="if (this.placeholder == '') {this.placeholder = 'Enter Email';}" onFocus="if (this.placeholder == 'Enter Email') {this.placeholder = '';}" styleClass="form-control cstm_control"/>
+                                <!--<input type="email" name="Email" class="form-control cstm_control" value="Enter Email" onBlur="if (this.value == '') {this.value = 'Enter Email';}" onFocus="if (this.value == 'Enter Email') {this.value = '';}"/>-->
+                            </div>
+                       </div>
+                       
+                       <div class="form-group">
+                            <label for="Contact Number" class="control-label col-md-4 cstm_label">Contact Number</label>
+                            <div class="col-md-8 plcholder_61 clsOnlynumeric">
+                                 <apex:inputText value="{!strUserPhone}" html-placeholder="Phone Number" onBlur="if (this.placeholder == '') {this.placeholder = 'Phone Number';}" onFocus="if (this.placeholder == 'Phone Number') {this.placeholder = '';}" styleClass="form-control cstm_control"/>
+                                <!--<input type="text" name="name" class="form-control cstm_control" value="Phone Number" onBlur="if (this.value == '') {this.value = 'Phone Number';}" onFocus="if (this.value == 'Phone Number') {this.value = '';}"/>-->
+                            </div>
+                       </div> 
+                       
+                       
+                             <script>
+                                    $('.clsOnlynumeric').keypress(function(e) {
+                                        var keyCode;
+                                        if (window.event) // IE
+                                        {
+                                            keyCode = e.keyCode;
+                                        }
+                                        else if (e.which) // Netscape/Firefox/Opera
+                                        {
+                                            keyCode = e.which;
+                                        }
+                                        //alert(keyCode == undefined);
+                                       // alert($(this).val());            
+                                        return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8));
+                                    });
+                              </script>        
+                       
+                       <div class="form-group">
+                            <label for="Contact Number" class="control-label col-md-4 cstm_label">How can we help you?</label>
+                            <div class="col-md-8">
+                               <apex:inputTextarea value="{!strQuestion }" styleclass="form-control cstm_control" rows="8"/>
+                               <!-- <textarea class="form-control cstm_control" rows="8"></textarea> -->
+                            </div>
+                       </div>  
+                       
+                        <div class="form-group"> 
+                            <div class="col-md-6 col-md-offset-4 col-xs-12">    
+                              <apex:commandButton value="Submit" action="{!submitCase}" styleClass="btn btn-default btn_cstm col-md-12" reRender="frmId" status="caseCreationStatus"/>
+                                 <apex:actionstatus id="caseCreationStatus" starttext="verifying">
+                                  <apex:facet name="start">
+                                      <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>                      
+                                  </apex:facet>
+                                 </apex:actionStatus>   
+                               <!-- <button type="submit" class="btn btn-default btn_cstm col-md-12">Submit</button> -->
+                            </div>
+                        </div>                                                                                            
+                      </apex:form>                                     
+                </div><!--row fluid close-->
+            </article>
+            <c:acfContactUs ></c:acfContactUs>    
+        </section>
+        
+  </div><!--container close-->
+</section><!--row fluid close-->
+<!---Footer start here--------------->
+<footer class="footer row-fluid">
+ <c:WLFooter ></c:WLFooter>
+</footer><!--footer close-->
+</main><!--main div close-->
+</body>
+</apex:page>

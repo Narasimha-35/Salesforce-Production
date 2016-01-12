@@ -1,0 +1,907 @@
+<apex:page docType="html-5.0" cache="false" standardStylesheets="false" showHeader="false" controller="WLpreloginQuestionController" id="pid">
+<html>
+<head>
+<c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<title>Question Stage1</title>
+<link href="{!URLFOR($Resource.acfResources, 'acfResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/nav.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/html5.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/jquery.glide.min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/slide.js')}"></script>
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>    
+<script type="text/javascript" src="{!$Resource.TypeheadAutocomplete}" /> 
+
+<script>
+  function slide()
+  {
+
+    if($('[id$=ipthdn]').val() === 'true')
+    {
+             
+       $('.slider-arrow--right').trigger('click');
+      setTimeout(function(){
+      abc();
+      }, 500);
+    }
+  }
+  
+  function Backslide()
+  {
+
+    if($('[id$=ipthdn]').val() === 'true')
+    {
+       
+       $('.slider-arrow--left').trigger('click');
+       setTimeout(function(){
+      abc();
+      }, 500);
+
+    }
+  }
+
+  $(document).ready(function ()
+  {
+  
+
+    for(var i=0;i<($('[id$=ipthdnIndex]').val());i++)
+    {
+       $('.slider-arrow--right').trigger('click');return false;
+    }   
+    if('{!IsSlideToNextQues}' === 'true')
+    {
+        $('.slider-arrow--right').trigger('click');return false;
+    }
+    $('.clsOnlynumeric').keypress(function(e) 
+    {
+        var keyCode;
+        if (window.event) // IE
+        {
+            keyCode = e.keyCode;
+        }
+        else if (e.which) // Netscape/Firefox/Opera
+        {
+            keyCode = e.which;
+        }
+        
+        if (keyCode == 46 && $(this).val().indexOf(".") < 1) {
+            return true;
+        }
+    
+        return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8) || (keyCode == 13));
+    }); 
+   /* $(document).keypress(function(e) {
+        if(window.event && (window.event.keyCode == 13 || e.which == 13))
+        {        
+           $('[id$=IdBtn]').click(); 
+        }
+       }); */
+  });
+  
+  function queryData(strfilter)
+    {          
+       Visualforce.remoting.Manager.invokeAction(
+             '{!$RemoteAction.WLpreloginQuestionController.AutoCompleteBanklList}',strfilter,
+             function(result, event)
+             {                      
+                 //if success
+                 if(event.status){ 
+                     var data = {results: []}
+                     data.results = result;
+                     BindBankList(data.results);                  
+                 }
+                 else{
+                      alert('Invalid Field/Object API Name : '+event.message);
+                 }
+                
+             }, 
+              {escape: true}
+        );
+    } 
+    
+    function BindBankList(arrBankList)
+    {
+        var strBankListHtml = '';
+       
+        for(var i=0; i<arrBankList.length; i++)
+        {       
+            strBankListHtml = strBankListHtml + '<li value="'+arrBankList[i].acfBank_Name__c+'"><span class="bank-img"><img src="{!$Label.acfSite_Url}'+arrBankList[i].acfImage_URL__c+'"/></span><span class="BnkOpt">'+arrBankList[i].acfBank_Name__c+'</span></li>';
+        }
+        
+        //alert(strBankListHtml);
+        $('.bank-list').html(strBankListHtml);
+        
+       /* $('.BnkOpt').mouseenter(function() {                       
+              var obj = $(this).context;
+              $('input[id$=textId]').val(obj.innerText);
+              strBankListHtml = '';
+        });*/
+        $('.bank-list li').mouseenter(function()
+        {
+            $('input[id$=textId]').val($(this).find('.BnkOpt').text());
+        });
+    }     
+</script>
+
+<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"/>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+
+<script type="text/javascript">
+    // This example displays an address form, using the autocomplete feature
+    // of the Google Places API to help users fill in the information.
+    
+    var placeSearch, autocomplete;
+    var componentForm = {
+      street_number: 'short_name',
+      route: 'long_name',
+      locality: 'long_name',
+      administrative_area_level_1: 'short_name',
+      country: 'long_name',
+      postal_code: 'short_name'
+    };
+    
+    function initialize() {
+      // Create the autocomplete object, restricting the search
+      // to geographical location types.
+      autocomplete = new google.maps.places.Autocomplete(
+          /** @type {HTMLInputElement} */(document.getElementById($('.addresspicker_map').attr('id'))),
+          { types: ['geocode'] });
+      // When the user selects an address from the dropdown,
+      // populate the address fields in the form.
+      google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        fillInAddress();
+      });
+    }
+    
+    // [START region_fillform]
+    function fillInAddress() {
+      // Get the place details from the autocomplete object.
+      var place = autocomplete.getPlace();
+    
+      for (var component in componentForm) {
+        document.getElementById(component).value = '';
+        document.getElementById(component).disabled = false;
+      }
+    
+      // Get each component of the address from the place details
+      // and fill the corresponding field on the form.
+      /*for (var i = 0; i < place.address_components.length; i++) {
+        var addressType = place.address_components[i].types[0];
+        if (componentForm[addressType]) {
+          var val = place.address_components[i][componentForm[addressType]];
+          document.getElementById(addressType).value = val;
+        }
+      }*/
+    }
+    // [END region_fillform]
+    
+    // [START region_geolocation]
+    // Bias the autocomplete object to the user's geographical location,
+    // as supplied by the browser's 'navigator.geolocation' object.
+    function geolocate() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var geolocation = new google.maps.LatLng(
+              position.coords.latitude, position.coords.longitude);
+          var circle = new google.maps.Circle({
+            center: geolocation,
+            radius: position.coords.accuracy
+          });
+          autocomplete.setBounds(circle.getBounds());
+        });
+      }
+    }
+    // [END region_geolocation]  
+    
+    
+    $(document).ready(function () {
+        initialize();
+    }); 
+    
+    window.onbeforeunload = function () {
+        if($('[id$=ipthdnRedirect]').val() === 'false')
+            return  "You are almost there! Are you sure you want to quit?";
+    }; 
+</script>
+
+<style>
+img.mfes-trustmark-hover{display:inline-block; margin-top:20px;}
+.plcholder_61:before {
+          left:28px;
+          top: 14px;
+          color: #999;
+}
+.slider{
+margin-top:0px!important;
+margin-bottom:100px!important;
+}
+.question-slider table{width:100%;}
+.relQues-margin {
+//margin-left: 13%;
+}
+.post_log_goback a {
+  font-family: 'open_sanslight';
+  color: #666666;
+  text-decoration: underline;
+  padding-left:0px;
+  text-align: center!important;
+  padding-top: 15px!important;
+  font-size:1em!important;
+  padding-left:0px!important;
+  display:inline-block;
+}
+.ulAddress
+{
+    border: 1px #f2f1f1 solid;
+    margin-left:82px;
+}
+.liAddress
+{
+    padding: 2px 5px;
+}
+.liAddress:hover
+{
+    background-color: #f2f1f1;
+    cursor:pointer;
+}
+.ui-autocomplete
+{
+    display:none!important;
+}
+.inputf.input_w100.input_wpercent{
+  width: 51%;
+}
+.inputf.input_w100.input-marginleft{
+ margin-left:30px;
+}
+
+.inputf
+{
+    margin-top:45px;
+    width: 322px;
+    height: 52px;
+    padding: 5px;
+    font-size: 16px;
+    line-height: 1;
+    border-radius: 8px;
+    height: 52px;
+    //-webkit-appearance: none;
+    color:  #9e9d9d;
+    }
+    
+    .ui-autocomplete{
+        top: 490px !important;
+        left: 530px !important;
+        position: absolute;
+        color: #1F8BCC;
+    }
+    .input-box.inputf + ul.bank-list li:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .input-box.inputf + ul.bank-list{
+     // width: 322px;
+      //margin-left: 13%;
+        margin-left: 19%;
+        margin-top: 0px;
+        padding: 0px;
+        width: 400px;
+    }
+    .btn-question.q-right.prlelogin-ques{
+      margin-left: 30%;
+    }
+    /* .preLoader_bg
+    {
+       position: fixed; top:0px; left: 0%;width: 100%;height: 100%;background-color: #5A595A;z-index: 999;-moz-opacity: 0.0;opacity: 0.0;filter: alpha(opacity=0);                                                    
+    }*/
+    
+    .preloader
+    {
+      position:absolute;
+      top: 53%;
+      left: 83%;
+
+    }
+    .btn-widthEqualizer{
+        //word-break: break-all;
+        white-space: normal;
+        width: 50%;
+        height: auto;
+        margin-left:164px; 
+    }
+    /* it is used for back button and drop down image .
+    
+    .quest-back{
+    display:inline-block;
+    content:'';
+    background-image:url(../images/sprite.png);
+    background-repeat:no-repeat;
+    width:51px;
+    height:51px;
+    background-position:-198px -207px;
+    position:absolute;
+    left:-70px;
+    top:0px;
+    cursor:pointer;
+    }*/
+    
+    
+    
+    /*CSS For Old Header and Footer Start*/
+    .header .logo img {
+      width: 182px;
+      height: 69px;
+      margin-top: 8px;
+    }
+    
+    .top-tab ul li {
+      float: left;
+      margin-top: 30px;
+      font-size: 16px;
+    }
+    
+    .top-tab ul li a {
+      text-decoration: none;
+      display: block;
+      padding: 0px 15px;
+      line-height: 30px;
+      color: #223972;
+      font-size: 1em;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    
+    .header {
+      background-color: #fff;
+      min-height: 85px;
+      box-shadow: #000 2px -6px 18px;
+    }
+    
+    .april_foter_left p, .april_foter_font_small p{ padding-top:0px;}
+    a.responsive-menu{top:20px;}
+    /*CSS For Old Header and Footer End*/
+    .slides-form { position:relative; }
+    .slide-form {
+      text-align: center;   
+     
+    }
+    
+    .btn-question.q-right.prlelogin-ques {
+      margin-left: 43%;
+    }
+    
+    a.post_log_goback {
+      font-family: 'open_sanslight';
+      color: #666666;
+      text-decoration: underline;
+      padding-top: 15px; 
+      padding-left:0px;
+      
+      text-align: center!important;
+      padding-top: 15px!important;
+      font-size:1em!important;
+      padding-left:0px!important;
+    }
+    
+    .input-box.inputf + ul.bank-list { margin-left: 123px;
+      margin-top: 0px;}
+    .input-box + ul.bank-list li{  text-align: left;}
+    
+   
+    
+    .dolor_icon:before {
+      content: '$';
+      display: table;
+      position: absolute;
+      left: 4%;
+      top: 22%;
+      font-size: 1.3em;
+    }
+    a.post_log_goback {
+      font-family: 'open_sanslight';
+      font-size: 1.2em;
+      color: #666666;
+      text-decoration: underline;
+      padding-top: 10px;
+      text-align: center;
+      text-align: left;
+      padding-left: 52%;
+    }
+    /*April changes*/
+    .btn-question.q-right.prlelogin-ques{margin-left:0px;}   
+    .inputf.input_w100.input-marginleft_w50 
+    {
+        margin-left: 10px;
+        width:50%;
+    }
+    .percent_icon:before
+    {
+        right:27%;
+        top: 30%;
+    }
+    .mgleft_minus_37
+    {
+        margin-left:-37px!important;
+    }
+    .mgleft_10{margin-left:10px!important;}
+.drop_mg_25pcnt{
+/*margin-left:25%;*/
+}
+
+.drop_input_custom_30
+{
+   
+    background-color: #fff;
+    border: 1px #eee solid;
+    width: 400px;
+    box-shadow: inset #999 0px 0px 5px -1px;
+    border-radius: 5px;
+    padding: 0px 10px;
+   margin-left: 111px;
+    margin: 10px auto;
+    
+}
+.checkbox_custom_30{
+    width: 400PX;
+    margin: 0 auto;
+}
+.macafe{
+text-align:center;
+margin-top:10px;
+}
+.preloader_backbtn{
+position: absolute;
+top: 71%;
+left: 73%;
+}
+ .btn-question:last-child{
+ margin-right:auto!important;
+ margin-bottom:15px;
+ }
+.reldolor .dolor_icon:before{
+   left: 11%!important;
+   top: 30%;
+}
+.btn-question{
+  width: 50%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top:10px;
+  white-space: normal;
+  
+}
+.w180
+{
+  max-width:180px !important;
+}
+
+
+@media (max-width: 445px){
+    .post_fieldset table tr td {
+      text-align: center!important;
+      display: block;
+      margin: 0px;
+      padding: 0px;
+      padding-bottom: 12px;
+      width: 65%!important;
+    }
+   .post_fieldset table{
+        width: 85%!important;
+        margin:0px!important;
+   }
+   
+   .table.checkbox_custom_30 tr td {
+      text-align: center!important;
+      display: block;
+      margin: 0px;
+      padding: 0px;
+      padding-bottom: 12px;
+      width: 100%!important;
+    }
+    table.checkbox_custom_30{
+        width: 100%!important;
+    }
+}
+@media (max-width: 800px){
+.reldolor .dolor_icon:before {
+  left: 10PX!important;
+  top: 21px!important;
+}
+.dolor_icon:before{
+  left: 8px!important;
+  top: 10px!important;
+}
+    .btn-question.q-right.prlelogin-ques
+    {
+        width: 100%;
+        margin-left: 0px!important;
+    }
+    .btn-question{
+    width:100%!important;
+    }
+    .post_login_may
+    {
+           margin-top: 85px!important;
+    }
+    .post_fieldset table tr td{text-align:left;width:50%;}
+     .post_slide_question2 {
+        width: 100%!important;
+      }
+/*      .drop_input_custom_30{
+          width:85%!important;
+      }  */
+      .input-box.inputf + ul.bank-list{
+        margin:0px;}
+        .drop_input_custom_30{width:100%!important;}
+        .input-box + ul.bank-list li{
+        padding:0px;
+        }
+
+    .datepick-popup{
+       top: 140% !important;
+       left: -20% !important;
+    }  
+    .btW_equalizer{
+        width:85%;
+    }
+     .inputf.input_wpercent{
+         margin-left:0px!important;
+         width: 100%;
+     }
+    .inputf.dolor_input{
+       margin-left:0px;
+    }
+    .quest-back-btn img{
+        margin-top:19px;
+    }
+
+    .dolor_icon{
+        position: relative!important;
+        display: block!important;
+    }
+    .percent_icon:before{
+          top : 28%!important;
+          right :8%!important;
+    }
+}
+@media (max-width: 300px)
+    {
+        .post_log_goback a
+        {
+            padding-left:37%;
+        }
+       
+   }
+ 
+   
+</style>
+
+</head>
+
+<body>
+<c:ClickMobileHeaderMenu ></c:ClickMobileHeaderMenu>
+<main class="container-fluid add-body">
+
+<header class="row-fluid">
+        <c:acfHeader ></c:acfHeader> 
+</header>
+
+<section class="row-fluid slider">
+<apex:outputPanel id="optContainer">
+    <div class="container">
+        <div class="row-fluid">       
+        <apex:form id="frmId"> 
+       <apex:outputPanel rendered="{!isCookiesexist}">
+           <div id="confirmPopup" Class="pop-up-form "> 
+           <section class="setup-box" id="idSetupBox" style="min-height: 234px;">
+            <article>
+                <h2 class="slide-heading id-veryfi-heading" style="font-size: 1.3em;text-align: center;padding-top: 55px;"><apex:outputText value="{!$Label['acfClearCookiesAlert']}" escape="false"/></h2>
+            </article>  
+            <div class="set-up-row auto" style="margin-top: 57px;">
+                <apex:commandLink value="Yes" styleClass="btn faq-btn prf-submit-btn btn-light_blue" action="{!resumePreviousSession}"/> 
+                <apex:commandLink value="No" styleClass="btn faq-btn prf-submit-btn" action="{!clearCookies}"/> 
+            </div>
+            <div class="clearfix"></div> 
+            </section>
+            </div>
+        
+        </apex:outputPanel>
+       <!-- <input id="locality"/>-->
+<!--@@@@-->
+<div class="col-sm-12 col-sm-offset-0 col-md-8 col-md-offset-2 question-slider" id="IdFakeDiv">
+<apex:outputPanel id="optErrormsg">
+
+<script>
+    
+    window.onload = function(){
+        abc();
+    };
+    function abc(){   
+          
+          var index = '{!indexNo}';
+          if(index==0)
+          {
+              try{
+                  var v = '{!intTotalQuestions}';
+                  var i = 'pid:frmId:rptId:{!indexNo}:quesToGoId';
+                  document.getElementById(i).innerHTML=v+' '+'Questions to go';
+                 }
+              catch(e){alert(e);}
+                          
+          }
+          if(index > 0)
+          {    
+              try{    
+                  var b = '{!intTotalQuestions}' - '{!indexNo}';
+                  var i1 = 'pid:frmId:rptId:{!indexNo}:quesToGoId';            
+                  document.getElementById(i1).innerHTML=b+' '+'Questions to go';
+                 }
+              catch(e){alert(e);}
+                       
+          }
+          
+          var v = document.getElementsByClassName("input_w100");
+          for (var i in v)
+          {
+             var strToCheck = ':'+{!indexNo}+':'; 
+             var id = v[i].id;
+             id = id.search(strToCheck);
+             try{
+                 if (id>1)   
+                 {     
+                 document.getElementById(v[i].id).focus(); 
+                 }               
+                }
+             catch(e)
+             {
+                alert(e);
+             }
+            
+          }                             
+    }
+</script>
+    
+
+   <!-- <script>setFocusNextQues();</script>-->
+   <apex:inputhidden value="{!IsSlide}" id="ipthdn"/>
+    <apex:inputhidden value="{!indexNo}" id="ipthdnIndex"/>
+    <apex:inputHidden value="{!IsRedirect}" id="ipthdnRedirect"/>
+   <apex:outputPanel rendered="{!if(strmsg != null && strmsg != '', true,false)}" style="color:red;margin-top:20px;text-align:center;"><p>{!strmsg}</p></apex:outputPanel>
+</apex:outputPanel>  
+ 
+     <div class="slider-form">
+        <ul class="slides-form">
+          <!-- Master Repeat -->
+             <apex:repeat value="{!lstWrapperQuestion}" var="ques" id="rptId">      
+                 <li class="slide-form">                                                   
+                     <h2 class="slide-heading relQues-margin" style="text-align:center;"><apex:outputtext value="{!ques.objWrapQuestion.acf_Question__c}" escape="false"/></h2>
+                     <p class="slide-peregraph relQues-margin" style="text-align:center;margin-bottom: 15px;">{!ques.objWrapQuestion.acf_Description__c}</p>
+                     <!--<apex:param name="bubble" value="{!ques.objWrapQuestion.acfBubble_Text__c}" assignTo="{!strBubbleText}"/>-->
+                       <apex:outputPanel id="preloginPicklist" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Picklist',true,false)}" >                       
+                           <div>
+                            <apex:selectList value="{!ques.strWrapAnswer}" multiselect="false" size="1" style="font-weight:normal; color: #9e9d9d" styleClass="inputf relQues-margin drop_mg_25pcnt drop_input_custom_30 drop_input_custom_30"> 
+                                <apex:selectOption itemValue="NONE" itemLabel="--NONE--"></apex:selectOption>
+                                <apex:selectOptions value="{!ques.lstSelectOpt}"></apex:selectOptions>
+                                <apex:actionsupport event="onchange" action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg" status="counterStatus" oncomplete="slide();">
+                                 <!-- <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesCount"/> -->
+                                </apex:actionSupport>
+                            </apex:selectList>
+                           </div> 
+                       </apex:outputPanel>
+                       <apex:outputPanel id="preloginText" rendered="{!if(AND(OR(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Type__c == 'Number'),ques.objWrapQuestion.acf_Current_lender__c == false),true,false)}">
+                           
+                           <apex:input id="textId3" type="{!if(ques.objWrapQuestion.acf_Type__c == 'Number','tel','text')}" styleclass="{!if(ques.objWrapQuestion.acf_Type__c == 'Number','clsOnlynumeric',if(ques.objWrapQuestion.acf_Postal_Code__c == true,'addresspicker_map',''))} inputf input_w100 input-marginleft drop_input_custom_30" value="{!ques.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}"/>
+                           <div class="clsAddressList"></div>
+                       </apex:outputPanel>
+                       <apex:outputPanel id="preloginCurrency" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Currency',ques.objWrapQuestion.acf_Current_lender__c == false),true,false)}">
+                        
+                       <div class="preloginDollar col-md-10 col-md-offset-1">
+                           <div class="col-md-10 col-sm-12 col-sm-offset-0 col-md-offset-1">
+                           <i class="dolor_icon"></i>
+                           <apex:input id="textId2" type="{!if(ques.objWrapQuestion.acf_Type__c == 'Currency','tel','text')}"  styleclass="clsOnlynumeric inputf input_w100 dolor_input input-marginleft drop_input_custom_30" style="width:100%; margin:0px;" value="{!ques.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}"/>
+                           </div> 
+                       </div>                                  
+                       </apex:outputPanel>
+                       <apex:outputPanel id="preloginpercent" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Percent',ques.objWrapQuestion.acf_Current_lender__c == false),true,false)}">          
+                           <div class="preloginpercent">
+                               <i class="percent_icon"></i>
+                               <apex:input id="textId1" type="{!if(ques.objWrapQuestion.acf_Type__c == 'Percent','tel','text')}"  styleclass="clsOnlynumeric inputf input_w100 percent_input input_wpercent input-marginleft_w50 drop_input_custom_30" value="{!ques.strWrapAnswer}"  onBlur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}"/>
+                           </div>                                   
+                       </apex:outputPanel>
+                       <apex:outputPanel id="preloginTextCurrnetLender" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Current_lender__c == true),true,false)}">                                       
+                            <apex:inputText styleclass="input-box inputf input_w100 drop_input_custom_30" id="textId" value="{!ques.strWrapAnswer}" onblur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}"  html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}" style="margin-bottom: 0px; padding: 0px 10px;"/>
+                               <ul class="bank-list"> 
+                                   <apex:repeat value="{!lstbank}" var="obj1" id="rptBanks">
+                                       <li  value="{!obj1.acfBank_Name__c}"><span class="bank-img"><img src="{!$Label.acfSite_Url}{!obj1.acfImage_URL__c}"/></span><span class="BnkOpt">{!obj1.acfBank_Name__c}</span></li>
+                                   </apex:repeat>                  
+                               </ul>
+                               <script>
+                                          $('.BnkOpt').mouseenter(function() {                       
+                                                  var obj = $(this).context;
+                                                  $('input[id$=textId]').val(obj.innerText) ;
+                                          });
+                                         
+                                          $('input[id$=textId]').attr('autocomplete','off');
+                                          
+                                          $('[id$=textId]').keyup(function(){
+                                                  //alert($(this).val()); 
+                                                  queryData($(this).val());
+                                          });
+                                          $('.clsOnlynumeric').keypress(function(e) 
+                                            {
+                                                var keyCode;
+                                                if (window.event) // IE
+                                                {
+                                                    keyCode = e.keyCode;
+                                                }
+                                                else if (e.which) // Netscape/Firefox/Opera
+                                                {
+                                                    keyCode = e.which;
+                                                }
+                                        
+                                                return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8) || (keyCode == 13) );
+                                            });
+                                            
+                              </script>
+                            
+                       </apex:outputPanel>
+                       <apex:outputPanel id="preloginRadioButton" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'RadioButton',true,false)}">                                            
+                         <apex:selectRadio value="{!ques.strWrapAnswer}" styleClass="checkbox_custom_30">
+                            <apex:selectOptions value="{!ques.lstSelectOpt}"/>
+                              <apex:actionsupport event="onchange" action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg" status="counterStatus" oncomplete="slide();">
+                              <!--  <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesCount"/>-->
+                            </apex:actionSupport>
+                        </apex:selectRadio>
+                       </apex:outputPanel>
+                       <apex:outputPanel id="preloginCheckBoxes" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Checkbox',true,false)}">                                            
+                         <apex:selectCheckboxes value="{!ques.lstCheckBoxAnswer}" styleClass="checkbox_custom_30">
+                            <apex:selectOptions value="{!ques.lstSelectOpt}"/>
+                            <!--<apex:actionsupport event="onchange" action="{!RelatedQuestions}" reRender="optQuestion" status="counterStatus">
+                              <!--  <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesCount"/>
+                            </apex:actionSupport>-->
+                         </apex:selectCheckboxes><br/>
+                       </apex:outputPanel>
+                       <apex:outputPanel id="preloginButtons" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Button',true,false)}">
+
+                           <div class="col-md-12 col-xs-12">                                           
+                            <apex:repeat value="{!ques.lstSelectOptions}" var="Answers">
+                             <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question center-block" action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg" status="counterStatus" oncomplete="slide();">
+                                <apex:param value="{!Answers.id}" assignTo="{!ques.strWrapAnswer}" name="QuesCount"/>
+                             </apex:commandButton>
+                            </apex:repeat> 
+                          </div>
+                       </apex:outputPanel>
+                       <!-- Related List -->
+                      <apex:outputPanel id="optQuestion" style="margin-top:10px;">
+                       <apex:variable value="{!0}" var="Count"/> 
+                       <apex:repeat value="{!ques.lstRelatedQuestion}" var="objRelatedQues">
+                       <!--  <apex:param name="bubbleTxt" value="{!objRelatedQues.objWrapQuestion.acf_Question__c}" assignTo="{!strBubbleText}"/>-->
+                         <div style="margin-top:5%;">
+                          <h2 class="slide-heading relQues-margin"><apex:outputtext value="{!objRelatedQues.objWrapQuestion.acf_Question__c}" escape="false"/></h2>
+                            <p class="slide-peregraph relQues-margin">{!objRelatedQues.objWrapQuestion.acf_Description__c}</p>
+                               <apex:outputPanel id="preloginPicklist" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Picklist',true,false)}">
+                                    <apex:selectList value="{!objRelatedQues.strWrapAnswer}" multiselect="false" size="1" style="font-weight:normal; color: #9e9d9d" styleClass="inputf input_w100 relQues-margin"> 
+                                        <apex:selectOption itemValue="NONE" itemLabel="--NONE--"></apex:selectOption>
+                                        <apex:selectOptions value="{!objRelatedQues.lstSelectOpt}"></apex:selectOptions>
+                                        <apex:actionsupport event="onchange" action="{!AddingRelatedQuestion}" reRender="optQuestion,optStages,optStagesText,optErrormsg" status="counterStatus" oncomplete="slide();">
+                                          <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesCount"/>
+                                        </apex:actionSupport>
+                                    </apex:selectList>
+                               </apex:outputPanel>
+                               <apex:outputPanel id="preloginText" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Text' || objRelatedQues.objWrapQuestion.acf_Type__c == 'Number',true,false)}">
+                                   <apex:input type="{!if(ques.objWrapQuestion.acf_Type__c == 'Number','tel','text')}" styleclass="{!If(objRelatedQues.objWrapQuestion.acf_Type__c == 'Number','clsOnlynumeric','')} inputf input_w100 relQues-margin drop_input_custom_30" value="{!objRelatedQues.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>
+                               </apex:outputPanel>
+                                <apex:outputPanel id="preloginCurrency" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Currency',true,false)}">
+                                   <div class="preloginDollar col-md-9 col-sm-12 col-sm-offset-0  col-md-offset-2 reldolor">
+                                       <i class="dolor_icon"></i>
+                                       <apex:input type="{!if(ques.objWrapQuestion.acf_Type__c == 'Currency','tel','text')}" styleclass="clsOnlynumeric inputf input_w100 dolor_input relQues-margin drop_input_custom_30" value="{!objRelatedQues.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>
+                                   </div>                                                       
+                               </apex:outputPanel>
+                               <apex:outputPanel id="preloginpercent" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Percent',true,false)}">
+                                  <div class="preloginpercent">
+                                   <i class="percent_icon"></i>
+                                   <apex:input type="{!if(ques.objWrapQuestion.acf_Type__c == 'Percent','tel','text')}" styleclass="clsOnlynumeric inputf input_w100 percent_input input_wpercent relQues-margin drop_input_custom_30" value="{!objRelatedQues.strWrapAnswer}"  onBlur="if (this.placeholder == '') {this.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>
+                                  </div>  
+                               </apex:outputPanel>
+                               <apex:outputPanel id="preloginRadioButton" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'RadioButton',true,false)}">
+                                 <apex:selectRadio value="{!objRelatedQues.strWrapAnswer}">
+                                    <apex:selectOptions value="{!objRelatedQues.lstSelectOpt}"/>
+                                    <apex:actionsupport event="onchange" action="{!AddingRelatedQuestion}" reRender="optQuestion,optStages,optStagesText,optErrormsg" status="counterStatus" oncomplete="slide();">
+                                       <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesCount"/>
+                                    </apex:actionSupport>
+                                </apex:selectRadio>
+                               </apex:outputPanel>
+                               <apex:outputPanel id="preloginCheckBoxes" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Checkbox',true,false)}">
+                                 <apex:selectCheckboxes value="{!objRelatedQues.lstCheckBoxAnswer}" styleClass="checkbox_custom_30">
+                                    <apex:selectOptions value="{!objRelatedQues.lstSelectOpt}"/>
+                                    <!--<apex:actionsupport event="onchange" action="{!AddingRelatedQuestion}" reRender="optQuestion" status="counterStatus">
+                                       <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesCount"/>
+                                    </apex:actionSupport>-->
+                                 </apex:selectCheckboxes><br/>
+                               </apex:outputPanel>
+                               <apex:outputPanel id="preloginButtons" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Button',true,false)}">
+                                <div class="col-md-12 col-xs-12">
+                                <apex:repeat value="{!objRelatedQues.lstSelectOptions}" var="Answers">
+                                 <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question center-block" action="{!AddingRelatedQuestion}" reRender="optQuestion,optStages,optStagesText,optErrormsg" status="counterStatus" oncomplete="slide();">
+                                    <apex:param value="{!Answers.id}" assignTo="{!objRelatedQues.strWrapAnswer}" name="QuesCountAns"/>
+                                    <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesCount"/>
+                                 </apex:commandButton>
+                                </apex:repeat>
+                                </div> 
+                               </apex:outputPanel>
+                               <apex:variable value="{!Count+1}" var="Count"/>
+                          </div>     
+                       </apex:repeat>
+                        <!-- To display number of questions to go -->
+                            <div class="col-md-12 slide-peregraph col-xs-12 text-center post_log_goback" style="font-size:12px;"> 
+                               <apex:outputText id="quesToGoId"></apex:outputText>
+                               <!--&nbsp;<apex:outputpanel>Questions to go</apex:outputPanel>-->
+                            </div>
+                       <div class="col-md-12 slide-peregraph col-xs-12 text-center">
+                            <apex:commandButton value="Continue" id="IdBtn" styleclass="w180 btn-question disblock_getstarted" action="{!NextQuestion}" oncomplete="slide();" rendered="{!if(ques.IsContinueDisplay == true,true,false)}" reRender="optStages,optErrormsg,optStagesText" status="counterStatus">
+                              <!-- <apex:param name="bubbleTxt" value="{!ques.objWrapQuestion.acf_Question__c}" assignTo="{!strBubbleText}"/> -->
+                            </apex:commandButton>
+                             <!-- <apex:commandButton value="Back" styleclass="btn-question q-right prlelogin-ques"   action="{!previousQuestion}" oncomplete="Backslide();"  reRender="optStages,optErrormsg" status="counterStatus"/>-->
+                             <apex:actionstatus id="counterStatus" starttext="verifying">
+                                  <apex:facet name="start">
+                                      <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>                      
+                                  </apex:facet>
+                             </apex:actionStatus>
+                       </div> 
+                       
+                       <div>
+                            <!--<a href="#" class="col-md-12 col-xs-12 text-center post_log_goback" onclick="btnGoBackQues();">Go back</a>-->
+                           
+                           <apex:outputPanel rendered="{!if(ques.objWrapQuestion.acf_Current_lender__c == false,true,false)}">        
+                              <div class="col-md-12 col-xs-12 text-center post_log_goback"> 
+                                <apex:commandLink action="{!previousQuestion}" value="Go back" reRender="optStages,optErrormsg,optStagesText" status="counterStatusimg" oncomplete="Backslide();"/>
+                                <apex:actionstatus id="counterStatusimg" starttext="verifying">
+                                     <apex:facet name="start">
+                                         <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>                      
+                                     </apex:facet>
+                            </apex:actionStatus>
+                            </div>
+                            
+                            </apex:outputPanel>
+                            
+                            <script src="//cdn.ywxi.net/js/inline.js?w=81"></script>
+                             <!--<a href="#" class="col-md-12 col-xs-12 macafe"><img src="{!URLFOR($Resource.acfResources, 'acfResources/images/macafe_img.jpg')}" alt="img" width="81" height="30"/></a> -->
+                         
+                       </div>
+                    </apex:outputPanel> 
+                 </li>
+             </apex:repeat>
+            <!-- <apex:actionFunction name="btnGoBackQues" action="{!previousQuestion}" reRender="optStages,optErrormsg,optStagesText" status="counterStatus" oncomplete="Backslide();">               
+            </apex:actionFunction>-->
+            
+        </ul>
+     </div>  
+        
+</div><!--colxs-8 close-->  
+</apex:form>      
+</div>
+</div><!--container close-->
+    </apex:outputPanel>   
+ </section><!--slider section close-->
+<!---Footer start here--------------->
+    <footer class="inner-footer row-fluid">
+        <c:acfFooter />
+    </footer>
+<!--footer close-->
+</main><!--main div close-->
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NKPMTZ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NKPMTZ');</script>
+<!-- End Google Tag Manager -->
+</body>
+</html>
+</apex:page>

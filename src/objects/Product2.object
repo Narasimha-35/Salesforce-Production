@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Add</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableFeeds>true</enableFeeds>
+    <fields>
+        <fullName>ACF_Comparison_Rate__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Comparison_Rate</label>
+        <precision>14</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>ClickFeature_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Feature 1</label>
+        <length>200</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ClickFeature_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Feature 2</label>
+        <length>200</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ClickFeature_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Feature 3</label>
+        <length>200</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Family</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>None</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acfAdd_Repayments__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Add Repayments</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfApplication_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Application Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfConstruction__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Construction</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfDebit_Card__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Debit Card</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfDefaults_12_months_amount__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Defaults &gt;12 months amount</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Unlimited</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unlimited when registered &gt;24 months</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Max of 2 &lt;24 months</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>acfDefaults_12_months_max_of_2__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Defaults &lt;12 months (max of 2)</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfDefaults_36_months_unlimited__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Defaults &gt;36 months (unlimited)</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfDefaults_up_to_1000__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Defaults up to $1000</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfDefaults_up_to_500__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Defaults up to $500</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfDischarged_from_bankruptcy__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Discharged from bankruptcy</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfFunder__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>acfFunder</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Pepper</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Macquarie</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>acfInterest_Only__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Interest Only</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfInterest_Only_term__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Interest Only term</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfLegal_Fees__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Legal Fees</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfLoan_Size__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Loan Size</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfMortgage_arrears__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Mortgage arrears</label>
+        <picklist>
+            <picklistValues>
+                <fullName>&lt;1 month considered within last 6 months</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Up to 2 months within last 6 months</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dishonoured payments</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>minor arrears considered</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>acfMultiple_Splits__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Multiple Splits</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfOffset_Account__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Offset Account</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfOngoing_Fees__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Ongoing Fees</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfRedraw__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Redraw</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfTenure_in_Years__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Term (in Years)</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acfTotal_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <formula>acfApplication_Fee__c +  acfValuation_Fee__c +  acfOngoing_Fees__c +  acfLegal_Fees__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfType__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Fixed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Variable</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acfValuation_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Valuation Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfvarTenure_In_Years__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Tenure (In Years)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <listViews>
+        <fullName>Mac_Products</fullName>
+        <columns>PRODUCT2.ACTIVE</columns>
+        <columns>acfFunder__c</columns>
+        <columns>PRODUCT2.NAME</columns>
+        <columns>PRODUCT2.RECORD_TYPE</columns>
+        <columns>acfvarTenure_In_Years__c</columns>
+        <columns>acfTenure_in_Years__c</columns>
+        <columns>acfOffset_Account__c</columns>
+        <columns>PRODUCT2.LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>acfFunder__c</field>
+            <operation>equals</operation>
+            <value>Macquarie</value>
+        </filters>
+        <label>Mac Products</label>
+    </listViews>
+    <listViews>
+        <fullName>Pepper_Products</fullName>
+        <columns>acfFunder__c</columns>
+        <columns>PRODUCT2.NAME</columns>
+        <columns>PRODUCT2.RECORD_TYPE</columns>
+        <columns>acfvarTenure_In_Years__c</columns>
+        <columns>acfTenure_in_Years__c</columns>
+        <columns>acfOffset_Account__c</columns>
+        <columns>PRODUCT2.LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>acfFunder__c</field>
+            <operation>equals</operation>
+            <value>Pepper</value>
+        </filters>
+        <label>Pepper Products</label>
+    </listViews>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>acfFixed</fullName>
+        <active>true</active>
+        <label>Fixed</label>
+        <picklistValues>
+            <picklist>Family</picklist>
+            <values>
+                <fullName>None</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acfDefaults_12_months_amount__c</picklist>
+            <values>
+                <fullName>Max of 2 %3C24 months</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unlimited</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unlimited when registered %3E24 months</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acfFunder__c</picklist>
+            <values>
+                <fullName>Macquarie</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pepper</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acfTenure_in_Years__c</picklist>
+            <values>
+                <fullName>1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>4</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acfType__c</picklist>
+            <values>
+                <fullName>Fixed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Variable</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>acfVariable</fullName>
+        <active>true</active>
+        <label>Variable</label>
+        <picklistValues>
+            <picklist>Family</picklist>
+            <values>
+                <fullName>None</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acfDefaults_12_months_amount__c</picklist>
+            <values>
+                <fullName>Max of 2 %3C24 months</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unlimited</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unlimited when registered %3E24 months</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acfFunder__c</picklist>
+            <values>
+                <fullName>Macquarie</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pepper</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acfTenure_in_Years__c</picklist>
+            <values>
+                <fullName>1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>4</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acfType__c</picklist>
+            <values>
+                <fullName>Fixed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Variable</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>PRODUCT2.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>PRODUCT2.CUSTOMER_PRODUCT_ID</customTabListAdditionalFields>
+        <customTabListAdditionalFields>PRODUCT2.DESCRIPTION</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>PRODUCT2.NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>PRODUCT2.CUSTOMER_PRODUCT_ID</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>PRODUCT2.DESCRIPTION</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>PRODUCT2.FAMILY</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>PRODUCT2.NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>PRODUCT2.CUSTOMER_PRODUCT_ID</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>PRODUCT2.DESCRIPTION</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>PRODUCT2.FAMILY</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>PRODUCT2.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PRODUCT2.CUSTOMER_PRODUCT_ID</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PRODUCT2.DESCRIPTION</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PRODUCT2.FAMILY</searchResultsAdditionalFields>
+    </searchLayouts>
+    <webLinks>
+        <fullName>Mass_Edit</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Mass Edit</masterLabel>
+        <openType>sidebar</openType>
+        <page>MassEditProduct</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>Mass_Update</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Mass Update</masterLabel>
+        <openType>sidebar</openType>
+        <page>MassUpdateProduct2</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+</CustomObject>

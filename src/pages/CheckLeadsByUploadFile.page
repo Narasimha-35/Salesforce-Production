@@ -1,0 +1,22 @@
+<apex:page sidebar="false" controller="FileUploader">
+   <apex:form >
+      <apex:sectionHeader title="Upload data from CSV file"/>
+      <apex:pagemessages />
+      <apex:pageBlock >
+             <center>
+              <apex:inputFile value="{!contentFile}" filename="{!nameFile}" /> <apex:commandButton action="{!ReadFile}" value="Upload File" id="theButton" style="width:70px;"/>
+             </center>  
+      
+      
+      <apex:pageblocktable value="{!uploadedLeads}" var="lead" rendered="{!NOT(ISNULL(uploadedLeads))}">
+          <apex:column headerValue="Lead Id">
+              <apex:outputField value="{!lead.Id}"/>
+          </apex:column>
+          <apex:column headerValue="Lead Call File">
+              <apex:outputField value="{!lead.vhc__CallFile__r.Name}"/>
+          </apex:column>
+      </apex:pageblocktable> 
+      
+      </apex:pageBlock>       
+   </apex:form>   
+</apex:page>

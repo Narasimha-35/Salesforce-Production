@@ -1,0 +1,192 @@
+<apex:component controller="acf_PreLoginQuestionController" allowDML="true" id="comId">
+<apex:attribute name="cmpAccId" description="Attribute on the component." type="String"  assignTo="{!MyAccountId}"/>
+<apex:attribute name="cmpLnType" description="Attribute on the component." type="String" assignTo="{!LoanType}"/>
+
+
+<style>
+.pac-container {
+    background-color: #FFF;
+    z-index: 20;
+    position: fixed;
+    display: inline-block;
+    float: left;
+}
+.modal{
+    z-index: 20;   
+}
+.modal-backdrop{
+    z-index: 10;        
+}​
+</style>
+<script>
+    $(document).ready(function ()
+      { 
+       // alert($("[id$=theHiddenInput]").val()); 
+       // alert('hi this is my Component');
+        if($("[id$=theHiddenInput]").val() == 'true')
+        {
+           //alert('In If Loop');
+        }
+        else
+        {
+          //alert('In else Loop');
+          OnCall();
+        }
+     
+      });
+      
+        $("[id$=idSave]").click(function(){
+            alert('hi');
+          
+            });
+
+   
+</script>
+
+
+
+    <style>
+
+    .locationError { color: red; font-weight: strong;}
+
+    .employeeError { color: green; font-weight: strong;}
+    
+    .addresspicker_map {width:120%;}
+     .Processing
+        {
+          position: fixed;
+          background: url('/img/loading32.gif');
+          background-repeat: no-repeat;
+          background-position: center;
+          width: 95%;
+          height: 95%;
+          z-index: 1004;
+          left: 5%;
+          top: 2%;
+        }
+       .requiredBlock 
+        {
+            border-left-color: red;
+            border-left-width: 3px;
+        }
+    </style>
+   
+    <link rel="stylesheet" href="{!$Resource.autosuggestResource}/jquery.auto-complete.css"/>
+   
+     
+      <apex:inputHidden id="theHiddenInput" value="{!InputHidden}"/>
+      <apex:actionStatus id="status" startStyleClass="Processing"/>
+     <!-- <apex:pageBlock title="Click Loans">
+            <apex:pageblockSection >
+                <apex:inputField value="{!objLead.Click_Loan_Type__c}" required="true" >
+                      <apex:actionSupport event="onchange"  action="{!PreLoginQuestion}"c re rerender="pbs"/>
+                </apex:inputField>
+            </apex:pageblockSection>   
+        </apex:pageBlock>-->
+       <apex:actionFunction name="OnCall" status="status" rerender="pb" action="{!PreLoginQuestion}"   id="actf1" />
+        <span id="error" style="color: Red; display: none">* Input digits (0 - 9)</span> 
+         <span id="error1" style="color: Red; display: none">* All questions are mandatory.</span> 
+        <apex:pageBlock rendered="{!!ISBLANK(MyAccountId)}"  id="pb">
+        <!-- <apex:messages styleClass="locationError" ></apex:messages> --> 
+        <apex:outputPanel rendered="{!if(strmsg != null && strmsg != '', true,false)}" style="color:red;margin-bottom:20px;"><p>{!strmsg}</p></apex:outputPanel>
+         <apex:pageBlockSection columns="2" id="pbs">      
+           <apex:repeat value="{!lstWrapperQuestion}" var="ques" id="rptId">
+           <apex:outputtext value="{!LEFT(ques.objWrapQuestion.acf_Question__c, LEN(ques.objWrapQuestion.acf_Question__c)-0)}" />
+             <apex:outputPanel id="preloginPicklist" rendered="{!if(OR(ques.objWrapQuestion.acf_Type__c == 'Picklist',ques.objWrapQuestion.acf_Type__c == 'RadioButton',ques.objWrapQuestion.acf_Type__c == 'Checkbox',ques.objWrapQuestion.acf_Type__c == 'Button'),true,false)}">                               
+                      <apex:selectList value="{!ques.strWrapAnswer}" multiselect="false" size="1" styleClass="requiredBlock"> 
+                            <apex:selectOption itemValue="NONE" itemLabel="--NONE--"></apex:selectOption>                                             
+                            <apex:selectOptions value="{!ques.lstSelectOpt}" ></apex:selectOptions>
+                      </apex:selectList>          
+           </apex:outputPanel>
+           <apex:outputPanel id="preloginText" rendered="{!if(OR(ques.objWrapQuestion.acf_Type__c == 'Number',ques.objWrapQuestion.acf_Type__c == 'Currency',ques.objWrapQuestion.acf_Type__c == 'Percent'),true,false)}"> 
+                 <apex:input id="textId3" onkeypress="return IsNumeric(event);" value="{!ques.strWrapAnswer}" type="{!if(ques.objWrapQuestion.acf_Type__c == 'Number','tel','text')}" styleClass="requiredBlock">
+                   <script type="text/javascript">
+                     var specialKeys = new Array();
+                     specialKeys.push(8); //Backspace
+                     function IsNumeric(e) 
+                     {
+                        var keyCode = e.which ? e.which : e.keyCode
+                        var ret = ((keyCode >= 46 && keyCode <= 57) || specialKeys.indexOf(keyCode) != -1 || keyCode==9 || keyCode==11 );
+                        document.getElementById("error").style.display = ret ? "none" : "inline";
+                        return ret;
+                     }
+                    </script>
+                  </apex:input>
+                 
+           </apex:outputPanel>
+           <apex:outputPanel id="preloginText1" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Current_lender__c == false),true,false)}"> 
+                  <apex:inputText id="textId4" value="{!ques.strWrapAnswer}" styleClass="requiredBlock {!if(ques.objWrapQuestion.acf_Postal_Code__c == true,'addresspicker_map','')}">
+                  </apex:inputText>
+                  <div class="clsAddressList"></div>
+           </apex:outputPanel> 
+           
+           <apex:outputPanel id="preloginTextCurrnetLender" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Current_lender__c == true),true,false)}">                                       
+           
+               <!--
+               <apex:selectList value="{!ques.strWrapAnswer}" multiselect="false" size="1" styleClass="requiredBlock">
+                   <apex:selectOptions value="{!BankNames}"></apex:selectOptions>
+               </apex:selectList>    
+               -->
+               
+                            
+               <apex:inputText value="{!ques.strWrapAnswer}"  styleClass="requiredBlock bankLists" html-autocomplete="on"/>
+                
+    
+  
+    <script src="{!$Resource.autosuggestResource}/jquery.auto-complete.js"></script>
+    <script>
+        $(function(){
+            $('.bankLists').autoComplete({
+                minChars: 1,
+                source: function(term, suggest){
+                    term = term.toLowerCase();
+                    var choices = [{!bankLists}];
+                    //var choices = ['ActionScript', 'AppleScript', 'Asp', 'Assembly', 'BASIC', 'Batch', 'C', 'C++', 'CSS', 'Clojure', 'COBOL', 'ColdFusion', 'Erlang', 'Fortran', 'Groovy', 'Haskell', 'HTML', 'Java', 'JavaScript', 'Lisp', 'Perl', 'PHP', 'PowerShell', 'Python', 'Ruby', 'Scala', 'Scheme', 'SQL', 'TeX', 'XML'];
+                    var suggestions = [];
+                    
+                    for (i=0;i<choices.length;i++){
+                    if(choices[i].toLowerCase().indexOf(term)==0)                       
+                        suggestions.push(choices[i]);                   
+                        
+                        }
+                    suggest(suggestions);
+                }
+            });
+           
+        });
+
+        
+    </script>
+               
+               
+               
+              
+           </apex:outputPanel>
+                 
+         </apex:repeat>   
+          <apex:commandButton action="{!saveLead}"  value="Create Account" reRender="pb" style="color:black;" status="status"/> 
+          <!--<apex:commandButton id="Save" action="{!saveLead}"  value="Create "  reRender="pb" style="color:black;"> 
+         <script type="text/javascript">
+     
+          </script>
+           </apex:commandButton>       -->  
+            <script>
+                function loadMyScript() {
+                  var script = document.createElement('script');
+                  script.type = "text/javascript";
+                  script.src = "https://code.jquery.com/jquery-latest.min.js";
+                  document.body.appendChild(script);
+                }
+                
+                window.onload = loadMyScript;
+           </script> 
+               
+           <c:googlAPIComponent ></c:googlAPIComponent> 
+  
+       </apex:pageBlockSection> 
+       <apex:pageblockSection >
+
+       </apex:pageblockSection> 
+       </apex:pageBlock>
+       
+</apex:component>

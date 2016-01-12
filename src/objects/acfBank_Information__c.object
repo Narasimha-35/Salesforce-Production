@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>To enter dynamic bubble text and header text</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>acfDescription_Text__c</fullName>
+        <externalId>false</externalId>
+        <label>Description Text</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfHeader_Text__c</fullName>
+        <externalId>false</externalId>
+        <label>Header Text</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <label>Bank Questions</label>
+</CustomObject>

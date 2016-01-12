@@ -1,0 +1,194 @@
+<apex:page cache="false" docType="html-5.0" showHeader="false" standardStylesheets="false" controller="WLFAQ" id="pid">
+    <head>
+        <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+        <title>Frequently Asked Questions</title>
+        <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+        <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+        <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+        <script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+        <script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+        <script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
+        <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+        <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
+        <script type="text/javascript">
+        
+        $(document).ready(function(){
+            $("#faq_btn").click(function(){
+            $("#faq_apirl_id").toggle(500);
+            });
+        });
+        
+        function hideAQ(){
+            $('.AQCL').hide();
+            $('.asd').append($('.ErrPanel')[0]);
+            window.setTimeout(function () {
+                $('.ErrPanel')[0].remove();
+            }, 3000);
+        }
+        
+        </script>
+        <style>
+            body{ background-color:#fff; }
+            .plcholder_61:before {
+              left:28px;
+              top: 14px;
+              color: #999;
+            }
+            .header{box-shadow:none;}
+        </style>
+    </head>
+ <c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
+<body>
+    <main class="container-fluid">
+    <header class="row">
+    <div class="header">
+      <c:WLHeader ></c:WLHeader>
+    </div>
+    </header><!--row fluid close-->
+
+<section class="row aprl_heading">
+    <div class="container container_cstm">
+        <header class="apel_text_head">{!acfHeading}<span class="sub_heading"><apex:outputtext value="{!acfDEscription}" escape="false"/></span></header>
+    </div>
+</section><!--secton how work close-->
+
+<section class="row"> 
+    <div class="col-md-12">
+       <button id="faq_btn" class="btn_april ask_ques_april center-block cstm_btn_w235"><span>Ask a Question?</span></button>  
+    </div>
+    <!-- <a href="#" id="faq_btn" class="btn_april ask_ques_april"><span>Ask a Question?</span></a>-->
+    <div class="clearfix"></div>
+</section> 
+
+<section class="row faq_sec_bgcolor">
+            <div class="container container_cstm">  
+                    <apex:outputPanel id="asd" styleclass="asd" >
+                    <!--<form role="form" class="form-horizontal" --><div id="faq_apirl_id" Class="AQCL" >
+                        <apex:form styleClass="form-horizontal faq_sec_bgcolor_frm" id="frmId">
+                                
+                                <apex:outputPanel styleClass="ErrPanel" rendered="{!if(strErrorMsg != null && strErrorMsg <> '',true,false)}" id="ErrPanelId" style="{!if(isCaseCreated == true,'color:#74A1F0;','color:red;')} margin-left:40%;">{!strErrorMsg}</apex:outputPanel> 
+                                
+                                <div class="form-group">
+                                    <div class="col-md-6 col-md-offset-3">
+                                        <div class="col=md-11">
+                                            <apex:inputTextarea value="{!strQuestion}" onBlur="if (this.placeholder == '') {this.placeholder = 'Enter your question';}" onFocus="if (this.placeholder == 'Enter your question') {this.placeholder = '';}" styleclass="form-control cstm_control text_cstm_area" html-placeholder="Enter your question"/>
+                                        </div>
+                                    </div>
+                               </div>
+                               
+                               <div class="form-group">
+                                     <div class="col-md-6 col-md-offset-3">
+                                         <div class="col=md-11">
+                                            <apex:inputText value="{!strUserName}" onBlur="if (this.placeholder == '') {this.placeholder = 'Name';}" onFocus="if (this.placeholder == 'Name') {this.placeholder = '';}" styleClass="form-control cstm_control" html-placeholder="Name"/>
+                                         </div>
+                                    </div>
+                               </div>  
+                                                                                           
+                               <div class="form-group">
+                                     <div class="col-md-6 col-md-offset-3 plcholder_61 clsOnlynumeric">
+                                         <div class="col=md-11">
+                                            <apex:inputText value="{!strUserPhone}" html-placeholder="Phone Number" onBlur="if (this.placeholder == '') {this.placeholder = 'Phone Number';}" onFocus="if (this.placeholder == 'Phone Number') {this.placeholder = '';}" styleClass="form-control cstm_control"/>
+                                         </div>
+                                    </div>
+                               </div>   
+                               
+                               <script>
+                                    $('.clsOnlynumeric').keypress(function(e) {
+                                        var keyCode;
+                                        if (window.event) // IE
+                                        {
+                                            keyCode = e.keyCode;
+                                        }
+                                        else if (e.which) // Netscape/Firefox/Opera
+                                        {
+                                            keyCode = e.which;
+                                        }
+                                        //alert(keyCode == undefined);
+                                       // alert($(this).val());            
+                                        return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8));
+                                    });
+                              </script>                                               
+                               
+                               <div class="form-group">
+                                     <div class="col-md-6 col-md-offset-3">
+                                        <div class="col=md-11">
+                                            <apex:inputText value="{!strUserEmail}" html-placeholder="Enter Email" onBlur="if (this.placeholder == '') {this.placeholder = 'Enter Email';}" onFocus="if (this.placeholder == 'Enter Email') {this.placeholder = '';}" styleClass="form-control cstm_control"/>
+                                        </div>
+                                    </div>
+                               </div>
+                               
+                                <div class="form-group"> 
+                                  <div class="col-md-12">       
+                                    <apex:commandButton value="Submit" action="{!submitCase}" styleClass="btn btn-primary center-block btn_cstm_getstarded_faq cstm_btn_w180" reRender="frmId" status="FAQStatus" oncomplete="{!if(strErrorMsg == 'Your request submitted successfully','hideAQ()','')}"/> 
+                                     <apex:actionstatus id="FAQStatus" starttext="verifying">
+                                      <apex:facet name="start">
+                                          <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>                      
+                                      </apex:facet>
+                                     </apex:actionStatus>
+                                   </div>
+                                </div>                               
+                        </apex:form>
+                    </div><!--</form>-->
+                    </apex:outputPanel> 
+                </div>  
+            </section>
+
+<section class="row">
+    <div class="container container_cstm">  
+                
+                 <section>
+                    <article class="col-md-8 col-xs-12 april_form_sec">
+                        <div class="row" id="accordion">                               
+                            <article class="faq_sec">                             
+                                <apex:repeat value="{!lstWrapperFAQType}" var="faq">
+                                <h4 class="h4">
+                                <span class="faq_icon"></span>                                 
+                                    <apex:outputText value="{!faq.faqType}" /> </h4>
+                                        <ul class="faq_list_april">
+                                             <apex:repeat value="{!faq.lstWrapperFAQs}" var="item">
+                                                    <apex:outputPanel > <!-- rendered="{!if(picitem ==item.acfFAQType__c,true,false)}" --> 
+                                                          <li><a class="custom_faq_a" data-toggle="collapse" data-parent="#accordion" href="#collapse{!item.id}">{!item.question}</a></li>
+                                                          
+                                                          <div id="collapse{!item.id}" class="panel-collapse collapse">
+                                                              <a><span> <apex:outputText value="{!item.answer}" /></span></a>
+                                                         </div>                                                        
+                                                    </apex:outputPanel> 
+                                              </apex:repeat>
+                                         </ul>                                                                    
+                                </apex:repeat>                          
+                            </article>
+                          </div><!--row fluid close-->
+                    </article>                    
+                    <c:acfContactUs ></c:acfContactUs>     
+         </section>
+ <!-- <p style="font-size:24px;text-align:center">{!objacfCMSPage.acfHeading__c}</p>
+ <p style="font-size:18px;text-align:center">{!objacfCMSPage.acfDescription__c}</p>
+
+  <apex:repeat value="{!lstString}" var="picitem">
+         <apex:outputText value="{!picitem}" /><br/>
+     
+     
+     <apex:repeat value="{!lstacfFAQ}" var="item">
+         
+        <apex:outputPanel rendered="{!if(picitem ==item.acfFAQType__c,true,false)}"> 
+             <apex:outputText value="{!item.acfQuestion__c}" /><br/>
+             <apex:outputText value="{!item.acfAnswer__c}" /><br/>
+        </apex:outputPanel> 
+     </apex:repeat><br/>
+ </apex:repeat> -->
+ </div><!--container close-->
+</section><!--row fluid close-->
+
+
+
+ <!---Footer start here--------------->
+<footer class="footer april_footer row">
+   <c:WLFooter ></c:WLFooter>
+</footer><!--footer close--><!--footer close-->
+
+ </main>
+ </body>
+</apex:page>

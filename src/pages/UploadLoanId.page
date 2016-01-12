@@ -1,0 +1,18 @@
+<apex:page controller="FileUploaderLoan">
+    <h1>This page is to extract Accounts information based on Mobile and Email Id</h1>
+    <apex:form >
+        <apex:pageMessages ></apex:pageMessages>
+        <!--<apex:pageBlock >
+            <apex:pageBlockSection columns="4"> 
+                  <apex:inputFile value="{!contentFile}"  filename="{!nameFile}"/>
+                  <apex:commandButton value="Import Account" action="{!readFile}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>-->
+        <apex:pageBlock >
+        <apex:pageBlockSection columns="4"> 
+                  <apex:inputFile value="{!contentAccsInfoFile}"  filename="{!nameAccsInfoFile}"/>
+                  <apex:commandButton value="Send Account Details" action="{!sendUpdatedFile}"/>
+        </apex:pageBlockSection>
+     </apex:pageBlock>
+   </apex:form>
+</apex:page>

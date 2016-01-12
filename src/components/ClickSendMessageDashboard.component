@@ -1,0 +1,84 @@
+<apex:component controller="WLSendMessageController" allowDML="true" >
+
+ <head>
+     <script>
+        function showHideBtn()
+        {
+            $('#mortBtnMId').css('display','none');
+            $('#inptMsgboxId').css('display','block');
+            $('.cstm_comment').show(); 
+            $('.pnlmsg').html('');
+            $('.msgtxtArea').val('')
+        }
+        function autoHidePanel()
+        {
+            if($('[id$=hiddenMortageId]').val() === 'true')
+            {
+               hidePanel();
+               
+               //To show feed tab on complete 
+               $('#aFeedTab').trigger('click');
+            }
+        }
+        function hidePanel() 
+        {  
+            $('#mortBtnMId').css('display','block');
+            $('#inptMsgboxId').css('display','none');
+            //$("#msgId").hide();
+        }
+
+
+    </script>
+ </head>
+ 
+ <body>
+            <apex:form id="mainForm">
+              <figure class="peple_profile col-md-12">
+                    <div class="col-md-4 col-xs-4">
+                    <img src="{!Obj_OppOwner.FullPhotoUrl}" class="row" /></div>
+                    <figcaption class="col-md-8 col-xs-8">
+                        <hgroup class="peo_prof_caption">
+                            <h3 class="row">{!Obj_OppOwner.Name}</h3>
+                            <h4>
+                                <p class="row">Mortgage Expert</p>
+                                <p class="row">{!Obj_OppOwner.acfWork_Experience__c}</p>
+                            </h4>
+                        </hgroup>
+                    </figcaption>
+                </figure>
+              <section class="col-md-12 oprtnty_people">
+                
+                
+                <div class="row dash_send_msg">
+                    <hgroup class="spk_clk_exp">
+                        <h4>Need Help?</h4>
+                        <h5>Speak to a Click Loans Expert</h5>      
+                    </hgroup>
+                     
+                        <div class="form-group">
+                            <div class="clearfix"></div>
+                            <apex:outputpanel id="MortgagePnlId"> 
+                                <div id="msgId">
+                                    <apex:outputPanel id="feedsuccessMsg" rendered="{!successMsg}" style="color:#419ECC;text-align:center;"><p style="margin-bottom:10px;" class="pnlmsg">{!strfeedSuccessmsg}</p></apex:outputPanel>
+                                    <apex:outputPanel id="feedmsg" rendered="{!showMessage}" style="color:red;text-align:center;"><p style="margin-bottom:10px;" class="pnlmsg">{!strfeedmsg}</p></apex:outputPanel>
+                                    <apex:inputhidden value="{!isSuccessmsg}" id="hiddenMortageId"/>
+                                </div>
+                            </apex:outputpanel>
+                            <div id="inptMsgboxId" style="display:none;">
+                                <apex:inputtextarea value="{!strPost}" styleclass="form-control cstm_comment msgtxtArea" rows="10" html-placeholder="Message"/>  <br/><br/> 
+                                <footer class="dash-prof-footer col-md-12" id="mortgageCmdBtnId"><apex:commandLink action="{!postQuery}" value="Send A Message" reRender="hiddenMortageId,MortgagePnlId,clickFeedDashboardPnlId" id="mortgageMsgBtnId" status="mLoadstatusId" styleclass="btn btn-default btn_snd_msg center-block" oncomplete="autoHidePanel();"/></footer>
+                                <apex:actionstatus id="mLoadstatusId" starttext="verifying">
+                                    <apex:facet name="start">
+                                        <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute;"/>                      
+                                    </apex:facet>
+                                </apex:actionStatus>  
+                            </div>   
+                        </div>
+                     <footer class="dash-prof-footer col-md-12" id="mortBtnMId"><apex:commandLink id="mortBtnId" value="Send A Message" onclick="showHideBtn();" styleclass="btn btn-default btn_snd_msg center-block" rerender="mortgageMsgBtnId"/></footer>
+                 </div><!--send msg right right panel close-->
+            </section>
+        </apex:form>
+            
+            <!--right panel close-->
+</body>
+</apex:component>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Click Loans</description>
+    <enableActivities>true</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>acfDescription__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>acfIsActive__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>IsActive</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfLink_page__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Link page</label>
+        <picklist>
+            <picklistValues>
+                <fullName>acfBankDetails</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>acfPostloginQuestions</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>acfDocumentDashboard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acfStage__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Stage</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Opportunity Creation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acfSubject__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Subject</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Click Loans Task Master</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>acfDescription__c</columns>
+        <columns>acfIsActive__c</columns>
+        <columns>acfLink_page__c</columns>
+        <columns>acfSubject__c</columns>
+        <columns>acfStage__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>TM-{00000}</displayFormat>
+        <label>Task Master Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Task Master</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>acfDescription__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>acfIsActive__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>acfLink_page__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>acfStage__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>acfSubject__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Task_name_rule_for_hardcoded_names</fullName>
+        <active>true</active>
+        <errorConditionFormula>If(AND(ISCHANGED(acfSubject__c),OR((PRIORVALUE(acfSubject__c) = &apos;Upload Bank Stmt&apos;),(PRIORVALUE(acfSubject__c) = &apos;Upload Identity Verification&apos;))),true,false)</errorConditionFormula>
+        <errorDisplayField>acfSubject__c</errorDisplayField>
+        <errorMessage>You don&apos;t have access to edit this field.</errorMessage>
+    </validationRules>
+</CustomObject>

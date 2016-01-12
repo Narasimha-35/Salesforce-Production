@@ -1,0 +1,227 @@
+<apex:page controller="WLJumioIntegration" docType="html-5.0" cache="false"  sidebar="false" showHeader="false" action="{!CallToJumio}" standardStylesheets="false" >
+  <head>
+  <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<c:ClickMetaHeader ></c:ClickMetaHeader>
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<title>Dashboard</title>
+
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.min.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
+
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+
+<apex:includeScript value="{!URLFOR($Resource.acfNewResources,'acfNewResources/js/bootstrap-datepicker.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.acfNewResources,'acfNewResources/js/bootstrap-datepicker.min.js')}"/>
+
+<script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+
+<!--
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+
+<style type="text/css">
+body{
+    background-color: #f5f5f5;
+}
+#header-menu #header-menu-ul>li{
+    margin-right:0px;
+}
+
+.plcholder_61:before {
+          left:28px;
+          top: 14px;
+          color: #999;
+}
+/************************************************************************************New Bank Detail pages here*************************************************************************************************/
+.new-bank-details .slide-heading{
+color:#1f8acb;
+font-family: 'open_sanslight';
+font-size:2.2em;    
+}
+.new-bank-details  .set-up-row{
+    margin:30px 0px 0px 0px;
+}
+.new-bank-details label.label-color{
+color: #999999;
+font-size: 1.2em;
+text-transform:capitalize;
+}
+.new-bank-details .upd-bold{
+padding-right:5px;
+}
+
+.new-bank-details p.bnk-stmnt-prgph{
+font-family: 'open_sanslight';
+font-weight:bold;       
+color:#666666;
+font-size:0.96em;
+padding-top:10px;
+}
+@media all and (min-width: 320px) and (max-width: 800px){
+.new-bank-details .btn-virifie{
+width:100%!important;
+}
+}
+
+/********for statement section here********/
+.new-bank-details .new-statment-sec:first-child{
+    padding-top:25px;
+}
+.new-statment-sec{
+display:inline-block;
+padding-bottom:20px;
+width:100%;
+}
+.new-statment-sec .h3,
+.new-statment-sec .h4,
+.new-statment-sec .dlr_amnt{
+color:#223972;
+font-family: 'open_sanslight';
+font-size:1.4em;
+font-weight:bold;
+line-height:28px;
+}
+.new-statment-sec .h4{
+color:#9f9c9c;
+font-size:0.95em;
+font-weight:400;
+}
+.new-statment-sec .dlr_amnt{
+color:#1f8acb;
+font-weight:600;
+text-align:right;
+}
+.clck-loans{
+font-family: 'open_sanslight';  
+color:#223972;
+font-size:0.9em;
+font-weight:bold;
+}
+
+/******************For statement retrival close here**********/
+.setup-box.new-bank-stmnt-retrival{
+min-height:inherit;
+height:auto;
+padding:55px 0px;
+}
+.setup-box.new-bank-stmnt-retrival .upd-bold{
+padding-right:5px;
+}
+.setup-box.new-bank-stmnt-retrival  .h3{
+color: #1f8acb;
+font-family: 'open_sanslight';
+padding-top:0px;
+padding-bottom:15px;
+}
+.loader-img img {
+text-align:center;
+position:relative;
+padding-left:40%;
+display:inline-block;
+}
+
+.loader-img:after{
+font-family:arial;
+font-size:0.95em;
+display:inline-block;
+content:'Uploading';
+color:#999999;
+vertical-align: top;
+line-height: 30px;
+}
+
+.btn-virifie{
+display:inline-block;
+}
+/************************************************************************************New Bank Detail pages close here*************************************************************************************************/
+
+/***************************************************************************************Submited statment classeh here****************************************************/
+
+
+.stmnt-sbmtd-prg p{
+font-family: 'open_sanslight';      
+color:#223972;
+font-size:1.2em;
+text-align:justify;
+padding-top:15px;
+}
+.stmnt-sbmtd-prg p span{
+font-weight:bold;
+}
+/***************************************************************************************Submited statment classes close hre********************************************************/
+
+ul.bank-list_2{
+  background-color: #fff;
+  padding: 10px 5px;
+  list-style:none;
+  margin:0px;
+  display:block;
+  clear:both;
+}
+ul.bank-list_2 li{
+padding:5px;
+}
+ul.bank-list_2 li span.bank-img img{
+height:30px;
+padding-right:10px;
+}
+ul.bank-list_2 li:hover{
+background-color:#eee;
+}
+.mg_move15{margin-left:5px;}
+</style>
+
+</head>
+<c:ClickMobileHeaderMenu ></c:ClickMobileHeaderMenu>
+<body id="bd">
+<main class="container-fluid" id="mn">
+<div class="header row">
+ <c:ClickHeader ></c:ClickHeader>
+</div>
+<div class="clearfix"></div>
+
+<section class="row">
+    <div class="container container_cstm">
+        
+        <section class="post_login">
+        
+          <article class="col-md-8 post_log_back" style="height:572px;">
+                      <section class="row-fluid slider id-slider">
+                                            
+                                   <apex:form id="Frm"> 
+                                    <div style="float: right;margin-right: 25px;"><u><apex:commandLink action="{!redirectToNextPage}" value="Skip" style="color: #1f8bcc;"/></u></div>
+                                    <div style="float: right;margin-right: 25px;"><u><a href="/clickjumiointegration" style="color: #1f8bcc;">Reset</a></u></div>
+                                        <apex:iframe src="{!strIframeURL}"/>
+                                    </apex:form>    
+                                <!--colxs-8 close-->        
+                          
+                     </section>
+                
+                  </article> <!--left panel close here-->
+                  
+                  <c:ClickQuoteDetail > </c:ClickQuoteDetail>
+            
+        </section>
+        
+  </div><!--container close-->
+</section><!--row fluid close-->
+
+
+<!---Feature section start here-------->
+<footer class="footer april_footer row">
+    <c:acfFooter ></c:acfFooter>
+</footer>
+<!---Footer ends here--------------->
+</main>
+</body>
+</apex:page>

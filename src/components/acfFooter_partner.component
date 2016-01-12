@@ -1,0 +1,29 @@
+<apex:component controller="acfFooter" >
+    <div class="container {!IF(pge_name != 'clickhome', 'container_cstm', '')}">
+        <article class="col-md-3 col-sm-12">
+           <div class="row">
+            <div class="row-fluid active april_foter_left">
+                <a>
+                   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="logo"/>
+                </a>
+                
+                <p class="mgtop10 col-md-12 col-xs-12 col-sm-12" style="margin-left: -15px;max-width:235px;">
+                     Click loans is the easiest way to refinance your home loan online
+                </p>
+                <div class="clearfix"></div>
+                <ul class="april_social" style="margin-left:0px;">
+                    <li class="fb_2"><a href="http://www.facebook.com/clickloans" class="fb_2">&nbsp;</a></li>
+                    <li class="fb_2"><a href="https://www.twitter.com/clickloans_au" class="tw_2">&nbsp;</a></li>
+                    <li class="fb_2"><a href="https://www.linkedin.com" class="link_2">&nbsp;</a></li>
+                     <li><a href="https://www.youtube.com" class="u_tube_2">&nbsp;</a></li>  
+                 </ul> 
+                 <div class="clearfix"></div>
+                 <p class="mgtop10 col-md-12 col-xs-12"  style="margin-left: -15px;">© Click Loans</p>                 
+            </div>
+           </div>
+        </article><!--FIRST ARTICLE HERE LOGO CLOSE-->       
+        <article class="col-md-6 col-sm-12 april_foter_font_small">
+            <p><apex:outputText escape="false" value="{!cms_obj.acfDescription__c}"></apex:outputText></p>
+        </article>
+    </div><!--container close-->
+</apex:component>

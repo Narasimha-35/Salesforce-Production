@@ -1,0 +1,99 @@
+<apex:component controller="WLHeader" allowDML="true">
+<style>
+@media (max-width: 800px)
+{
+.header{min-height:70px;}
+.modal-backdrop{
+    z-index: 10;
+}
+}
+
+.displaynone
+{
+   display:none;
+}
+
+</style>
+<script>
+function closefun(){
+    $('#menu_section').addClass('displaynone'); 
+}
+</script>
+
+<section class="sb-slidebar" id="menu_section">
+<header class="header">
+      <div class="container">
+        <div class="row">
+             <apex:outputPanel rendered="{!pge_name == 'clickdashboard'}">
+                 <section class="col-xs-2 about_response menu_left">
+                   <span></span>
+                 </section>
+             </apex:outputPanel>
+            <h1 class="col-md-4 {!IF(pge_name == 'clickdashboard', 'col-xs-7', 'col-xs-8')} ">
+             <div class="logo {!IF(pge_name == 'clickdashboard', 'dashboard_border', '')} "><a><img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="click Refi"/></a></div>
+            </h1><!--col-md-4 close-->
+            <section class="col-md-8 {!IF(pge_name == 'clickdashboard', 'col-xs-2', 'col-xs-4')} ">
+                <a class="responsive-menu" href="#" id="responsiveClose">&nbsp;</a>   
+            </section>
+        </div>
+        </div>
+</header>
+     
+       <apex:outputPanel rendered="{!pge_name != 'clickdashboard'}" >
+           <ul class="sub_menu-response">
+               <li><a href="/clickaboutus">About Us</a></li>
+               <li><a href="/clickcontactus">Contact Us</a></li>
+               <li><a href="/ClickFAQ">FAQ</a></li>
+               <li><apex:outputpanel rendered="{!pge_name != 'clickhome'}" ><a href="/clickhome">Home</a></apex:outputpanel></li>
+               <li><apex:outputpanel rendered="{!pge_name != 'clickhome'}" >
+                       <apex:outputpanel rendered="{!pge_name != 'clickpreloginquestions' && pge_name != 'clickpostloginquestionnaires' }" >
+                           <a href="#myModal3" data-toggle="modal" id="talktohumanId" onclick="closefun();">Talk to a Human</a>
+                       </apex:outputpanel>
+                       <apex:outputPanel rendered="{!pge_name == 'clickpreloginquestions' || pge_name == 'clickpostloginquestionnaires'}">
+                           <a href="#" class="mobsupport">Talk to a Human</a>
+                       </apex:outputpanel>
+                   </apex:outputPanel>
+                   <apex:outputpanel rendered="{!pge_name == 'clickhome'}" ><a href="#myModal3" data-toggle="modal" id="talktohumanId"  onclick="closefun();">Talk to a Human</a></apex:outputpanel>
+               </li>
+                  
+                   <apex:repeat value="{!lstFooterLinks}" var="objFooterLink">
+                        <li> <a href="/ClickFooterLink?pid={!mapCMSpgid[objFooterLink.Id]}">{!objFooterLink.acfHeading__c}</a></li>
+                   </apex:repeat>
+                   <li>
+                       <apex:outputpanel rendered="{!pge_name != 'clickhome'}">
+                           <apex:outputpanel rendered="{!isLoggedIn == false && pge_name != 'clickpreliminaryquote' && pge_name != 'clickpreloginquestions'}">  <a href="#myModal" data-toggle="modal" class="sign_in" id="memberLoginId" onclick="closefun();">Sign In</a> </apex:outputpanel>
+                           <apex:outputpanel rendered="{!isLoggedIn == true}">  <a href="/secur/logout.jsp" class="sign_in">Sign Out</a> </apex:outputpanel>
+                       </apex:outputpanel>
+                       <apex:outputpanel rendered="{!pge_name == 'clickhome'}">
+                           <apex:outputpanel rendered="{!isLoggedIn == false && pge_name != 'clickpreliminaryquote' && pge_name != 'clickpreloginquestions'}">  <a href="#myModal" data-toggle="modal" class="sign_in" id="memberLoginId" onclick="closefun();">Sign In</a> </apex:outputpanel>
+                           <apex:outputpanel rendered="{!isLoggedIn == true}">  <a href="/secur/logout.jsp" class="sign_in" >Sign Out</a> </apex:outputpanel>
+                       </apex:outputpanel>
+                   </li>
+                   
+              </ul>
+       </apex:outputPanel>   
+     
+       
+       <apex:outputPanel rendered="{!pge_name == 'clickdashboard'}" >
+           <ul class="sub_menu-response">
+           
+               <li><a href="/clickaboutus">About Us</a></li>
+               <li><a href="/clickcontactus">Contact Us</a></li>
+               <li><a href="/ClickFAQ">FAQ</a></li>
+               <li><apex:outputpanel rendered="{!pge_name != 'clickhome'}" ><a href="/clickhome">Home</a></apex:outputpanel></li>
+               <li><a href="#myModal3" data-toggle="modal" id="talktohumanId" onclick="closefun();">Talk to a Human</a></li>
+               <apex:repeat value="{!lstFooterLinks}" var="objFooterLink">
+                        <li> <a href="/ClickFooterLink?pid={!mapCMSpgid[objFooterLink.Id]}">{!objFooterLink.acfHeading__c}</a></li>
+               </apex:repeat>
+               <li><a href="/ClickEditProfile">Edit Profile</a></li>
+                   <li>
+                       <apex:outputpanel rendered="{!isLoggedIn == false}"> <a href="#myModal" data-toggle="modal" class="sign_in" id="memberLoginId" onclick="closefun();">Sign In</a> </apex:outputpanel>
+                       <apex:outputpanel rendered="{!isLoggedIn == true}"> <a href="/secur/logout.jsp" class="sign_in">Sign Out</a> </apex:outputpanel>
+                   </li>
+           </ul>
+       </apex:outputPanel>
+                <footer>
+                  <div class="res_footer" id="menu_close">Close</div>
+                </footer>        
+    </section>
+</apex:component>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Click Loans</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>acfAnswer__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Answer</label>
+        <length>131072</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>acfCMSPage__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>CMS Page</label>
+        <referenceTo>acfCMS_Page__c</referenceTo>
+        <relationshipName>acfFAQs</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>acfFAQType__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>FAQ Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Borrower Eligibility</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Applying for a Loan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Verification</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Making Loan Payments</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>About Click Loans</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acfQuestion__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Question</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <label>Click Loans FAQ</label>
+    <nameField>
+        <displayFormat>FAQ-{0000}</displayFormat>
+        <label>acfFAQ Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>ACF FAQs</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

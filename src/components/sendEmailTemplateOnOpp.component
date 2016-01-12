@@ -1,0 +1,65 @@
+<apex:component id="cmpOrderForm" controller="sendEmailTemplateOnOppController" access="global">   
+    <apex:attribute name="paramOppId" description="Passes the ID of the opportunity to the custom controller" type="Id" assignTo="{!accId}"/> 
+    <html>
+       <body>      
+           <!-- Header -->
+            <div class="logo">
+                <img alt="logo" height="57" src="https://www.clickloans.com.au/resource/1440743340000/acfResources/acfResources/images/logo.jpg" style="margin: 35px auto 31px; display: block; height: 57px; width: 150px;" width="150"/>
+            </div>
+                
+            <!-- Content -->          
+            <div class="content">
+                <div class="main" style="font-family: Arial, sans-serif;font-size: 16px; margin: 0 auto; max-width: 520px;padding: 50px; border: 1px solid #e2e2e2;line-height: 25px;">
+                     <span class="name" style="color: #6D6D6D;; display: block; margin-bottom: 48px;">Hi {!objWrapOppInfo.strAccName},</span> 
+                     <span class="text" style="color: #6D6D6D;">You are almost there! You will need to upload some more documents before we can progress further with your home loan. Click <strong><a href="{!$Label.acfSite_Url}/ClickDashboard?email={!objWrapOppInfo.strAccEmail}" style="text-decoration:none;color:#47b178;">here</a></strong> to return to the dashboard where you can upload the required documents.&nbsp;<br/><br/>
+                         <!-- Pending Document Section starts Here -->
+                             <table border="0" style="color: #6D6D6D;">
+                                <tr>
+                                   <th style="text-align: left;">Document Name</th>
+                                   <th style="text-align: left;">Status</th>
+                                </tr>
+                                <apex:repeat var="reqDoc" value="{!lstReqDocs}">                           
+                                    <tr>
+                                        <td>{!reqDoc.Name}</td>
+                                        <td>{!reqDoc.acfStatus__c}</td>
+                                    </tr>                                  
+                                </apex:repeat>                 
+                              </table>
+                         <!-- Pending Document Section ends Here -->
+                         <br/>
+                         <br/>If you have questions or need some help Im here to help so give me a call or reply to this email.&nbsp;<br/><br></br>Thank you,
+                     </span><br/><br/>&nbsp;
+                     <div class="manager">
+                       <!-- <img align="left" alt="avatar" height="50" src="{!objWrapOppInfo.strOwnerImgUrl}" style="float: left; display: block; border-radius: 50%; margin-right: 14px; width: 50px; height: 50px;" width="50"/>-->
+                        <div style="font-family: Arial, sans-serif;font-size: 16px; line-height: 20px;">
+                            <span style="display: block; font-weight: bold;color: #500050;">{!objWrapOppInfo.strOwnerName}</span> 
+                            <span style="color: #6D6D6D;display: block;">Home Loan Concierge at Click Loans</span>
+                            <span style="color: #6D6D6D;display: block;">{!objWrapOppInfo.strOwnerEmail}</span>     
+                            <span style="color: #6D6D6D;">{!objWrapOppInfo.strOwnerPhone}</span>                        
+                         </div>
+                     </div>
+                    
+                  </div>
+            </div>
+            
+            <!-- Footer Section -->
+            <div class="footer" style="margin-top: 49px;">
+                <div class="footer_logo" style="height: 30px;">
+                   <img alt="footer logo" height="45" src="https://www.clickloans.com.au/resource/1440743340000/acfResources/acfResources/images/logo.jpg" style="height: 45px; margin: 0px auto; display: block; width: 120px;" width="120"/> 
+                </div>
+                <div class="desc" style="text-align: center;width: 400px;margin: 19px auto 0;font-size: 13px;color: #888888;line-height: 20px;font-family: Arial, sans-serif;">
+                    Click Loans © 2015 All rights reserved.
+                </div>           
+                <div class="desc" style="text-align: center;width: 400px;margin: 19px auto 0;font-size: 13px;color: #888888;line-height: 20px;font-family: Arial, sans-serif;">
+                Click Loans is the trading name of Click Loans Pty Ltd, the parent company of your licensed credit assistance provider, Auscred Services Pty Ltd (ACN 164 638 171, Australian Credit Licence Number 442732
+                </div>   
+                <div class="desc" style="text-align: center;width: 400px;margin: 19px auto 0font-size: 13px;color: #888888;line-height: 20px;font-family: Arial, sans-serif;">
+                  <!--  Our mailing address is:<br/>
+                    %%account_address%%<br/>-->
+                    <a href="http://go.creditandfinance.com.au/emailPreference/e/63832/617" style="color: #0b6be2;">Unsubscribe</a>
+                </div>
+            </div>
+                     
+       </body>
+    </html>      
+</apex:component>

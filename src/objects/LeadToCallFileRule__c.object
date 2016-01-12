@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Store the rules for distributing different call file to the lead</description>
+    <enableActivities>true</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Call_File__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Call file that the rule is corresponding to</description>
+        <externalId>false</externalId>
+        <label>Call File</label>
+        <referenceTo>vhc__Campaign__c</referenceTo>
+        <relationshipLabel>LeadToCallFileRules</relationshipLabel>
+        <relationshipName>LeadToCallFileRules</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Delay_To_Call_File_Days__c</fullName>
+        <externalId>false</externalId>
+        <label>Delay To Call File Days</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Exclude_Closed_And_Lost__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Exclude the leads that status is closed or lost</description>
+        <externalId>false</externalId>
+        <label>Exclude Closed And Lost</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Exclude_Converted_Lead__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Exclude the leads that is already converted</description>
+        <externalId>false</externalId>
+        <label>Exclude Converted Lead</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Exclude_Do_Not_Call__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Exclude all the leads that tagged as do not call</description>
+        <externalId>false</externalId>
+        <label>Exclude Do Not Call</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Exclude_Do_Not_Email__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Exclude the leads that tagged as do not email</description>
+        <externalId>false</externalId>
+        <label>Exclude Do Not Email</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Active_Rule__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check if the current rule is active or not</description>
+        <externalId>false</externalId>
+        <label>Is Active Rule</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Priority__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>Priority to check will rule should be fitted first when assign the call file to the lead</description>
+        <externalId>false</externalId>
+        <label>Priority</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Rule_Description__c</fullName>
+        <description>Rule Description</description>
+        <externalId>false</externalId>
+        <label>Rule Description</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Rule_Name__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <description>Rule Name</description>
+        <externalId>true</externalId>
+        <label>Rule Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Rule_Object__c</fullName>
+        <externalId>false</externalId>
+        <label>Rule Object</label>
+        <picklist>
+            <picklistValues>
+                <fullName>opportunity</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>lead</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>LeadToCallFileRule</label>
+    <nameField>
+        <label>LeadToCallFileRule Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>LeadToCallFileRules</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

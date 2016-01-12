@@ -1,0 +1,667 @@
+<apex:page docType="html-5.0" standardStylesheets="false" showHeader="false" controller="ClickHomeController" cache="false" action="{!RedirectLoggedInUser}">
+<head>    <!-- -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<c:ClickMetaHeader ></c:ClickMetaHeader>
+<link href="https://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<title>The Online Home Loan | Click Loans from 3.99&#37; Rate &amp; Comparison</title>
+
+<script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
+<apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"/>
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>  
+<script type="text/javascript" src="{!$Resource.TypeheadAutocomplete}" />
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+<!---------for only glipicon here------------>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+<!---------for glipicon close here------------>
+<script>
+ $(document).ready(function ()
+    {
+        $('.clsMemberLogin').click(function () 
+        {
+          $('#MemberLoginPopUp').removeClass('displaynone');          
+          $('.messageCell').css('display','none');
+          $('[id$=member_login_strmsg]').remove();
+          $('[id$=current_lender_strmsg]').remove();
+          $(".sb-slidebar").removeClass("add-sb-sdbar");
+          $(".container-fluid").removeClass("add-body-sdbar");
+          //alert($('#MemberLoginPopUp').attr('id'));
+          SetPopupLocation();
+        });
+        $('#divfaded').click(function () 
+        {
+          $('#MemberLoginPopUp').addClass('displaynone');
+          $('#main_Section').addClass('displaynone'); 
+          $('#loginformId').removeClass('displaynone');
+          $('#forgotpwdPopup').addClass('displaynone'); 
+          $('#memLoginId').removeClass('displaynone');
+        });
+        
+        $(window).resize(function(){
+                SetPopupLocation();
+        });
+        
+        $('[Id$=textId]').focusin(function(){
+            $('.bank-list').css('display','block');
+        });
+        $('[Id$=textId]').focusout(function(){
+            $('.bank-list').css('display','none');
+        });
+    });    
+    
+    function SetPopupLocation()
+    {
+        //alert($('.setup-box').width());
+        //alert($('.header').width());
+      /*  var ww =  ($('.header').width() - $('.setup-box').width() - 210) / 2;
+        $('.setup-box').css('left', ww + 'px');*/
+        var ww =  ($('.header').width() / 2) - ($('.setup-box').width() / 2);
+        $('.setup-box').css('left', ww + 'px');
+    }
+    
+    function autoCosewindow()
+    {
+        if($('[id$=hiddenMailsentId]').val() === 'true'){
+           window.setTimeout(ClosepopUp, 5000);
+        }
+    }
+    function ClosepopUp() 
+    {  
+       resetforgotPopup();
+       $('#MemberLoginPopUp').addClass('displaynone');
+       $('#main_Section').addClass('displaynone'); 
+       $('#loginformId').removeClass('displaynone');
+       $('#forgotpwdPopup').addClass('displaynone'); 
+       $('#memLoginId').removeClass('displaynone'); 
+    }
+    function queryData(strfilter)
+    {          
+       Visualforce.remoting.Manager.invokeAction(
+             '{!$RemoteAction.ClickHomeController.AutoCompleteBanklList}',strfilter,
+             function(result, event)
+             {                      
+                 //if success
+                 if(event.status){ 
+                     var data = {results: []}
+                     data.results = result;
+                     BindBankList(data.results);                  
+                 }
+                 else{
+                      alert('Invalid Field/Object API Name : '+event.message);
+                 }
+                
+             }, 
+              {escape: true}
+        );
+    } 
+    
+    function BindBankList(arrBankList)
+    {
+        var strBankListHtml = '';
+       
+        for(var i=0; i<arrBankList.length; i++)
+        {
+       
+            strBankListHtml = strBankListHtml + '<li value="'+arrBankList[i].acfBank_Name__c+'"><span class="bank-img"><img src="{!$Label.acfSite_Url}'+arrBankList[i].acfImage_URL__c+'"/></span><span class="BnkOpt">'+arrBankList[i].acfBank_Name__c+'</span></li>';
+        }
+        
+        //alert(strBankListHtml);
+        $('.bank-list').html(strBankListHtml);
+                
+        $('.bank-list li').mouseenter(function(){
+            $('input[id$=textId]').val($(this).find('.BnkOpt').text());
+        });
+    }
+    $(document).ready(function ()
+      {
+        if($('[id$=hdnIsRedirectedFromMailId]').val() === 'true')
+        {
+           $('#myModal').modal('toggle');
+           $('#myModal').modal('show');
+        }
+        
+        $('#supportId').click(function () 
+        {
+          $('#customerSupportPopUp').removeClass('csdisplaynone'); 
+        });
+        $('.clsmsupport').click(function () 
+        {
+          $('#customerSupportPopUp').removeClass('csdisplaynone'); 
+          $(".sb-slidebar").removeClass("add-sb-sdbar");
+          $(".container-fluid").removeClass("add-body-sdbar");
+        });
+         $('#csdivfaded').click(function () 
+        {
+          $('#customerSupportPopUp').addClass('csdisplaynone');
+        }); 
+        
+        $('#forgotPwdId').click(function () 
+        {
+          $('#main_Section').removeClass('displaynone'); 
+          $('#loginformId').addClass('displaynone');
+          $('#forgotpwdPopup').removeClass('displaynone'); 
+          $('#memLoginId').addClass('displaynone');
+        }); 
+        
+        $('.pop-close').click(function () 
+        { 
+            $('#MemberLoginPopUp').addClass('displaynone');
+            $('#customerSupportPopUp').addClass('csdisplaynone');
+        }); 
+        
+        $('.focusenter').keypress(function(e) 
+        {
+            var keyCode;
+            if (window.event) // IE
+            {
+                keyCode = e.keyCode;
+            }
+            else if (e.which) // Netscape/Firefox/Opera
+            {
+                keyCode = e.which;
+            }
+            
+            if (keyCode == 13)
+            {
+                $('[id$=btnLogin]').trigger('click');
+            }
+        });      
+       }); 
+       
+       function showThisSection(id)
+       {
+           $('#secTalkToHuman').css('display','none');
+           $('#'+id).css('display','block');
+       }
+       
+       function setTimeZoneId()
+       {   
+        var tz = jstz.determine();
+        $('[id$=hiddenTimezoneId]').val(tz.name())
+       }
+        function showLoanStepImgMethod(strCMSId)
+        {
+            $('[id$=selectedCMSId]').val(strCMSId);
+            showLoanStepImg();
+            return false;
+        }
+</script>
+<style>
+.plcholder_61:before {
+          left:28px;
+          top: 14px;
+          color: #999;
+}
+.slider_img_land
+{
+background: url("{!$Label.acfSite_Url}{!strRefinanceImgUrl}") 58% top no-repeat !important;
+background-size: cover!important;
+}
+.btr_rates_sec
+{
+background: url("{!$Label.acfSite_Url}{!strBetterRatesImgUrl}") 58% top no-repeat !important;
+background-size: cover!important;
+}
+.team_sec
+{
+background: url("{!$Label.acfSite_Url}{!strTeamImgUrl}") left top no-repeat !important;
+background-size: cover!important;
+}
+.rate_find_right_border
+{
+left: 13%;
+}
+.modal-backdrop{
+z-index:500;
+}
+.displaynone{
+    display:none;
+}
+.inline_block{display:inline-block;}
+.top-tab ul li a{
+font-family: "open_sanslight";}
+
+.header .logo img {
+ // margin-top: 14px;
+}
+.top-tab ul li {
+  float: left;
+  margin-top: 30px;
+}
+.header
+{
+    box-shadow:none;
+}
+ 
+ul.bank-list li:hover {
+  cursor:pointer;
+}
+@media(max-width:800px){
+.header .logo{
+  border-right : none!important;
+}
+
+}
+.header h1,
+.header h2,
+.header h3,
+.header h4,
+.header h5,
+.header h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin:0px;
+}
+
+.btn-group-wrap {
+    text-align: center;
+}
+
+div.btn-group {
+    margin: 20px auto; 
+    text-align: center;
+    width: inherit;
+    display: inline-block;
+}
+
+
+.btn-group {
+    background-color: transparent;
+    color: #333;
+    display: block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    height: 26px;
+    line-height: 17px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.btn_cstm_getstarded {
+    font-family: "Open Sans Bold"!important;
+    background-color: #ff6a5a!important;
+    border: none!important;
+    font-size: 1.3em!important;
+    width: 30%!important;
+    padding: 12px 40px!important;
+    height: auto;
+     
+}
+
+.btn_cstm_getstardeds {
+    font-family: "Open Sans Bold"!important;
+    background-color: #ff6a5a!important;
+    border: none!important;
+    font-size: 1.3em!important;
+    width: 30%!important;
+    padding: 12px 50px!important;
+    height: auto;
+    border-radius: 5px;
+    color: #fff;
+    margin-left: 20px;
+
+}
+a.btn_cstm_getstardeds:hover { color:#fff;}
+
+@media only screen and (min-width : 100px) and (max-width: 768px) {
+.btn_cstm_getstarded { width:100%!important; display:block;}
+.btn_cstm_getstardeds { margin-left:0px; margin-top:20px; width:100%!important; display:block;}
+}
+@media only screen and (min-width : 100px) and (max-width: 319px) {
+.btn_cstm_getstarded {padding-left:0px!important; padding-right:0px!important;}
+}
+@media only screen and (min-width : 769px) and (max-width: 1180px) {
+.btn_cstm_getstardeds,
+.btn_cstm_getstarded{
+min-width:200px;
+max-width:200px;
+}
+}
+
+@media only screen and (min-width : 1183px) and (max-width: 1207px) {
+.btn_cstm_getstardeds,
+.btn_cstm_getstarded{
+min-width:200px;
+max-width:200px;
+}
+}
+
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px){
+.btn_sm{
+width:250px!important;
+}
+}
+
+@media only screen and (min-width: 770px) and (max-width: 1000px){
+ul.gray_back-list li {
+    float: none!important;
+    width:100%;
+    text-align:center;
+}
+}
+
+@media (max-width: 800px){
+.gray_back_col {
+    margin-top: 90px;
+}
+}
+</style>
+<!-- Start Heap Analytics Code -->
+    <script type="text/javascript">
+      window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var n=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(n?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var o=document.getElementsByTagName("script")[0];o.parentNode.insertBefore(a,o);for(var r=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["clearEventProperties","identify","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=r(p[c])};
+      heap.load("2695119694");
+    </script>
+<!-- End Heap Analytics Code -->
+
+<!-- Start Visual Website Optimizer Asynchronous Code -->
+<script type='text/javascript'>
+var _vwo_code=(function(){
+var account_id=126237,
+settings_tolerance=2000,
+library_tolerance=2500,
+use_existing_jquery=false,
+// DO NOT EDIT BELOW THIS LINE
+f=false,d=document;return{use_existing_jquery:function(){return use_existing_jquery;},library_tolerance:function(){return library_tolerance;},finish:function(){if(!f){f=true;var a=d.getElementById('_vis_opt_path_hides');if(a)a.parentNode.removeChild(a);}},finished:function(){return f;},load:function(a){var b=d.createElement('script');b.src=a;b.type='text/javascript';b.innerText;b.onerror=function(){_vwo_code.finish();};d.getElementsByTagName('head')[0].appendChild(b);},init:function(){settings_timer=setTimeout('_vwo_code.finish()',settings_tolerance);this.load('//dev.visualwebsiteoptimizer.com/j.php?a='+account_id+'&u='+encodeURIComponent(d.URL)+'&r='+Math.random());var a=d.createElement('style'),b='body{opacity:0 !important;filter:alpha(opacity=0) !important;background:none !important;}',h=d.getElementsByTagName('head')[0];a.setAttribute('id','_vis_opt_path_hides');a.setAttribute('type','text/css');if(a.styleSheet)a.styleSheet.cssText=b;else a.appendChild(d.createTextNode(b));h.appendChild(a);return settings_timer;}};}());_vwo_settings_timer=_vwo_code.init();
+</script>
+<!-- End Visual Website Optimizer Asynchronous Code -->
+</head>
+<c:ClickMobileHeaderMenu ></c:ClickMobileHeaderMenu>
+<body>
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NKPMTZ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NKPMTZ');</script>
+<!-- End Google Tag Manager -->
+<main class="container-fluid">
+<header class="row" style="z-index:1000; position:relative;">
+    <div class="header landing_header">
+        <c:ClickHeader ></c:ClickHeader>
+    </div><!--header close-->
+</header>
+<apex:form >
+ <apex:inputHidden id="hdnIsRedirectedFromMailId" value="{!isRedirectedFromEmail}"/>
+   <section class="row">
+        <div class="slider_img_land" style="position:relative;">
+            <div class="container">
+              <section class="col-md-8 col-md-offset-2">
+                <hgroup class="get_start_land row text-center">
+                    <h1 class="row">{!mapSecNameToObjWrapper['ClickHome Refinance'].strHeading}</h1>
+                    <h2 class="row">{!mapSecNameToObjWrapper['ClickHome Refinance'].strDescription}</h2>
+                </hgroup>
+         
+          <section class="col-md-12 col-xs-12 col-sm-12 land_ser_sec">
+                  <div class="col-md-12 btn-group-wrap"> 
+                   <div class="btn-group">
+                        <apex:commandButton value="New Purchase" styleclass=" btn1 btn-default1 btn_cstm_getstarded btn_sm" style="background-color: #47b178 !important;" action="{!newHomeLoan}" status="myStatus"/>
+                  
+                      <apex:commandButton value="Refinance" styleclass=" btn1 btn-default1 btn_cstm_getstardeds btn_sm" style="background-color: #47b178 !important;" action="{!getStartedLast}" status="myStatus"/>         
+                             <!-- <a href="#" class="btn btn-default btn_cstm_getstarded col-md-12">Get started</a> -->
+                   </div> 
+                    </div>                    
+                        <div class="clearfix"></div>
+                 </section>
+                
+         <!--get started close--> 
+               </section>         
+            </div>
+             <section>
+                <div class="gray_back_col">
+                    <div class="container">
+                    <ul class="gray_back-list">
+                       <apex:repeat value="{!mapsecNameTolstCMS['ClickHome Refinance']}" var="objCMS">
+                        <li class="col-md-3"><a href="#">{!objCMS.acfHeading__c}</a></li>
+                       </apex:repeat>
+                       <!-- <li class="col-md-3"><a href="#">Rate From 4.37%</a></li>
+                        <li class="col-md-3"><a href="#">Complete Application Online</a></li>
+                        <li class="col-md-3"><a href="#">Same Day Approval</a></li>   -->                     
+                    </ul>
+                 </div>
+              </div>
+             </section>  
+        </div>
+    </section><!--figure close-->
+
+<section class="row clientel">
+<div class="container">
+    <ul>
+        <li class="col-md-3"><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/sky_news.png')}" alt="sky_news"/></li>
+        <li class="col-md-3"><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/2_gb.png')}" alt="2_gb"/></li>
+        <li class="col-md-3"><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/the_australian.png')}" alt="the_australian"/></li>
+        <li class="col-md-3"><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/the_adviser.png')}" alt="the_advisor"/></li>
+    </ul>
+</div>    
+</section>
+
+<section class="row refine_home_loan">
+    <div class="container">
+      <hgroup >
+        <h3 class="h3">{!mapSecNameToObjWrapper['ClickHome Features'].strHeading}</h3>
+        <h2 class="h2">{!mapSecNameToObjWrapper['ClickHome Features'].strDescription}</h2>
+       </hgroup>
+           <apex:repeat value="{!mapsecNameTolstCMS['ClickHome Features']}" var="ObjCMSFeatures">
+            <article class="col-md-3 col-xs-12 col-sm-12">
+                <div class="row">
+                <div class="col-md-12 col-xs-3 col-sm-3">
+                   <div class="row">
+                   <apex:image value="{!$Label.acfSite_Url}{!ObjCMSFeatures.acfImageURL__c}" alt="Features" title="Features" styleClass="cst_cent_img"/>
+                   <!-- <img src="images/best_rates.png" class="cst_cent_img"/>-->
+                   </div>
+                </div>
+                <hgroup class="refine_art_grp col-md-12 col-xs-9 col-sm-9">
+                    <h5 class="row">{!ObjCMSFeatures.acfHeading__c}</h5>
+                    <h6 class="row">{!ObjCMSFeatures.acfShort_Description__c}</h6>
+                </hgroup>
+              </div>
+            </article>
+           </apex:repeat>
+           <!-- <article class="col-md-3">
+                <div class="col-md-12">
+                    <img src="images/time_saving.png" class="cst_cent_img"/>
+                </div>
+                <hgroup class="refine_art_grp col-md-12">
+                    <h5>Time Savings</h5>
+                    <h6>Save time and money</h6>
+                </hgroup>
+            </article>
+            
+            <article class="col-md-3">
+                <div class="col-md-12">
+                    <img src="images/hassler_free.png" class="cst_cent_img"/>
+                </div>
+                <hgroup class="refine_art_grp col-md-12">
+                    <h5>Hassle Free</h5>
+                    <h6>Getting home loan is easy</h6>
+                </hgroup>
+            </article>
+            
+            <article class="col-md-3">
+                <div class="col-md-12">
+                    <img src="images/secure_process.png" class="cst_cent_img"/>
+                </div>
+                <hgroup class="refine_art_grp col-md-12">
+                    <h5>Secure Process</h5>
+                    <h6>We protect and never sell your data</h6>
+                </hgroup>
+            </article>    -->                                
+    </div>
+</section>
+
+
+<section class="row btr_rates_sec">
+  <div class="container">
+  
+       <hgroup class="col-md-8 col-md-offset-2">
+            <h3 class="h3">{!mapSecNameToObjWrapper['ClickHome BetterRates'].strHeading}</h3>
+            <h4 class="h4">
+                <p>{!mapSecNameToObjWrapper['ClickHome BetterRates'].strDescription}</p>
+                <!--<p>make the aplication and approval process faster and simplier, and the savings land in your pocket.</p>-->
+            </h4>
+      </hgroup>
+      
+      <article class="col-md-7 col-md-offset-2 bat_rates_bgcol">
+      <div class="table-responsive">
+        <table class="table table_cstm_land " width="100%">
+    <thead>
+      <tr>
+        <th class="col-md-4 text-right">&nbsp;</th>
+        <th class="col-md-3 text-center">Click Loans</th>
+        <th class="col-md-3 text-center">Other Lenders</th>
+      </tr>
+    </thead>
+    <tbody>
+    <apex:repeat value="{!mapsecNameTolstCMS['ClickHome BetterRates']}" var="objCMSBestRates">
+      <tr>
+        <td class="col-md-4 text-right">{!objCMSBestRates.acfHeading__c}</td>
+        <td class="col-md-3 text-center"><span class="sprite_2 nu_comsn_icon"></span></td>
+        <td class="col-md-3 text-center"><span class="sprite_2 other_lndr_icon"></span></td>
+      </tr>
+     </apex:repeat>
+     <!-- <tr>
+        <td class="col-md-4 text-right">Easy online process</td>
+        <td class="col-md-3 text-center"><span class="sprite_2 nu_comsn_icon"></span></td>
+        <td class="col-md-3 text-center"><span class="sprite_2 other_lndr_icon"></span></td>
+      </tr>
+      <tr>
+        <td class="col-md-4 text-right">Verify ID online</td>
+        <td class="col-md-3 text-center"><span class="sprite_2 nu_comsn_icon"></span></td>
+        <td class="col-md-3 text-center"><span class="sprite_2 other_lndr_icon"></span></td>
+      </tr>
+      <tr>
+        <td class="col-md-4 text-right">Verify Loan Statements online</td>
+        <td class="col-md-3 text-center"><span class="sprite_2 nu_comsn_icon"></span></td>
+        <td class="col-md-3 text-center"><span class="sprite_2 other_lndr_icon"></span></td>
+      </tr>   -->   
+    </tbody>
+  </table>
+</div>  
+      </article><!--article section close-->
+        
+  </div><!--contaienr close-->
+</section><!--better rates close-->
+
+
+<section class="row btr_loan_sec">
+ <div class="container">
+    <hgroup  class="col-md-8 col-md-offset-2">    
+        <h3 class="h3">{!mapSecNameToObjWrapper['ClickHome LoanSteps'].strHeading}</h3>
+        <h4 class="h4">{!mapSecNameToObjWrapper['ClickHome LoanSteps'].strDescription}</h4>
+    </hgroup>     
+       
+    <apex:outputPanel id="pnlId">
+    <script>
+        $(document).ready(function(){
+            $('[id=img0]').removeClass('displaynone');
+        });
+        function changeimg(url)
+        {
+            $('.imgDescription').addClass('displaynone');
+            $('[id='+url+']').removeClass('displaynone');
+        }
+    </script>
+        <apex:variable value="{!0}" var="imgCount"/>
+        <apex:repeat value="{!mapsecNameTolstCMS['ClickHome LoanSteps']}" var="ObjCMSLoanSteps">
+            <div class="col-md-7 imgDescription displaynone img_mob" id="img{!imgCount}">
+                <apex:image value="{!$Label.acfSite_Url}{!ObjCMSLoanSteps.acfDescriptionImageURL__c}" alt="img" title="Loans" width="100%" height="449" id="img"/>
+                <apex:variable value="{!imgCount + 1}" var="imgCount"/>
+            </div><!--article close-->
+        </apex:repeat>
+    </apex:outputPanel>
+    <aside class="col-md-5">
+        <div class="row rate_find_right">
+            <i class="rate_find_right_border">&nbsp;</i>
+            <apex:variable value="{!0}" var="imgNo"/>
+            <apex:repeat value="{!mapsecNameTolstCMS['ClickHome LoanSteps']}" var="ObjCMSLoanSteps">
+                <section class="col-md-12 col-xs-12 col-sm-12 quic_Step_sec">
+                   <a href="#" onmouseenter="changeimg('img{!imgNo}');">
+                    <div class="col-md-3 col-xs-3 col-sm-3">
+                        <apex:image value="{!$Label.acfSite_Url}{!ObjCMSLoanSteps.acfImageURL__c}" alt="rate_finder" title="Rate Finder"/>
+                    </div>
+                   <hgroup class="col-md-9 col-xs-9 col-sm-9 quick_steps_grp">
+                            <h4 class="row">{!ObjCMSLoanSteps.acfHeading__c}</h4>
+                            <h5 class="row">{!ObjCMSLoanSteps.acfShort_Description__c}</h5>
+                   </hgroup>
+                  </a> 
+                </section>
+            <apex:variable value="{!imgNo + 1}" var="imgNo"/>
+            </apex:repeat>                      
+        </div><!--main row close-->
+    </aside><!--aside close-->
+</div><!--container close-->
+</section>    
+<section class="row team_sec">
+  <div class="container">
+        <hgroup>    
+        <h3 class="h3 col-md-12">{!mapSecNameToObjWrapper['ClickHome Team'].strHeading}</h3>
+        <h4 class="h4 col-md-4 col-md-offset-4">{!mapSecNameToObjWrapper['ClickHome Team'].strDescription}</h4>
+    </hgroup> 
+    <div class="clearfix"></div>
+    <section class="team_section">
+  <apex:repeat value="{!mapsecNameTolstCMS['ClickHome Team']}" var="ObjClickTeam">
+    <article class="col-md-4 art_sec">
+        <div class="team_box">
+            <p class="team_article">{!ObjClickTeam.acfShort_Description__c}</p>
+            <footer class="team_foter"><apex:outputtext value="{!ObjClickTeam.acfHeading__c}" escape="false"/></footer>
+       </div> 
+    </article><!--first article close-->  
+  </apex:repeat>  
+  </section>   
+   <!-- <article class="col-md-4 art_sec">
+        <div class="team_box">
+            <p class="team_article">Wanted to thankyou for all your work. I hate dealing with banks and you took all the hassel out of it. I wont hesitate to recommend you to friends</p>
+            <footer class="team_foter">Peta<span>waERIC</span></footer>
+       </div> 
+    </article>   
+    
+    <article class="col-md-4 art_sec">
+        <div class="team_box">
+            <p class="team_article">Wanted to thankyou for all your work. I hate dealing with banks and you took all the hassel out of it. I wont hesitate to recommend you to friends</p>
+            <footer class="team_foter">Peta<span>waERIC</span></footer>
+       </div> 
+    </article><!--first article close-->            
+       
+ </div>
+</section>    
+<section class="row get_start_Sec">
+ <div class="container">
+ <section>
+    <hgroup  class="col-md-8 col-md-offset-2">    
+        <h3 class="h3">{!mapSecNameToObjWrapper['ClickHomeRateInSeconds'].strHeading}</h3>
+        <h4 class="h4">{!mapSecNameToObjWrapper['ClickHomeRateInSeconds'].strDescription}</h4>
+    </hgroup> 
+     <section class="col-md-12">
+        <div class="row">
+            <apex:commandButton id="faq_btn" styleclass="ask_ques_april center-block get_start_btn" action="{!getStartedLast}" value="Get started"  immediate="true" />
+        </div>
+    </section>      
+  </section> 
+</div>
+</section>  
+</apex:form>
+<!---Footer start here--------------->
+<footer class="footer april_footer row">
+   <c:acfFooter ></c:acfFooter>
+</footer><!--footer close--><!--footer close-->
+</main><!--main div close-->
+</body>
+
+</apex:page>

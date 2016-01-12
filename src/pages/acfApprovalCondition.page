@@ -1,0 +1,117 @@
+<apex:page standardController="Opportunity" extensions="acfApprovalCondition" showHeader="false" id="pid">
+<apex:includescript value="{!URLFOR($Resource.CkEditor,'ckeditor/ckeditor.js')}"/>
+
+<link href="{!URLFOR($Resource.CkEditor,'ckeditor/contents.css')}" rel="stylesheet" type="text/css"/>
+
+<style>
+.acfLabel
+{
+    color: #4a4a56;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    vertical-align: top;
+    padding-left: 2px;
+    text-align: right;
+    font-size: 91%;
+    font-weight: bold;
+}
+   
+.Processing
+{
+    position: fixed;
+    background-color: white;
+    background: url('/img/loading32.gif') no-repeat;
+    background-repeat: no-;
+    background-position: center;
+    z-index: 1000;
+    width: 100%;
+    height: 100%; 
+    z-index: 1004;          
+    left: 0%;
+    top: 0%;
+} 
+  
+</style>
+<apex:form id="frm">
+  <apex:outputPanel id="frmPanelId">
+    <apex:actionStatus startStyleClass="Processing" id="c"/>
+    <apex:actionFunction name="ShowDoc" action="{!ShowDocumentSection}"  status="c"/>
+    <div style="border:2px solid #cccccc; padding:10px; width:300px; background:#f2f2f2;">
+       <apex:pageMessages ></apex:pageMessages>
+        <apex:outputPanel rendered="{!NOT(isInEditMode)}">
+            <table>
+                <tr>
+                    <td class="acfLabel">Approval Condition Type</td>
+                    <td>
+                        {!Opportunity.acfConditions_of_Approval__c}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="acfLabel">Approval Condition</td>
+                    <td>
+                     <apex:outputText value=" {!Opportunity.acfApproval_Conditions__c}" escape="false"/>   
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <apex:commandButton value="Edit Approval Condition" action="{!ShowEditable}" status="c" onclick="ReloadCKEditor();"/>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!isInEditMode}">
+            <table>
+                <tr>
+                    <td class="acfLabel">Approval Condition Type</td>
+                    <td>
+                        <apex:inputField id="ddlConditionType" value="{!Opportunity.acfConditions_of_Approval__c}" onchange="ShowDoc(); ReloadCKEditor();"/> 
+                       
+                    </td>
+                </tr>
+                <tr>
+                    <td class="acfLabel">Approval Condition</td>
+                    <td>
+                     <!--  <apex:inputField id="txtDescription" value="{!Opportunity.acfApproval_Conditions__c}"/>   -->
+                         <apex:inputtextarea styleClass="ckeditor" richtext="false" id="txtDescription1" value="{!strApprovalCondition}"/>                 
+                    </td>
+                </tr>
+                    <script>
+                        function ReloadCKEditor() {
+                           for(name in CKEDITOR.instances)
+                           {
+                               delete CKEDITOR.instances[name];
+                           }
+                           CKEDITOR.replaceAll();
+                        }
+                   </script>
+                <tr>
+                   
+                       <td class="acfLabel">
+                          <apex:outputPanel rendered="{!IsShowDocument}"> Required Documents</apex:outputPanel>
+                        </td>
+                        <td>
+                         <apex:outputPanel rendered="{!IsShowDocument}">
+                            <apex:selectList value="{!lstRequiredDocList}" multiselect="true" >
+                                <apex:selectOptions value="{!lstDocumentsList}"/>        
+                            </apex:selectList>
+                          </apex:outputPanel>  
+                        </td>
+                        
+                </tr>
+                            
+                <tr>
+                    <td></td>
+                    <td>
+                        <apex:commandButton value="Update" action="{!UpdateCondition}" status="c"/> &nbsp;
+                        <apex:commandButton value="Cancel" action="{!MakeUnEditable}" status="c"/>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        
+    </div> 
+  </apex:outputPanel>   
+</apex:form>
+</apex:page>

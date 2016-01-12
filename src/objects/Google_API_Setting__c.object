@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>API_KEY__c</fullName>
+        <externalId>false</externalId>
+        <label>API KEY</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Access_Token_Time_Stamp__c</fullName>
+        <externalId>false</externalId>
+        <label>Access Token Time Stamp</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Access_Token__c</fullName>
+        <externalId>false</externalId>
+        <label>Access Token</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Client_Email_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Client Email ID</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Client_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Client ID</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Google_Calender_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Google Calender ID</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Secondary_Appointment_Lag__c</fullName>
+        <externalId>false</externalId>
+        <label>Secondary Appointment Lag</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sync_Token__c</fullName>
+        <externalId>false</externalId>
+        <label>Sync Token</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Unallocated_Broker_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Unallocated Broker Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Upto_date__c</fullName>
+        <externalId>false</externalId>
+        <label>Upto date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Upto_period__c</fullName>
+        <externalId>false</externalId>
+        <label>Upto period (In weeks)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Google API Setting</label>
+</CustomObject>

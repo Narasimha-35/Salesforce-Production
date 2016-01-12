@@ -1,0 +1,59 @@
+<apex:page controller="DNCRuleSetUpController" docType="html-5.0">
+
+  <apex:pageblock >
+  	  <apex:outputPanel rendered="{!renderErrorMessage}" ><h1 style="color:red">{! errorMessage}</h1></apex:outputPanel>
+  	  <br/><br/>
+      <apex:form >
+          <h1>Rule Name : DNC Wash Rule</h1><br/><br/>
+          <span style="font-weight: bold">* If the field is Date Or Datetime type, please use this format yyyy-mm-dd</span>
+          <span style="font-weight: bold">* If the field is Boolean type, please use true or false</span>
+          <div>
+              <apex:outputPanel id="rulePanel" layout="block">
+
+                  <apex:repeat value="{! ruleDNCSets}" var="ruleSet">
+                      <apex:selectList value="{! ruleSet.Api_Field_Name__c}" html-class="fieldName{! ruleSet.Id}" size="1">
+                          <apex:selectOptions value="{! fieldOptions}"/>
+                      </apex:selectList>
+                      &nbsp;&nbsp;&nbsp;
+                      <apex:selectList value="{! ruleSet.Operator__c}" size="1">
+                          <apex:selectOptions value="{! operators}"/>
+                      </apex:selectList>
+                      &nbsp;&nbsp;&nbsp;
+                      <apex:inputField type="text" value="{! ruleSet.Field_Value__c}"></apex:inputField>
+                      &nbsp;&nbsp;&nbsp;
+                      <a href="javascript:if (window.confirm('Are you sure?')) deleteRule('{! ruleSet.Id}');" style="font-weight:bold">Del</a>
+                      <br/>  
+                  </apex:repeat>
+             </apex:outputPanel>
+          </div>
+          <apex:actionFunction action="{!deleteRule}" name="deleteRule" reRender="rulePanel" >
+              <apex:param name="ruleSetId" value="" assignTo="{! selectedRuleSetId}"/>
+          </apex:actionFunction>
+          <br/>
+          <apex:commandbutton action="{!moreRule}" rerender="rulePanel" value="Add New Filter" />
+          <br/><br/>
+          <h1>Standard Exclusions</h1><br/><br/>
+          Exclude Do Not Call <br/>
+          Exclude Converted Lead <br/>
+          Exclude Closed And Lost Lead <br/><br/><br/>
+          <h1>Call File Setup</h1><br/><br/>
+  	  	  <apex:inputCheckbox value="{! callFileSetup.Update_Call_File_With_Lead__c}"/> Update Call File With Lead <br/>
+  	  	  <apex:selectList value="{! callFileSetup.Call_File__c}" size="1">
+          	<apex:selectOptions value="{! callFilesOptions}"/>
+          </apex:selectList><br/><br/>
+          <apex:commandButton action="{! save}" value="Execute" rerender="leadAndPhoneCountOutPanel" id="saveButton"/>
+          <br/><br/>
+          <hr />
+          <br/>
+     	  <apex:outputPanel id="leadAndPhoneCountOutPanel" layout="block">
+     	  		<apex:outputPanel id="leadAndPhoneCountInPanel" rendered="{!renderLeadStatistic}" layout="block">
+     	  			<h1>Info Sum</h1>
+     	  			<p>Total Leads To Wash: {!leadCount}</p>
+     	  			<p>Total Phone/Mobile To Wash: {!leadPhoneAndMobileCount} </p>
+     	  			<p>Current Balance : {! currentBalance}</p><br/><br/>
+     	  			<apex:commandButton action="{! triggerWashFunction}" value="Start Processing" id="startProcessButton"/>
+     	  		</apex:outputPanel>
+     	  </apex:outputPanel>
+      </apex:form>
+  </apex:pageblock>
+</apex:page>

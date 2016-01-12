@@ -1,0 +1,164 @@
+<apex:component >
+    <style>
+    .displaynone
+    {
+        display:none;
+    }
+    .csdisplaynone
+    {
+      display:none;
+    }
+    @media (max-width: 800px){
+.header{
+min-height:70px!important;
+}
+.header .logo img {
+  margin-top: 0px;
+  width: 100px;
+  height: 40px;
+} 
+  
+    }
+    
+    </style>
+   <head>
+    <script>
+        function LoginPopUP()
+        {
+          alert('Hello');
+        }  
+        
+      $(document).ready(function ()
+      {
+        $('#supportId').click(function () 
+        {
+          $('#customerSupportPopUp').removeClass('csdisplaynone'); 
+        });
+        
+        $('.mobsupport').click(function () 
+        {
+          $('#customerSupportPopUp').removeClass('csdisplaynone'); 
+          $(".sb-slidebar").removeClass("add-sb-sdbar");
+          $(".container-fluid").removeClass("add-body-sdbar");
+        });
+        
+        $('#csdivfaded').click(function () 
+        {
+          $('#customerSupportPopUp').addClass('csdisplaynone');
+        }); 
+        
+        $('#MemberLogin').click(function () 
+        {
+          $('#MemberLoginPopUp').removeClass('csdisplaynone');
+        });
+        $('.memberlogin_mobile').click(function () 
+        {
+          $('#MemberLoginPopUp').removeClass('csdisplaynone');
+          $(".sb-slidebar").removeClass("add-sb-sdbar");
+          $(".container-fluid").removeClass("add-body-sdbar");
+        });
+        $('#divfaded').click(function () 
+        {
+          $('#MemberLoginPopUp').addClass('csdisplaynone');
+          $('.mobsupport').addClass('csdisplaynone');  
+        });
+        
+        $('.pop-close').click(function () 
+        { 
+            $('#MemberLoginPopUp').addClass('csdisplaynone');
+            $('#customerSupportPopUp').addClass('csdisplaynone');
+        });      
+       });      
+       
+    function openfun()
+    {
+         $('#menu_section').removeClass('displaynone');
+    }
+    
+    function ResetCookies()
+    {
+        ResetCookies();
+    }
+    </script>
+   
+    <script>
+    (function(f,b){
+        var c;
+        f.hj=f.hj||function(){(f.hj.q=f.hj.q||[]).push(arguments)};
+        f._hjSettings={hjid:14934, hjsv:3};
+        c=b.createElement("script");c.async=1;
+        c.src="//static.hotjar.com/c/hotjar-14934.js?sv=3";
+        b.getElementsByTagName("head")[0].appendChild(c); 
+    })(window,document);
+   </script> 
+   </head>
+   
+   
+   
+   <apex:form >
+    <apex:actionFunction action="{!clearUserSessionCookies}" name="ResetCookies"/>
+   </apex:form> 
+   
+    <c:acfTalkToHuman ></c:acfTalkToHuman>
+    <div class="header">
+        <div class="container">
+            <div class="row-fluid">
+            <section class="col-xs-3 about_response">
+               <div class="menu_left"><span></span></div>
+            </section>
+            <h1 class="col-md-4 col-xs-7">
+                <div class="logo">
+                    
+                        <a href="#"><img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="click Refi"/></a>
+                    
+                </div>
+            </h1>
+            
+          <section class="col-md-8 col-xs-2">
+           <aside>
+
+                   
+                            
+                
+                <div class="top-tab id-verification">
+                   <ul>
+                        <li><a href="https://creditandfinance.force.com/brokers">Go Back To Broker Portal</a></li>
+                     
+                    </ul>
+                </div>
+            </aside>   
+         </section>
+            
+        </div>
+        </div>
+    </div><!--header close-->
+    <!-- <div class="header">
+        <div class="container">
+            <div class="row-fluid">
+            <h1 class="col-md-4">
+                <div class="logo">
+                   <apex:outputpanel rendered="{!if(pge_name=="acfpreloginquestions" || pge_name=="acf_topproducts",true,false)}"><a href="/acflogin"><img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="click Refi"/></a></apex:outputpanel>
+                   <apex:outputpanel rendered="{!if(pge_name=="acfpreloginquestions" || pge_name=="acf_topproducts",false,true)}"><a href="/acfloandashboard"><img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="click Refi"/></a></apex:outputpanel>           
+                </div>
+            </h1>
+          <section class="col-md-8">
+              <div class="top-login">
+                 <apex:outputpanel rendered="{!If(pge_name=="acfbankinformationdetails" || pge_name=="acfeditprofile" || pge_name=="acfjumiointegration" || pge_name=="acfid_verification" || pge_name=="acfpreloginquestions" || pge_name=="acfpostloginquestions" || pge_name=="acffeatures" || pge_name=="acfhowitworks" || pge_name=="acflogin" || pge_name == "acf_topproducts" || pge_name == 'acfresetpassword' || pge_name == "exception" ,false,true)}" style=""> <a href="/acfeditprofile" class="member-login" target="_blank"><span class="sprite editlogin">&nbsp;</span>EDIT PROFILE</a >  </apex:outputpanel>                  
+                  <apex:outputpanel rendered="{!If(pge_name=="acfpreloginquestions" || pge_name=="acffeatures" || pge_name=="acfhowitworks" || pge_name=="acflogin" || pge_name == "acf_topproducts" || AND(pge_name == "exception", isloggedin <> true),false,true)}"><a href="/secur/logout.jsp" class="member-login">SIGN OUT</a></apex:outputpanel>
+              </div>
+              <div class="clearfix"></div>
+ 
+            <aside>
+                <a href="#" class="responsive-menu responsive_menu_april" id="responsive">&nbsp;</a>                          
+                <div class="top-tab id-verification">
+                    <ul>
+                        <li><a href="https://creditandfinance.force.com/brokers" id="supportId">TALK TO A HUMAN</a></li>
+                        <apex:outputpanel rendered="{!If(pge_name=="acffeatures" || pge_name=="acflogin",true,false)}"><li><a href="/acfhowitworks" target="_blank">HOW IT WORKS</a></li></apex:outputpanel>
+                    </ul>
+                </div>
+            </aside>    
+         </section>   
+        </div>
+        </div>
+    </div>-->
+</apex:component>

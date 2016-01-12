@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>AddProduct</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ChoosePricebook</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EditAllProduct</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>OpportunityId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Product2Id</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>acfApplication_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Application Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfComparison_Rate__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Comparison Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>acfLegal_Fees__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Legal Fees</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfLoan_Fees__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Loan Fees</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfOngoing_Fees__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Ongoing Fees</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfOppLIComparison_Rate__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <formula>Opportunity.acfProduct_LVR__r.ACF_Comparison_Rate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Comparison Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>acfRate__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>acfTotal_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <formula>acfApplication_Fee__c +  acfValuation_Fee__c +  acfLegal_Fees__c +  acfOngoing_Fees__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfValuation_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Valuation Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickEstablishment_Fee__c</fullName>
+        <externalId>false</externalId>
+        <label>Establishment Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickMonthly_Fees__c</fullName>
+        <externalId>false</externalId>
+        <label>Monthly Fees</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickMortgage_Risk_Fee__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage Risk Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickTitle_Protection_Fee__c</fullName>
+        <externalId>false</externalId>
+        <label>Title Protection Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickTotal_Upfront_Fee__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Upfront Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Currency</type>
+    </fields>
+</CustomObject>

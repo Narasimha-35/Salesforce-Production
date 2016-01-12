@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Click Loans</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>acf_Question_Type__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Question Type</label>
+        <picklist>
+            <controllingField>acf_Type__c</controllingField>
+            <picklistValues>
+                <fullName>Property Details</fullName>
+                <controllingFieldValues>Post-Login</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Applicant Details</fullName>
+                <controllingFieldValues>Post-Login</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Assets and Liabilities</fullName>
+                <controllingFieldValues>Post-Login</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Personal Details</fullName>
+                <controllingFieldValues>Post-Login</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acf_Question__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Question</label>
+        <referenceTo>Question__c</referenceTo>
+        <relationshipName>Script</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>acf_Sequence_no__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Sequence no</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acf_Stage_Name__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Stage Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acf_Type__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Pre-Login</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Post-Login</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>Click Loans Script</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>acf_Question_Type__c</columns>
+        <columns>acf_Sequence_no__c</columns>
+        <columns>acf_Stage_Name__c</columns>
+        <columns>acf_Type__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>Script-{0000}</displayFormat>
+        <label>Script Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Script</pluralLabel>
+    <recordTypes>
+        <fullName>Post_Login</fullName>
+        <active>true</active>
+        <label>Post-Login</label>
+        <picklistValues>
+            <picklist>acf_Question_Type__c</picklist>
+            <values>
+                <fullName>Applicant Details</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Assets and Liabilities</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal Details</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Property Details</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acf_Type__c</picklist>
+            <values>
+                <fullName>Post-Login</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pre-Login</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Pre_Login</fullName>
+        <active>true</active>
+        <label>Pre-Login</label>
+        <picklistValues>
+            <picklist>acf_Question_Type__c</picklist>
+            <values>
+                <fullName>Applicant Details</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Assets and Liabilities</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal Details</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Property Details</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acf_Type__c</picklist>
+            <values>
+                <fullName>Post-Login</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pre-Login</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>acf_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>acf_Sequence_no__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>acf_Question_Type__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>acf_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>acf_Sequence_no__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

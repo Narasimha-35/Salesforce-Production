@@ -1,0 +1,1198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Click Loans</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>AL_Statement_Owner__c</fullName>
+        <externalId>false</externalId>
+        <label>A&amp;L_Statement_Owner</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Asset_Liability_Statements</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>A_L_Statement_Joint_With__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>A&amp;L Statement Joint With</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Asset_Liability_Statements1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Bank_Overdraft_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Bank Overdraft Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bank_Overdraft_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Bank Overdraft Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Banking_Institution_Cash_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Banking Institution Cash Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Banking_Institution_Overdraft__c</fullName>
+        <externalId>false</externalId>
+        <label>Banking Institution Overdraft</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Banking_Institution__c</fullName>
+        <externalId>false</externalId>
+        <label>Banking Institution</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Business_Name_Value_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Business Name Value Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Business_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Business Name</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Credit_Cards_Combined_Balance__c</fullName>
+        <externalId>false</externalId>
+        <label>Credit Cards Combined Balance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Credit_Cards_Combined_Limit__c</fullName>
+        <externalId>false</externalId>
+        <label>Credit Cards Combined Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Credit_Cards_Combined__c</fullName>
+        <externalId>false</externalId>
+        <label>Credit Cards Combined</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Credit_Cards_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <formula>Credit_Cards_Combined_Limit__c  *0.03</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Credit Cards Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Furniture_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Furniture Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Home_Location__c</fullName>
+        <externalId>false</externalId>
+        <label>Home Location</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Home_Value_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Home Value Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Lender_Name_Loans_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Lender Name - Loans 1</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lender_Name_Loans_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Lender Name - Loans 3</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lender_name_Loans_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Lender Name - Loans 2</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Loans_1_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Loans 1 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Loans_1_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Loans 1 Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Loans_2_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Loans 2 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Loans_2_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Loans 2 Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Loans_3_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Loans 3 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Loans_3_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Loans 3 Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Location_Mortgage_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Location Mortgage 1</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Location_Mortgage_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Location Mortgage 2</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Location_Mortgage_on_Home__c</fullName>
+        <externalId>false</externalId>
+        <label>Location Mortgage on Home</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Location_Property_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Location Property 1</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Location_Property_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Location Property 2</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Location_Property_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Location Property 3</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Location_Rental_Property__c</fullName>
+        <externalId>false</externalId>
+        <label>Location Rental Property</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mortgage_1_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage 1 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Mortgage_1_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage 1 Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Mortgage_2_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage 2 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Mortgage_2_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage 2 Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Mortgage_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Mortgage_on_Home_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage on Home Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Motor_Vehicle_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Motor Vehicle Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Motor_Vehicle__c</fullName>
+        <externalId>false</externalId>
+        <label>Motor Vehicle</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Net_Assets__c</fullName>
+        <externalId>false</externalId>
+        <formula>Total_Assets__c - Total_Liabilities__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Net Assets</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Other_Investments_1_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Investments 1 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Other_Investments_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Investments 1</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Other_Investments_2_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Investments 2 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Other_Investments_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Investments 2</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Other_Liabilities_1_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 1 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Other_Liabilities_1_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 1 Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Other_Liabilities_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 1</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Other_Liabilities_2_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 2 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Other_Liabilities_2_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 2 Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Other_Liabilities_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 2</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Other_Liabilities_3_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 3 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Other_Liabilities_3_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 3 Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Other_Liabilities_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 3</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Property_1_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Property 1 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Property_2_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Property 2 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Property_3_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Property 3 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Rent_Monthly_Repayments__c</fullName>
+        <externalId>false</externalId>
+        <label>Rent Monthly Repayments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Shares_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Shares Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Super_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Super Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Total_Assets__c</fullName>
+        <externalId>false</externalId>
+        <formula>Banking_Institution_Cash_Amount__c  +   Furniture_Amount__c + Home_Value_Amount__c  +  Property_1_Amount__c  +  Property_2_Amount__c  +  Property_3_Amount__c  +  Other_Investments_1_Amount__c  +  Other_Investments_2_Amount__c  +  Business_Name_Value_Amount__c  +  Motor_Vehicle_Amount__c  +  Super_Amount__c  +  Shares_Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Assets</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Total_Liabilities__c</fullName>
+        <externalId>false</externalId>
+        <formula>Bank_Overdraft_Amount__c  +  Mortgage_on_Home_Amount__c  +  Mortgage_1_Amount__c  +  Mortgage_2_Amount__c  +  Loans_1_Amount__c  +  Loans_2_Amount__c  +  Loans_3_Amount__c  +  Other_Liabilities_1_Amount__c  +  Other_Liabilities_2_Amount__c  +  Other_Liabilities_3_Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Liabilities</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Total_Monthly_Expenses__c</fullName>
+        <externalId>false</externalId>
+        <formula>Bank_Overdraft_Monthly_Repayments__c  +  Mortgage_Monthly_Repayments__c  +  Mortgage_1_Monthly_Repayments__c  +  Mortgage_2_Monthly_Repayments__c  +  Credit_Cards_Monthly_Repayments__c  +  Loans_1_Monthly_Repayments__c  +  Loans_2_Monthly_Repayments__c  +  Loans_3_Monthly_Repayments__c  +  Other_Liabilities_1_Monthly_Repayments__c  +  Other_Liabilities_2_Monthly_Repayments__c  +  Other_Liabilities_3_Monthly_Repayments__c  +  Rent_Monthly_Repayments__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Monthly Expenses</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfApplicants__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Applicants</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfAsset_Amount__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Asset Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfAsset_Type__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Asset Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Home</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Investment Property1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cash</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Super</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Investment1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Investment Property2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Investment Property3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Investment2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acfCash_Description__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Cash Description</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfDescription__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>18</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfIsCreatedByPortalUser__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>IsCreatedByPortalUser</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfLiability_Balance__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Liability Balance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfLiability_Limit__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Liability Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfLiability_Monthly_Payment__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Liability Monthly Payment</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfLiability_Type__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Liability Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Home Mortgage</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>IP Mortgage1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Credit Card</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Personal Loan1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Others1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>IP Mortgage2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>IP Mortgage3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Personal Loan2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Personal Loan3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Others2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Others3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acfLoans_1_limit__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Loans 1 limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfMortgage_on_Home_Limit__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Mortgage on Home Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfOFI__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>OFI</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfOther_Asset_Description__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Other Asset Description</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfOther_Asset_Value_Amount__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Other Asset Value Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfOther_Liabilities_1_limit__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Other Liabilities 1 Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfProperty_1_limit__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Mortgage 1 limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfSuperDescription__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Super Description</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfType__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Assets</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Liabilities</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>clickLoans_2_Limit__c</fullName>
+        <externalId>false</externalId>
+        <label>Loans 2 Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickLoans_3_limit__c</fullName>
+        <externalId>false</externalId>
+        <label>Loans 3 limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickLocation_Mortgage_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Location Mortgage 3</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>clickMortgage_3_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage 3 Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickOther_Liabilities_2_Limit__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 2 Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickOther_Liabilities_3_limit__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Liabilities 3 Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickProperty_2_limit__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage 2 limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickProperty_3_limit__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage 3 limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>Click Loans Asset &amp; Liability Statement</label>
+    <nameField>
+        <displayFormat>AL-{YYYY}{MM}-{0}</displayFormat>
+        <label>Asset and Liability Statment Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Asset &amp; Liability Statements</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>Preliminary_Assessment</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Preliminary Assessment</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>https://composer.congamerge.com
+?sessionId={!API.Session_ID}
+&amp;serverUrl={!API.Partner_Server_URL_290}
+&amp;id={!Asset_Liability_Statement__c.Id}
+&amp;DefaultPdf=1
+&amp;OFN={!Account.Name}+-+Preliminary+Assessment {!TODAY()}
+&amp;TemplateID=a1K900000069hZX</url>
+    </webLinks>
+</CustomObject>

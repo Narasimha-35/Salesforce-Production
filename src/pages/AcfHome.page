@@ -1,0 +1,13 @@
+<apex:page docType="html-5.0" standardStylesheets="false" showHeader="false" controller="WLHomeController" cache="false" >
+<apex:form >
+<div style="width:90%;float:left;">
+    <apex:commandButton value="Refinace" action="/AcfPreloginQuestions?type=refi"/> &nbsp;&nbsp;
+    <apex:commandButton value="New Loan" action="/AcfPreloginQuestions"/>
+</div>
+
+<div style="width:10%;float:left;">
+    <apex:commandButton value="Login" action="/AcfLogin"/>
+</div>
+
+</apex:form>
+</apex:page>

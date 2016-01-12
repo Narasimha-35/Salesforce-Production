@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Click Loans</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>Is_Uploaded__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Used to send email</description>
+        <externalId>false</externalId>
+        <label>Is Uploaded</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Lead__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Lead</label>
+        <referenceTo>Lead</referenceTo>
+        <relationshipName>Required_Documents</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Oppo_Email_Address__c</fullName>
+        <externalId>false</externalId>
+        <label>Oppo Email Address</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oppo_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>acfOpportunity__r.Owner.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oppo Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfDocument_Master__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Document Master</label>
+        <referenceTo>Document_Master__c</referenceTo>
+        <relationshipName>Required_Documents</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>acfOpportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipName>Required_Documents</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>acfStatus__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Pending</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Verified</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Not Verified</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Uploaded</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Awaited</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>acf_Bank_Statement_Doc__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Bank Statement Doc</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acf_Is_Identity_Verification_Doc__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Identity Verification Doc</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acf_Reference_No__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Reference No</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Click Loans Required Document</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>acfDocument_Master__c</columns>
+        <columns>Lead__c</columns>
+        <columns>acfOpportunity__c</columns>
+        <columns>acfStatus__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Required_Docs_Uploaded_Verified</fullName>
+        <columns>NAME</columns>
+        <columns>acfDocument_Master__c</columns>
+        <columns>Lead__c</columns>
+        <columns>acfOpportunity__c</columns>
+        <columns>acfStatus__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>acfStatus__c</field>
+            <operation>equals</operation>
+            <value>Verified,Uploaded</value>
+        </filters>
+        <label>Required Docs - Uploaded / Verified</label>
+    </listViews>
+    <nameField>
+        <label>Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Required Documents</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Document_name_rule_for_hardcoded_names</fullName>
+        <active>false</active>
+        <errorConditionFormula>If(AND(ISCHANGED(Name),OR((PRIORVALUE(Name) = &apos;Bank Stmt&apos;),(PRIORVALUE(Name) = &apos;Identity Verification&apos;))),true,false)</errorConditionFormula>
+        <errorDisplayField>Name</errorDisplayField>
+        <errorMessage>You don&apos;t have access to edit this field.</errorMessage>
+    </validationRules>
+</CustomObject>

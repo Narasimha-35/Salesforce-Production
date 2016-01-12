@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Click Loans</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>ACF_Comparison_Rate__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Comparison Rate</label>
+        <precision>14</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>acfAnnual_Fees__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Annual Fees</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfApplication_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Application Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfEstablishment_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Establishment Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfLVR__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>LVR To</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>acfLegal_Fees__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Legal Fees</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfLoan_Size__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Loan Size</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfMonthly_Fees__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Monthly Fees</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfMortgage_Risk_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Mortgage Risk Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>acfOngoing_Fees_annual__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <formula>acfAnnual_Fees__c +  (acfMonthly_Fees__c * 12)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Ongoing Fees (annual)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfOwner_Occupied_only__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Owner Occupied only</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfProduct__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Product</label>
+        <referenceTo>Product2</referenceTo>
+        <relationshipName>LVR_Rate</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>acfPurchase_only__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Purchase only</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfRate__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>acfTerm_in_Years__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <formula>If(acfProduct__r.RecordType.Name == &apos;Fixed&apos;,VALUE(Text(acfProduct__r.acfTenure_in_Years__c)),0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Term(in Years)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfTitle_Protection_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Title Protection Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfTotal_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <formula>acfApplication_Fee__c +  acfValuation_Fee__c + acfLegal_Fees__c +  acfMonthly_Fees__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Upfront Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>acfValuation_Fee__c</fullName>
+        <description>Click Loans</description>
+        <externalId>false</externalId>
+        <label>Valuation Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>clickFixed_Interest_Rate__c</fullName>
+        <externalId>false</externalId>
+        <label>Fixed Interest Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>clickLVR_From__c</fullName>
+        <externalId>false</externalId>
+        <label>LVR From</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>clickLoan_Size_From__c</fullName>
+        <externalId>false</externalId>
+        <label>Loan Size From</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>Click Loans LVR &amp; Rate</label>
+    <nameField>
+        <label>Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>LVR &amp; Rate</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Fixed_Loan_Interest_Rate_Rule</fullName>
+        <active>true</active>
+        <errorConditionFormula>If(AND(acfProduct__r.RecordType.Name = &apos;Fixed&apos;,ISBLANK( clickFixed_Interest_Rate__c)),true,false)</errorConditionFormula>
+        <errorDisplayField>clickFixed_Interest_Rate__c</errorDisplayField>
+        <errorMessage>Please enter value</errorMessage>
+    </validationRules>
+</CustomObject>

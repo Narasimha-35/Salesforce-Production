@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Active_Broker__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Ticked if Active</inlineHelpText>
+        <label>Active Broker</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CIO_Membership_Expiry__c</fullName>
+        <externalId>false</externalId>
+        <label>CIO Membership Expiry</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>CIO_Membership_NO__c</fullName>
+        <externalId>false</externalId>
+        <label>CIO Membership NO.</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Channel__c</fullName>
+        <externalId>false</externalId>
+        <label>Channel</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Employee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Phone Broker</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>City__c</fullName>
+        <externalId>false</externalId>
+        <label>City</label>
+        <length>50</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Compensatory_Appointment__c</fullName>
+        <externalId>false</externalId>
+        <label>Compensatory Appointment</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Email</label>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Industry_Body__c</fullName>
+        <externalId>false</externalId>
+        <label>Industry Body</label>
+        <picklist>
+            <picklistValues>
+                <fullName>MFAA</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>FBAA</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>MFAA_FBAA_Member_Expiry__c</fullName>
+        <externalId>false</externalId>
+        <label>MFAA/FBAA Member Expiry</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>MFAA_FBAA_Member_NO__c</fullName>
+        <externalId>false</externalId>
+        <label>MFAA/FBAA Member NO</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MobilePhone__c</fullName>
+        <externalId>false</externalId>
+        <label>MobilePhone</label>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Monthly_Appointments_Required__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Target__c  -  Total_Appointments__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Monthly Appointments Required</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Monthly_Target__c</fullName>
+        <defaultValue>15</defaultValue>
+        <externalId>false</externalId>
+        <label>Monthly Target Appts</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Next_Sync_Token__c</fullName>
+        <externalId>false</externalId>
+        <label>Next Sync Token</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PI_Policy_Expiry__c</fullName>
+        <externalId>false</externalId>
+        <label>PI Policy Expiry</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>PI_Policy_NO__c</fullName>
+        <externalId>false</externalId>
+        <label>PI Policy NO.</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Postal_Code__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter 4 digit Post Code</inlineHelpText>
+        <label>Postal Code</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Market__c</fullName>
+        <externalId>false</externalId>
+        <label>Primary Market</label>
+        <referenceTo>Market__c</referenceTo>
+        <relationshipLabel>Brokers</relationshipLabel>
+        <relationshipName>Brokers</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Speciality_Skills__c</fullName>
+        <externalId>false</externalId>
+        <label>Speciality Skills</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Commercial</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Complex Investments</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>High Value</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Self Employed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Specialty Lending</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Receive Phone Appointment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pot 1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pot 2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pot 3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pot 4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pot 5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pot 6</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pot 7</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pot 8</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sasha Anitei</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Alex Nassar</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Andrew Jackson</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Andrew Perry</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Andy Rajpurohit</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Brent Wedesweiler</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cameron Langton</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Craig Thompson</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>David Learn</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dorian Loupis</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Gerry Bruno</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Graeme Chapman</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Henry Giguere</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>James Blanche</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>James Wu</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Munther El-Alami</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nick Devai</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nick O&apos;sullivan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Robert Gallacher</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sherrill Ng</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Tsum Li Lo</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Tzuri Avila</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Uday Dhir</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Valan Redmond</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Zachary Bombardieri</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>8</visibleLines>
+    </fields>
+    <fields>
+        <fullName>State_Remove__c</fullName>
+        <externalId>false</externalId>
+        <label>State Remove</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Australian Capital Territory</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>New South Wales</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Northern Territory</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Queensland</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>South Australia</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Tasmania</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Victoria</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Western Australia</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>State__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>State</label>
+        <referenceTo>State__c</referenceTo>
+        <relationshipLabel>Brokers</relationshipLabel>
+        <relationshipName>Brokers</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Street_Address__c</fullName>
+        <externalId>false</externalId>
+        <label>Street Address</label>
+        <length>128</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Allocated__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Allocated</label>
+        <summaryFilterItems>
+            <field>Appointment__c.Appointment_Status__c</field>
+            <operation>equals</operation>
+            <value>Allocated</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Appointment__c.Broker__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_Appointments__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Appointments</label>
+        <summaryFilterItems>
+            <field>Appointment__c.Appointment_Status__c</field>
+            <operation>notEqual</operation>
+            <value>&quot;&quot;</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Appointment__c.Broker__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_Cancelled__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Cancelled</label>
+        <summaryFilterItems>
+            <field>Appointment__c.Appointment_Status__c</field>
+            <operation>equals</operation>
+            <value>Cancelled</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Appointment__c.Broker__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_Held__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Held</label>
+        <summaryFilterItems>
+            <field>Appointment__c.Appointment_Status__c</field>
+            <operation>equals</operation>
+            <value>Appointment Held</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Appointment__c.Broker__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_New__c</fullName>
+        <externalId>false</externalId>
+        <label>Total New</label>
+        <summaryFilterItems>
+            <field>Appointment__c.Appointment_Status__c</field>
+            <operation>equals</operation>
+            <value>New</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Appointment__c.Broker__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_No_Show__c</fullName>
+        <externalId>false</externalId>
+        <label>Total No Show</label>
+        <summaryFilterItems>
+            <field>Appointment__c.Appointment_Status__c</field>
+            <operation>equals</operation>
+            <value>No Show</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Appointment__c.Broker__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_Rescheduled__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Rescheduled</label>
+        <summaryFilterItems>
+            <field>Appointment__c.Appointment_Status__c</field>
+            <operation>equals</operation>
+            <value>Rescheduled</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Appointment__c.Broker__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <label>Broker</label>
+    <listViews>
+        <fullName>Active_Brokers_Detail</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Market__c</columns>
+        <columns>Street_Address__c</columns>
+        <columns>City__c</columns>
+        <columns>State__c</columns>
+        <columns>Email__c</columns>
+        <columns>MobilePhone__c</columns>
+        <columns>Channel__c</columns>
+        <columns>Active_Broker__c</columns>
+        <columns>Compensatory_Appointment__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Active_Broker__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Active Brokers Detail</label>
+    </listViews>
+    <listViews>
+        <fullName>Active_Brokers_Detail_Recv_Phone_APpt</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Market__c</columns>
+        <columns>Street_Address__c</columns>
+        <columns>City__c</columns>
+        <columns>State__c</columns>
+        <columns>Email__c</columns>
+        <columns>MobilePhone__c</columns>
+        <columns>Channel__c</columns>
+        <columns>Active_Broker__c</columns>
+        <columns>Compensatory_Appointment__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Active_Broker__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Speciality_Skills__c</field>
+            <operation>includes</operation>
+            <value>Receive Phone Appointment</value>
+        </filters>
+        <label>Active Brokers Detail - Recv Phone APpt</label>
+    </listViews>
+    <listViews>
+        <fullName>Active_Partners</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Market__c</columns>
+        <columns>Street_Address__c</columns>
+        <columns>City__c</columns>
+        <columns>State__c</columns>
+        <columns>Email__c</columns>
+        <columns>MobilePhone__c</columns>
+        <columns>Channel__c</columns>
+        <columns>Active_Broker__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Active_Broker__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Channel__c</field>
+            <operation>equals</operation>
+            <value>Partner</value>
+        </filters>
+        <label>Active Partners</label>
+    </listViews>
+    <listViews>
+        <fullName>Inactive_Brokers</fullName>
+        <columns>Active_Broker__c</columns>
+        <columns>NAME</columns>
+        <columns>Email__c</columns>
+        <columns>MobilePhone__c</columns>
+        <columns>Street_Address__c</columns>
+        <columns>City__c</columns>
+        <columns>State_Remove__c</columns>
+        <columns>Channel__c</columns>
+        <columns>Primary_Market__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Active_Broker__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>Inactive Brokers</label>
+    </listViews>
+    <listViews>
+        <fullName>Partner_Brokers_All</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Primary_Market__c</columns>
+        <columns>Street_Address__c</columns>
+        <columns>City__c</columns>
+        <columns>State_Remove__c</columns>
+        <columns>Email__c</columns>
+        <columns>MobilePhone__c</columns>
+        <columns>Channel__c</columns>
+        <columns>Active_Broker__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Active_Broker__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Channel__c</field>
+            <operation>equals</operation>
+            <value>Partner</value>
+        </filters>
+        <label>Partner Brokers - All</label>
+    </listViews>
+    <listViews>
+        <fullName>Phone_Brokers_All</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Primary_Market__c</columns>
+        <columns>Street_Address__c</columns>
+        <columns>City__c</columns>
+        <columns>State_Remove__c</columns>
+        <columns>Email__c</columns>
+        <columns>MobilePhone__c</columns>
+        <columns>Channel__c</columns>
+        <columns>Active_Broker__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Active_Broker__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Channel__c</field>
+            <operation>equals</operation>
+            <value>Phone Broker</value>
+        </filters>
+        <label>Phone Brokers - All</label>
+    </listViews>
+    <nameField>
+        <label>Broker Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Brokers</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>MobilePhone__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>State_Remove__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Monthly_Target__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>MobilePhone__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Monthly_Target__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>
