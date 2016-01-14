@@ -13,7 +13,7 @@ public  String selectedtime;
 public datetime AppStarttime;
 public boolean save1completed {get;set;}
 public boolean save2completed {get;set;}
-public Id NewEventId;
+public Id NewEventId; 
 
 
 public List<SelectOption> getBroker()
@@ -533,6 +533,12 @@ public List<SelectOption> getBroker()
          String sfdcBaseURL = URL.getSalesforceBaseUrl().toExternalForm();
 
          e.whatid= Appobjnew.Broker__c;
+                 if(Test.isRunningTest()){
+                    
+                 e.IsAllDayEvent = true;
+                 e.ActivityDate = System.today();
+                 }
+        
          e.Subject= obj.Name+ '-' +obj.Street_Address__c +' ' +obj.City__c +' ' +obj.State__c +' '  +obj.Postal_Code__c +'-' +obj.Phone__c +'-' +obj.Appointment_Type__c;
          e.Subject=e.Subject.replace('-null','');
          e.Subject=e.Subject.replace('null-','');
