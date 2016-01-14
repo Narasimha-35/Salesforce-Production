@@ -1084,6 +1084,10 @@ total questions =>{!TotalNoQuestionSlide}
                                                     </div>
                                                     <apex:commandButton value="Check E-Consent " styleClass="btn-question" action="{!checkUserResponse}" ></apex:commandButton>
                                                     <br/><br/><br/>
+                                                    <apex:commandButton value="Re-Send " styleClass="btn-question" action="{!resendEconsent}" ></apex:commandButton>
+                                                    <br/><br/><br/>
+                                                   
+                                                    
                                                     <a target="_blank" href="https://www.mcafeesecure.com/verify?host=www.clickloans.com.au" style="margin-left:41%;">
                                                         <img class="mfes-trustmark mfes-trustmark-hover" border="0" src="https://cdn.ywxi.net/meter/www.clickloans.com.au/102.gif" width="81" height="33" title="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams" alt="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams"  />
                                                     </a>
@@ -1100,7 +1104,10 @@ total questions =>{!TotalNoQuestionSlide}
                                                     <apex:commandButton value="Continue " styleClass="btn-question a " action="{!applicant2consent}" reRender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentScreenpnl"  status="contConsent" oncomplete="slide();">
                                                         <apex:param value="{!Answers.id}" assignTo="{!ques.strWrapAnswer}" name="QuesCount"/>
                                                     </apex:commandButton>
-                                                </apex:repeat> 
+                                                </apex:repeat> <br/><br/><br/>
+                                                <apex:commandButton value="Re-Send " styleClass="btn-question" action="{!resendEconsent}" ></apex:commandButton>
+                                                    <br/><br/><br/>
+                                                   
                                                 <apex:actionstatus id="contConsent" starttext="verifying">
                                                     <apex:facet name="start">
                                                         <apex:image url="{!$Resource.LoadingImg}" height="35" width="35"/>                      
