@@ -1,4 +1,4 @@
-public class ChangeAppointment_Class {
+public class ChangeAppointment_Class { 
 public List<Broker__c > BrokerList {get;set;}
 public Broker__c Brkobj {get;set;}
 public Appointment__c Appobj {get;set;}
