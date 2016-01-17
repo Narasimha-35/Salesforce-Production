@@ -3,11 +3,29 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	public static final String PASSWORD = 'AusCred4321';
 	public static final String APPLICATION = 'mercury5';
 	public static final String CLICK_PEP_BRANCH_ID = 'c68fcac0-79ab-4a73-b1b3-592f4a3adae6';
+	public static boolean emailSwh = false;
+	public static List<String> recipients = null;
+	public static String debugEmailTemplate = null;
+	public static List<Map<String, String>> pendingEmails = null;
+	
+	public static void init() {
+	    ACFSwitch__c acfswh = ACFSwitch__c.getOrgDefaults();
+		emailSwh = (Boolean) acfswh.get('Mercury_Email_Switch__c');
+		system.debug(LoggingLevel.INFO, emailSwh);
+		ACFEmailList__c emaiSetting = ACFEmailList__c.getOrgDefaults();
+		recipients = ((String) emaiSetting.get('Mercury_Email_Receiver__c')).split(',');
+		system.debug(LoggingLevel.INFO, recipients);
+		Document doc = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
+        debugEmailTemplate = doc.body.toString();
+        pendingEmails = new List<Map<String, String>>();
+	}
 	
 	@future(callout=true)
 	public static void syncWithMercury(String oppoId, String accountId) {
+	    init();
 		String token = MercuryApiUtilities.loginToMercury();
 		String branchId = getBrokerBranch(oppoId);
+		
 		//Create Oppo
 		Opportunity oppo = MercuryApiUtilities.createOppoInMercury(token, oppoId, branchId);
 		//Create People
@@ -15,8 +33,15 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		//Create Connection between Oppo and People
 		String oppoAndaccountId = oppoId + '-' + accountId;
 		MercuryApiUtilities.createLoanPeopleInMercury(token, oppoAndaccountId, oppoId, accountId);
+		
 		update oppo;
 		update contact;
+		
+		system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
+        for(Map<String, String> pe : pendingEmails) {
+            Utilities.sendEmail(recipients, 'Salesforce Debug', generateHTMLEmailBody(APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details')));
+        }
+        pendingEmails = new List<Map<String, String>>();
 	}
 
 	//When call this method, check if mercury loan Id on oppo and mercury people id on account is exist, otherwise pass salesforce 18 ids
@@ -29,6 +54,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			if (isSalesforceAccountId && accountId.length() == 18) {
 				accountId = accountId.left(15);
 			}
+			//TODO If we chagne account from 15 to 18, check 15 is already exist or not, then use 18
 			String token = MercuryApiUtilities.loginToMercury();
 			getOpportunityAndSaveOnOppo(token, oppoId, isSalesforceOppoId);
 			getPeopleAndSaveOnAccount(token, accountId, isSalesforceAccountId);
@@ -50,7 +76,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			MercuryApiUtilities.updatePeopleInMercury(accountId, token, branchId);
 		}
 	}
-
+	
 	public static String loginToMercury() {
 		HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
@@ -67,10 +93,45 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
         	token = getTokenFromXml(doc);
         } else {
         	res = http.send(req);
+        	
         	Dom.Document doc = res.getBodyDocument();
         	token = getTokenFromXml(doc);
+        	
+        	if(res.getStatusCode() != 200 || !getApproveFromXml(doc) || token == null) {
+        	    if(emailSwh) {
+        	        pendingEmails.add(new Map<String, String>{'methodName' => 'loginToMercury', 'details' => generateDetailPart(req, res)});
+        	    }
+        	}
         }
         return token;
+	}
+	
+	public static String generateDetailPart(HttpRequest req, HttpResponse res) {
+	    String ret = '';
+	    
+	    ret += '<span>Header</span>';
+	    ret += '<p>' + 'Content-Type: ' + req.getHeader('Content-Type') + '</p>';
+	    ret += '<span>End Point</span>';
+	    ret += '<p>' + req.getEndpoint() + '</p>';
+	    ret += '<span>Http Method</span>';
+	    ret += '<p>' + req.getMethod() + '</p>';
+	    ret += '<span>Request Body<span>';
+	    ret += '<p>' + req.getBody() + '</p>';
+	    ret += '<span>========================================</span><br/>';
+	    ret += '<span>Status Code</span>';
+	    ret += '<p>' + res.getStatusCode() + '</p>';
+	    ret += '<span>Response Body</span>';
+	    ret += '<p>\"'+ res.getBody() + '\"</p>';
+	    
+	    return ret;
+	}
+	
+	public static String generateHTMLEmailBody(String projectName, String className, String methodName, String detail) {
+	    if(debugEmailTemplate == null) {
+	        Document doc = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
+            debugEmailTemplate = doc.body.toString();
+	    }
+	    return debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
 	}
 	
 	public static Opportunity createOppoInMercury(String token, String oppoId, String branchId) {
@@ -103,6 +164,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			} else {
 				//Mark sync with mercury checkbox ticked
 				oppo.Sync_With_Mercury__c = true;
+				
+				pendingEmails.add(new Map<String, String>{'methodName' => 'createOppoInMercury', 'details' => generateDetailPart(req, res)});
 			}
 			return oppo;
 		}
@@ -308,9 +371,12 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
         	} else {
         		res = http.send(req);
         	}
+        	
         	System.debug(res.getBody());
+        	System.debug(res.getStatusCode());
+        	
 			if (String.valueOf(res.getBody()) == '') {
-				//Mark sync with mercury checkbox ticked
+				//Mark sync with mercury checkbox ticked            
 				contact.Sync_With_Mercury__c = true;
 				//Mark sync with mercury success ticked
 				contact.Sync_With_Mercury_Success__c = true;
@@ -318,7 +384,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			} else {
 				//Mark sync with mercury checkbox ticked
 				contact.Sync_With_Mercury__c = true;
+				
+                pendingEmails.add(new Map<String, String>{'methodName' => 'createPeopleInMercury', 'details' => generateDetailPart(req, res)});
 			}
+			
 			//update opportunity
 			return contact;
 		}
@@ -545,6 +614,25 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			update brokersU;
 		}
 	}
+
+    public static boolean getApproveFromXml(Dom.Document doc) {
+        Boolean ret = false;
+        
+        if(doc != null) {
+            Dom.Xmlnode node = doc.getRootElement();
+            if (node != null && node.getNodeType() == DOM.XMLNodeType.ELEMENT) {
+				if (node.getName() == 'login') {
+					for (Dom.XMLNode child: node.getChildElements()) {
+						if (child.getName() == 'approved') {
+							ret = Boolean.valueOf(child.getText());
+						}
+					}
+				}
+			}
+        }
+        
+        return ret;
+    }
 
 	public static String getTokenFromXml(Dom.Document doc) {
 		String token = null;
