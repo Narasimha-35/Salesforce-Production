@@ -1,0 +1,84 @@
+<apex:page standardController="Opportunity" extensions="PreviewFileController" docType="html-5.0" standardStylesheets="false">
+<html>
+<head>
+    <apex:includeScript value="https://code.jquery.com/jquery-1.8.2.js" />
+    <apex:includeScript value="https://code.jquery.com/ui/1.9.1/jquery-ui.js" />
+<style type="text/css">
+    .ui-tabs.ui-tabs-vertical {
+    padding: 0;
+}
+.ui-tabs.ui-tabs-vertical .ui-widget-header {
+    border: none;
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav {
+    float: left;
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li {
+    clear: left;
+    width: 100%;
+    margin: 0.2em 0;
+    overflow: hidden;
+    position: relative;
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li a {
+    display: block;
+    width: 100%;
+    padding: 0.6em 1em;
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li a:hover {
+    cursor: pointer;
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+    margin-bottom: 0.2em;
+    padding-bottom: 0;
+    border-right: 1px solid white;
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li:last-child {
+    margin-bottom: 10px;
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-panel {
+    float: right;
+    position: relative;
+    margin-top: 22px;
+    width:800px;
+}      
+</style>
+  <script>
+  $( document ).ready(function() {
+    $('#tabs')
+    .tabs()
+    .addClass('ui-tabs-vertical ui-helper-clearfix');
+});
+      
+  </script>
+ </head>
+ <body>
+  <!--<h1>Preview 1</h1>
+  <embed src="/_swf/190003/sfc/flex/DocViewer.swf" flashvars="shepherd_prefix=/sfc/servlet.shepherd&v=068O0000000STWaIAO&mode=chatter_bubble&in_tests=false" width="100%" height="100%" align="middle" id="renditionLarge" quality="high" bgcolor="#f3f3f3" name="renditionLarge" allowscriptaccess="always" allowfullscreen="true" pluginspage="http://www.adobe.com/go/getflashplayer" wmode="opaque" type="application/x-shockwave-flash"></embed> -->
+  <!--<apex:repeat value="{!attachInfos}" var="attachment">
+      <div class="item">
+        <a href="" style="cursor: pointer;">{!attachment.fileName}|{!attachment.requiredDocName}|{!attachment.docSize} </a> <div><embed src="{!URLFOR($Action.Attachment.Download, attachment.attchmentId)}" style="width:100%; height:950px;"></embed></div>
+      </div>
+  </apex:repeat> -->
+<div id="tabs">
+	{!IF(attachInfos.size == 0,"<h1>There is no file can be previewed</h1>", "")}
+    <div style="float:left;">
+    <ul>
+        <apex:repeat value="{!attachInfos}" var="attachment">
+            <li>
+                <a href="#{!attachment.attchmentId}">{!attachment.fileName}</a>
+            </li>
+        </apex:repeat>
+    </ul>
+    </div>
+    <apex:repeat value="{!attachInfos}" var="attachment">
+        <div id="{!attachment.attchmentId}">
+            Required Doc Name : {!attachment.requiredDocName}<br/>
+            Document Size : {! attachment.docSize } KB<br/>
+            <div><embed src="{!URLFOR($Action.Attachment.Download, attachment.attchmentId)}" style="width:100%; height:950px;"></embed></div>
+        </div>
+    </apex:repeat>
+</div>
+</body>
+</html>
+</apex:page>
