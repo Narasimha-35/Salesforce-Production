@@ -13,13 +13,14 @@ public without sharing class PreviewFileController {
         oppoId = opportunityId;
         attachInfos = new List<AttachmentWithReqInfo>();
         List<Required_Document__c> requiredDocs = [select Id, Name, acfStatus__c From Required_Document__c where acfOpportunity__c = :opportunityId];
+        System.debug('opportunityId' + opportunityId);
+        System.debug('requiredDocs' +  requiredDocs.size());
         if (requiredDocs != null && requiredDocs.size() > 0) {
             Map<String, String> requriedDoceNameAndId = new Map<String, String>();
             for (Required_Document__c requiredDoc : requiredDocs) {
                 requriedDoceNameAndId.put(requiredDoc.Id, requiredDoc.Name);
             }
             List<Attachment> attachments = new List<Attachment>();
-            List<Attachment> attachmentsOppo = new List<Attachment>();
             attachments = [select id, name, body, BodyLength, ParentId from attachment where ParentId in :requiredDocs];
             if (attachments.size() > 0) {
                 for (Integer i = 0 ; i < attachments.size() ; i ++) {
@@ -33,19 +34,38 @@ public without sharing class PreviewFileController {
                     }
                 }
             }
-            attachmentsOppo = [select id, name, body, BodyLength, ParentId from attachment where ParentId = :oppoId ];
-            if (attachmentsOppo.size() > 0) {
-                for (Integer i = 0 ; i < attachmentsOppo.size() ; i ++) {
-                    if (attachmentsOppo.get(i).ParentId != null) {
-                        AttachmentWithReqInfo attachInfo = new AttachmentWithReqInfo();
-                        attachInfo.requiredDocName = '';
-                        attachInfo.docSize = attachmentsOppo.get(i).BodyLength != null ? Integer.valueOf(attachmentsOppo.get(i).BodyLength / 1024) : 0;
-                        attachInfo.fileName = attachmentsOppo.get(i).Name;
-                        attachInfo.attchmentId = attachmentsOppo.get(i).Id;
-                        attachInfos.add(attachInfo);
-                    }
+        }
+        List<Attachment> attachmentsOppo = new List<Attachment>();
+        attachmentsOppo = [select id, name, body, BodyLength, ParentId from attachment where ParentId = :oppoId ];
+        if (attachmentsOppo.size() > 0) {
+            for (Integer i = 0 ; i < attachmentsOppo.size() ; i ++) {
+                if (attachmentsOppo.get(i).ParentId != null) {
+                    AttachmentWithReqInfo attachInfo = new AttachmentWithReqInfo();
+                    attachInfo.requiredDocName = '';
+                    attachInfo.docSize = attachmentsOppo.get(i).BodyLength != null ? Integer.valueOf(attachmentsOppo.get(i).BodyLength / 1024) : 0;
+                    attachInfo.fileName = attachmentsOppo.get(i).Name;
+                    attachInfo.attchmentId = attachmentsOppo.get(i).Id;
+                    attachInfos.add(attachInfo);
                 }
             }
+        }
+        if (attachInfos.size() > 0) {
+        	List<AttachmentWithReqInfo> attachInfoP1 = new List<AttachmentWithReqInfo>();
+        	List<AttachmentWithReqInfo> attachInfoP2 = new List<AttachmentWithReqInfo>();
+        	for (AttachmentWithReqInfo attachInfo : attachInfos) {
+        		String fileName = attachInfo.fileName != null ? attachInfo.fileName.toLowerCase() : '';
+        		if (fileName.indexOf('.pdf') != -1 || fileName.indexOf('.png') != -1 || fileName.indexOf('.jpeg') != -1 || fileName.indexOf('.jpg') != -1 || fileName.indexOf('.gif') != -1) {
+        				attachInfoP1.add(attachInfo);
+        			} else{
+        				attachInfoP2.add(attachInfo);
+        			}
+        	}
+        	if (attachInfoP1.size() > 0) {
+        		attachInfoP1.addAll(attachInfoP2);
+        		attachInfos = attachInfoP1;
+        	} else {
+        		attachInfos.clear();	
+        	}
         }
     }
 

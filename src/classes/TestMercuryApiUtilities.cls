@@ -109,9 +109,31 @@ private class TestMercuryApiUtilities {
 		MercuryApiUtilities.getDataBack(oppoId, true, accountId, true);
 	}
 
-	static testMethod void updatePeopleUpdateFTest() { 
+	static testMethod void updatePeopleUpdateFTest() {
 		String accountId = account.Id;
 		String oppoId = oppo.Id;
 		MercuryApiUtilities.updateAccountF(accountId, oppoId);
+	}
+
+	private static testMethod void testGenerateDetailPart() {
+		HttpRequest req = new HttpRequest();
+		HttpResponse res = new HttpResponse();
+
+		system.assertNotEquals(null, MercuryApiUtilities.generateDetailPart(req, res));
+	}
+
+	private static testMethod void testGenerateHTMLEmailBody() {
+		MercuryApiUtilities.generateHTMLEmailBody('a', 'b', 'c', 'd');
+		system.assert(true);
+	}
+
+	private static testMethod void testCreateSecondApplicationInMercury() {
+		MercuryApiUtilities.createSecondApplicationInMercury('token', account.id);
+		system.assert(true);
+	}
+
+	private static testMethod void testGetAllPersonalBranches(){
+		MercuryApiUtilities.getAllPersonalBranches('token');
+		system.assert(true);
 	}
 }

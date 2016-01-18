@@ -61,6 +61,7 @@
       </div>
   </apex:repeat> -->
 <div id="tabs">
+	{!IF(attachInfos.size == 0,"<h1>There is no file can be previewed</h1>", "")}
     <div style="float:left;">
     <ul>
         <apex:repeat value="{!attachInfos}" var="attachment">
