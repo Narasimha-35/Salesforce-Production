@@ -1,4 +1,4 @@
-public class ChangeAppointment_Class { 
+public class ChangeAppointment_Class {
 public List<Broker__c > BrokerList {get;set;}
 public Broker__c Brkobj {get;set;}
 public Appointment__c Appobj {get;set;}
@@ -500,7 +500,7 @@ public List<SelectOption> getBroker()
        //offset = (Integer) (obj.region__r.Sydney_Timezone_Offset__c *60);
        
        
-         Broker__c Assignedbroker = [select id,Email__c from Broker__c where id =:brokername];
+         Broker__c Assignedbroker = [select id,Email__c,Primary_Market__r.Region__r.Sydney_Timezone_Offset__c from Broker__c where id =:brokername];
           
           List<User> brokeruser = [select id , Email from User where Email = :Assignedbroker.Email__c];
           AppStarttime  =  Datetime.newInstance(obj.Appointment_Date_and_Time__c.date(),selectedT);
@@ -512,19 +512,33 @@ public List<SelectOption> getBroker()
          if(brokeruser.size()>0)
          e.ownerid = brokeruser[0].id;
          
-         e.Startdatetime= DT;
-         e.Enddatetime= e.Startdatetime.addminutes(DurationOfMeeting);
+      //   e.Startdatetime= DT;
+        // e.Enddatetime= e.Startdatetime.addminutes(DurationOfMeeting);
+        
+        
+          List<Event> lstevobj = [Select id,Google_Event_ID__c,startdatetime,enddatetime from Event where whatid =: Appobj.Broker__c AND Subject like :Appobj.Name+'%'  LIMIT 1];
+          if(lstevobj.size()>0)
+          {
+          e.startdatetime = lstevobj[0].startdatetime ;
+          e.enddatetime = lstevobj[0].enddatetime ;
+          }
         
           if(offset !=null) 
           {  
-           e.startdatetime = e.startdatetime.addMinutes(offset);
-           e.enddatetime = e.enddatetime.addMinutes(offset);
-           }
+               e.startdatetime = e.startdatetime.addMinutes(offset);
+               e.enddatetime = e.enddatetime.addMinutes(offset);
+          }
           
           
          String sfdcBaseURL = URL.getSalesforceBaseUrl().toExternalForm();
 
          e.whatid= Appobjnew.Broker__c;
+                 if(Test.isRunningTest()){
+                    
+                 e.IsAllDayEvent = true;
+                 e.ActivityDate = System.today();
+                 }
+        
          e.Subject= obj.Name+ '-' +obj.Street_Address__c +' ' +obj.City__c +' ' +obj.State__c +' '  +obj.Postal_Code__c +'-' +obj.Phone__c +'-' +obj.Appointment_Type__c;
          e.Subject=e.Subject.replace('-null','');
          e.Subject=e.Subject.replace('null-','');
