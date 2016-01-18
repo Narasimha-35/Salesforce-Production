@@ -48,15 +48,18 @@ public class wlLoanDashboardController
         If(lstUser != null && lstUser.size()>0){
            isPasswordReset = lstUser[0].acfIs_Password_Reset__c;
         }
-        OpportunityId = clickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');        
+        OpportunityId = clickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');       
+        system.debug('OpportunityId******'+OpportunityId); 
         if(OpportunityId <> null)
         {
            double HouseValue,LVR;   
            List<Opportunity>lstOpportunity = [select id,Account.acfCurrent_Loan_Amount__pc,stageName,Description,acfApproval_Conditions__c,acfDate_Conditionally_Approved__c,acfDate_Formally_Approved__c,acfDate_Docs_Generated__c,acfExpected_Settlement_Date__c,acf_Status__c,Account.acfCurrent_Rate__pc,Account.acfApproximately_how_much_is_your_house__pc,Account.acfWhat_is_your_current_payment_type__pc,acfTenure__c from opportunity where AccountId<>null and id=:OpportunityId];
            system.debug('@#%#$%lstOpportunity'+lstOpportunity);
-           
+           system.debug('@#%#$%lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc'+lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc);
+           system.debug('@#%#$%lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc '+lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc );
            if(lstOpportunity <> null && lstOpportunity.size()>0 && lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc <> null && lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc <> null)
            {
+               
                
                 if(IsValidDecimal(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc))
                       HouseValue = double.valueof(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc);
@@ -69,12 +72,14 @@ public class wlLoanDashboardController
                //Displaying Loan Products if Opportunity status is Application   
                if(lstOpportunity[0].stageName  == 'Application Taken' /*Added by Sumit*/|| lstOpportunity[0].stageName == 'Appointed')
                {
+                 system.debug('Ankit*******4');
                  strDescription = lstOpportunity[0].Description;
                  DisplayLoanProducts(OpportunityId,HouseValue,LVR,lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc,lstOpportunity[0].Account.acfWhat_is_your_current_payment_type__pc);
                  IsApplication = true;
                }
                else if(lstOpportunity[0].stageName  == 'Approval')
                {
+                  system.debug('Ankit*******3');
                   strDescription = lstOpportunity[0].Description;
                   strCustomLabelValue = 'AcfApproval';
                   if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
@@ -84,6 +89,7 @@ public class wlLoanDashboardController
                }
                else if(lstOpportunity[0].stageName  == 'Loan Document')
                {
+                  system.debug('Ankit*******2');
                   strDescription = lstOpportunity[0].Description;
                   strCustomLabelValue = 'acfLoanDocument';
                   if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
@@ -96,6 +102,7 @@ public class wlLoanDashboardController
                }  
                else if(lstOpportunity[0].stageName  == 'Settlement' && lstOpportunity[0].acf_Status__c  == 'Approved and pending settlement')
                {
+                    system.debug('Ankit*******1');
                     strDescription = lstOpportunity[0].Description;
                     strCustomLabelValue = 'AcfSettlement';
                     if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
@@ -108,8 +115,9 @@ public class wlLoanDashboardController
                         DateExpectedSettlement = ConvertDateToString(lstOpportunity[0].acfExpected_Settlement_Date__c); 
                     IsSettlement = true;
                }
-               else if(lstOpportunity[0].stageName  == 'Settlement' && lstOpportunity[0].acf_Status__c  == 'Settled')
+               else if(lstOpportunity[0].stageName  == 'Settled' && lstOpportunity[0].acf_Status__c  == 'Settled')
                {
+                    system.debug('Ankit*******'+lstOpportunity[0].stageName);
                     strDescription = lstOpportunity[0].Description;
                     strCustomLabelValue = 'acfLoan_Dashboard_Settled';
                     if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
