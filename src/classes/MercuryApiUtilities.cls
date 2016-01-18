@@ -7,7 +7,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	public static List<String> recipients = null;
 	public static String debugEmailTemplate = null;
 	public static List<Map<String, String>> pendingEmails = null;
-	
+
 	public static void init() {
 	    ACFSwitch__c acfswh = ACFSwitch__c.getOrgDefaults();
 		emailSwh = (Boolean) acfswh.get('Mercury_Email_Switch__c');
@@ -19,13 +19,13 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
         debugEmailTemplate = doc.body.toString();
         pendingEmails = new List<Map<String, String>>();
 	}
-	
+
 	@future(callout=true)
 	public static void syncWithMercury(String oppoId, String accountId) {
 	    init();
 		String token = MercuryApiUtilities.loginToMercury();
 		String branchId = getBrokerBranch(oppoId);
-		
+
 		//Create Oppo
 		Opportunity oppo = MercuryApiUtilities.createOppoInMercury(token, oppoId, branchId);
 		//Create People
@@ -33,10 +33,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		//Create Connection between Oppo and People
 		String oppoAndaccountId = oppoId + '-' + accountId;
 		MercuryApiUtilities.createLoanPeopleInMercury(token, oppoAndaccountId, oppoId, accountId);
-		
+
 		update oppo;
 		update contact;
-		
+
 		system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
         for(Map<String, String> pe : pendingEmails) {
             Utilities.sendEmail(recipients, 'Salesforce Debug', generateHTMLEmailBody(APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details')));
@@ -60,7 +60,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			getPeopleAndSaveOnAccount(token, accountId, isSalesforceAccountId);
 		}
 	}
-	
+
 	@future(callout=true)
 	public static void updateAccountF(String accountId, String oppoId) {
 		if (oppoId != null && accountId != null) {
@@ -76,39 +76,39 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			MercuryApiUtilities.updatePeopleInMercury(accountId, token, branchId);
 		}
 	}
-	
+
 	public static String loginToMercury() {
 		HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         req.setHeader('Content-Type', 'application/x-www-form-urlencoded');
         req.setEndPoint('https://api.connective.com.au/api/mercuryLogin5.jsp');
-        req.setBody('username=' + USER_NAME + '&password=' + PASSWORD + '&application=' + APPLICATION);  
-                             
+        req.setBody('username=' + USER_NAME + '&password=' + PASSWORD + '&application=' + APPLICATION);
+
         req.setMethod(AbstractWebService.HTTP_METHOD_POST);
         String token = '';
         if (Test.isRunningTest()) {
+			  res.setStatusCode(200);
         	res.setBody('<?xml version="1.0" encoding="iso-8859-1"?><login><approved>true</approved><first_name>Chen</first_name><last_name>Chen</last_name><state>NSW</state><associateId>CA47482</associateId><resigned>False</resigned><token>f92699d9-42cd-4d0a-8a98-2487dac5f9b7</token></login>');
         	Dom.Document doc = res.getBodyDocument();
         	token = getTokenFromXml(doc);
         } else {
         	res = http.send(req);
-        	
-        	Dom.Document doc = res.getBodyDocument();
-        	token = getTokenFromXml(doc);
-        	
-        	if(res.getStatusCode() != 200 || !getApproveFromXml(doc) || token == null) {
-        	    if(emailSwh) {
-        	        pendingEmails.add(new Map<String, String>{'methodName' => 'loginToMercury', 'details' => generateDetailPart(req, res)});
-        	    }
-        	}
         }
+				Dom.Document doc = res.getBodyDocument();
+				token = getTokenFromXml(doc);
+				if(res.getStatusCode() != 200 || !getApproveFromXml(doc) || token == null) {
+						if(emailSwh) {
+								pendingEmails.add(new Map<String, String>{'methodName' => 'loginToMercury', 'details' => generateDetailPart(req, res)});
+						}
+				}
+
         return token;
 	}
-	
+
 	public static String generateDetailPart(HttpRequest req, HttpResponse res) {
 	    String ret = '';
-	    
+
 	    ret += '<span>Header</span>';
 	    ret += '<p>' + 'Content-Type: ' + req.getHeader('Content-Type') + '</p>';
 	    ret += '<span>End Point</span>';
@@ -122,10 +122,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	    ret += '<p>' + res.getStatusCode() + '</p>';
 	    ret += '<span>Response Body</span>';
 	    ret += '<p>\"'+ res.getBody() + '\"</p>';
-	    
+
 	    return ret;
 	}
-	
+
 	public static String generateHTMLEmailBody(String projectName, String className, String methodName, String detail) {
 	    if(debugEmailTemplate == null) {
 	        Document doc = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
@@ -133,7 +133,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	    }
 	    return debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
 	}
-	
+
 	public static Opportunity createOppoInMercury(String token, String oppoId, String branchId) {
 		Opportunity oppo = [Select Id, Current_Loan_Value__c, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Current_Assigned_Broker__c, Pre_Sales_Notes__c, Transaction_Type__c,  Name From Opportunity Where Id = : oppoId];
 		if (oppo != null) {
@@ -164,14 +164,14 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			} else {
 				//Mark sync with mercury checkbox ticked
 				oppo.Sync_With_Mercury__c = true;
-				
+
 				pendingEmails.add(new Map<String, String>{'methodName' => 'createOppoInMercury', 'details' => generateDetailPart(req, res)});
 			}
 			return oppo;
 		}
 		return oppo;
 	}
-	
+
 	public static String getBrokerBranch(String oppoId) {
 		//default ACF Branch
 		String acfBranch = 'P200019';
@@ -227,7 +227,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		        Http http = new Http();
 		        req.setHeader('Content-Type', 'application/json');
 
-		        	
+
 			}
 		}
 	}
@@ -272,7 +272,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 				gender = 'F';
 			}
 			String jobTitle = contact.Job_Title__c !=  null ? contact.Job_Title__c : '';
-			//String 
+			//String
 			HttpRequest req = new HttpRequest();
 	        HttpResponse res = new HttpResponse();
 	        Http http = new Http();
@@ -319,7 +319,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	        System.debug('https://api.connective.com.au/api/mercury5/' + token + '/person/' + accountId + '?changes=' + Encodingutil.urlEncode(changeString, 'UTF-8'));
 	        String jsonToSendOver = '{"uniqueId":"' + accountId + '","isDeleted":false,"createdOn":null,"deletedOn":null,"firstName":"' + peopleFirstName + '","lastName":"' + peopleLastName + '","driversLicenceExpiry":null,"dateOfBirth":' + birthday + ',"employmentCommenced":null,"phoneDisplayType1":"Home","phoneDisplayType2":"Mobile","phoneDisplayType3":"Business","phoneDisplayType4":"Business Fax","addressDisplay":"","numberOfDependents":' + childrenNum + ',"personDataType":"Full","contactType":null,"doNotMail":false,"markAsPrivate":false,"annualSalary":' + annualSalary + ',"emailBounced":false,"company":"' + branchId + '","deletedBy":null,"createdBy":"CA47482","isNew":null,"middleName":"","salutation":"","title":"","occupation":"' + currentRole + '","employer":"' + employerName + '","jobTitle":"' + currentRole + '","maritalStatus":"' + maritalStatus + '","driversLicenceNumber":"","driversLicenceState":"","gender":"","employmentStatus":"","homePhone":"","businessPhone":"","mobile":"","email":"","notes":"","relationshipManager":"","abn":null,"acn":null,"trustName":null,"homeSuburb":null,"funambolUsers":null,"importDocumentId":"","partnerName":"","webPassword":"","webAccess":false,"fullName":"","salutationOrFirstName":"","lastNameCompany":"","firstNameCompany":"","abnCompany":"","acnCompany":"","trustNameCompany":"","relationshipManagerCompany":"","textfield-1575-inputEl":"","textfield-1580-inputEl":"","textfield-1585-inputEl":"","textfield-1590-inputEl":"","cbEmailType":"Email 1","emailValue":"' + email + '","textareafield-1607-inputEl":"","textareafield-1627-inputEl":"","textareafield-1634-inputEl":""}';
 	        req.setBody(jsonToSendOver);
-	        System.debug(jsonToSendOver);  
+	        System.debug(jsonToSendOver);
 			req.setMethod('PUT');
 			if (Test.isRunningTest()) {
 	        	res.setBody('');
@@ -327,7 +327,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
         		res = http.send(req);
         	}
         	System.debug(res.getBody());
-		}		
+		}
 	}
 
 	public static Contact createPeopleInMercury(String token, String accountId, String branchId) {
@@ -355,7 +355,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 				gender = 'F';
 			}
 			String jobTitle = contact.Job_Title__c !=  null ? contact.Job_Title__c : '';
-			//String 
+			//String
 			HttpRequest req = new HttpRequest();
 	        HttpResponse res = new HttpResponse();
 	        Http http = new Http();
@@ -364,19 +364,19 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	        req.setEndPoint('https://api.connective.com.au/api/mercury5/' + token + '/person?changes=' + Encodingutil.urlEncode(jsonChange, 'UTF-8'));
 	        String jsonToSendOver = '{"uniqueId":"' + accountId + '","isDeleted":false,"createdOn":"' + createdTime + '","deletedOn":null,"firstName":"' + peopleFirstName + '","lastName":"' + peopleLastName + '","driversLicenceExpiry":"","dateOfBirth":' + birthday + ',"employmentCommenced":"","phoneDisplayType1":"Home","phoneDisplayType2":"Mobile","phoneDisplayType3":"Business","phoneDisplayType4":"Business Fax","addressDisplay":"","numberOfDependents":' + childrenNum + ',"personDataType":"Full","contactType":null,"doNotMail":false,"markAsPrivate":false,"annualSalary":' + annualSalary + ',"emailBounced":false,"driversLicenceState":"NSW","company":"' + branchId + '","createdBy":"CA47482","homePhone":"' + homePhone + '","mobile":"' + mobile + '","businessPhone":"","title":"' + title + '","middleName":"","salutation":"","gender":"' + gender +'","maritalStatus":"' + maritalStatus + '","lastNameCompany":"","firstNameCompany":"","abnCompany":"","acnCompany":"","trustNameCompany":"","relationshipManagerCompany":"CA48099","textfield-3310-inputEl":"","cbEmailType":"Email 1","emailValue":"' + email + '","email":"' + email +'","textareafield-3327-inputEl":"","employer":"' + employerName + '","occupation":"' + currentRole + '","jobTitle":"' + jobTitle + '","employmentStatus":"' + employmentType + '","driversLicenceNumber":"","textareafield-3347-inputEl":"","textareafield-3354-inputEl":"","relationshipManager":"","notes":"","contactMethods":[{"uniqueId":"' + accountId + '-contactHome' + '","isDeleted":false,"createdOn":null,"deletedOn":null,"content":"' + homePhone.replace('+','') + '","contactMethod":"Home","personID":"' + accountId + '"},{"uniqueId":"' + accountId + '-contactMobile' + '","isDeleted":false,"createdOn":null,"deletedOn":null,"content":"' + mobile.replace('+','') + '","contactMethod":"Mobile","personID":"' + accountId + '"},{"uniqueId":"' + accountId + '-contactBusiness' + '","isDeleted":false,"createdOn":null,"deletedOn":null,"content":"","contactMethod":"Business","personID":"' + accountId + '"},{"uniqueId":"' + accountId + '-contactBusinessFax' + '","isDeleted":false,"createdOn":null,"deletedOn":null,"content":"","contactMethod":"Business Fax","personID":"' + accountId + '"},{"uniqueId":"' + accountId + '-contactEmail' + '","isDeleted":false,"createdOn":null,"deletedOn":null,"content":"' + email +  '","contactMethod":"Email 1","personID":"' + accountId + '"}]}';
 	        req.setBody(jsonToSendOver);
-	        System.debug(jsonToSendOver);  
+	        System.debug(jsonToSendOver);
 			req.setMethod(AbstractWebService.HTTP_METHOD_POST);
 			if (Test.isRunningTest()) {
 	        	res.setBody('');
         	} else {
         		res = http.send(req);
         	}
-        	
+
         	System.debug(res.getBody());
         	System.debug(res.getStatusCode());
-        	
+
 			if (String.valueOf(res.getBody()) == '') {
-				//Mark sync with mercury checkbox ticked            
+				//Mark sync with mercury checkbox ticked
 				contact.Sync_With_Mercury__c = true;
 				//Mark sync with mercury success ticked
 				contact.Sync_With_Mercury_Success__c = true;
@@ -384,16 +384,16 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			} else {
 				//Mark sync with mercury checkbox ticked
 				contact.Sync_With_Mercury__c = true;
-				
+
                 pendingEmails.add(new Map<String, String>{'methodName' => 'createPeopleInMercury', 'details' => generateDetailPart(req, res)});
 			}
-			
+
 			//update opportunity
 			return contact;
 		}
 		return null;
 	}
-	
+
 	//Sync relationship between opportunity and account
 	public static void createLoanPeopleInMercury(String token, String oppoAndaccountId, String oppId, String accountId) {
 		HttpRequest req = new HttpRequest();
@@ -403,7 +403,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
         req.setHeader('Content-Type', 'application/json');
         req.setEndPoint('https://api.connective.com.au/api/mercury5/' + token + '/loanPeople');
         String jsonToSendOver = '{"uniqueId":"' + oppoAndaccountId + '","isDeleted":false,"createdOn":"' + createdTime + '","deletedOn":null,"company":"P200019","createdBy":"CA47482","loanID":"' + oppId + '","personID":"' + accountId + '","fullName":"' + oppoAndaccountId + '","relationship":"Primary Applicant"}';
-        req.setBody(jsonToSendOver);  
+        req.setBody(jsonToSendOver);
 		req.setMethod(AbstractWebService.HTTP_METHOD_POST);
 		if (Test.isRunningTest()) {
 	        	res.setBody('');
@@ -479,7 +479,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			}
 		}
 	}
-	
+
 	@future(callout=true)
 	public static void getPeopleAndSaveOnAccount(String token, String accountId, Boolean isSalesforceId) {
 		HttpRequest req = new HttpRequest();
@@ -580,7 +580,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		req.setEndpoint(url);
 		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
 		if (Test.isRunningTest()) {
-				res.setBody('');
+				res.setBody('{"success":true,"partnerList":[{"uniqueId":"09942540-da5d-47ba-b662-b0315c52ef5f","company":null,"isDeleted":null,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"parentId":"P200019","name":"Adam Harling","businessEntityName":null,"postalAddressLine1":null,"postalAddressLine2":null,"postalCity":null,"postalState":null,"postalPostCode":null,"phone":null,"fax":null,"otherPhone":null,"abn":null,"userDefinedId":"AH","zendeskId":null,"bdm":null,"myMarketingPlanId":null,"oneTouch":null,"children":null,"linkedPartners":null,"vcCategories":null,"finconnect":false,"ybr":false}]}');
 			} else {
 				res = http.send(req);
 			}
@@ -590,7 +590,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			List<Object> partnerList = (List<Object>) results.get('partnerList');
 			List<Broker__c> brokersU = new List<Broker__c>();
 			Map<String, String> brokerAndMercury = new Map<String, String>();
-			Set<String> brokerNames = new Set<String>(); 
+			Set<String> brokerNames = new Set<String>();
 			if (partnerList.size() > 0) {
 				for (Integer i = 0 ; i < partnerList.size(); i ++) {
 					Map<String, Object> partner = (Map<String, Object>) partnerList.get(i);
@@ -600,7 +600,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 					if (brokerName != null && mercuryId != null) {
 						brokerAndMercury.put(brokerName, mercuryId);
 						brokerNames.add(brokerName);
-						
+
 					}
 				}
 			}
@@ -617,7 +617,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
     public static boolean getApproveFromXml(Dom.Document doc) {
         Boolean ret = false;
-        
+
         if(doc != null) {
             Dom.Xmlnode node = doc.getRootElement();
             if (node != null && node.getNodeType() == DOM.XMLNodeType.ELEMENT) {
@@ -630,7 +630,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 				}
 			}
         }
-        
+
         return ret;
     }
 
@@ -657,7 +657,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		System.debug(gmtTimeValue);
 		return gmtTimeValue;
 	}
-	
+
 	public static String convertCurrentTimeToGMTWithTimeZone() {
 		String gmtTimeValue = String.valueOfGmt(Datetime.now());
 		gmtTimeValue = gmtTimeValue.replace(' ', 'T') + '+10:00';
