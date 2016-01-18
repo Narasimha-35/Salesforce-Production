@@ -1,0 +1,1839 @@
+<apex:page docType="html-5.0" standardStylesheets="false" showHeader="false" action="{!checkQuestionStaus}" controller="acfpostloginQuestionsController_partner" extensions="acfAssetLiabilitiesController_partner" cache="false" id="pgid"  >
+    <html>
+        <head>
+            <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+            <title>Question Stage1</title>
+            <link href="{!URLFOR($Resource.acfResources, 'acfResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+            <link href="{!URLFOR($Resource.datepick)}" rel="stylesheet" />
+            <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/nav.js')}"></script>
+            <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/html5.js')}"></script>
+            <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/jquery.glide.min.js')}"></script>
+            <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/slide.js')}"></script>
+            <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+            <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/> 
+            <apex:includeScript value="{!URLFOR($Resource.DatePickerJS,'JqueryDatePick/jquery.plugin.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.DatePickerJS,'JqueryDatePick/jquery.datepick.js')}"/>  
+            <script>
+            $(function() { 
+                $('.popupDatepicker').datepick({
+                    dateFormat: 'dd/mm/yyyy',
+                    changeMonth: true,
+                    yearRange : '1930:2025',
+                    changeYear: true});               
+           
+                $('#inlineDatepicker').datepick({onSelect: showDate});
+            });  
+           
+            function showDate(date1) {
+                $('[id$=schdateId]').val(date1);
+            }
+            
+            function slide()
+            {
+                //alert($('[id$=ipthdn]').val());
+                //alert('TEST'+$('[id$=ipthdndependent]').val());
+                
+                if($('[id$=ipthdn]').val() === 'true')
+                {
+                    $('.slider-arrow--right').trigger('click');
+                }
+                if($('[id$=ipthdndependent]').val()>0)
+                {
+                    for(var i=0;i<($('[id$=ipthdndependent]').val()-1);i++)
+                    {   
+                        $('.slider-arrow--right').trigger('click');
+                    }   
+                }   
+                if($('[id$=ipthdnISDependentSkip]').val() === 'true')
+                {
+                    $('.slider-arrow--right').trigger('click');
+                }
+                if($('[id$=idhdnMasterQues]').val() == 0)
+                {
+                    //  $('#goBackLinkId').addClass('displaynone');  
+                    $('[id$=goBackLinkId]').css('display','none');
+                }
+                else
+                {
+                    $('[id$=goBackLinkId]').css('display','inline-block');
+                }
+                //abc();
+            }
+            function Backslide()
+            {
+                //alert('TEST'+$('[id$=ipthdndependent]').val());
+                if($('[id$=ipthdn]').val() === 'true')
+                {
+                    //alert('single');
+                    $('.slider-arrow--left').trigger('click');
+                    
+                }
+                if($('[id$=ipthdndependent]').val()>0)
+                {
+                    //alert('multiple');
+                    for(var i=0;i<($('[id$=ipthdndependent]').val()-1);i++)
+                    {   
+                        $('.slider-arrow--left').trigger('click');
+                    }   
+                }
+                if($('[id$=ipthdnISDependentSkip]').val() === 'true')
+                {
+                    $('.slider-arrow--left').trigger('click');
+                }
+                if($('[id$=idhdnMasterQues]').val() == 0){
+                    //  $('#goBackLinkId').addClass('displaynone');  
+                    $('[id$=goBackLinkId]').css('display','none');
+                }
+                //abc();
+            }
+            function showReqPopup(strParentType,strChildType)
+            {
+                // alert('hai'+strChildType);
+                //var strparent = strParentType;
+                $('[id$=hdnparentTypeId]').val(strParentType);
+                $('[id$=hdnChildTypeId]').val(strChildType);
+                if(strParentType === 'Assets')
+                {
+                    $('[id$=assetHeadingId]').css('display','block');
+                    $('[id$=liabilityHeadingId]').css('display','none');
+                    $('[id$=assetActionBtnId]').css('display','block');
+                    $('[id$=liabActionBtnId]').css('display','none');
+                } else{
+                    $('[id$=assetHeadingId]').css('display','none');
+                    $('[id$=liabilityHeadingId]').css('display','block');
+                    $('[id$=assetActionBtnId]').css('display','none');
+                    $('[id$=liabActionBtnId]').css('display','block');
+                }   
+                //resetPopup(); 
+                $('[id$=cmdResetPnl]').trigger('click');
+                $('#reqcallPopId').css('display','block');
+            }
+            
+            $(document).ready(function ()
+                              {
+                                  var iptotalQuesSlide=$('[id$=iptotalQuesSlide]').val();
+                                  var ipthdnIndex=$('[id$=ipthdnIndex]').val();
+                                  if('{!skipConsentQuestion}'=='true'){
+                                      //alert('hello123'+ipthdnIndex);
+                                      //iptotalQuesSlide++;
+                                      ipthdnIndex++;
+                                  }
+                                  //alert('hello {!skipConsentQuestion}'+($('[id$=iptotalQuesSlide]').val()));
+                                  for(var i=0;i<iptotalQuesSlide;i++)
+                                  {
+                                      $('.slider-arrow--right').trigger('click');
+                                  } 
+                                  for(var i=0;i<($('[id$=ipthdnIndex]').val());i++)
+                                  {
+                                      $('.slider-arrow--right').trigger('click');
+                                  }   
+                                  if('{!IsSlideToNextQues}' === 'true')
+                                  {
+                                      $('.slider-arrow--right').trigger('click');
+                                  }
+                                  if($('[id$=idhdnMasterQues]').val() == 0){
+                                      //  $('#goBackLinkId').addClass('displaynone');  
+                                      $('[id$=goBackLinkId]').css('display','none');
+                                  }
+                                  /* $('[id$=btnAsset]').click(function(e)
+{
+setTimeout(AssetsAndLiablities, 3000);                
+setTimeout(test, 5000);
+});*/
+    
+    
+    $('.clsOnlynumeric').keypress(function(e) 
+                                  {
+                                      var keyCode;
+                                      if (window.event) // IE
+                                      {
+                                          keyCode = e.keyCode;
+                                      }
+                                      else if (e.which) // Netscape/Firefox/Opera
+                                      {
+                                          keyCode = e.which;
+                                      }
+                                      
+                                      if (keyCode == 46 && $(this).val().indexOf(".") < 1) {
+                                          return true;
+                                      }
+                                      
+                                      return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8) || (keyCode == 13));
+                                  }); 
+    
+                                 $('.popupDatepicker').click(function ()
+                                {
+                                    
+                                    var txtoffset = $('.popupDatepicker').offset(); 
+                                    //$('.datepick').offset({ top: txtoffset.top+50});
+                                    //$('.datepick').offset({ left: txtoffset.left+5});
+                                });
+    $('#reqCallFadedId').click(function () 
+                               {
+                                   $('#reqcallPopId').css('display','none');
+                               });
+    $('#reqPopCloseId').click(function () 
+                              { 
+                                  $('#reqcallPopId').css('display','none');
+                              });  
+    
+});
+    function assetPopupClose(){  
+        $('#reqcallPopId').css('display','none');
+    }
+    
+    function showNewQuesPnl(shwPnlid,HidePnlId)
+    {
+        $('#'+shwPnlid).css('display','block');
+        $('#'+HidePnlId).css('display','none');
+    } 
+    
+    </script>
+    <style>
+        .hide_btn{
+        display:none;
+        
+        }
+        .plcholder_61:before {
+        left:28px;
+        top: 14px;
+        color: #999;
+        }
+        .mgpush5{margin-right: -5px;}
+        .mg_move15{margin-left:5px;}
+        .slide-heading{
+        font-size: 2em;
+        font-family: 'open_sanslight';
+        }
+        .container{
+        padding: 0px;
+        }
+        .row-fluid{
+        margin-left: -10px;
+        margin-right: -10px;
+        }
+        .top-tab ul li{
+        padding: 0px;
+        margin-top: 30px;
+        }
+        .top-tab ul li a{  padding: 0px 32px 0px 0px;   line-height: 32px;}
+        .quote_headaer {
+        padding: 35px 0px 20px 0px;
+        }
+        .quote_headaer .h3 {
+        font-family: "Open Sans Bold"!important;
+        font-weight: normal!important;
+        margin: 0px!important;
+        }
+        .liablity_article a.gray_color{
+        float:left;
+        }
+        .inputf
+        {
+        margin-top:45px;
+        margin-left:4px;
+        width: 322px;
+        height: 52px;
+        padding: 5px;
+        font-size: 16px;
+        line-height: 1;
+        border-radius: 8px;
+        height: 52px;
+        //  -webkit-appearance: none;
+        color: #9e9d9d;
+        }
+        .btn-question:last-child{
+        margin-right:auto!important;
+        margin-bottom:15px!important;
+        }
+        .relQues-margin {
+        //margin-left: 13%;
+        }
+        .btW_equalizer{
+        white-space: normal;
+        word-wrap: break-word; 
+        width: 70%;
+        }
+        .ui-autocomplete
+        {
+        top: 490px !important;
+        left: 530px !important;
+        position: absolute;
+        color: #1F8BCC;
+        }
+        .btn-question.q-right.prlelogin-ques{
+        margin-left: 22%;
+        }
+        .preloader
+        {
+        position:absolute;
+        //top:-5%;
+        //left:24%;
+        left: 12%;
+        }
+        .datepick-popup
+        {
+        top: 306px !important;
+        left: 511.15625px !important;
+        }
+        .inputf.input_wpercent{
+        width: 87%;
+        }
+        .quest-back-btn img{
+        margin-top:96px;
+        }
+        @media (max-width: 800px){
+        .container{
+        padding: 0px 10px;
+        }
+        
+        .mgpush5{ margin-right: 0px;}
+        .datepick-popup{
+        top: 140% !important;
+        left: 30% !important;
+        }  
+        .btW_equalizer{
+        width:190px;
+        }
+        .inputf.input_wpercent{
+        margin-left:0px;
+        width: 80%;
+        }
+        .inputf.dolor_input{
+        margin-left:0px;
+        }
+        .quest-back-btn img{
+        margin-top:19px;
+        }
+        }
+        /*** Date picker*****/
+        .datepick-month thead{border:none; }
+        
+        .datepick-month td{
+        border:none;
+        background-color:transparent;
+        }
+        
+        .datepick-month th{
+        background-color:transparent;
+        border:none;
+        color:#000;
+        }
+        
+        .datepick-month-header select{
+        background-color:#fff;
+        box-shadow:inset #999 0px 0px 3px 0px;
+        color:#000;
+        font-size:0.8em;
+        }
+        .datepick{
+        border:none; box-shadow:#999 0px 0px 8px 0px; 
+        margin-left: -199px;
+        margin-top: -84px;
+        
+        }
+        
+        .datepick-nav{
+        background-color:#fff;
+        }
+        .datepick a,.datepick-month td .datepick-weekend{
+        color:#000;
+        background-color:transparent;
+        }
+        .datepick a:hover{
+        background-color:transparent;
+        }
+        .datepick-month{border:none;}
+        .datepick-month-header{
+        background-color:transparent; 
+        }
+        .datepick-ctrl{
+        display:none;
+        }
+        
+        .dolor_iconAsset:before{
+        content: '$';
+        display: table;
+        position: absolute;
+        left: 3%;
+        top: 19%;
+        font-size: 1.3em;
+        color: #1f8acb!important;
+        font-style: normal;
+        }
+        .mrgn-left-18
+        {
+        margin-left:18px;
+        }
+        .liablity_article .h3heading {
+        font-family: 'open_sanslight';
+        color: #223972;
+        font-size: 1.2em;
+        font-weight: bold;
+        }
+        
+        /* April changes */
+        .drop_input_custom_30
+        {
+        //background: none;
+        background-color: #fff;
+        border: 1px #eee solid;
+        width: 400px;
+        box-shadow: inset #999 0px 0px 5px -1px;
+        border-radius: 5px;
+        padding: 0px 10px;
+        margin-left: 111px;
+        margin: 10px auto;
+        }
+        .post_log_goback a {
+        font-family: 'open_sanslight';
+        color: #666666;
+        text-decoration: underline;
+        padding-left:0px;
+        text-align: center!important;
+        padding-top: 15px!important;
+        font-size:1em!important;
+        padding-left:0px!important;
+        display:block!important;;
+        }
+        .w_35_prcent{
+        width:35%!important;
+        }
+        
+        @media (max-width: 300px)
+        {
+        .post_log_goback a
+        {
+        padding-left:37%;
+        }
+        }
+        .post_login_may
+        {
+        background-color: #f5f5f5;
+        }
+        
+        .post_logleft_may
+        {
+        background-color: #fff;
+        margin: 25px 0px;
+        border-radius: 5px;
+        border: 1px #dddddd solid;
+        padding: 25px 15px;
+        min-height:466px;
+        }
+        li.slide-form{
+        width:563px;
+        }
+        .nomgn_top{
+        margin-top:0px;
+        padding-top:0px;
+        }
+        .text-center{
+        text-align:center;
+        }
+        .post_slide_question2{
+        width:400px;
+        margin:0 auto;
+        }
+        .post_w100{
+        width:100%!important;
+        }
+        .post_fieldset{
+        width:400px;
+        margin:0 auto;
+        }
+        .post_fieldset table{
+        width: 100%!important;
+        margin:0px!important;
+        }
+        .post_fieldset table tr td{
+        text-align:center!important;
+        }
+        .mgn_auto{
+        margin-left:auto!important;
+        margin-right:auto!important;
+        margin-top:10px!important;
+        }
+        .macafe{
+        text-align:center;
+        margin-top:10px;
+        }
+        .postlog_quote{
+        position:relative;
+        font-size:14px;
+        margin-top:25px;
+        }
+        .quote_headaer{
+        background-color:#353535;
+        padding:35px 0px 16px 0px;
+        text-align:center;
+        border-top-left-radius:5px;
+        border-top-right-radius:5px;
+        }
+        
+        .quote_headaer .h3,
+        .quote_footer .h4{
+        font-family: "Open Sans Bold"!important;
+        color:#fff;
+        font-size:1.62em;
+        text-align:center;
+        
+        }
+        
+        
+        .quote_cont{
+        background-color:#424242;
+        padding:0px 0px 10px 0px;
+        }
+        .pst_quote_grp{
+        position:relative;
+        padding:10px 0px;
+        }
+        .pst_quote_grp h3,
+        .pst_quote_grp h4{
+        color:#b2afaf;
+        font-size:1em;
+        text-align:center;
+        font-family: Arial, Gotham,"Helvetica Neue", Helvetica, sans-serif;
+        font-weight:normal;
+        }
+        .pst_quote_grp h4{
+        font-family: 'OpenSans-Semibold'!important;
+        color:#dedede;
+        font-size:1.6em;
+        }
+        .quote_footer{
+        background-color:#2a8ecc;
+        border-bottom-left-radius:5px;
+        border-bottom-right-radius:5px;
+        padding: 20px 0px 15px 0px;
+        }
+        .quote_footer .h4{
+        font-size:1em;
+        }
+        .cst_progress{
+        border-radius:inherit;
+        height:5px!important;
+        }
+        .progress {
+        height: 20px;
+        overflow: hidden;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+        box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+        }
+        
+        .progress-bar {
+        float: left;
+        width: 0;
+        height: 100%;
+        font-size: 12px;
+        line-height: 20px;
+        color: #fff;
+        text-align: center;
+        background-color: #337ab7;
+        -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+        box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+        -webkit-transition: width .6s ease;
+        -o-transition: width .6s ease;
+        transition: width .6s ease;
+        }
+        .percent_icon:before{
+        right: 19%;
+        top: 30%;
+        }
+        .post_logleft_may{
+        min-height: 480px!important;
+        }
+        .displaynone{
+        display:none;
+        }
+        .newAddBtn
+        {
+        display: inline-block;
+        padding-left: 10px;
+        }
+        .reldolor .dolor_icon:before {
+        top: 20px;
+        }  
+        .dolor_icon:before{
+        left:8px;
+        top:22px;
+        
+        }
+        @media (max-width: 445px){
+        .post_fieldset table tr td {
+        text-align: left!important;
+        display: block;
+        margin: 0px;
+        padding: 0px;
+        padding-bottom: 12px;
+        width: 65%!important;
+        margin-left:30%;
+        }
+        .post_fieldset table{
+        width: 85%!important;
+        margin:0px!important;
+        }
+        
+        .table.checkbox_custom_30 tr td {
+        text-align: center!important;
+        display: block;
+        margin: 0px;
+        padding: 0px;
+        padding-bottom: 12px;
+        width: 100%!important;
+        }
+        table.checkbox_custom_30{
+        width: 100%!important;
+        }
+        }
+        @media (max-width: 800px){
+        .sb-slidebar{padding:0px;}
+        .dolor_icon:before{
+        top: 20px!important;
+        
+        }
+        .btn-question.q-right.prlelogin-ques
+        {
+        width: 100%;
+        margin-left: 0px!important;
+        }
+        .btn-question{
+        width:100%!important;
+        }
+        .post_login_may
+        {
+        margin-top: 0px!important;
+        }
+        .post_fieldset table tr td{text-align:left;width:50%;}
+        .post_slide_question2 {
+        width: 100%!important;
+        }
+        /*      .drop_input_custom_30{
+        width:85%!important;
+        }  */
+        .input-box.inputf + ul.bank-list{
+        margin:0px;}
+        .drop_input_custom_30{width:100%!important;}
+        .input-box + ul.bank-list li{
+        padding:0px;
+        }
+        .btW_equalizer{
+        width:85%;
+        }
+        .inputf.input_wpercent{
+        margin-left:0px!important;
+        width: 100%;
+        }
+        .inputf.dolor_input{
+        margin-left:0px;
+        }
+        .quest-back-btn img{
+        margin-top:19px;
+        }
+        
+        .dolor_icon{
+        position: relative!important;
+        display: block!important;
+        
+        }
+        .percent_icon:before{
+        top : 28%!important;
+        right :8%!important;
+        }
+        }
+        
+        .dolor_icon{
+        position: relative!important;
+        vertical-align:top!important;
+        }
+        
+        .btn-question{
+        width: 50%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top:10px;
+        white-space: normal;
+        font-size:1.3em!important;
+        }
+        @media (max-width: 300px)
+        {
+        .post_log_goback a
+        {
+        padding-left:37%;
+        }
+        
+        }
+        .header {
+        background-color: #fff;
+        min-height: 95px;
+        box-shadow: #ccc 0px 3px 8px;
+        position: relative;
+        z-index:10;
+        }
+        .slider{margin-bottom:0px;}
+    </style>
+    </head>
+    <body>
+        
+        
+        <main class="container-fluid add-body">
+            <header class="row-fluid">
+                <c:BrokeracfHeader ></c:BrokeracfHeader>
+            </header>
+            
+            
+            <header class="row-fluid">
+                
+            </header>
+            <section class="row-fluid slider nomgn_top" style="background-color: rgba(128, 128, 128, 0.12);">
+                <!---Assets and Liabilities popUp starts here -->
+                
+                <div class="pop-up-form" id="reqcallPopId" style ="display:none;">
+                    <div class="faded" id="reqCallFadedId">&nbsp;</div>
+                    <section class="setup-box" id="prshnt">
+                        <apex:form id="frmAssetId">
+                            <apex:commandbutton action="{!resetPopupMethod}" id="cmdResetPnl" value="submit" reRender="assetShowPnlId" status="assetLoadstatus" style="display:none;"/>
+                            <apex:inputHidden value="{!strSelectedParentType}" id="hdnparentTypeId"/>
+                            <apex:inputHidden value="{!strSelectedChildType}" id="hdnChildTypeId"/>
+                            <apex:actionFunction action="{!resetPopupMethod}" name="resetPopup" reRender="assetShowPnlId" status="assetLoadstatus"/> 
+                            <a href="#" class="pop-close" id="reqPopCloseId">Close<span class="fa fa-close">&nbsp;</span></a>
+                            <hgroup>
+                                <div id="assetHeadingId"><h3 class="h3">Add <span class="upd-bold">Asset</span></h3> </div>
+                                <div id="liabilityHeadingId"><h3 class="h3" id="liabilityHeadingId">Add <span class="upd-bold">Liability</span></h3> </div>
+                                <h4 class="h4">Don't worry, we will get more info from you if required</h4>
+                            </hgroup>
+                            <div class="hr-color">&nbsp;</div>                  
+                            <apex:outputPanel id="assetShowPnlId">
+                                <script>
+                                $('.clsOnlynumeric').keypress(function(e) 
+                                                              {
+                                                                  var keyCode;
+                                                                  if (window.event) // IE
+                                                                  {
+                                                                      keyCode = e.keyCode;
+                                                                  }
+                                                                  else if (e.which) // Netscape/Firefox/Opera
+                                                                  {
+                                                                      keyCode = e.which;
+                                                                  }
+                                                                  
+                                                                  return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8));
+                                                              });
+                                </script>
+                                <apex:actionstatus id="assetLoadstatus" starttext="verifying">
+                                    <apex:facet name="start">
+                                        <apex:image url="{!$Resource.LoadingImg}" height="35" width="35"/>                      
+                                    </apex:facet>
+                                </apex:actionStatus>
+                                <apex:outputpanel rendered="{!If(strSelectedParentType == "Assets",true,false)}">
+                                    <div class="row-fluid add_asset">
+                                        <label class="col-md-4 col-md-offset-1 col-sm-12">Asset Type</label>
+                                        <div class="add_asset_select  col-md-5  col-sm-10 col-sm-offset-1">
+                                            <apex:selectList value="{!objwrapperAssetLiabilities.strSelectedAsset}" size="1" disabled="true"><apex:selectOptions value="{!objwrapperAssetLiabilities.AssetType}"/></apex:selectList>
+                                        </div>
+                                    </div>                   
+                                    <div class="row-fluid add_asset">
+                                        <label class="col-md-4 col-md-offset-1 col-sm-12">Value</label>
+                                        <!--<input type="email" name="user" class="set-up-box col-md-5  col-sm-10 col-sm-offset-1" value="abc" onBlur="if (this.value == '') {this.value = 'abc';}" onFocus="if (this.value == 'abc') {this.value = '';}"/>-->
+                                        <div class="preloginDollar set-up-box col-md-5  col-sm-10 col-sm-offset-1">
+                                            <i class="dolor_iconAsset"></i>
+                                            <apex:inputtext styleclass="clsOnlynumeric dolor_input" value="{!objwrapperAssetLiabilities.strAmount}" style="color:#1f8acb!important;"/>
+                                        </div> 
+                                    </div>
+                                    
+                                    <div class="row-fluid add_asset">
+                                        <label class="col-md-4 col-md-offset-1 col-sm-12">Description</label>
+                                        <!--<input type="email" name="user" class="set-up-box col-md-5  col-sm-10 col-sm-offset-1" value="abc" onBlur="if (this.value == '') {this.value = 'abc';}" onFocus="if (this.value == 'abc') {this.value = '';}"/>-->
+                                        <apex:inputText styleClass="set-up-box col-md-5  col-sm-10 col-sm-offset-1" value="{!objwrapperAssetLiabilities.strDescription}"/>
+                                    </div> 
+                                </apex:outputpanel>  
+                                <apex:outputpanel rendered="{!If(strSelectedParentType == "liabilities",true,false)}">
+                                    <div class="row-fluid add_asset">
+                                        <label class="col-md-4 col-md-offset-1 col-sm-12">Liability Type</label>
+                                        <div class="add_asset_select  col-md-5  col-sm-10 col-sm-offset-1">
+                                            <apex:selectList value="{!objwrapperAssetLiabilities.strSelectedAsset}" size="1" disabled="true"><apex:selectOptions value="{!objwrapperAssetLiabilities.LiabilityType}"/></apex:selectList>
+                                        </div>
+                                    </div>                   
+                                    <div class="row-fluid add_asset">
+                                        <label class="col-md-4 col-md-offset-1 col-sm-12">Balance</label>
+                                        <!--<input type="email" name="user" class="set-up-box col-md-5  col-sm-10 col-sm-offset-1" value="abc" onBlur="if (this.value == '') {this.value = 'abc';}" onFocus="if (this.value == 'abc') {this.value = '';}"/>-->
+                                        <div class="preloginDollar set-up-box col-md-5  col-sm-10 col-sm-offset-1">
+                                            <i class="dolor_iconAsset"></i>
+                                            <apex:inputtext styleclass="clsOnlynumeric dolor_input" value="{!objwrapperAssetLiabilities.strBalance}" style="color:#1f8acb!important;"/>
+                                        </div> 
+                                    </div>
+                                    <div class="row-fluid add_asset">
+                                        <label class="col-md-4 col-md-offset-1 col-sm-12">Limit</label>
+                                        <!--<input type="email" name="user" class="set-up-box col-md-5  col-sm-10 col-sm-offset-1" value="abc" onBlur="if (this.value == '') {this.value = 'abc';}" onFocus="if (this.value == 'abc') {this.value = '';}"/>-->
+                                        <div class="preloginDollar set-up-box col-md-5  col-sm-10 col-sm-offset-1">
+                                            <i class="dolor_iconAsset"></i>   
+                                            <apex:inputText styleClass="clsOnlynumeric dolor_input" value="{!objwrapperAssetLiabilities.strLimit}" style="color:#1f8acb!important;"/>
+                                        </div>
+                                    </div> 
+                                    <div class="row-fluid add_asset">
+                                        <label class="col-md-4 col-md-offset-1 col-sm-12">Financial Institution</label>
+                                        <!--<input type="email" name="user" class="set-up-box col-md-5  col-sm-10 col-sm-offset-1" value="abc" onBlur="if (this.value == '') {this.value = 'abc';}" onFocus="if (this.value == 'abc') {this.value = '';}"/>-->
+                                        <apex:inputText styleClass="set-up-box col-md-5  col-sm-10 col-sm-offset-1" value="{!objwrapperAssetLiabilities.strOFI}"/>                         
+                                        
+                                    </div> 
+                                </apex:outputpanel>  
+                            </apex:outputPanel>                 
+                            <div class="row-fluid">
+                                <div class="col-md-12 col-md-offset-0 col-sm-12" >
+                                    <apex:CommandButton value="Add Asset" styleclass="btn center-block cstm_btn_w180" action="{!assetaddMethod}" rerender="preloginComponent" status="assetLoadstatus" oncomplete="assetPopupClose();" id="assetActionBtnId"/>
+                                    <apex:CommandButton value="Add Liability" styleclass="btn center-block cstm_btn_w180" action="{!assetaddMethod}" rerender="preloginComponent" status="assetLoadstatus" oncomplete="assetPopupClose();" id="liabActionBtnId"/>
+                                </div>
+                            </div> 
+                            <div class="clearfix"></div>     
+                            <p class="creat-acount">Don't worry, itâs free and your details are safe with us</p>                
+                        </apex:form>
+                    </section>
+                </div>
+                
+                <!---Assets and Liabilities popUp ends here -->
+                
+                <apex:outputPanel id="optContainer">
+                    <section class="post_login_may">
+                        <div class="container">
+                            <div class="row-fluid">
+                                <apex:outputPanel id="optStages">
+                                    <script>
+                                    // alert('lokesh'+($('[id$=ipthdnLeftIndex]').val()));
+                                    for(var i=0;i<($('[id$=ipthdnLeftIndex]').val());i++)
+                                    {
+                                        $('.slider-arrow--left').trigger('click');
+                                    }
+                                    // alert('lokesh'+($('[id$=ipthdnIndex]').val()));
+                                    for(var i=0;i<($('[id$=ipthdnIndex]').val());i++)
+                                    {
+                                        $('.slider-arrow--right').trigger('click');
+                                    }
+                                    $('.clsOnlynumeric').keypress(function(e) 
+                                                                  {
+                                                                      var keyCode;
+                                                                      if (window.event) // IE
+                                                                      {
+                                                                          keyCode = e.keyCode;
+                                                                      }
+                                                                      else if (e.which) // Netscape/Firefox/Opera
+                                                                      {
+                                                                          keyCode = e.which;
+                                                                      }
+                                                                      
+                                                                      if (keyCode == 46 && $(this).val().indexOf(".") < 1) {
+                                                                          return true;
+                                                                      }
+                                                                      
+                                                                      return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8) || (keyCode == 13));
+                                                                  });
+                                    
+                                    </script>
+                                    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"/>
+                                    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+                                    <script type="text/javascript">
+                                        // This example displays an address form, using the autocomplete feature
+                                        // of the Google Places API to help users fill in the information.
+                                        
+                                        var placeSearch, autocomplete;
+                                    var componentForm = {
+                                        street_number: 'short_name',
+                                        route: 'long_name',
+                                        locality: 'long_name',
+                                        administrative_area_level_1: 'short_name',
+                                        country: 'long_name',
+                                        postal_code: 'short_name'
+                                    };
+                                    
+                                    function initialize() {
+                                        // Create the autocomplete object, restricting the search
+                                        // to geographical location types.
+                                        autocomplete = new google.maps.places.Autocomplete(
+                                            /** @type {HTMLInputElement} */(document.getElementById($('.addresspicker_map').attr('id'))),
+                                            { types: ['geocode'] });
+                                        // When the user selects an address from the dropdown,
+                                        // populate the address fields in the form.
+                                        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                                            fillInAddress();
+                                        });
+                                    }
+                                    
+                                    // [START region_fillform]
+                                    function fillInAddress() {
+                                        // Get the place details from the autocomplete object.
+                                        var place = autocomplete.getPlace();
+                                        
+                                        for (var component in componentForm) {
+                                            document.getElementById(component).value = '';
+                                            document.getElementById(component).disabled = false;
+                                        }
+                                        
+                                        // Get each component of the address from the place details
+                                        // and fill the corresponding field on the form.
+                                        /*for (var i = 0; i < place.address_components.length; i++) {
+var addressType = place.address_components[i].types[0];
+if (componentForm[addressType]) {
+var val = place.address_components[i][componentForm[addressType]];
+document.getElementById(addressType).value = val;
+}
+}*/
+}
+    // [END region_fillform]
+    
+    // [START region_geolocation]
+    // Bias the autocomplete object to the user's geographical location,
+    // as supplied by the browser's 'navigator.geolocation' object.
+    function geolocate() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var geolocation = new google.maps.LatLng(
+                    position.coords.latitude, position.coords.longitude);
+                var circle = new google.maps.Circle({
+                    center: geolocation,
+                    radius: position.coords.accuracy
+                });
+                autocomplete.setBounds(circle.getBounds());
+            });
+        }
+    }
+    // [END region_geolocation]           
+    $(document).ready(function () {
+        initialize();
+    }); 
+    </script>         
+    </apex:outputPanel>  
+    <div>
+        <div class="col-md-8 col-sm-12"> 
+            <div class="mgpush5"> 
+                <div class="col-md-12 col-sm-12 post_logleft_may">                                            
+                    <apex:form id="formId" >
+                        <apex:actionFunction name="AssetsAndLiablities" status="AssetStatus" action="{!AssetLiablity}"  reRender="optStages,optStagesText,optErrormsg,optBackbtn" oncomplete="test();"/>
+                        <div class="col-sm-12 col-md-12 question-slider">
+                            <apex:outputPanel id="optErrormsg">
+                                
+                                <script>
+                                window.onload = function(){
+                                    //abc();
+                                };
+                                function abc()
+                                {
+                                    var index = '{!MasterQuesNo}';
+                                    //alert('{!IsConcentQuestion}');
+                                    
+                                    //alert(index);
+                                    
+                                    if('{!TotalNoQuestionSlide}'=='{!MasterQuesNo}'){
+                                        
+                                        //alert('tIME TO SEND EMAIL');
+                                        
+                                    }
+                                    
+                                    var v = document.getElementsByClassName("post_w100");
+                                    for (var i in v)
+                                    {
+                                        var strToCheck = ':'+{!MasterQuesNo}+':'; 
+                                        var id = v[i].id;
+                                        //alert(id);
+                                        id = id.search(strToCheck);
+                                        try{
+                                            if (id>1)   
+                                            {    
+                                                //alert(v[i].id); 
+                                                document.getElementById(v[i].id).select(); 
+                                            }               
+                                        }
+                                        catch(e)
+                                        {
+                                            alert(e);
+                                        }
+                                    }                  
+                                }
+                                </script> 
+                                <!--  <apex:inputHidden value="{!intQuoteWidth}" id="inptHiddenQuoteId"/> -->
+                                <apex:inputhidden value="{!IsSlide}" id="ipthdn"/>
+                                <apex:inputhidden value="{!NoOfPrePostdependent}" id="ipthdndependent"/>
+                                <apex:inputhidden value="{!TotalNoQuestionSlide}" id="iptotalQuesSlide"/>
+                                <apex:inputhidden value="{!NoOfRightSlide}" id="ipthdnIndex"/> 
+                                <apex:inputhidden value="{!NoOfLeftSlide}" id="ipthdnLeftIndex"/> 
+                                <apex:inputHidden value="{!IsSkipDependent}" id="ipthdnISDependentSkip"/>
+                                <apex:inputHidden value="{!MasterQuesNo}" id="idhdnMasterQues"/>
+                                
+                                
+                                <apex:outputPanel rendered="{!if(strmsg != null && strmsg != '', true,false)}" style="color:red;margin-top:20px;text-align:center;"><p>{!strmsg}</p></apex:outputPanel>
+                                <!--    MasterQuesNo   =>{!MasterQuesNo}
+total questions =>{!TotalNoQuestionSlide}
+=>=>{!issSecondApplicantQuestionSet}
+-->
+                                
+                                <script>
+                                if('{!issSecondApplicantQuestionSet}'=='true'){
+                                    $('.app2question').show();
+                                    $('.appwating').hide();                                               
+                                }else{
+                                    $('.appwating').show();        
+                                    $('.app2question').hide();
+                                }
+                                </script>
+                                
+                            </apex:outputPanel> 
+                            
+                            <apex:outputPanel id="optBackbtn">
+                                <script>
+                                function test()
+                                {
+                                    //alert($('[id$=ipthdn]').val());
+                                    if(($('[id$=ipthdn]').val()) == 'slide')
+                                        $('.slider-arrow--right').trigger('click');
+                                    
+                                }
+                                </script>
+                            </apex:outputPanel>
+                            
+                            <div class="slider-form">
+                                 
+                                <ul class="slides-form">
+                                    <!-- Master Repeat -->
+                                    <apex:variable value="{!0}" var="abc" />
+                                    <apex:repeat value="{!lstMasterWrapperQuestion}" var="ques" id="rptId">
+                                        
+                                        
+                                        
+                                        <li class="slide-form">
+                                            
+                                            <!--consent squesnce number=>{!consentSequence}<br/>
+                                                    applicant No=>{!ques.IsApplicant2Question}<br/>
+                                                    {!abc}=>{!NoOfLeftSlide}
+                                                    <br/>MasterQuesNo   =>{!MasterQuesNo}<br/>
+                                                    
+                                                    <br/>sequence=>{!ques.ScriptSequence}<br/>
+                                                    total questions =>{!TotalNoQuestionSlide}<br/>
+                                                    {!ques.isConcent}<br/>
+                                                    =>=> {!ques.objWrapQuestion.acf_Type__c}<br/>
+                                                    @@{!ques.strWrapAnswer}-->
+                                            
+                                            
+                                            
+                                            <apex:outputPanel id="consentScreenpnl" rendered="{!if(ques.isConcent==true && ques.IsApplicant2Question==false  ,true,false)}" style="width: 100%;" layout="block">
+                                                
+                                                <div class="col-md-12 errorDiv" style="color:red;text-align:center;margin-top:20px;">{!strmsg}</div> 
+                                                <script>
+                                                if('{!issSecondApplicantQuestionSet}'=='true'){
+                                                    $('.app2question').show();
+                                                    $('.appwating').hide();                                               
+                                                }else{
+                                                    $('.appwating').show();        
+                                                    $('.app2question').hide();
+                                                }
+                                                </script>
+                                                <apex:outputPanel layout="block" styleClass="col-md-12 app2question"  style="display:none;" id="scndappdetails">
+                                                    <h1 class="slide-heading relQues-margin text-center">Second Applicant Email</h1>
+                                                    <div class="preloginDollar">
+                                                        <div class="post_slide_question2 ">                                         
+                                                            <apex:input type="email"   styleclass=" inputf drop_input_custom_30 post_w100 app2_email" value="{!app2Email}" onBlur="if (this.placeholder == '') {this.placeholder = 'Email Id';}" onFocus="if (this.placeholder == 'Email Id') {this.placeholder = '';}" html-placeholder="Email Id"/>  
+                                                        </div>
+                                                    </div>                                 
+                                                    <h1 class="slide-heading relQues-margin text-center">Second Applicant Phone</h1>                                 
+                                                    <div class="preloginDollar">
+                                                        <div class="post_slide_question2 ">                                         
+                                                            <apex:input type="text" styleclass=" inputf drop_input_custom_30 post_w100 app2_phone" value="{!app2Phone}" onBlur="if (this.placeholder == '') {this.placeholder = 'Phone Number';}" onFocus="if (this.placeholder == 'Phone Number') {this.placeholder = '';}" html-placeholder="Phone Number"/>  
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <apex:commandButton value="Submit" styleClass="btn-question"  status="mailsmsStatus" reRender="consentScreenpnl" action="{!sendApplicantConsentMailandSms}" >
+                                                        <apex:param value="true" assignTo="{!issApplicant2Check}" name="consentmail2SeconApplicant" />
+                                                    </apex:commandButton>
+                                                    <apex:actionstatus id="mailsmsStatus" starttext="verifying">
+                                                        <apex:facet name="start">
+                                                            <apex:image url="{!$Resource.LoadingImg}" height="35" width="35"/>                      
+                                                        </apex:facet>
+                                                    </apex:actionStatus>
+                                                </apex:outputPanel>
+                                                
+                                                <script>
+                                                function validateApplicant2Fields(){
+                                                    
+                                                    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+                                                    var email=$('.app2_email').val();
+                                                    if(email==''){
+                                                        $('.errorDiv').html('Please enter  email');
+                                                        return false;
+                                                    }
+                                                    else if(re.test(email)!=true){
+                                                        $('.errorDiv').html('Please enter valid email');
+                                                        return false;
+                                                    }
+                                                    return true;
+                                                    
+                                                }                             
+                                                </script>
+                                                
+                                                
+                                                <apex:outputPanel layout="block" style="display:none;" styleClass="appwating" id="responseWating">
+                                                    
+                                                    <div style="margin-left: 20px;">                               
+                                                        <h2 class="slide-heading relQues-margin text-center">Waiting for E-Consent response.....</h2>
+                                                    </div>
+                                                    <div style="margin-left: 20px;">                                
+                                                        <apex:image url="{!$Resource.LoadingImg}" />                                                                                    
+                                                    </div>
+                                                    <apex:commandButton value="Check E-Consent " styleClass="btn-question" action="{!checkUserResponse}" ></apex:commandButton>
+                                                    <br/><br/><br/>
+                                                    <apex:commandButton value="Re-Send E-Consent " styleClass="btn-question" action="{!resendEconsent}" ></apex:commandButton>
+                                                    <br/><br/><br/>
+                                                   
+                                                    
+                                                    <a target="_blank" href="https://www.mcafeesecure.com/verify?host=www.clickloans.com.au" style="margin-left:41%;">
+                                                        <img class="mfes-trustmark mfes-trustmark-hover" border="0" src="https://cdn.ywxi.net/meter/www.clickloans.com.au/102.gif" width="81" height="33" title="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams" alt="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams"  />
+                                                    </a>
+                                                    
+                                                </apex:outputPanel>
+                                            </apex:outputPanel> 
+                                            
+                                            
+                                            
+                                            <apex:outputPanel rendered="{!if(ques.isConcent==true && ques.IsApplicant2Question==true,true,false)}">           
+                                                <h2 class="slide-heading relQues-margin text-center"> Continue without second applicant consent</h2>
+                                                <br/>
+                                                <apex:repeat value="{!ques.lstSelectOptions}" var="Answers">
+                                                    <apex:commandButton value="Continue " styleClass="btn-question a " action="{!applicant2consent}" reRender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentScreenpnl"  status="contConsent" oncomplete="slide();">
+                                                        <apex:param value="{!Answers.id}" assignTo="{!ques.strWrapAnswer}" name="QuesCount"/>
+                                                    </apex:commandButton>
+                                                </apex:repeat> <br/><br/><br/>
+                                                <apex:commandButton value="Re-Send E-Consent  " styleClass="btn-question" action="{!resendEconsent}" ></apex:commandButton>
+                                                    <br/><br/><br/>
+                                                   
+                                                <apex:actionstatus id="contConsent" starttext="verifying">
+                                                    <apex:facet name="start">
+                                                        <apex:image url="{!$Resource.LoadingImg}" height="35" width="35"/>                      
+                                                    </apex:facet>
+                                                </apex:actionStatus>
+                                                
+                                                <br/><br/><br/>
+                                                <a target="_blank" href="https://www.mcafeesecure.com/verify?host=www.clickloans.com.au" style="margin-left:41%;">
+                                                    <img class="mfes-trustmark mfes-trustmark-hover" border="0" src="https://cdn.ywxi.net/meter/www.clickloans.com.au/102.gif" width="81" height="33" title="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams" alt="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams"  />
+                                                </a>
+                                                
+                                            </apex:outputPanel>                                           
+                                            <apex:outputPanel id="pnlNewNrac" rendered="{!!ques.isConcent}" >
+                                                <h1 class="slide-heading relQues-margin text-center">{!ques.strApplicantNo}</h1>
+                                                <h2 class="slide-heading relQues-margin text-center"><apex:outputtext value="{!ques.objWrapQuestion.acf_Question__c}" escape="false"/></h2>
+                                                <p class="slide-peregraph relQues-margin text-center">{!ques.objWrapQuestion.acf_Description__c}</p>
+                                                <apex:outputPanel id="preloginPicklist" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Picklist',true,false)}">
+                                                    <div class="post_slide_question2">
+                                                        <apex:selectList value="{!ques.strWrapAnswer}" multiselect="false" size="1" style="font-weight:normal; color: #9e9d9d" styleClass="inputf drop_input_custom_30"> 
+                                                            <apex:selectOption itemValue="NONE" itemLabel="--NONE--"></apex:selectOption>
+                                                            <apex:selectOptions value="{!ques.lstSelectOpt}"></apex:selectOptions>
+                                                            <apex:actionsupport event="onchange" action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentScreenpnl" status="counterStatus" oncomplete="slide();">
+                                                            </apex:actionSupport>
+                                                        </apex:selectList>
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel id="preloginButtons" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Button',true,false)}">
+                                                    <div class="btnresponsive-margin-div col-md-12">
+                                                        <apex:repeat value="{!ques.lstSelectOptions}" var="Answers">
+                                                            <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question a " action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentScreenpnl"  status="counterStatus" oncomplete="slide();">
+                                                                <apex:param value="{!Answers.id}" assignTo="{!ques.strWrapAnswer}" name="QuesCount"/>
+                                                            </apex:commandButton>
+                                                        </apex:repeat> 
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel id="preloginText" rendered="{!if(OR(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Type__c == 'Number'),true,false)}">
+                                                    <div class="post_slide_question2">
+                                                        <apex:input type="{!if(ques.objWrapQuestion.acf_Type__c == 'Number','tel','text')}" id="txtMainForSlide" styleclass="{!if(ques.objWrapQuestion.acf_Type__c == 'Number','clsOnlynumeric',if(ques.objWrapQuestion.Date__c == true,'popupDatepicker',if(ques.objWrapQuestion.acf_Postal_Code__c == true,'addresspicker_map','')))} inputf drop_input_custom_30 post_w100" value="{!ques.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}"/>  
+                                                        <script>
+                                                        $('input[id$=txtMainForSlide]').attr('autocomplete','off');
+                                                        </script>  
+                                                    </div>                                           
+                                                </apex:outputPanel>
+                                                <apex:outputPanel id="preloginCurrency" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Currency',true,false)}">
+                                                    
+                                                    <div class="preloginDollar">
+                                                        <div class="post_slide_question2 ">
+                                                            <i class="dolor_icon reldolor"></i>
+                                                            <apex:input type="{!if(ques.objWrapQuestion.acf_Type__c == 'Currency','tel','text')}" styleclass="clsOnlynumeric inputf dolor_input drop_input_custom_30 post_w100" value="{!ques.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}"/>
+                                                        </div>
+                                                    </div>                                   
+                                                </apex:outputPanel>
+                                                <apex:outputPanel id="plPercentId" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Percent',true,false)}">
+                                                    <div class="col-md-10 col-md-offset-2">
+                                                        <div class="col-md-11"> 
+                                                            <div class="preloginpercent">
+                                                                <i class="percent_icon"></i>
+                                                                <apex:input type="{!if(ques.objWrapQuestion.acf_Type__c == 'Percent','tel','text')}" styleclass="clsOnlynumeric inputf percent_input input_wpercent drop_input_custom_30 post_w100" value="{!ques.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}"/>
+                                                            </div> 
+                                                        </div>
+                                                    </div>                                  
+                                                </apex:outputPanel>
+                                                <apex:outputPanel id="preloginRadioButton" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'RadioButton',true,false)}">
+                                                    <div class="post_fieldset">
+                                                        <apex:selectRadio value="{!ques.strWrapAnswer}" styleClass="inputf">
+                                                            <apex:selectOptions value="{!ques.lstSelectOpt}"/>
+                                                            <apex:actionsupport event="onchange" action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentScreenpnl" status="counterStatus" oncomplete="slide();">       
+                                                            </apex:actionSupport>
+                                                        </apex:selectRadio>
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel id="preloginCheckBoxes" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Checkbox',true,false)}">
+                                                    <div class="post_fieldset">
+                                                        <apex:selectCheckboxes value="{!ques.lstCheckBoxAnswer}" styleClass="inputf">
+                                                            <apex:selectOptions value="{!ques.lstSelectOpt}"/>
+                                                        </apex:selectCheckboxes><br/>
+                                                    </div>
+                                                </apex:outputPanel>
+                                                
+                                                <apex:outputPanel id="preloginComponent" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Component',ques.objWrapQuestion.acfComponent_Type__c == 'Assets & Liabilities'),true,false)}">
+                                                    
+                                                    <div class="relQues-margin">
+                                                        <apex:actionstatus id="Loadstatus" starttext="Updating...">
+                                                            <apex:facet name="start">
+                                                                <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                                                            </apex:facet>
+                                                        </apex:actionStatus>
+                                                        <div class="col-md-7 col-sm-12" style = "width: 100%;">
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-12">
+                                                                    <div class="row-fluid h3heading">Assets</div>
+                                                                </div>
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon home"></span>Home</a></div>
+                                                                </div>
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Home'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Home');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Home'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Home');">View / Edit</a></div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                           
+                                                            </div>
+                                                            
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div class="row-fluid"><a href="#"><span class="liab_icon invstment"></span>Investment Property</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Investment Property1'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Investment Property1');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Investment Property1'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Investment Property1');">View / Edit</a>
+                                                                            <a href="#" class="gray_color newAddBtn" onclick="showReqPopup('Assets','Investment Property2');" id="invstnewaddBtnId" style="{!if(mapIsTypeValuesExist['Investment Property2'] == true,'display:none;','')}">Add</a>                                    
+                                                                            <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                            
+                                                                        </div>
+                                                                    </div> 
+                                                                </apex:outputPanel>                                                 
+                                                            </div> 
+                                                            
+                                                            <div class="liablity_article row-fluid" style="{!if(mapIsTypeValuesExist['Investment Property2'] == false,'display:none;','')}" id="invstProp2Id">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div class="row-fluid"><a href="#"><span class="liab_icon invstment"></span>Investment Property2</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Investment Property2'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Investment Property2');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Investment Property2'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Investment Property2');">View / Edit</a>
+                                                                            <a href="#" class="gray_color newAddBtn" onclick="showReqPopup('Assets','Investment Property3');" id="invst2newaddBtnId" style="{!if(mapIsTypeValuesExist['Investment Property3'] == true,'display:none;','')}">Add</a>
+                                                                            
+                                                                            <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                        </div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                                
+                                                            </div> 
+                                                            <div class="liablity_article row-fluid" style="{!if(mapIsTypeValuesExist['Investment Property3'] == false,'display:none;','')}" id="invstProp3Id">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div class="row-fluid"><a href="#"><span class="liab_icon invstment"></span>Investment Property3</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Investment Property3'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Investment Property3');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Investment Property3'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Investment Property3');">View / Edit</a></div>
+                                                                        
+                                                                    </div>   
+                                                                </apex:outputPanel>                                
+                                                            </div> 
+                                                            
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div class="row-fluid"><span class="liab_icon cash"></span><a href="#">Cash</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Cash'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Cash');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Cash'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Cash');">View / Edit</a></div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                             
+                                                            </div>     
+                                                            
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div class="row-fluid"><a href="#"><span class="liab_icon super"></span>Super</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Super'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Super');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Super'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Super');">View / Edit</a></div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                             
+                                                            </div> 
+                                                            
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div class="row-fluid"><a href="#"><span class="liab_icon invstmnt_2"></span>Investment</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Investment1'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Investment1');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Investment1'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Investment1');">View / Edit</a>
+                                                                            <a href="#" class="gray_color newAddBtn" onclick="showReqPopup('Assets','Investment2');" id="otherInvst1Id" style="{!if(mapIsTypeValuesExist['Investment2'] == true,'display:none;','')}">Add</a>
+                                                                        </div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                          
+                                                            </div>  
+                                                            
+                                                            <div class="liablity_article row-fluid" style="{!if(mapIsTypeValuesExist['Investment2'] == false,'display:none;','')}" id="otherinv2Id">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div class="row-fluid"><a href="#"><span class="liab_icon invstmnt_2"></span>Investment2</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Investment2'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Investment2');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Investment2'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Investment2');">View / Edit</a></div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                          
+                                                            </div>  
+                                                            
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div class="row-fluid"><a href="#"><span class="liab_icon other"></span>Other</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Other'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Other');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Other'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('Assets','Other');">View / Edit</a></div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                            
+                                                            </div> 
+                                                            
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-12">
+                                                                    <div class="row-fluid h3heading">Liabilities</div>
+                                                                </div>
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon home_mortage"></span>Home Mortgage</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Home Mortgage'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Home Mortgage');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Home Mortgage'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Home Mortgage');">View / Edit</a></div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                              
+                                                            </div>  
+                                                            
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon ip_mortage"></span>IP Mortgage</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['IP Mortgage1'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','IP Mortgage1');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['IP Mortgage1'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','IP Mortgage1');">View / Edit</a>
+                                                                            <a href="#" class="gray_color newAddBtn" onclick="showReqPopup('liabilities','IP Mortgage2');" id="ipMortage1newaddBtnId" style="{!if(mapIsTypeValuesExist['IP Mortgage2'] == true,'display:none;','')}">Add</a>
+                                                                        </div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                             
+                                                            </div>   
+                                                            <div class="liablity_article row-fluid" id="ipMortage2Id" style="{!if(mapIsTypeValuesExist['IP Mortgage2'] == false,'display:none;','')}">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon ip_mortage"></span>IP Mortgage2</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['IP Mortgage2'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','IP Mortgage2');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['IP Mortgage2'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','IP Mortgage2');">View / Edit</a>
+                                                                            <a href="#" class="gray_color newAddBtn" onclick="showReqPopup('liabilities','IP Mortgage3');" id="ipMortgage2newaddBtnId" style="{!if(mapIsTypeValuesExist['IP Mortgage3'] == true,'display:none;','')}">Add</a>
+                                                                        </div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                             
+                                                            </div>  
+                                                            <div class="liablity_article row-fluid" id="ipMortgate3Id" style="{!if(mapIsTypeValuesExist['IP Mortgage3'] == false,'display:none;','')}">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon ip_mortage"></span>IP Mortgage3</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['IP Mortgage3'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','IP Mortgage3');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['IP Mortgage3'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','IP Mortgage3');">View / Edit</a></div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                             
+                                                            </div>  
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon crdt_card"></span>Credit Card</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Credit Card'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Credit Card');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Credit Card'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Credit Card');">View / Edit</a></div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                         
+                                                            </div>   
+                                                            
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon pers_loan"></span>Personal Loan</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Personal Loan1'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Personal Loan1');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Personal Loan1'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Personal Loan1');">View / Edit</a>
+                                                                            <a href="#" class="gray_color newAddBtn" onclick="showReqPopup('liabilities','Personal Loan2');" style="{!if(mapIsTypeValuesExist['Personal Loan2'] == true,'display:none;','')}">Add</a>
+                                                                        </div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                            
+                                                            </div> 
+                                                            <div class="liablity_article row-fluid" style="{!if(mapIsTypeValuesExist['Personal Loan2'] == false,'display:none;','')}">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon pers_loan"></span>Personal Loan2</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Personal Loan2'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Personal Loan2');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Personal Loan2'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Personal Loan2');">View / Edit</a>
+                                                                            <a href="#" class="gray_color newAddBtn" onclick="showReqPopup('liabilities','Personal Loan3');" style="{!if(mapIsTypeValuesExist['Personal Loan3'] == true,'display:none;','')}">Add</a>
+                                                                        </div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                            
+                                                            </div> 
+                                                            <div class="liablity_article row-fluid" style="{!if(mapIsTypeValuesExist['Personal Loan3'] == false,'display:none;','')}">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon pers_loan"></span>Personal Loan3</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Personal Loan3'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Personal Loan3');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Personal Loan3'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Personal Loan3');">View / Edit</a></div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                            
+                                                            </div> 
+                                                            <div class="liablity_article row-fluid">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon liab_other"></span>Other</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Others1'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Others1');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Others1'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Others1');">View / Edit</a>
+                                                                            <a href="#" class="gray_color newAddBtn" onclick="showReqPopup('liabilities','Others2');" style="{!if(mapIsTypeValuesExist['Others2'] == true,'display:none;','')}">Add</a>                                                                    
+                                                                        </div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                              
+                                                            </div> 
+                                                            <div class="liablity_article row-fluid" style="{!if(mapIsTypeValuesExist['Others2'] == false,'display:none;','')}">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon liab_other"></span>Other2</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Others2'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Others2');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Others2'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Others2');">View / Edit</a>
+                                                                            <a href="#" class="gray_color newAddBtn" onclick="showReqPopup('liabilities','Others3');" style="{!if(mapIsTypeValuesExist['Others3'] == true,'display:none;','')}">Add</a>
+                                                                        </div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                              
+                                                            </div> 
+                                                            <div class="liablity_article row-fluid" style="{!if(mapIsTypeValuesExist['Others3'] == false,'display:none;','')}">
+                                                                <div class="col-md-5 col-sm-7">
+                                                                    <div  class="row-fluid"><a href="#"><span class="liab_icon liab_other"></span>Other3</a></div>
+                                                                </div>
+                                                                
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Others3'] == false}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Others3');">Add</a></div>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-3">&nbsp;</div>
+                                                                </apex:outputPanel>  
+                                                                <apex:outputPanel rendered="{!mapIsTypeValuesExist['Others3'] == true}">
+                                                                    <div class="col-md-3 col-sm-2">
+                                                                        <div class="row-fluid"><span class="liab_icon_right">&nbsp;</span></div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-4 col-sm-3">
+                                                                        <div  class="row-fluid"><a href="#" class="gray_color" onclick="showReqPopup('liabilities','Others3');">View / Edit</a></div>
+                                                                    </div>   
+                                                                </apex:outputPanel>                              
+                                                            </div> 
+                                                            <div class="col-md-12">
+                                                                <!--<apex:commandButton value="Continue" styleclass="btn-question q-right prlelogin-ques btn-responsive disblock_getstarted" status="AssetStatus" onclick="AssetsAndLiablities();return false;" reRender="optStages,optStagesText,optErrormsg,optBackbtn"/> -->
+                                                                <apex:commandButton value="Continue" styleclass="btn-question" status="AssetStatus" action="{!AssetLiablity}" reRender="optStages,optStagesText,optErrormsg,optBackbtn,consentScreenpnl" oncomplete="test();"/>
+                                                                
+                                                                <apex:actionstatus id="AssetStatus" starttext="verifying">
+                                                                    <apex:facet name="start">
+                                                                        <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>  
+                                                                        
+                                                                    </apex:facet>
+                                                                </apex:actionStatus>
+                                                            </div> 
+                                                        </div>                                                      
+                                                    </div>
+                                                </apex:outputPanel>  
+                                                
+                                                <!-- Related List -->
+                                                <apex:outputPanel id="optQuestion" style="margin-top:10px;">
+                                                    <apex:variable value="{!0}" var="Count"/> 
+                                                    <apex:repeat value="{!ques.lstRelatedQuestion}" var="objRelatedQues">
+                                                        <div style="margin-top:5%;clear:both;">
+                                                            <h2 class="slide-heading relQues-margin text-center"><apex:outputtext value="{!objRelatedQues.objWrapQuestion.acf_Question__c}" escape="false"/></h2>
+                                                            <p class="slide-peregraph relQues-margin text-center">{!objRelatedQues.objWrapQuestion.acf_Description__c}</p>
+                                                            <apex:outputPanel id="preloginPicklist" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Picklist',true,false)}">
+                                                                
+                                                                <apex:selectList value="{!objRelatedQues.strWrapAnswer}" multiselect="false" size="1" style="font-weight:normal; color: #9e9d9d" styleClass="inputf relQues-margin"> 
+                                                                    <apex:selectOption itemValue="NONE" itemLabel="--NONE--"></apex:selectOption>
+                                                                    <apex:selectOptions value="{!objRelatedQues.lstSelectOpt}"></apex:selectOptions>
+                                                                    <apex:actionsupport event="onchange" action="{!AddingRelatedQuestion}" reRender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentScreenpnl" status="counterStatus" oncomplete="slide();">
+                                                                        <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesCount"/>
+                                                                    </apex:actionSupport>
+                                                                </apex:selectList>
+                                                                
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel id="preloginText" rendered="{!if(OR(objRelatedQues.objWrapQuestion.acf_Type__c == 'Text',objRelatedQues.objWrapQuestion.acf_Type__c == 'Number'),true,false)}">
+                                                                <div class="post_slide_question2">
+                                                                    <apex:input type="{!if(ques.objWrapQuestion.acf_Type__c == 'Number','tel','text')}" id="txtDependentForSlide"
+                                                                                styleclass="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Number','clsOnlynumeric',if(objRelatedQues.objWrapQuestion.acf_Postal_Code__c == true,'addresspicker_map',''))} {!if(objRelatedQues.objWrapQuestion.Date__c==true,'relatedDatepicker ','')}  inputf drop_input_custom_30 post_w100"
+                                                                                onclick="showDatePickerone(this);" onfocus="showDatePickerone(this);" value="{!objRelatedQues.strWrapAnswer}"  html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>
+                                                                    <script>
+                                                                    function showDatePickerone(elmnt){
+                                                                        if (elmnt.placeholder == '') {elmnt.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}
+                                                                           
+                                                                        $(elmnt).blur();
+                                                                        $(elmnt).focus();
+                                                                            $('.relatedDatepicker').datepick({
+                                                                            dateFormat: 'dd/mm/yyyy',
+                                                                            changeMonth: true,
+                                                                            yearRange : '1930:2025',
+                                                                            changeYear: true});  
+                                         
+                                                                        $('.datepick').css("margin-top","350px");
+                                                                        
+                                                                    }
+                                                                    </script>
+                                                                     
+                                                           <script>
+                                                               $('input[id$=txtDependentForSlide]').attr('autocomplete','off');
+                                                           </script>
+                                                                </div>                                                        
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel id="postloginCurrency" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Currency',true,false)}">
+                                                                <div class="post_slide_question2">
+                                                                    <div class="preloginDollar">
+                                                                        <i class="dolor_icon"></i>
+                                                                        <apex:input type="{!if(ques.objWrapQuestion.acf_Type__c == 'Currency','tel','text')}" styleclass="clsOnlynumeric inputf dolor_input relQues-margin two drop_input_custom_30 " value="{!objRelatedQues.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>
+                                                                    </div> 
+                                                                </div>                                  
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel id="ploginpercentId" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Percent',true,false)}">
+                                                                <div class="col-md-10 col-md-offset-2 col-sm-12 col-sm-offset-0">
+                                                                    <div class="col-md-11 col-sm-12"> 
+                                                                        <div class="preloginpercent">
+                                                                            <i class="percent_icon"></i>
+                                                                            <apex:input type="{!if(ques.objWrapQuestion.acf_Type__c == 'Percent','tel','text')}" styleclass="clsOnlynumeric inputf percent_input input_wpercent relQues-margin three drop_input_custom_30" value="{!objRelatedQues.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>
+                                                                        </div>
+                                                                    </div> 
+                                                                </div>                                  
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel id="preloginRadioButton" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'RadioButton',true,false)}" styleClass="inputf relQues-margin">
+                                                                <div class="post_fieldset">
+                                                                    <apex:selectRadio value="{!objRelatedQues.strWrapAnswer}">
+                                                                        <apex:selectOptions value="{!objRelatedQues.lstSelectOpt}"/>
+                                                                        <apex:actionsupport event="onchange" action="{!AddingRelatedQuestion}" reRender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentScreenpnl" status="counterStatus" oncomplete="slide();">
+                                                                            <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesCount"/>
+                                                                        </apex:actionSupport>
+                                                                    </apex:selectRadio>
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel id="preloginCheckBoxes" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Checkbox',true,false)}" styleClass="inputf relQues-margin">
+                                                                <div class="post_fieldset"> 
+                                                                    <apex:selectCheckboxes value="{!objRelatedQues.lstCheckBoxAnswer}">
+                                                                        <apex:selectOptions value="{!objRelatedQues.lstSelectOpt}"/>
+                                                                    </apex:selectCheckboxes><br/>
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel id="preloginButtons" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Button',true,false)}">
+                                                                <div class="col-md-12">
+                                                                    <apex:repeat value="{!objRelatedQues.lstSelectOptions}" var="Answers">
+                                                                        <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question w_35_prcent b" action="{!AddingRelatedQuestion}" reRender="optQuestion,optStages,optStagesText,optErrormsg,consentScreenpnl" status="counterStatus" oncomplete="slide();">
+                                                                            <apex:param value="{!Answers.id}" assignTo="{!objRelatedQues.strWrapAnswer}" name="QuesCount"/>
+                                                                            <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesNo"/>
+                                                                        </apex:commandButton>
+                                                                    </apex:repeat> 
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                            <apex:variable value="{!Count+1}" var="Count"/>
+                                                        </div>     
+                                                    </apex:repeat> 
+                                                    <div class="col-md-12">
+                                                        <div>
+                                                            <apex:commandButton value="Continue" styleclass="btn-question " action="{!NextQuestion}" rendered="{!if(ques.IsContinueDisplay == true,true,false)}" reRender="optStages,optStagesText,optErrormsg,optBackbtn,QuoteDetailsPnlId,consentScreenpnl" status="counterStatus" oncomplete="slide();"/>
+                                                            
+                                                            <apex:variable value="{!abc+1}" var="abc"/>
+                                                            <apex:actionstatus id="counterStatus" starttext="verifying">
+                                                                <apex:facet name="start">
+                                                                    <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/> 
+                                                                    
+                                                                </apex:facet>
+                                                            </apex:actionStatus>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 col-xs-12 text-center post_log_goback">
+                                                        
+                                                        <!--<a href="#" class="col-md-12 col-xs-12 text-center post_log_goback" onclick="btnGoBackQues();">Go back</a>-->
+                                                        <apex:commandLink action="{!previousQuestion}" value="Go back" reRender="optStages,optStagesText,optErrormsg,optBackbtn,consentScreenpnl"  status="counterStatusimg" oncomplete="Backslide();" id="goBackLinkId"/>
+                                                        <apex:actionstatus id="counterStatusimg" starttext="verifying">
+                                                            <apex:facet name="start">
+                                                                <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>     
+                                                                
+                                                            </apex:facet>
+                                                        </apex:actionStatus>
+                                                        <!--<script src="//cdn.ywxi.net/js/inline.js?w=81"></script>-->
+<a target="_blank" href="https://www.mcafeesecure.com/verify?host=www.clickloans.com.au">
+    
+    <img class="mfes-trustmark mfes-trustmark-hover" border="0" src="https://cdn.ywxi.net/meter/www.clickloans.com.au/102.gif" width="81" height="33" title="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams" alt="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams" 
+    />
+        
+        </a>
+    <!-- <a href="#" class="col-md-12 col-xs-12 macafe"><img src="{!URLFOR($Resource.acfResources, 'acfResources/images/macafe_img.jpg')}" alt="img" width="81" height="30"/></a> -->
+    </div>
+    </apex:outputPanel> 
+    </apex:outputPanel>
+    </li>
+    </apex:repeat>
+    </ul>
+    </div>        
+    </div><!--colxs-8 close-->     
+    </apex:form>
+    </div> 
+    </div>
+    </div>     
+    <!--Right Quote panel starts here -->
+        <apex:outputPanel id="QuoteDetailsPnlId">
+            <c:ClickQuoteDetail_partner />
+                </apex:outputPanel>
+            
+            <!-- Right Quote panel ends here -->   
+                </div>
+            </div>
+            </div><!--container close-->
+            </section> 
+            </apex:outputPanel>   
+            </section><!--slider section close-->
+            
+            
+            <!---Footer start here---------------> 
+               <footer class="footer april_footer row">
+                <c:BrokerFooter ></c:BrokerFooter>
+            </footer>
+                <!--footer close-->
+                    </main><!--main div close-->
+                </body>
+                <script>
+                    if('{!issSecondApplicantQuestionSet}'=='true'){
+                        $('.app2question').show();
+                        $('.appwating').hide();                                               
+                    }else{
+                        $('.appwating').show();        
+                        $('.app2question').hide();
+                    }                                           
+</script>
+</html>
+</apex:page>
