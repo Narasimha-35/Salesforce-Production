@@ -512,8 +512,8 @@ public List<SelectOption> getBroker()
          if(brokeruser.size()>0)
          e.ownerid = brokeruser[0].id;
          
-      //   e.Startdatetime= DT;
-        // e.Enddatetime= e.Startdatetime.addminutes(DurationOfMeeting);
+         e.Startdatetime= DT;
+         e.Enddatetime= e.Startdatetime.addminutes(DurationOfMeeting);
         
         
           List<Event> lstevobj = [Select id,Google_Event_ID__c,startdatetime,enddatetime from Event where whatid =: Appobj.Broker__c AND Subject like :Appobj.Name+'%'  LIMIT 1];
