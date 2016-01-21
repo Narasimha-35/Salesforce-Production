@@ -494,17 +494,17 @@ public List<SelectOption> getBroker()
        
        
        Appointment__c obj = new Appointment__c();
-       obj =[SELECT Id,Name,Account_Name__c,Account_Email__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Date_and_Time__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id FROM Appointment__c where id=:idb ];
+       obj =[SELECT Id,Name,Account_Name__c,Account_Email__c,Appointment_Date_and_Time__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Time_and_Date_Adj__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id FROM Appointment__c where id=:idb ];
        
-        Time selectedT = Datetime.valueOf(obj.Appointment_Date_and_Time__c).time();
+        Time selectedT = Datetime.valueOf(obj.Appointment_Time_and_Date_Adj__c).time();
        //offset = (Integer) (obj.region__r.Sydney_Timezone_Offset__c *60);
        
        
          Broker__c Assignedbroker = [select id,Email__c,Primary_Market__r.Region__r.Sydney_Timezone_Offset__c from Broker__c where id =:brokername];
           
           List<User> brokeruser = [select id , Email from User where Email = :Assignedbroker.Email__c];
-          AppStarttime  =  Datetime.newInstance(obj.Appointment_Date_and_Time__c.date(),selectedT);
-          Datetime DT = Datetime.newInstance(obj.Appointment_Date_and_Time__c.year(),obj.Appointment_Date_and_Time__c.month(),obj.Appointment_Date_and_Time__c.day(),selectedT.hour(),selectedT.minute(),0);
+          AppStarttime  =  Datetime.newInstance(obj.Appointment_Time_and_Date_Adj__c.date(),selectedT);
+          Datetime DT = Datetime.newInstance(obj.Appointment_Time_and_Date_Adj__c.year(),obj.Appointment_Time_and_Date_Adj__c.month(),obj.Appointment_Time_and_Date_Adj__c.day(),selectedT.hour(),selectedT.minute(),0);
          
          
          Event e = new Event();
@@ -516,13 +516,13 @@ public List<SelectOption> getBroker()
          e.Enddatetime= e.Startdatetime.addminutes(DurationOfMeeting);
         
         
-          List<Event> lstevobj = [Select id,Google_Event_ID__c,startdatetime,enddatetime from Event where whatid =: Appobj.Broker__c AND Subject like :Appobj.Name+'%'  LIMIT 1];
+          /*List<Event> lstevobj = [Select id,Google_Event_ID__c,startdatetime,enddatetime from Event where whatid =: Appobj.Broker__c AND Subject like :Appobj.Name+'%'  LIMIT 1];
           if(lstevobj.size()>0)
           {
           e.startdatetime = lstevobj[0].startdatetime ;
           e.enddatetime = lstevobj[0].enddatetime ;
           }
-        
+        */
           if(offset !=null) 
           {  
                e.startdatetime = e.startdatetime.addMinutes(offset);
