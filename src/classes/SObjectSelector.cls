@@ -40,7 +40,7 @@ public abstract class SObjectSelector {
 	//return null if hit the maximum governer Limit
 	public List<SObject> selectByIds(List<Id> ids) {
 		List<SObject> ret = new List<SObject>();
-		String queryString = getQueryPartOne() + 'WHERE id IN :temp LIMIT ' + RECORD_PER_SOQL;
+		String queryString = getQueryPartOne() + 'WHERE id IN :ids LIMIT ' + RECORD_PER_SOQL;
 		System.debug(LoggingLevel.INFO, 'Select By Ids: ' + queryString);
 	   return Database.query(queryString);
 	}
