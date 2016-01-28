@@ -15,13 +15,25 @@ public class ClickWelcomeDashboardclone {
     public Id acid{get;set;}//use by laxman
     public List<User> ulst;//use by laxman
     public  Id loggedInLeadId;
+    public Id loggedInOpportunityId;
     public ClickWelcomeDashboardclone()
     { 
         string pge = Apexpages.currentPage().getUrl();
         acid=apexpages.currentpage().getparameters().get('cid');//updated by laxman
         ulst=[select id,name from user where accountid =:acid limit 1];//updated by laxman
         loggedInLeadId = acfCommon.getCurrentLoggedInLeadId(ulst[0].id);//updated by laxman
-        Id loggedInOpportunityId = acfCommon.getCurrentLoggedInOpportunityId(ulst[0].id);//updated by laxman
+        
+         List<Opportunity> oppolst=new List<Opportunity>();
+         if(acid!=null)
+        {
+            oppolst=[select id from opportunity where accountid =:acid and (recordtype.name ='Click Refi' or recordtype.name ='Click New Loans' ) limit 1];
+        }
+        if(oppolst<>null && oppolst.size()>0)
+
+        loggedInOpportunityId = oppolst[0].id;//updated by laxman
+        
+        
+        
         List<String> parts = pge.split('/'); 
         List<String> parts1 = parts[2].split('\\?');
         pge_name = parts1[0]; 

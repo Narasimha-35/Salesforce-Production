@@ -493,7 +493,7 @@ public class SaaSFocus_AppointmentController_beta
             ob.ob.updategooglesettings();
             
             
-            //Utilities.sendAppointmentConfirmEmail(appointmentId);
+            Utilities.sendAppointmentConfirmEmail(appointmentId);
             // return new pagereference('/'+appointmentId);
             pagereference pg = new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId+'&aid='+e.id);
             pg.setRedirect(true);

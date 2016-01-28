@@ -147,7 +147,7 @@ public without sharing class acfpostloginQuestionsController_partner
                 commSetupObj=[Select id from Click_Community_Setup__c where name ='ClickLoans' limit 1];
                 string setupID='';
                 if(commSetupObj.size()>0){
-					setupID =commSetupObj[0].id;                   
+                    setupID =commSetupObj[0].id;                   
                 }else{
                     setupID ='a2SO0000001PtV9';  
                 }
@@ -1916,6 +1916,7 @@ break;
         
         
         if(issApplicant2Check==true){
+            system.debug('###second applicant mail');
             list<user> userObj=[select account.acfApplicant2_Name__pc,account.acfApplicant2_email__pc,account.acfApplicant2_phone__pc from user where accountid=:UserAccountId];                        
             account accountobj1=new account(id=UserAccountId);
             
@@ -1945,6 +1946,7 @@ break;
             
         }
         else{
+            system.debug('###first applicant mail');
             applicantName=accountname; 
             applicantEmail=accountEmail;
             applicantPhone=accountPhone;
@@ -1976,9 +1978,52 @@ break;
             mobileMessage=mobileMessage.replace('{!econsentid}',finalData);
             mobileMessage=mobileMessage.replace('{!Account.Name}',applicantName);
             acfCommon.SendSMSUsingFuture(applicantName,applicantPhone,mobileMessage,true);
+            system.debug('mail Sent');
             
             
         }
+        
+    }
+    
+    public PageReference resendEconsent(){
+        
+        
+        
+        
+        list<account> accountObj=[select acfNumber_Of_Applicants__pc,name,PersonEmail,Phone,acfApplicant2_email__pc,acfApplicant2_phone__pc,acfEconsent__pc,acfEconsent_App2__pc  from account where id=:UserAccountId];                        
+        	accountname=accountObj[0].name;
+            accountEmail=accountObj[0].PersonEmail;
+            accountPhone=accountObj[0].Phone;
+        	app2Email=accountObj[0].acfApplicant2_email__pc;
+            app2Phone=accountObj[0].acfApplicant2_phone__pc;
+        system.debug('!!!check'+accountObj);
+        if(accountObj[0].acfNumber_Of_Applicants__pc=='2' && accountObj[0].acfEconsent__pc==null && accountObj[0].acfEconsent_App2__pc==null){
+            system.debug('!!!check 1'+accountObj);
+            issApplicant2Check=false;
+            sendApplicantConsentMailandSms();            
+            issApplicant2Check=true;
+            sendApplicantConsentMailandSms();
+        }else if(accountObj[0].acfNumber_Of_Applicants__pc=='2' && accountObj[0].acfEconsent__pc!=null && accountObj[0].acfEconsent_App2__pc==null){
+            system.debug('!!!check 2'+accountObj);
+            issApplicant2Check=true;
+            sendApplicantConsentMailandSms();
+            
+        }else if(accountObj[0].acfNumber_Of_Applicants__pc=='2' && accountObj[0].acfEconsent__pc==null && accountObj[0].acfEconsent_App2__pc!=null){
+            system.debug('!!!check 3'+accountObj);
+            issApplicant2Check=false;
+            sendApplicantConsentMailandSms();     
+        }else if(accountObj[0].acfNumber_Of_Applicants__pc=='1' && accountObj[0].acfEconsent__pc==null){
+            system.debug('!!!check 4'+accountObj);
+            issApplicant2Check=false;
+            sendApplicantConsentMailandSms();     
+        }
+        
+        
+        PageReference pg = new PageReference('/apex/BrokerClickPostloginQuestionnaires?cid='+UserAccountId);
+        pg.setRedirect(true);
+        return pg;
+        
+       
         
     }
     
