@@ -49,7 +49,7 @@ public class PrioritiseCampaignMemberCtrl {
 
    public void updateCallFileMembers() {
       if(selectedCallFileMemberSize != 0) {
-        BatchPrioritiseCallFileMember cfBatch = new BatchPrioritiseCallFileMember(query, priority, false);
+        BatchPrioritiseCallFileMember cfBatch = new BatchPrioritiseCallFileMember(query, priority, true);
         Database.executeBatch(cfBatch, 200);
         selectedCallFileMemberSize = 0;
         query = '';
