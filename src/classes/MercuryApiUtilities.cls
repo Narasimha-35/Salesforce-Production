@@ -20,7 +20,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		req.setEndPoint(DOMAIN + '/' + API_VERSION + '/' + APPLICATION + '/' + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '/' + rid);
 		system.debug(req.getEndpoint());
 		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
-		return http.send(req);
+		res = http.send(req);
+		if(res.getStatusCode() != 200) pendingEmails.add(new Map<String, String>{'methodName' => 'sendGetRequest', 'details' => generateDetailPart(req, res)});
+		
+		return res;
 	}
 
 	public static Map<String, Object> handleGetResponse(HttpResponse res) {
@@ -209,7 +212,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 	public static Opportunity createOppoInMercury(String token, String oppoId, String branchId) {
 		Opportunity oppo = [Select Id, Current_Loan_Value__c, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Current_Assigned_Broker__c, Pre_Sales_Notes__c, Transaction_Type__c,  Name From Opportunity Where Id = : oppoId];
-		if(!checkRecord('Opportunity', oppoId, token)) return oppo;
+		if(checkRecord('Opportunity', oppoId, token)) return oppo;
 		if (oppo != null) {
 			String createdTime = convertCurrentTimeToGMTWithTimeZone();
 			HttpRequest req = new HttpRequest();
@@ -407,7 +410,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	public static Contact createPeopleInMercury(String token, String accountId, String branchId) {
 		Account account = [Select id, name, FirstName, LastName, PersonContactId FROM Account where id =: accountId];
 		Contact contact = [Select id, name, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Job_Title__c, Gender__c, Title, Phone, FirstName, LastName, Birthday__c, Email, Annual_Income__c, MobilePhone, Marital_Status__c, Employer_Name__c, Current_Role__c, Number_of_Children__c, Employment_Status__c FROM Contact where id = :account.PersonContactId];
-		if(!checkRecord('Account', accountId, token)) return contact;
+		if(checkRecord('Account', accountId, token)) return contact;
 
 		if (account != null && account.PersonContactId != null) {
 			String createdTime = convertCurrentTimeToGMTWithTimeZone();
