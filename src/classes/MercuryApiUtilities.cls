@@ -3,21 +3,94 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	public static final String PASSWORD = 'AusCred4321';
 	public static final String APPLICATION = 'mercury5';
 	public static final String CLICK_PEP_BRANCH_ID = 'c68fcac0-79ab-4a73-b1b3-592f4a3adae6';
-	public static boolean emailSwh = false;
+	public static final String DOMAIN = 'https://api.connective.com.au';
+	public static final String API_VERSION = 'api';
+	public static final Map<String, String> sfToMercuryObjectMap = new Map<String, String>{'account' => 'person', 'opportunity' => 'loan'};
+	public static final Map<String, String> sfToMercuryItemMap = new Map<String, String>{'account' => 'people', 'opportunity' => 'loans'};
+	public static Boolean emailSwh = false;
 	public static List<String> recipients = null;
 	public static String debugEmailTemplate = null;
 	public static List<Map<String, String>> pendingEmails = null;
 
+	public static HttpResponse sendGetRequest(String sfObjectName, String rid, String token) {
+		HttpRequest req = new HttpRequest();
+		HttpResponse res = new HttpResponse();
+		Http http = new Http();
+		req.setHeader('Content-Type', 'application/json');
+		req.setEndPoint(DOMAIN + '/' + API_VERSION + '/' + APPLICATION + '/' + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '/' + rid);
+		system.debug(req.getEndpoint());
+		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
+		return http.send(req);
+	}
+
+	public static Map<String, Object> handleGetResponse(HttpResponse res) {
+		if(res.getStatusCode() != 200 || res.getBody() == '') return null;
+		Map<String, Object> ret = null;
+		try {
+			ret = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+			System.Debug(LoggingLevel.INFO, ret);
+		} catch (Exception e) {
+		    return null;
+		}
+
+		if(ret.get('success') != true) return null;
+		return ret;
+	}
+
+	public static boolean checkRecord(String sfObjectName, String rid, String token) {
+		 Id tempId = null;
+	    String tempIdString = '';
+	    HttpResponse res = sendGetRequest(sfObjectName, rid, token);
+	    Map<String, Object> resMap = handleGetResponse(res);
+
+	    if(resMap == null ) {
+	        try {
+	            tempId = rid;
+	            System.debug(tempId);
+	        } catch (Exception e) {
+	            // the input id is not a instance of salesforce id
+	            return false;
+	        }
+
+	        tempIdString += tempId;
+			  //if rid is 18 digit id temp id is 15 digit else 18 digit
+	        if(((String)tempId).length() == rid.length()) tempIdString = tempIdString.left(15);
+	        return checkRecordFromResMap(handleGetResponse(sendGetRequest(sfObjectName, tempIdString, token)), sfObjectName, tempIdString);
+	    } else {
+	        return checkRecordFromResMap(resMap, sfObjectName, rid);
+	    }
+	}
+
+	public static boolean checkRecordFromResMap(Map<String, Object> resMap, String sfObjectName, String rid) {
+		if(resMap == null) return false;
+		if(rid.length() == 18) return true;
+
+		Object temp = resMap.get(sfToMercuryItemMap.get(sfObjectName.toLowerCase()));
+		Map<String, Object> m = null;
+		if(temp instanceOf Map<String, Object>) {
+		    m = (Map<String, Object>) temp;
+		} else {
+		    List<Object> ml = (List<Object>) temp;
+		    m = (Map<String, Object>) ml[0];
+		}
+
+		system.Debug(m);
+		system.debug(m.get('uniqueId'));
+		System.Debug(rid);
+		if(String.valueOf(m.get('uniqueId')).equals(rid)) return true;
+		return false;
+	}
+
 	public static void init() {
-	    ACFSwitch__c acfswh = ACFSwitch__c.getOrgDefaults();
+		ACFSwitch__c acfswh = ACFSwitch__c.getOrgDefaults();
 		emailSwh = (Boolean) acfswh.get('Mercury_Email_Switch__c');
 		system.debug(LoggingLevel.INFO, emailSwh);
 		ACFEmailList__c emaiSetting = ACFEmailList__c.getOrgDefaults();
 		recipients = ((String) emaiSetting.get('Mercury_Email_Receiver__c')).split(',');
 		system.debug(LoggingLevel.INFO, recipients);
 		Document doc = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
-        debugEmailTemplate = doc.body.toString();
-        pendingEmails = new List<Map<String, String>>();
+		debugEmailTemplate = doc.body.toString();
+		pendingEmails = new List<Map<String, String>>();
 	}
 
 	@future(callout=true)
@@ -136,6 +209,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 	public static Opportunity createOppoInMercury(String token, String oppoId, String branchId) {
 		Opportunity oppo = [Select Id, Current_Loan_Value__c, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Current_Assigned_Broker__c, Pre_Sales_Notes__c, Transaction_Type__c,  Name From Opportunity Where Id = : oppoId];
+		if(!checkRecord('Opportunity', oppoId, token)) return oppo;
 		if (oppo != null) {
 			String createdTime = convertCurrentTimeToGMTWithTimeZone();
 			HttpRequest req = new HttpRequest();
@@ -332,8 +406,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 	public static Contact createPeopleInMercury(String token, String accountId, String branchId) {
 		Account account = [Select id, name, FirstName, LastName, PersonContactId FROM Account where id =: accountId];
+		Contact contact = [Select id, name, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Job_Title__c, Gender__c, Title, Phone, FirstName, LastName, Birthday__c, Email, Annual_Income__c, MobilePhone, Marital_Status__c, Employer_Name__c, Current_Role__c, Number_of_Children__c, Employment_Status__c FROM Contact where id = :account.PersonContactId];
+		if(!checkRecord('Account', accountId, token)) return contact;
+
 		if (account != null && account.PersonContactId != null) {
-			Contact contact = [Select id, name, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Job_Title__c, Gender__c, Title, Phone, FirstName, LastName, Birthday__c, Email, Annual_Income__c, MobilePhone, Marital_Status__c, Employer_Name__c, Current_Role__c, Number_of_Children__c, Employment_Status__c FROM Contact where id = :account.PersonContactId];
 			String createdTime = convertCurrentTimeToGMTWithTimeZone();
 			String peopleFirstName = account.FirstName != null && account.FirstName != '' ? account.FirstName : 'defaultFirstName';
 			String peopleLastName = account.LastName != null && account.LastName != '' ? account.LastName : 'defaultLastName';
@@ -664,4 +740,5 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		System.debug(gmtTimeValue);
 		return gmtTimeValue;
 	}
+
 }
