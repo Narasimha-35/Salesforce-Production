@@ -10,14 +10,13 @@ public  class acfTriggerOnOpportunityLineItemHandler
   }
   public void OnAfterInsert(List<Opportunitylineitem>triggerNew)
   {
-    
-    UpdateFeeInOpportunity(triggerNew);
     updateRequiredDocumentOnOpportunity(triggerNew);
+    UpdateFeeInOpportunity(triggerNew);
   }
   public void OnAfterUpdate(List<Opportunitylineitem>triggerNew)
   {
-    UpdateFeeInOpportunity(triggerNew);
     updateRequiredDocumentOnOpportunity(triggerNew);
+    UpdateFeeInOpportunity(triggerNew);
   }
   public void UpdateFeeInOpportunity(List<Opportunitylineitem>triggerNew)
   {
@@ -232,18 +231,21 @@ public  class acfTriggerOnOpportunityLineItemHandler
     }  
   }
   
-   
-  public void updateRequiredDocumentOnOpportunity(list<OpportunityLineItem> triggerNew)
+    public void updateRequiredDocumentOnOpportunity(list<OpportunityLineItem> triggerNew)
     {
         map<id,id> mapProduct2IdToOpportunityID = new map<id,id>();
         map<id,id> mapPricebookEntryIdToOpportunityID = new map<id,id>();
-        set<id> setOfRequiredDocumentId = new set<id>();
-        for (OpportunityLineItem objOLI: triggerNew)
+        set<id> setOfDocumentMasterId = new set<id>();
+        set<id> setOfDocMasterId = new set<id>();
+        map<id,set<id>> mapopportunityIdtoSetDocMasterId = new map<id,set<id>>();
+        set<id> setOfOppId = new set<id>();
+         for (OpportunityLineItem objOLI: triggerNew)
         {
             system.debug('objoli--------------------'+objoli);
             if(objOLI.PricebookEntryId <> null && objOLI.Opportunityid <> null)
             {
                 mapPricebookEntryIdToOpportunityID.put(objOLI.PricebookEntryId,objOLI.OpportunityId);
+                setOfOppId.add(objOLI.Opportunityid);
             }  
         }
         List<PricebookEntry> lstPriceBookEntry = new List<PricebookEntry>();
@@ -258,33 +260,69 @@ public  class acfTriggerOnOpportunityLineItemHandler
                  if(objpricebook.Product2Id <> null)
                  {
                      mapProduct2IdToOpportunityID.put(objpricebook.Product2Id,mapPricebookEntryIdToOpportunityID.get(objpricebook.id));
+                     system.debug('objoli--------------------'+mapProduct2IdToOpportunityID);
                  }   
             }
         }
         List<Product_Document__c>  lstProductDocument = new List<Product_Document__c>();
+        List<Opportunity>  lstOpp = new List<Opportunity>();
         if(mapProduct2IdToOpportunityID.keyset() <> null)
-        lstProductDocument = [select id,Click_Loans_Required_Document_del__c,Product__c from Product_Document__c
+        lstProductDocument = [select id,Click_Loans_Document_Master__c,Click_Loans_Document_Master__r.Name,
+                                Product__c from Product_Document__c
                                 where Product__c =:mapProduct2IdToOpportunityID.keyset()]; 
+        lstOpp = [select id,(select id,name,acfDocument_Master__c from Required_Documents__r) from opportunity where id=:setOfOppId]; 
+        for(Opportunity objOpp : lstOpp)   
+        {
+            for(Required_Document__c objRd :objOpp.Required_Documents__r)
+            {
+                 if(mapopportunityIdtoSetDocMasterId.get(objOpp.id) == null)
+                 {
+                     mapopportunityIdtoSetDocMasterId.put(objOpp.id,new set<id>());
+                 }
+                 mapopportunityIdtoSetDocMasterId.get(objOpp.id).add(objRd.acfDocument_Master__c);   
+            }
+        }                     
         List<Required_Document__c>  lstRequiredDocument = new List<Required_Document__c>();                 
         if(lstProductDocument <> null && lstProductDocument.size() > 0) 
         {
             for(Product_Document__c objProductDocument : lstProductDocument)
             {
-                if(objProductDocument.Click_Loans_Required_Document_del__c <> null)
+                system.debug('Ankit'+mapProduct2IdToOpportunityID.get(objProductDocument.Product__c));
+                system.debug('Ankit11'+mapopportunityIdtoSetDocMasterId.get(mapProduct2IdToOpportunityID.get(objProductDocument.Product__c)));
+                if(objProductDocument.Click_Loans_Document_Master__c <> null && mapProduct2IdToOpportunityID.get(objProductDocument.Product__c) <> null
+                  && mapopportunityIdtoSetDocMasterId.get(mapProduct2IdToOpportunityID.get(objProductDocument.Product__c)) <> null
+                    && !mapopportunityIdtoSetDocMasterId.get(mapProduct2IdToOpportunityID.get(objProductDocument.Product__c)).contains(objProductDocument.Click_Loans_Document_Master__c))
                 {
-                    if(!setOfRequiredDocumentId.contains(objProductDocument.Click_Loans_Required_Document_del__c))
-                    {
-                        Required_Document__c objRequiredDocument = new Required_Document__c(id=objProductDocument.Click_Loans_Required_Document_del__c);
-                        objRequiredDocument.acfOpportunity__c = mapProduct2IdToOpportunityID.get(objProductDocument.Product__c);
-                        lstRequiredDocument.add(objRequiredDocument);
-                        setOfRequiredDocumentId.add(objProductDocument.Click_Loans_Required_Document_del__c);
-                    }
+                    Required_Document__c objRequiredDocument = new Required_Document__c(); 
+                    objRequiredDocument.Name = objProductDocument.Click_Loans_Document_Master__r.name;
+                    objRequiredDocument.acfOpportunity__c = mapProduct2IdToOpportunityID.get(objProductDocument.Product__c);
+                    objRequiredDocument.acfDocument_Master__c = objProductDocument.Click_Loans_Document_Master__c;
+                    objRequiredDocument.acfStatus__c  =  'Pending';
+                    lstRequiredDocument.add(objRequiredDocument);
+                    mapopportunityIdtoSetDocMasterId.get(mapProduct2IdToOpportunityID.get(objProductDocument.Product__c)).add(objProductDocument.Click_Loans_Document_Master__c);
                 }
+                else if(objProductDocument.Click_Loans_Document_Master__c <> null && mapProduct2IdToOpportunityID.get(objProductDocument.Product__c) <> null
+                     && mapopportunityIdtoSetDocMasterId.get(mapProduct2IdToOpportunityID.get(objProductDocument.Product__c)) == null)     
+                {
+                    Required_Document__c objRequiredDocument = new Required_Document__c(); 
+                    objRequiredDocument.Name = objProductDocument.Click_Loans_Document_Master__r.name;
+                    objRequiredDocument.acfOpportunity__c = mapProduct2IdToOpportunityID.get(objProductDocument.Product__c);
+                    objRequiredDocument.acfDocument_Master__c = objProductDocument.Click_Loans_Document_Master__c;
+                    objRequiredDocument.acfStatus__c  =  'Pending';
+                    lstRequiredDocument.add(objRequiredDocument);
+                    if(mapopportunityIdtoSetDocMasterId.get(mapProduct2IdToOpportunityID.get(objProductDocument.Product__c)) == null)
+                     {
+                         mapopportunityIdtoSetDocMasterId.put(mapProduct2IdToOpportunityID.get(objProductDocument.Product__c),new set<id>());
+                     }
+                     mapopportunityIdtoSetDocMasterId.get(mapProduct2IdToOpportunityID.get(objProductDocument.Product__c)).add(objProductDocument.Click_Loans_Document_Master__c);   
+                }
+             
             }
         }   
         if(lstRequiredDocument <> null && lstRequiredDocument.size() > 0)
         {
-            update lstRequiredDocument;
+            insert lstRequiredDocument;
         }
-    }
+    }        
+
 }
