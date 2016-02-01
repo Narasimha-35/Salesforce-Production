@@ -1,3 +1,4 @@
+/*     White label    */
 public without sharing class WLContactus 
 {
     public list<acfContentManagementSystem__c> lstAboutUs {get;set;}
