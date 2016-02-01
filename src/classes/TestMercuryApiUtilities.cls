@@ -50,7 +50,7 @@ private class TestMercuryApiUtilities {
 		System.assertEquals(token, tokenTest);
 	}
 
-	static testMethod void createOppoInMercuryTest() {
+	static testMethod void testCreateOppoInMercuryWithDuplicate() {
 	    StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
 
         mock.setStaticResource('MercuryLoanSuccessResponse');
@@ -67,11 +67,44 @@ private class TestMercuryApiUtilities {
 		//System.assertEquals(oppo2.Sync_With_Mercury_Success__c, true);
 	    Test.stopTest();
 	}
+	
+	static testMethod void testCreateOppoInMercuryWithoutDuplicate() {
+	    StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
 
-	static testMethod void createPeopleInMercuryTest() {
+        mock.setStaticResource('MercuryLoanFail1Response');
+        mock.setStatusCode(200);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
+		String oppoId = oppo.Id;
+		MercuryApiUtilities.createOppoInMercury(token, oppoId, 'P200019');
+		Opportunity oppo2 = [select Id, Sync_With_Mercury__c, Sync_With_Mercury_Success__c From Opportunity where Id = :oppoId];
+		//System.assertEquals(oppo2.Sync_With_Mercury__c, true);
+		//System.assertEquals(oppo2.Sync_With_Mercury_Success__c, true);
+	    Test.stopTest();
+	}
+
+	static testMethod void TestCreatePeopleInMercuryWithDuplicate() {
 	    StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
 
         mock.setStaticResource('MercuryLoanSuccessResponse');
+        mock.setStatusCode(200);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
+		String accountId = account.Id;
+		MercuryApiUtilities.createPeopleInMercury(token, accountId, 'P200019');
+		Test.stopTest();
+	}
+	
+	static testMethod void testCreatePeopleInMercuryWithoutDuplicate() {
+	    StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+
+        mock.setStaticResource('MercuryLoanFail1Response');
         mock.setStatusCode(200);
         mock.setHeader('Content-Type', 'application/json');
         Test.setMock(HttpCalloutMock.class, mock);
@@ -154,10 +187,10 @@ private class TestMercuryApiUtilities {
 		system.assert(true);
 	}
 
-	private static testMethod void testCreateSecondApplicationInMercury() {
-		MercuryApiUtilities.createSecondApplicationInMercury('token', account.id);
-		system.assert(true);
-	}
+// 	private static testMethod void testCreateSecondApplicationInMercury() {
+// 		MercuryApiUtilities.createSecondApplicationInMercury('token', account.id);
+// 		system.assert(true);
+// 	}
 
 	private static testMethod void testGetAllPersonalBranches(){
 		MercuryApiUtilities.getAllPersonalBranches('token');

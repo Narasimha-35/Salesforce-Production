@@ -103,8 +103,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		String branchId = getBrokerBranch(oppoId);
 
 		//Create Oppo
+		System.debug(oppoId);
 		Opportunity oppo = MercuryApiUtilities.createOppoInMercury(token, oppoId, branchId);
 		//Create People
+		System.debug(accountId);
 		Contact contact = MercuryApiUtilities.createPeopleInMercury(token, accountId, branchId);
 		//Create Connection between Oppo and People
 		String oppoAndaccountId = oppoId + '-' + accountId;
@@ -212,7 +214,11 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 	public static Opportunity createOppoInMercury(String token, String oppoId, String branchId) {
 		Opportunity oppo = [Select Id, Current_Loan_Value__c, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Current_Assigned_Broker__c, Pre_Sales_Notes__c, Transaction_Type__c,  Name From Opportunity Where Id = : oppoId];
-		if(checkRecord('Opportunity', oppoId, token)) return oppo;
+		if(checkRecord('Opportunity', oppoId, token)) {
+		    System.debug(oppoId);
+		    return oppo;
+        }
+		
 		if (oppo != null) {
 			String createdTime = convertCurrentTimeToGMTWithTimeZone();
 			HttpRequest req = new HttpRequest();
@@ -268,46 +274,46 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return acfBranch;
 	}
 
-	public static void createSecondApplicationInMercury(String token, String accountId) {
-		// check if there is a second applicant
-		//sync it over and connect with the current opportunity.
-		Account account = [Select id, name, FirstName, LastName, PersonContactId FROM Account where id =: accountId];
-		if (account != null && account.PersonContactId != null) {
-				Contact contact = [Select Id, Name, acfNumber_Of_Applicants__c, acfApplicant2_email__c, acfApplicant2_phone__c, acfApplicant2_Name__c, acfApplicant2_Monthly_Salary__c, acfApplicant2_Marital_Status__c, acfApplicant2_Employer_Name__c, acfApplicant2_Dependents__c, acfApplicant2_Employment_Type__c, acfApplicant2_DOB__c From Contact where id = :account.PersonContactId];
-			if (contact.acfNumber_Of_Applicants__c != null && Integer.valueOf(contact.acfNumber_Of_Applicants__c) == 2) {
-				String createdTime = convertCurrentTimeToGMTWithTimeZone();
-				String peopleFirstName = contact.acfApplicant2_Name__c != null & contact.acfApplicant2_Name__c.trim() != '' ? contact.acfApplicant2_Name__c : '';
-				String peopleLastName = contact.acfApplicant2_Name__c != null & contact.acfApplicant2_Name__c.trim() != '' ? contact.acfApplicant2_Name__c : '';
-				String email = contact.acfApplicant2_email__c != null && contact.acfApplicant2_email__c.trim() != '' ? contact.acfApplicant2_email__c : '';
-				String mobile = contact.acfApplicant2_phone__c != null && contact.acfApplicant2_phone__c.trim() != '' ? contact.acfApplicant2_phone__c : '';
-				Decimal annualSalary = contact.acfApplicant2_Monthly_Salary__c != null && contact.acfApplicant2_Monthly_Salary__c > 0 ? contact.acfApplicant2_Monthly_Salary__c : 0;
-				String maritalStatus = contact.acfApplicant2_Marital_Status__c != null && contact.acfApplicant2_Marital_Status__c.trim() != '' ? contact.acfApplicant2_Marital_Status__c : '';
-				String employerName = contact.acfApplicant2_Employer_Name__c != null && contact.acfApplicant2_Employer_Name__c.trim() != '' ? contact.acfApplicant2_Employer_Name__c : '';
-				String currentRole = '';
-				Integer childrenNum = contact.acfApplicant2_Dependents__c != null && contact.acfApplicant2_Dependents__c != '' ? Integer.valueOf(contact.acfApplicant2_Dependents__c) : 0;
-				String employmentType = contact.acfApplicant2_Employment_Type__c != null && contact.acfApplicant2_Employment_Type__c.trim() != '' ? contact.acfApplicant2_Employment_Type__c : '';
-				String gender = '';
-				String birthday = null;
-				String birthdayNew = contact.acfApplicant2_DOB__c;
-				if (birthdayNew != null && birthdayNew != '') {
-					String[] dateValues = birthdayNew.split('/');
-					if (dateValues.size() == 3) {
-						Date birthdayDateNew = Date.newInstance(Integer.valueOf(dateValues[2]), Integer.valueOf(dateValues[1]), Integer.valueOf(dateValues[0]));
-						birthday = '"' + convertCurrentTimeToGMTWithTimeZone(birthdayDateNew) + '"';
-					}
-				}
-				String title = '';
-				String jobTitle = '';
+// 	public static void createSecondApplicationInMercury(String token, String accountId) {
+// 		// check if there is a second applicant
+// 		//sync it over and connect with the current opportunity.
+// 		Account account = [Select id, name, FirstName, LastName, PersonContactId FROM Account where id =: accountId];
+// 		if (account != null && account.PersonContactId != null) {
+// 				Contact contact = [Select Id, Name, acfNumber_Of_Applicants__c, acfApplicant2_email__c, acfApplicant2_phone__c, acfApplicant2_Name__c, acfApplicant2_Monthly_Salary__c, acfApplicant2_Marital_Status__c, acfApplicant2_Employer_Name__c, acfApplicant2_Dependents__c, acfApplicant2_Employment_Type__c, acfApplicant2_DOB__c From Contact where id = :account.PersonContactId];
+// 			if (contact.acfNumber_Of_Applicants__c != null && Integer.valueOf(contact.acfNumber_Of_Applicants__c) == 2) {
+// 				String createdTime = convertCurrentTimeToGMTWithTimeZone();
+// 				String peopleFirstName = contact.acfApplicant2_Name__c != null & contact.acfApplicant2_Name__c.trim() != '' ? contact.acfApplicant2_Name__c : '';
+// 				String peopleLastName = contact.acfApplicant2_Name__c != null & contact.acfApplicant2_Name__c.trim() != '' ? contact.acfApplicant2_Name__c : '';
+// 				String email = contact.acfApplicant2_email__c != null && contact.acfApplicant2_email__c.trim() != '' ? contact.acfApplicant2_email__c : '';
+// 				String mobile = contact.acfApplicant2_phone__c != null && contact.acfApplicant2_phone__c.trim() != '' ? contact.acfApplicant2_phone__c : '';
+// 				Decimal annualSalary = contact.acfApplicant2_Monthly_Salary__c != null && contact.acfApplicant2_Monthly_Salary__c > 0 ? contact.acfApplicant2_Monthly_Salary__c : 0;
+// 				String maritalStatus = contact.acfApplicant2_Marital_Status__c != null && contact.acfApplicant2_Marital_Status__c.trim() != '' ? contact.acfApplicant2_Marital_Status__c : '';
+// 				String employerName = contact.acfApplicant2_Employer_Name__c != null && contact.acfApplicant2_Employer_Name__c.trim() != '' ? contact.acfApplicant2_Employer_Name__c : '';
+// 				String currentRole = '';
+// 				Integer childrenNum = contact.acfApplicant2_Dependents__c != null && contact.acfApplicant2_Dependents__c != '' ? Integer.valueOf(contact.acfApplicant2_Dependents__c) : 0;
+// 				String employmentType = contact.acfApplicant2_Employment_Type__c != null && contact.acfApplicant2_Employment_Type__c.trim() != '' ? contact.acfApplicant2_Employment_Type__c : '';
+// 				String gender = '';
+// 				String birthday = null;
+// 				String birthdayNew = contact.acfApplicant2_DOB__c;
+// 				if (birthdayNew != null && birthdayNew != '') {
+// 					String[] dateValues = birthdayNew.split('/');
+// 					if (dateValues.size() == 3) {
+// 						Date birthdayDateNew = Date.newInstance(Integer.valueOf(dateValues[2]), Integer.valueOf(dateValues[1]), Integer.valueOf(dateValues[0]));
+// 						birthday = '"' + convertCurrentTimeToGMTWithTimeZone(birthdayDateNew) + '"';
+// 					}
+// 				}
+// 				String title = '';
+// 				String jobTitle = '';
 
-				HttpRequest req = new HttpRequest();
-		        HttpResponse res = new HttpResponse();
-		        Http http = new Http();
-		        req.setHeader('Content-Type', 'application/json');
+// 				HttpRequest req = new HttpRequest();
+// 		        HttpResponse res = new HttpResponse();
+// 		        Http http = new Http();
+// 		        req.setHeader('Content-Type', 'application/json');
 
 
-			}
-		}
-	}
+// 			}
+// 		}
+// 	}
 
 	public static void updatePeopleInMercury(String accountId, String token, String branchId) {
 		Account account = [Select id, name, FirstName, Mercury_People_ID__c, LastName, PersonContactId FROM Account where id =: accountId];
