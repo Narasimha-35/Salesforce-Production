@@ -1,4 +1,34 @@
-<apex:page controller="SaaSFocus_AppointmentController" showHeader="true" action="{!getFreeBrokers}"> 
+<apex:page controller="SaaSFocus_AppointmentController" showHeader="true" action="{!pagepreviousBroker}"  id="TT1" > 
+
+<!--<apex:actionSupport event="onload" action="{!InsertCalender}" rendered="{!AND(iscall,e1.id!= null)}" reRender="TT1"/>-->
+
+<apex:form rendered="{!iscall}" >
+<apex:actionStatus id="id_status" startText="Processing..." startStyleClass="color:red;">
+    <apex:facet name="start">
+    <div style="text-align:center;width:100%;height:100%;opacity:0.2;background-color:#000;position:fixed;left:0px;top:0px;z-index:99;">
+        <img style="position: relative;top: 127px;width:300px" src="{!URLFOR($Resource.AppointmentImage)}"  />
+    </div>    
+    </apex:facet>
+    </apex:actionStatus>
+
+<apex:actionFunction name="InsertCalender" action="{!InsertCalender}" reRender="TT1" status="id_status" />
+</apex:form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<apex:outputPanel rendered="{!iscall}">
+<script>
+ if('{!e1.id}'!=null && '{!iscall}'=='true')
+        {
+          
+            InsertCalender();
+        }
+</script>
+
+</apex:outputPanel>  
+
+
+ <apex:outputPanel rendered="{!!iscall}"> 
+
 <script>
 function check() {
 var r = document.getElementsByName("timegroup");
@@ -55,4 +85,5 @@ if (c == -1)
     </div>    
     </apex:facet>
     </apex:actionStatus>
+    </apex:outputpanel>
 </apex:page>

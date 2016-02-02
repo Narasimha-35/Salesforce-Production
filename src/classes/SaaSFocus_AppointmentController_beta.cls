@@ -12,6 +12,10 @@
 
 public class SaaSFocus_AppointmentController_beta
 {
+    public Event e1{get;set;}
+    public Id NewEventId; 
+    public Boolean iscall{get;set;}
+    public boolean isnoshow{set;get;}
     public Integer offset ;
     public String note{get;set;}
     String appointmentId;
@@ -49,7 +53,7 @@ public class SaaSFocus_AppointmentController_beta
         Allbrokers = new Set<Id>();
         appointmentId= ApexPages.currentPage().getParameters().get('id');    // Get id from apex page
         Appointob = new Appointment__c();
-        Appointob =[SELECT Id,Name,Account_Name__c,Account_Email__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Date_and_Time__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id FROM Appointment__c where id=:appointmentId];
+        Appointob =[SELECT Id,Name,Account_Name__c,Account_Email__c,Broker__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Date_and_Time__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id FROM Appointment__c where id=:appointmentId];
         
         BusyBrokerInThisTime= new Set<Id>();
         AvaialableBrokerInThisTime = new Set<ID>();
@@ -115,8 +119,8 @@ public class SaaSFocus_AppointmentController_beta
             ids.add(ApexPages.currentPage().getParameters().get('aid'));
             system.debug('harish' +ids);
             Saasfocus_GoogleCalenderHelper.processEvent(ids);
-            return new pagereference('/'+ApexPages.currentPage().getParameters().get('id'));
-            
+            //return new pagereference('/'+ApexPages.currentPage().getParameters().get('id'));
+            return new pagereference('/'+appointmentId);
         }
         else
         {
@@ -318,7 +322,7 @@ public class SaaSFocus_AppointmentController_beta
     
     public List<List<SelectOption>> getAvailableSchedule()
     // Define a Method for chose time from given time list in apex page
-    {
+    {   
         CalList = new List<List<SelectOption>>();
         for(Date eachdatetime: finalmap.keyset())
         {
@@ -347,7 +351,8 @@ public class SaaSFocus_AppointmentController_beta
             CalList.add(option);
             
         }
-        return CalList;
+        return CalList; 
+        
     }
     
     Public Pagereference Confirm()
@@ -494,7 +499,7 @@ public class SaaSFocus_AppointmentController_beta
             
             
             Utilities.sendAppointmentConfirmEmail(appointmentId);
-            // return new pagereference('/'+appointmentId);
+            //return new pagereference('/'+appointmentId);
             pagereference pg = new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId+'&aid='+e.id);
             pg.setRedirect(true);
             return pg;
@@ -588,4 +593,139 @@ public class SaaSFocus_AppointmentController_beta
       
     } 
     
-}
+public PageReference previousBroker()
+    {
+       List<Appointment__c> Applist =[SELECT Id,Opportunity__r.id,Opportunity__r.StageName,Appointment_Time_and_Date_Adj__c,Opportunity__r.CurrentAssignedBroker__c,Opportunity__r.CurrentAssignedBroker__r.Email__c,Opportunity__r.CurrentAssignedBroker__r.Name,Name,Account_Name__c,Account_Email__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Date_and_Time__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id FROM Appointment__c where id=:appointmentId and Opportunity__r.CurrentAssignedBroker__r.Active_Broker__c=true limit 1];
+       //List<Appointment__c> applistnew=[SELECT Id,Opportunity__r.id,Appointment_Time_and_Date_Adj__c,Opportunity__r.CurrentAssignedBroker__c,Opportunity__r.CurrentAssignedBroker__r.Email__c,Opportunity__r.CurrentAssignedBroker__r.Name,Name,Account_Name__c,Account_Email__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Date_and_Time__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id, (Select Appointment_Date_and_Time_c from Appointment__c order by Appointment_Date_and_Time_c DESC limit 1)  FROM Appointment__c where id=:appointmentId and Opportunity__r.StageName='Appointed' and  Opportunity__r.CurrentAssignedBroker__r.Active_Broker__c=true limit 1];
+       
+       if(Applist.size()>0)
+       {
+        Appointment__c Appointob= Applist[0];
+        
+        if(Appointob.Opportunity__r.StageName!='Closed Won - Signed') 
+        {
+            List<Opportunity> opplist=[Select (Select id,Appointment_Date_and_Time__c from Appointments__r where id !=:Appointob.id and Appointment_Status__c='No Show'  order by Appointment_Date_and_Time__c desc limit 1) from opportunity where id =:Appointob.Opportunity__r.id limit 1];
+            if(opplist.size()>0)
+            {
+                if(opplist[0].Appointments__r.size()>0)
+                {
+                    if(system.now()<opplist[0].Appointments__r[0].Appointment_Date_and_Time__c.addDays(+30))
+                    {
+                        isnoshow=true;
+                    }
+                }
+            }
+        }
+        
+        if(isnoshow==true || Appointob.Opportunity__r.StageName=='Closed Won - Signed')
+        {
+        
+        List<User> brokeruser = [select id,Email from User where Email = :Appointob.Opportunity__r.CurrentAssignedBroker__r.Email__c];
+        Allocate_Appointment__c obj;
+        if(Appointob.Appointment_Type__c=='First Appointment')
+        {
+          obj =  Allocate_Appointment__c.getValues('Face_To_face');
+        }
+        else
+        {
+        obj =  Allocate_Appointment__c.getValues('Phone_Broker');
+        }
+                Appointment__c newapp = new Appointment__c(id = appointmentId);
+                newapp.Broker__c = Appointob.Opportunity__r.CurrentAssignedBroker__c; 
+                //newapp.Appointment_Date_and_Time__c=Appointob.Appointment_Time_and_Date_Adj__c;
+                update newapp;
+                newapp.RecordTypeId = [Select Id from RecordType where Name='Confirmed Appointment' limit 1].id;
+                update newapp ;
+                e1= new Event();
+                if(brokeruser.size()>0)
+                e1.ownerid = brokeruser[0].id;
+                
+                e1.startdatetime =Appointob.Appointment_Time_and_Date_Adj__c;
+                e1.enddatetime = Appointob.Appointment_Time_and_Date_Adj__c.addMinutes(Integer.valueof(obj.DurationOfMeeting__c));
+                e1.whatid= Appointob.Opportunity__r.CurrentAssignedBroker__c; 
+                e1.Subject= Appointob.Name+ '-' +Appointob.Street_Address__c +' ' +Appointob.City__c +' ' +Appointob.State__c +' '  +Appointob.Postal_Code__c +'-' +Appointob.Phone__c +'-' +Appointob.Appointment_Type__c;
+                e1.Subject=e1.Subject.replace('-null','');
+                e1.Subject=e1.Subject.replace('null-','');
+                e1.Subject=e1.Subject.replace('null','');
+                e1.Location = Appointob.Street_Address__c+','+Appointob.City__c+','+Appointob.State__c+','+Appointob.Postal_Code__c;
+                e1.Location =e1.Location.replace(',null','');
+                e1.Location =e1.Location.replace('null,','');
+                e1.Location =e1.Location.replace('null','N/A');
+                string s1 = '';
+                if(Appointob.Pre_Sales_Notes__c != null){
+                    s1 = Appointob.Pre_Sales_Notes__c;
+                    s1=  s1.stripHtmlTags();
+             }
+            
+                string nextline = '\n';
+                e1.Description = 'Appointment Reference: ' + Appointob.Name + nextline+ 'Date and Time Of Appointment:'+' '+Appointob.Appointment_Date_and_Time__c.format('dd/MM/yyyy hh:mm a')+nextline+
+                'Customer Mobile:'+' '+Appointob.Mobile__c+nextline+
+                'Customer Phone:'+' '+ Appointob.Phone__c +nextline+
+                'Customer Location:'+' '+Appointob.Street_Address__c+','+Appointob.City__c+','+Appointob.State__c+','+Appointob.Postal_Code__c+nextline+
+                'Customer Email:'+' '+Appointob.Account_Email__c+nextline+
+                'Customer Name:'+' '+Appointob.Account_Name_Text__c+nextline+nextline+
+                'Notes from Pre Sales' +nextline+
+                +s1+nextline+nextline+
+                'Opportunity Details:'+' '+nextline+
+                'Transaction Type:'+' '+Appointob.Transaction_Type__c+nextline+
+                'Current Lender:'+' ' +Appointob.Current_Lender__c+nextline+
+                'Current Loan Value:'+' ' +Appointob.Current_Loan_Value__c+nextline+
+                'Current Loan Type:' +' '+Appointob.Current_Loan_Type__c+nextline+
+                'Current Interest Rate:'+' '+Appointob.Current_Interest_Rate__c+nextline+
+                'Current Interest Rate Type:'+' '+Appointob.Current_Interest_Rate_Type__c+nextline+
+                'Current Financials Up to Date:'+' '+Appointob.Current_Financials_Up_to_Date__c+nextline+
+                'Last Refinanced: '+' '+Appointob.Last_Refinance__c+nextline+
+                'Fixed Rate Expiry:'+' '+Appointob.Fixed_Rate_Expiry__c+nextline+
+                'Age of Current Loan:'+' '+Appointob.Age_of_Current_Loan__c+nextline+nextline+nextline+
+                'Income and Liability Details:'+' ' +nextline+
+                'Employment Status:'+' '+ Appointob.Employment_Status__c +nextline+
+                'Industry: '+' '+Appointob.Industry__c +nextline+
+                'Annual Income:'+' '+Appointob.Annual_Income__c +nextline+
+                'Partner Annual Income: '+' '+Appointob.Partner_Income__c +nextline+
+                'Credit Card Balance: '+' '+Appointob.Credit_Card_Balance__c +nextline+
+                'Personal Loan Balance:'+' '+Appointob.Personal_Loan_Balance__c+
+                'Presale notes:'+' '+Appointob.Pre_Sales_Notes__c;
+                e1.Description=e1.Description.replace(',null','');
+                e1.Description=e1.Description.replace('null,','');
+                e1.Description=e1.Description.replace('null','N/A');
+                
+                
+                System.debug('capacity' +e1);
+                insert e1;
+                Utilities.sendAppointmentConfirmEmail(appointmentId); 
+                iscall=true;
+               return null;
+              } 
+              else
+                {
+                PageReference  pgre=setDates();
+                return pgre;
+                 
+                } 
+               
+                            
+        }
+        else
+        {
+        PageReference  pgre=setDates();
+        return pgre;
+         
+        }
+    //return null;
+    
+    }
+    public PageReference InsertCalender()
+        {
+                if(iscall==true){
+                NewEventId= e1.id; 
+                Saasfocus_GoogleCalenderHelper.processEvent(new list<ID>{NewEventId});
+               
+                system.debug('TEST!!!!!!!!');
+                }
+              
+          return new pagereference('/'+appointmentId);
+        }
+
+   
+   
+    }
