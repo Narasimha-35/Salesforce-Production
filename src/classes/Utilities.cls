@@ -5,13 +5,47 @@ global class Utilities {
     
     public static void updateTimezoneOnLead(Lead lead) {
         if (lead.PostalCode == null || lead.PostalCode == '' || !lead.PostalCode.isNumeric()) {
-            lead.vhc__TimeZone__c = '(UTC+08:00) Perth';
+            // Add state checking
+            System.debug(Lead.StateCode);
+            if (Lead.StateCode == 'ACT') {
+              
+                lead.vhc__TimeZone__c = '(UTC+10:00) Canberra, Melbourne, Sydney';
+
+            } else if (Lead.StateCode == 'NSW') {
+
+                lead.vhc__TimeZone__c = '(UTC+10:00) Canberra, Melbourne, Sydney';
+            
+            } else if (Lead.StateCode == 'NT') {
+
+                lead.vhc__TimeZone__c = '(UTC+09:30) Darwin';
+            
+            } else if (Lead.StateCode == 'QLD') {
+
+                lead.vhc__TimeZone__c = '(UTC+10:00) Brisbane';
+            
+            } else if (Lead.StateCode == 'SA') {
+
+                lead.vhc__TimeZone__c = '(UTC+09:30) Adelaide';
+            
+            } else if (Lead.StateCode == 'TAS') {
+
+                lead.vhc__TimeZone__c = '(UTC+10:00) Hobart';
+            
+            } else if (Lead.StateCode == 'VIC') {
+
+                lead.vhc__TimeZone__c = '(UTC+10:00) Canberra, Melbourne, Sydney';
+            
+            } else if (Lead.StateCode == 'WA') {
+
+                lead.vhc__TimeZone__c = '(UTC+08:00) Perth';
+            
+            } else {
+                lead.vhc__TimeZone__c = '(UTC+08:00) Perth';
+            }
         } else {
             Integer postcodeInt = Integer.valueOf(lead.PostalCode);
             System.debug(postcodeInt);
-            if (postcodeInt == null) {  
-                lead.vhc__TimeZone__c = '(UTC+08:00) Perth';
-            } else if(postcodeInt > 0 && postcodeInt < 800) {
+            if(postcodeInt > 0 && postcodeInt < 800) {
                 lead.vhc__TimeZone__c = '(UTC+10:00) Canberra, Melbourne, Sydney';
             } else if (postcodeInt >= 800 && postcodeInt <= 899) {
                 //NSW/VIC/ACT
@@ -22,6 +56,8 @@ global class Utilities {
                 lead.vhc__TimeZone__c = '(UTC+10:00) Brisbane';
             } else if (postcodeInt >= 5000 && postcodeInt <= 5999) {
                 lead.vhc__TimeZone__c = '(UTC+09:30) Adelaide';
+            } else if (postcodeInt == null) {
+                 lead.vhc__TimeZone__c = '(UTC+08:00) Perth';
             } else {
                 lead.vhc__TimeZone__c = '(UTC+08:00) Perth';
             }
