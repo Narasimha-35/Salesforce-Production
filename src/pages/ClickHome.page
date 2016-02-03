@@ -412,9 +412,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <section class="col-md-12 col-xs-12 col-sm-12 land_ser_sec">
                   <div class="col-md-12 btn-group-wrap"> 
                    <div class="btn-group">
-                        <apex:commandButton value="New Purchase" styleclass=" btn1 btn-default1 btn_cstm_getstarded btn_sm" style="background-color: #47b178 !important;" action="{!newHomeLoan}" status="myStatus"/>
+                        <apex:commandButton value="New Purchase" styleclass=" btn1 btn-default1 btn_cstm_getstarded btn_sm gtm-newloan" style="background-color: #47b178 !important;" action="{!newHomeLoan}" status="myStatus"/>
                   
-                      <apex:commandButton value="Refinance" styleclass=" btn1 btn-default1 btn_cstm_getstardeds btn_sm" style="background-color: #47b178 !important;" action="{!getStartedLast}" status="myStatus"/>         
+                      <apex:commandButton value="Refinance" styleclass=" btn1 btn-default1 btn_cstm_getstardeds btn_sm gtm-refinance" style="background-color: #47b178 !important;" action="{!getStartedLast}" status="myStatus"/>         
                              <!-- <a href="#" class="btn btn-default btn_cstm_getstarded col-md-12">Get started</a> -->
                    </div> 
                     </div>                    
