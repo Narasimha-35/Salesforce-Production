@@ -115,11 +115,12 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		update oppo;
 		update contact;
 
-		system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
-        for(Map<String, String> pe : pendingEmails) {
-            Utilities.sendEmail(recipients, 'Salesforce Debug', generateHTMLEmailBody(APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details')));
-        }
-        pendingEmails = new List<Map<String, String>>();
+		if(emailSwh) {
+			system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
+			for(Map<String, String> pe : pendingEmails) {
+             Utilities.sendEmail(recipients, 'Salesforce Debug', generateHTMLEmailBody(APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details')));
+         }
+		}
 	}
 
 	//When call this method, check if mercury loan Id on oppo and mercury people id on account is exist, otherwise pass salesforce 18 ids
@@ -176,9 +177,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 				Dom.Document doc = res.getBodyDocument();
 				token = getTokenFromXml(doc);
 				if(res.getStatusCode() != 200 || !getApproveFromXml(doc) || token == null) {
-						if(emailSwh) {
-								pendingEmails.add(new Map<String, String>{'methodName' => 'loginToMercury', 'details' => generateDetailPart(req, res)});
-						}
+					pendingEmails.add(new Map<String, String>{'methodName' => 'loginToMercury', 'details' => generateDetailPart(req, res)});
 				}
 
         return token;
