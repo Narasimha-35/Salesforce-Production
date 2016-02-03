@@ -1,0 +1,91 @@
+<apex:page controller="PrioritiseCampaignMemberCtrl" docType="html-5.0" standardStylesheets="false" sidebar="false">
+   <head>
+      <link href="//cdn.muicss.com/mui-0.1.21/css/mui.min.css" rel="stylesheet" type="text/css"/>
+      <script src="//cdn.muicss.com/mui-0.1.21/js/mui.min.js"></script>
+   </head>
+
+   <body>
+      <div class="mui-container">
+         <apex:form >
+            <Legend>Prioritise Call File Member</legend>
+            <div>
+               <div>
+                  <span>Postcode From:</span>
+               </div>
+               <div style="Width:30%">
+                  <apex:input value="{!postcodeFrom}" type="text" html-class="mui-form-control" onchange="hide(document.getElementById('prioritiseButton')); hide(document.getElementById('resultText')); return false;"/>
+               </div>
+            </div>
+            <br/>
+            <div>
+               <div>
+                  <span>Postcode To:</span>
+               </div>
+               <div style="Width:30%">
+                  <apex:input value="{!postcodeTo}" type="text" html-class="mui-form-control" onchange="hide(document.getElementById('prioritiseButton')); hide(document.getElementById('resultText')); return false;"/>
+               </div>
+            </div>
+            <br/>
+            <div>
+               <div>
+                  <span>Call File:</span>
+               </div>
+               <div class="mui-select" style="Width:30%">
+                  <apex:selectList value="{!selectedCallFileId}" multiselect="false" size="1" onchange="hide(document.getElementById('prioritiseButton')); hide(document.getElementById('resultText')); return false;">
+                     <apex:selectOptions value="{!callFileOptions}"></apex:selectOptions>
+                  </apex:selectList>
+               </div>
+            </div>
+            <br/>
+            <div>
+               <div>
+                  <span>Change to Priority</span>
+               </div>
+               <div class="mui-select" style="Width:30%">
+                  <apex:selectList value="{!priority}" multiselect="false" size="1" onchange="hide(document.getElementById('prioritiseButton')); hide(document.getElementById('resultText')); return false;">
+                     <apex:selectOptions value="{!priorityOptions}"></apex:selectOptions>
+                  </apex:selectList>
+               </div>
+            </div>
+            <br/>
+            <button onclick="search(); show(document.getElementById('loadingImg')); hide(document.getElementById('afterPrioritiseMsg')); return false;" class="mui-btn mui-btn-primary mui-btn-raised" id="searchButton">Search</button>
+            <apex:actionFunction action="{!searchCallFileMembers}" name="search" reRender="output" oncomplete="showPriority(document.getElementById('prioritiseButton')); hide(document.getElementById('loadingImg')); return false;"></apex:actionFunction>
+            <button onclick="prioritise(); hide(this); show(document.getElementById('afterPrioritiseMsg')); return false; " class="mui-btn mui-btn-primary mui-btn-raised" id="prioritiseButton" style="visibility: hidden">Prioritise</button>
+            <apex:actionFunction action="{!updateCallFileMembers}" name="prioritise" reRender="output"></apex:actionFunction>
+         </apex:form>
+         <br/>
+         <div>
+            <div id="loadingImg" style="visibility: hidden">
+               <apex:image url="{!$Resource.LoadingImg}" width="28" height="28"/>
+            </div>
+
+            <div id="afterPrioritiseMsg" style="visibility: hidden">
+                <p>Batch is runing, system will generate an success email after batch finish, please do not repeat.</p>
+            </div>
+            <apex:outputPanel id="output">
+               <apex:outputPanel >
+                   <div id="resultText">
+                      Total Call File Member Number: {!selectedCallFileMemberSize}
+                   </div>
+                  <input value="{!showPrioritise}" id="showPrioritise" type="hidden"/>
+               </apex:outputPanel>
+            </apex:outputPanel>
+         </div>
+      </div>
+      <script>
+         function hide(element) {
+            element.style.visibility = 'hidden';
+         }
+         function show(element) {
+            element.style.visibility = 'visible';
+         }
+         function showPriority(element) {
+            if (document.getElementById("showPrioritise")) {
+               show(element);
+            } else {
+               hide(element);
+            }
+         }
+      </script>
+   </body>
+</apex:page>
