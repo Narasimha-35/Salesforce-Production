@@ -4,79 +4,68 @@ private class TestMercuryApiUtilities {
 	public static Account account {get; set;}
 	public static Contact contact {get; set;}
 	static {
-
-		RecordType myRecordType = [select id from RecordType where SobjectType='Account' AND name = 'Person Account' AND IsPersonType=True limit 1];
-		account = new Account();
-		account.FirstName = 'testF';
-		account.LastName = 'testL';
-		account.Recordtypeid= myRecordType.Id;
+		account = TestUtilities.createAccount(true);
 		insert account;
-
-		contact = new Contact();
-		contact.LastName = 'testL';
-		contact.Email = 'test@test.com';
-		contact.Sync_With_Mercury__c = false;
-		contact.Sync_With_Mercury_Success__c = false;
-		contact.Job_Title__c = 'job title';
-		contact.Gender__c = 'Male';
-		contact.Phone = '+61415530313';
-		contact.Annual_Income__c = 320000;
-		contact.MobilePhone = '+61415530313';
-		contact.Marital_Status__c = 'single';
-		contact.Employer_Name__c = 'dev';
-		contact.Current_Role__c = 'dev';
-		contact.Number_of_Children__c = '0';
-		contact.Employment_Status__c = 'Full Time';
+		contact = TestUtilities.createContact();
 		insert contact;
-
-		oppo = new Opportunity();
-		oppo.Name = 'tet an';
-		oppo.Account = account;
-		oppo.CloseDate = Date.today();
-		oppo.StageName = 'Appointed';
-		oppo.Transaction_Type__c = 'Refinance';
-		oppo.Current_Lender__c = 'AMP';
-		oppo.Current_Loan_Value__c = 100000;
-		oppo.Current_Loan_Type__c = 'Owner Occupaid';
-		oppo.Personal_Loan_Balance__c = 0;
-		oppo.Credit_Card_Balance__c = 0;
-		oppo.Car_Loan_Balance__c = 0;
+		oppo = TestUtilities.createOpportunity();
 		insert oppo;
+
+		setMock(oppo.id, account.id);
 	}
 
-	static testMethod void loginToMercuryTest() {
-		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
-		String tokenTest = MercuryApiUtilities.loginToMercury();
-		System.assertEquals(token, tokenTest);
+	private static void setMock(String oppoId, String accountId) {
+		MultiStaticResourceCalloutMock multimock = new MultiStaticResourceCalloutMock();
+		multimock.setStaticResource('https://api.connective.com.au/api/mercuryLogin5.jsp', 'MercuryLoginSuccessResponse');
+		multimock.setStaticResource('https://api.connective.com.au/api/mercury5/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/loan/' + oppoId, 'MercuryLoanSuccessResponse');
+		multimock.setStaticResource('https://api.connective.com.au/api/mercury5/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/loan/' + oppoId.left(15), 'MercuryLoanFail1Response');
+		multimock.setStaticResource('https://api.connective.com.au/api/mercury5/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/person/' + accountId, 'MercuryPersonSuccessResponse');
+		multimock.setStatusCode(200);
+		multimock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, multimock);
 	}
 
-	static testMethod void createOppoInMercuryTest() {
-		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
-		String oppoId = oppo.Id;
-		MercuryApiUtilities.createOppoInMercury(token, oppoId, 'P200019');
-		Opportunity oppo2 = [select Id, Sync_With_Mercury__c, Sync_With_Mercury_Success__c From Opportunity where Id = :oppoId];
-		//System.assertEquals(oppo2.Sync_With_Mercury__c, true);
-		//System.assertEquals(oppo2.Sync_With_Mercury_Success__c, true);
+	static testMethod void testCreateOppoInMercuryWithDuplicate() {
+		Test.startTest();
+		MercuryApiUtilities.createOppoInMercury(oppo.id, 'P200019');
+		// Opportunity oppo2 = [select Id, Sync_With_Mercury__c, Sync_With_Mercury_Success__c From Opportunity where Id = :oppo.id];
+		Test.stopTest();
 	}
 
-	static testMethod void createPeopleInMercuryTest() {
-		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
-		String accountId = account.Id;
-		MercuryApiUtilities.createPeopleInMercury(token, accountId, 'P200019');
+	static testMethod void testCreateOppoInMercuryWithoutDuplicate() {
+		Test.startTest();
+		MercuryApiUtilities.createOppoInMercury(oppo.id, 'P200019', true);
+		// Opportunity oppo2 = [select Id, Sync_With_Mercury__c, Sync_With_Mercury_Success__c From Opportunity where Id = :oppo.id];
+		Test.stopTest();
+	}
+
+	static testMethod void testCreatePeopleInMercuryWithDuplicate() {
+		Test.startTest();
+		MercuryApiUtilities.createPeopleInMercury(account.id, 'P200019');
+		Test.stopTest();
+	}
+
+	static testMethod void testCreatePeopleInMercuryWithoutDuplicate() {
+		Test.startTest();
+		MercuryApiUtilities.createPeopleInMercury(account.id, 'P200019', true);
+		Test.stopTest();
 	}
 
 	static testMethod void createLoanPeopleInMercuryTest() {
 		String accountId = account.Id;
 		String oppoId = oppo.Id;
 		String accountAndOppo = account.Id  + '' + oppo.Id;
-		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
-		MercuryApiUtilities.createLoanPeopleInMercury(token, accountAndOppo, oppoId, accountId);
+		Test.startTest();
+		MercuryApiUtilities.createLoanPeopleInMercury(accountAndOppo, oppoId, accountId);
+		Test.stopTest();
 	}
 
 	static testMethod void syncWithMercuryTest() {
+		Test.startTest();
 		String accountId = account.Id;
 		String oppoId = oppo.Id;
 		MercuryApiUtilities.syncWithMercury(oppoId, accountId);
+		Test.stopTest();
 	}
 
 	static testMethod void convertCurrentTimeToGMTWithTimeZoneTest() {
@@ -94,25 +83,28 @@ private class TestMercuryApiUtilities {
 	static testMethod void getOpportunityAndSaveOnOppoTest() {
 		String oppoId = '006O0000006a5MZ';
 		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
-		MercuryApiUtilities.getOpportunityAndSaveOnOppo(token, oppoId, false);
+		MercuryApiUtilities.getOpportunityAndSaveOnOppo(oppoId, false);
 	}
 
 	static testMethod void getPeopleAndSaveOnAccount() {
 		String accountId = '001O000000oGO3B';
 		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
-		MercuryApiUtilities.getPeopleAndSaveOnAccount(token, accountId, false);
+		MercuryApiUtilities.getPeopleAndSaveOnAccount(accountId, false);
 	}
 
 	static testMethod void getDataBackTest() {
 		String accountId = account.Id;
 		String oppoId = oppo.Id;
+		Test.startTest();
 		MercuryApiUtilities.getDataBack(oppoId, true, accountId, true);
+		Test.stopTest();
 	}
 
 	static testMethod void updatePeopleUpdateFTest() {
-		String accountId = account.Id;
-		String oppoId = oppo.Id;
-		MercuryApiUtilities.updateAccountF(accountId, oppoId);
+		Test.startTest();
+		MercuryApiUtilities.updateAccountF(account.id, oppo.id);
+
+		Test.stopTest();
 	}
 
 	private static testMethod void testGenerateDetailPart() {
@@ -127,13 +119,71 @@ private class TestMercuryApiUtilities {
 		system.assert(true);
 	}
 
-	private static testMethod void testCreateSecondApplicationInMercury() {
-		MercuryApiUtilities.createSecondApplicationInMercury('token', account.id);
-		system.assert(true);
-	}
-
 	private static testMethod void testGetAllPersonalBranches(){
 		MercuryApiUtilities.getAllPersonalBranches('token');
 		system.assert(true);
 	}
+
+	private static testMethod void testCheckRecordFromResMap() {
+		Map<String, Object> resMap = new Map<String, Object>();
+		Map<String, String> item = new Map<String, String>();
+		item.put('uniqueId', 'abc');
+		resMap.put('people', item);
+
+		System.assertEquals(true, MercuryApiUtilities.checkRecordFromResMap(resMap, 'Account', 'abc'));
+		System.assertEquals(false, MercuryApiUtilities.checkRecordFromResMap(null, 'account', 'abc'));
+		System.assertEquals(false, MercuryApiUtilities.checkRecordFromResMap(resMap, 'account', 'abCd'));
+		System.assertEquals(false, MercuryApiUtilities.checkRecordFromResMap(resMap, 'account', 'abc'.toUpperCase()));
+	}
+
+	private static testMethod void testHandleGetResponse() {
+		HTTPResponse res = new HTTPResponse();
+		res.setStatusCode(400);
+		System.assertEquals(null, MercuryApiUtilities.handleGetResponse(res));
+
+		res.setStatusCode(200);
+		System.assertEquals(null, MercuryApiUtilities.handleGetResponse(res));
+
+		Map<String, Object> resMap = new Map<String, Object>();
+		resMap.put('success', false);
+		res.setBody(JSON.serialize(resMap));
+		System.assertEquals(null, MercuryApiUtilities.handleGetResponse(res));
+
+		resMap.put('success', true);
+		res.setBody(JSON.serialize(resMap));
+		System.debug(MercuryApiUtilities.handleGetResponse(res));
+		System.assertNotEquals(null, MercuryApiUtilities.handleGetResponse(res));
+	}
+
+	private static testMethod void testSendGetRequest() {
+		Test.startTest();
+		HTTPResponse res = MercuryApiUtilities.sendGetRequest('Opportunity', ((String) oppo.id).left(15));
+		System.assertEquals(200, res.getStatusCode());
+		Test.stopTest();
+	}
+
+	private static testMethod void testCheckRecord() {
+		Test.startTest();
+		System.assert(MercuryApiUtilities.checkRecord('Opportunity', ((String) oppo.id).left(15)));
+		Test.stopTest();
+	}
+
+	private static testMethod void testGetAuthToken() {
+		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+
+		mock.setStaticResource('MercuryLoginSuccessResponse');
+		mock.setStatusCode(200);
+		mock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, mock);
+
+		Test.startTest();
+		System.assertEquals('aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18', MercuryApiUtilities.getAuthToken());
+		Test.stopTest();
+	}
+
+	// 	private static testMethod void testCreateSecondApplicationInMercury() {
+	// 		MercuryApiUtilities.createSecondApplicationInMercury('token', account.id);
+	// 		system.assert(true);
+	// 	}
+
 }

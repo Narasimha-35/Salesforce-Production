@@ -1,18 +1,27 @@
 @isTest
 public class TestUtilities {
 
-   public static Account createAccount(String accName) {
-      return new Account(name = accName);
+   public static Account createAccount(String accName, Boolean isPersonAccount) {
+      Account ret = new Account();
+      if(isPersonAccount) {
+         RecordTypeSelector rts = new RecordTypeSelector();
+         RecordType personAccountRT = rts.getUniqueRecordType('Account', 'PersonAccount');
+         ret.Recordtypeid = personAccountRT.id;
+         ret.lastName = accName;
+      } else {
+         ret.name = accName;
+      }
+      return ret;
    }
 
-   public static Account createAccount() {
-      return createAccount('test');
+   public static Account createAccount(Boolean isPersonAccount) {
+      return createAccount('test', isPersonAccount);
    }
 
-   public static List<Account> createAccounts(Integer numOfRecords) {
+   public static List<Account> createAccounts(Integer numOfRecords, Boolean isPersonAccount) {
       List<Account> ret = new List<Account>();
       for(Integer i = 0; i < numOfRecords; i++) {
-         ret.add(createAccount('test' + i));
+         ret.add(createAccount('test' + i, isPersonAccount));
       }
 
       return ret;
@@ -31,11 +40,11 @@ public class TestUtilities {
    }
 
    public static Contact createContact(String lastName) {
-       return new Contact(lastName = lastname);
+      return new Contact(lastName = lastname);
    }
 
    public static Contact createContact() {
-       return createContact('test');
+      return createContact('test');
    }
 
    public static List<Contact> createContacts(Integer numOfRecords) {
@@ -59,6 +68,35 @@ public class TestUtilities {
       return ret;
    }
 
+   public static Opportunity createOpportunity(String name, String stageName, Date closeDate) {
+      return new Opportunity(name = name, stageName = stageName, closeDate = closeDate);
+   }
+
+   public static Opportunity createOpportunity() {
+      return createOpportunity('test', 'Appointed', Date.today());
+   }
+
+   public static List<Opportunity> createOpportunities(Integer numOfRecords) {
+      List<Opportunity> ret = new List<Opportunity>();
+      for(Integer i = 0; i < numOfRecords; i++) {
+         ret.add(createOpportunity('test' + i, 'Appointed', Date.today()));
+      }
+
+      return ret;
+   }
+
+   public static List<Opportunity> createOpportunities(Integer numOfRecords, Opportunity o) {
+      List<Opportunity> ret = new List<Opportunity>();
+      Opportunity temp = null;
+      for(Integer i = 0; i < numOfRecords; i++) {
+         temp = o.clone(false, true, false, false);
+         temp.name = o.name + i;
+         ret.add(temp);
+      }
+
+      return ret;
+   }
+
    //@deprecated
    public static List<Account> createTestAccountsWithName(Integer num) {
       Account temp = null;
@@ -70,7 +108,7 @@ public class TestUtilities {
       }
 
       return ret;
-	}
+   }
 
    //@deprecated
    public static List<vhc__Campaign__c> createTestCallFile(Integer num) {
