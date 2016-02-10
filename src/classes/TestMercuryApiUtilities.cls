@@ -82,14 +82,11 @@ private class TestMercuryApiUtilities {
 
 	static testMethod void getOpportunityAndSaveOnOppoTest() {
 		String oppoId = '006O0000006a5MZ';
-		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
 		MercuryApiUtilities.getOpportunityAndSaveOnOppo(oppoId, false);
 	}
 
 	static testMethod void getPeopleAndSaveOnAccount() {
-		String accountId = '001O000000oGO3B';
-		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
-		MercuryApiUtilities.getPeopleAndSaveOnAccount(accountId, false);
+		MercuryApiUtilities.getPeopleAndSaveOnAccount(account.id, false);
 	}
 
 	static testMethod void getDataBackTest() {
