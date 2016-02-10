@@ -1,31 +1,31 @@
 @isTest(SeeAllData = false)
-private class acfpostloginQuesBrokerControllerTracker 
+private class acfpostloginQuesBrokerControllerTracker
 {
-    
+
     private static Opportunity objOpportunity;
     private static Account objAccount;
     private static Contact objContact;
     private static Script__c objScript;
     private static  Answer__c objAnswer;
     private static  Answer__c objRelatedQuestionAnswer;
-    private static  Answer__c objRelatedQuestionAnswer1;    
+    private static  Answer__c objRelatedQuestionAnswer1;
     private static  Question__c objRelatedQuestion;
     private static  Question__c objRelatedQuestion1;
     private static Lead objLead;
     private static User thisuser;
-    public static Question__c objQuestion;            
+    public static Question__c objQuestion;
     public static User objUser;
-    public static acfBank_Detail__c objBankDetail;    
-    
-    
+    public static acfBank_Detail__c objBankDetail;
+
+
     static testMethod void M1(){
-        
+
         loadData();
         PageReference pageRef = new PageReference('http://www.google.com');
         Test.setCurrentPage(pageRef);
-        ApexPages.currentPage().getParameters().put('cid',objAccount.id);        
+        ApexPages.currentPage().getParameters().put('cid',objAccount.id);
         acfpostloginQuestionsController_partner obj = new acfpostloginQuestionsController_partner();
-        
+
         obj.MasterQuesNo = 0;
         obj.RelatedQuestions();
         obj.AddingRelatedQuestion();
@@ -39,27 +39,27 @@ private class acfpostloginQuesBrokerControllerTracker
         obj.CreateDateFromString('2015-10-12');
         obj.checkUserResponse();
         obj.app2Email = 'test@gmail.com';
-        obj.accountname = 'ttt';        
+        obj.accountname = 'ttt';
         obj.issApplicant2Check = true;
         obj.sendApplicantConsentMailandSms();
         //obj.applicant2consent();
-        
+
     }
-    
-    static testMethod void validateClickpostloginQuestionsController() 
-    { 
+
+    static testMethod void validateClickpostloginQuestionsController()
+    {
         CreateData();
-        
+
         PageReference pageRef = new PageReference('http://www.google.com');
         Test.setCurrentPage(pageRef);
         ApexPages.currentPage().getParameters().put('cid',objAccount.id);
-        
+
         objScript=new Script__c();
         objScript     = acfCommonTrackerClass.createScript('Post-Login');
         objQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
         objQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,objScript.id,'acfApplicant2_Name__c','Contact',false,'',false);
-        objAnswer     = acfCommonTrackerClass.createAnswer(objQuestion.id, null,'Westpac Bank');   
-        //      System.runAs(objuser) 
+        objAnswer     = acfCommonTrackerClass.createAnswer(objQuestion.id, null,'Westpac Bank');
+        //      System.runAs(objuser)
         //      {
         acfpostloginQuestionsController_partner objacfpostloginQuestionsController = new acfpostloginQuestionsController_partner();
         objacfpostloginQuestionsController.UserAccountId=objaccount.id;
@@ -67,7 +67,7 @@ private class acfpostloginQuesBrokerControllerTracker
         objacfpostloginQuestionsController.MasterQuesNo = 0;
         acfpostloginQuestionsController_partner.WrapperQuestions lstwrap=new acfpostloginQuestionsController_partner.WrapperQuestions();
         lstwrap.objWrapQuestion=objQuestion;
-        lstwrap.strWrapAnswer=objAnswer.id;        
+        lstwrap.strWrapAnswer=objAnswer.id;
         objacfpostloginQuestionsController.lstMasterWrapperQuestion.add(lstwrap);
         objacfpostloginQuestionsController.redirect();
         objacfpostloginQuestionsController.lstMasterWrapperQuestion.add(lstwrap);
@@ -79,41 +79,41 @@ private class acfpostloginQuesBrokerControllerTracker
         objacfpostloginQuestionsController.assetaddMethodNRAC();
         objacfpostloginQuestionsController.IsValidDate(string.valueof(system.today()));
         objacfpostloginQuestionsController.CreateDateFromString(string.valueof(system.today()));
-        
+
         acfpostloginQuestionsController_partner obj = new acfpostloginQuestionsController_partner();
-        
-        
-        
+
+
+
         obj.NextQuestion();
         obj.checkUserResponse();
         obj.app2Email = 'test@gmail.com';
-        obj.accountname = 'ttt';        
+        obj.accountname = 'ttt';
         obj.issApplicant2Check = true;
         obj.sendApplicantConsentMailandSms();
-        
+
         obj.applicant2consent();
         //        }
-    } 
-    
-    static testMethod void validateClickpostloginQuestionsController0() 
-    { 
+    }
+
+    static testMethod void validateClickpostloginQuestionsController0()
+    {
         CreateData();
          PageReference pageRef = new PageReference('http://www.google.com');
         Test.setCurrentPage(pageRef);
         ApexPages.currentPage().getParameters().put('cid',objAccount.id);
-        
+
         objAccount.acf_Applicant_Name__pc = '2';
         update objAccount;
          Account objAccount2 = new Account();
         //objAccount.recordtype.name='Business Account';
         objAccount2.name='testname';
         insert objAccount2;
-        objContact = new Contact(); 
+        objContact = new Contact();
         objContact.AccountId = objAccount2.id;
         objContact.LastName = 'test';
         objContact.email = 'swati.sharma@saasfocus.com';
         insert objContact;
-        Set<String> customerUserTypes = new Set<String> {'CSPLiteUser', 'PowerPartner', 'PowerCustomerSuccess',   'CustomerSuccess'}; 
+        Set<String> customerUserTypes = new Set<String> {'CSPLiteUser', 'PowerPartner', 'PowerCustomerSuccess',   'CustomerSuccess'};
         Profile prfile = [select Id,name from Profile where UserType in :customerUserTypes limit 1];
         user objUser2 = new User(
         profileId = prfile.id,
@@ -130,10 +130,10 @@ private class acfpostloginQuesBrokerControllerTracker
         insert objUser2;
         objScript     = acfCommonTrackerClass.createScript('Post-Login');
         objQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Contact',true,'acfApplicant2_Name__c',true);
-        objRelatedQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,null,'acfApplicant2_Marital_Status__c','lead',true,'acfApplicant2_Monthly_Salary__c',true);        
-        objAnswer     = acfCommonTrackerClass.createAnswer(objQuestion.id, null,'2');  
-        
-        System.runAs(objUser2) 
+        objRelatedQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,null,'acfApplicant2_Marital_Status__c','lead',true,'acfApplicant2_Monthly_Salary__c',true);
+        objAnswer     = acfCommonTrackerClass.createAnswer(objQuestion.id, null,'2');
+
+        System.runAs(objUser2)
         {
             acfpostloginQuestionsController_partner objacfpostloginQuestionsController = new acfpostloginQuestionsController_partner();
             objacfpostloginQuestionsController.UserAccountId=objaccount.id;
@@ -141,7 +141,7 @@ private class acfpostloginQuesBrokerControllerTracker
             objacfpostloginQuestionsController.MasterQuesNo = 0;
             acfpostloginQuestionsController_partner.WrapperQuestions lstwrap=new acfpostloginQuestionsController_partner.WrapperQuestions();
             lstwrap.objWrapQuestion=objQuestion;
-            lstwrap.strWrapAnswer=objAnswer.id;        
+            lstwrap.strWrapAnswer=objAnswer.id;
             objacfpostloginQuestionsController.lstMasterWrapperQuestion.add(lstwrap);
             objacfpostloginQuestionsController.redirect();
             objacfpostloginQuestionsController.lstMasterWrapperQuestion.add(lstwrap);
@@ -153,12 +153,12 @@ private class acfpostloginQuesBrokerControllerTracker
             objacfpostloginQuestionsController.assetaddMethodNRAC();
             objacfpostloginQuestionsController.InsertRequiredDocuments(objLead.id,objacfpostloginQuestionsController.lstMasterWrapperQuestion);
         }
-    } 
+    }
     public static void CreateData()
     {
-        
-        
-        
+
+
+
         acfpreloginQuesBrokerControllerTracker.ValidateNewLoan();
         objAccount=acfpreloginQuesBrokerControllerTracker.objAccount;
         objLead=acfpreloginQuesBrokerControllerTracker.objLead;
@@ -166,10 +166,10 @@ private class acfpostloginQuesBrokerControllerTracker
         //system.AssertNotEquals(objUser.id,null);
     }
     public static void loadData(){
-        
+
         UserRole portalRole = [Select Id From UserRole Where PortalType = 'None' Limit 1];
         system.debug('portalRole is ' + portalRole);
-        
+
         Profile profile1 = [Select Id from Profile where name = 'System Administrator'];
         User portalAccountOwner1 = new User(
         UserRoleId = portalRole.Id,
@@ -185,9 +185,9 @@ private class acfpostloginQuesBrokerControllerTracker
         TimeZoneSidKey='America/Chicago'
         );
         insert portalAccountOwner1;
-        
+
         //User u1 = [Select ID From User Where Id =: portalAccountOwner1.Id];
-        
+
         System.runAs ( portalAccountOwner1 ) {
         //Create account
         objAccount = new Account(
@@ -208,9 +208,9 @@ private class acfpostloginQuesBrokerControllerTracker
         Email = System.now().millisecond() + 'test@test.com'
         );
         Database.insert(contact1);
-        
+
         //Create user
-        Profile portalProfile = [SELECT Id FROM Profile Limit 1];
+        Profile portalProfile = [SELECT Id FROM Profile WHERE UserType = 'CspLitePortal' LIMIT 1];
         objUser = new User(
         Username = System.now().millisecond() + 'test12345@test.com',
         ContactId = contact1.Id,
@@ -225,7 +225,7 @@ private class acfpostloginQuesBrokerControllerTracker
         LanguageLocaleKey = 'en_US'
         );
         Database.insert(objUser);
-        
+
         objScript = new Script__c();
         Id recorsTypeId  = acfCommon.GetRecordTypeId('Script__c','Post-Login');
         objScript.RecordTypeId = recorsTypeId;
@@ -235,9 +235,9 @@ private class acfpostloginQuesBrokerControllerTracker
         //objScript.Click_Community_Setup__c = 'a2SO0000001PtV9';
         insert objScript;
         //objQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Contact',true,'acfApplicant2_Name__c',true);
-        //objRelatedQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,null,'acfApplicant2_Marital_Status__c','lead',true,'acfApplicant2_Monthly_Salary__c',true);        
-          
-        
+        //objRelatedQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,null,'acfApplicant2_Marital_Status__c','lead',true,'acfApplicant2_Monthly_Salary__c',true);
+
+
         objQuestion = new Question__c ();
         objQuestion.acf_Question__c = 'Who is your current lender?04xxxxxxx';
         objQuestion.acf_Active__c  = true;
@@ -257,7 +257,7 @@ private class acfpostloginQuesBrokerControllerTracker
         objQuestion.acfDependent_Value__c = 'test';
         objQuestion.acfEmployment_Type__c = true;
         insert objQuestion;
-        
+
         objRelatedQuestion = new Question__c ();
         objRelatedQuestion.acf_Question__c = 'Who is your current lender?04xxxxxxx';
         objRelatedQuestion.acf_Active__c  = true;
@@ -277,7 +277,7 @@ private class acfpostloginQuesBrokerControllerTracker
         objRelatedQuestion.acfDependent_Value__c = 'test';
         objRelatedQuestion.acfEmployment_Type__c = true;
         insert objRelatedQuestion;
-        
+
         Question__c objQuestion1 = new Question__c ();
         objQuestion1.acf_Question__c = '04xxxxxxxWho is your current lender?';
         objQuestion1.acf_Active__c  = true;
@@ -297,7 +297,7 @@ private class acfpostloginQuesBrokerControllerTracker
         objQuestion1.acfReplace_Mobile_No__c = true;
         objQuestion1.acfDependent_Value__c = 'test';
         insert objQuestion1;
-        
+
         objAnswer     = acfCommonTrackerClass.createAnswer(objQuestion.id, null,'2');
         }
     }
