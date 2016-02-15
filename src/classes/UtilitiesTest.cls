@@ -110,9 +110,37 @@ private class UtilitiesTest {
     	leadTest7.LastName = 'test7';
     	leadTest7.PostalCode = '0850';
 
-    	insert leadTest1;
-    	Lead leadTest1New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest1.Id];
-    	System.assertEquals(leadTest1New.vhc__TimeZone__c, '(UTC+08:00) Perth');
+        Lead leadTest8 = new Lead();
+        leadTest8.LastName = 'test8';
+        leadTest8.StateCode = 'ACT';
+
+        Lead leadTest9 = new Lead();
+        leadTest9.LastName = 'test9';
+        leadTest9.StateCode = 'NSW';
+
+        Lead leadTest10 = new Lead();
+        leadTest10.LastName = 'test10';
+        leadTest10.StateCode = 'NT';
+
+        Lead leadTest11 = new Lead();
+        leadTest11.LastName = 'test11';
+        leadTest11.StateCode = 'QLD';
+
+        Lead leadTest12 = new Lead();
+        leadTest12.LastName = 'test12';
+        leadTest12.StateCode = 'SA';
+
+        Lead leadTest14 = new Lead();
+        leadTest14.LastName = 'test14';
+        leadTest14.StateCode = 'VIC';
+
+        Lead leadTest15 = new Lead();
+        leadTest15.LastName = 'test15';
+        leadTest15.StateCode = 'WA';
+
+        insert leadTest1;
+        Lead leadTest1New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest1.Id];
+        System.assertEquals(leadTest1New.vhc__TimeZone__c, '(UTC+08:00) Perth');
 
     	insert leadTest2;
     	Lead leadTest2New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest2.Id];
@@ -134,9 +162,34 @@ private class UtilitiesTest {
     	Lead leadTest6New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest6.Id];
     	System.assertEquals(leadTest6New.vhc__TimeZone__c, '(UTC+08:00) Perth');
 
-    	insert leadTest7;
-    	Lead leadTest7New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest7.Id];
-    	System.assertEquals(leadTest7New.vhc__TimeZone__c, '(UTC+09:30) Darwin');
+        insert leadTest7;
+        Lead leadTest7New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest7.Id];
+        System.assertEquals(leadTest7New.vhc__TimeZone__c, '(UTC+09:30) Darwin');
+
+        //new
+        insert leadTest8;
+        Lead leadTest8New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest8.Id];
+        System.assertEquals(leadTest8New.vhc__TimeZone__c, '(UTC+10:00) Canberra, Melbourne, Sydney');
+
+        insert leadTest9;
+        Lead leadTest9New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest9.Id];
+        System.assertEquals(leadTest9New.vhc__TimeZone__c, '(UTC+10:00) Canberra, Melbourne, Sydney');
+
+        insert leadTest10;
+        Lead leadTest10New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest10.Id];
+        System.assertEquals(leadTest10New.vhc__TimeZone__c, '(UTC+09:30) Darwin');
+
+        insert leadTest11;
+        Lead leadTest11New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest11.Id];
+        System.assertEquals(leadTest11New.vhc__TimeZone__c, '(UTC+10:00) Brisbane');
+
+        insert leadTest12;
+        Lead leadTest12New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest12.Id];
+        System.assertEquals(leadTest12New.vhc__TimeZone__c, '(UTC+09:30) Adelaide');
+
+        insert leadTest14;
+        Lead leadTest14New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest14.Id];
+        System.assertEquals(leadTest14New.vhc__TimeZone__c, '(UTC+10:00) Canberra, Melbourne, Sydney');
     }
 
     static testMethod void testSendEmail() {
@@ -149,4 +202,7 @@ private class UtilitiesTest {
         Utilities.getDNCRTEndUrlId();
     }
 
+    // private static testMethod void testGetStaticResource() {
+    //     System.assertNotEquals(null, Utilities.getStaticResource('MercuryLoanSuccessResponse'));
+    // }
 }

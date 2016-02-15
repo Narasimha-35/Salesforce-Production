@@ -1,47 +1,27 @@
 global class Utilities {
-    public static final String FIELD_NAME = 'fieldName';
-    public static final String SOBJECT_NAME= 'sobjectName';
-    public static final String SOBJECT_TYPE = 'sobjectType';
-    
-    public static void updateTimezoneOnLead(Lead lead) {
-        if (lead.PostalCode == null || lead.PostalCode == '' || !lead.PostalCode.isNumeric()) {
-            // Add state checking
-            System.debug(Lead.StateCode);
-            if (Lead.StateCode == 'ACT') {
-              
-                lead.vhc__TimeZone__c = '(UTC+10:00) Canberra, Melbourne, Sydney';
+public static final String FIELD_NAME = 'fieldName';
+public static final String SOBJECT_NAME= 'sobjectName';
+public static final String SOBJECT_TYPE = 'sobjectType';
+public static final Map<String, String> stateTimeZoneMap;
+static{
+  stateTimeZoneMap = new Map<String, String>();
+  stateTimeZoneMap.put('WA', '(UTC+08:00) Perth');
+  stateTimeZoneMap.put('NSW', '(UTC+10:00) Canberra, Melbourne, Sydney');
+  stateTimeZoneMap.put('VIC', '(UTC+10:00) Canberra, Melbourne, Sydney');
+  stateTimeZoneMap.put('ACT', '(UTC+10:00) Canberra, Melbourne, Sydney');
+  stateTimeZoneMap.put('NT', '(UTC+09:30) Darwin');
+  stateTimeZoneMap.put('QLD', '(UTC+10:00) Brisbane');
+  stateTimeZoneMap.put('SA', '(UTC+09:30) Adelaide');
+  stateTimeZoneMap.put('TAS', '(UTC+10:00) Hobart');
+}
 
-            } else if (Lead.StateCode == 'NSW') {
-
-                lead.vhc__TimeZone__c = '(UTC+10:00) Canberra, Melbourne, Sydney';
-            
-            } else if (Lead.StateCode == 'NT') {
-
-                lead.vhc__TimeZone__c = '(UTC+09:30) Darwin';
-            
-            } else if (Lead.StateCode == 'QLD') {
-
-                lead.vhc__TimeZone__c = '(UTC+10:00) Brisbane';
-            
-            } else if (Lead.StateCode == 'SA') {
-
-                lead.vhc__TimeZone__c = '(UTC+09:30) Adelaide';
-            
-            } else if (Lead.StateCode == 'TAS') {
-
-                lead.vhc__TimeZone__c = '(UTC+10:00) Hobart';
-            
-            } else if (Lead.StateCode == 'VIC') {
-
-                lead.vhc__TimeZone__c = '(UTC+10:00) Canberra, Melbourne, Sydney';
-            
-            } else if (Lead.StateCode == 'WA') {
-
-                lead.vhc__TimeZone__c = '(UTC+08:00) Perth';
-            
-            } else {
-                lead.vhc__TimeZone__c = '(UTC+08:00) Perth';
-            }
+   public static void updateTimezoneOnLead(Lead lead) {
+      if (lead.PostalCode == null || lead.PostalCode == '' || !lead.PostalCode.isNumeric()) {
+         if(lead.stateCode == null || lead.stateCode == '') {
+            lead.vhc__TimeZone__c = '(UTC+08:00) Perth';
+         } else {
+            lead.vhc__TimeZone__c = stateTimeZoneMap.get(lead.stateCode);
+         }
         } else {
             Integer postcodeInt = Integer.valueOf(lead.PostalCode);
             System.debug(postcodeInt);
@@ -63,29 +43,29 @@ global class Utilities {
             }
         }
     }
-    
+
     public static list<SelectOption> getPicklistValues(SObject obj, String fld) {
           list<SelectOption> options = new list<SelectOption>();
           // Get the object type of the SObject.
-          Schema.sObjectType objType = obj.getSObjectType(); 
+          Schema.sObjectType objType = obj.getSObjectType();
           // Describe the SObject using its object type.
-          Schema.DescribeSObjectResult objDescribe = objType.getDescribe();       
+          Schema.DescribeSObjectResult objDescribe = objType.getDescribe();
           // Get a map of fields for the SObject
-          map<String, Schema.SObjectField> fieldMap = objDescribe.fields.getMap(); 
+          map<String, Schema.SObjectField> fieldMap = objDescribe.fields.getMap();
           // Get the list of picklist values for this field.
           list<Schema.PicklistEntry> values =
              fieldMap.get(fld).getDescribe().getPickListValues();
           // Add these values to the selectoption list.
-          for (Schema.PicklistEntry a : values) { 
-             options.add(new SelectOption(a.getLabel(), a.getValue())); 
+          for (Schema.PicklistEntry a : values) {
+             options.add(new SelectOption(a.getLabel(), a.getValue()));
           }
           return options;
    }
-   
+
    public static list<String> getAllFieldsFromSObject(String objectName) {
         SObjectType objToken = Schema.getGlobalDescribe().get(objectName);
         DescribeSObjectResult objDef = objToken.getDescribe();
-        Map<String, SObjectField> fields = objDef.fields.getMap(); 
+        Map<String, SObjectField> fields = objDef.fields.getMap();
         List<String> fieldName = new List<String>();
         Set<String> fieldSet = fields.keySet();
         for(String s:fieldSet) {
@@ -97,7 +77,7 @@ global class Utilities {
         }
         return fieldName;
    }
-   
+
    public static list<SelectOption> getSObjectFieldAsSelectOptions(String sObjectName) {
         List<String> fieldNames = getAllFieldsFromSObject(sObjectName);
         list<SelectOption> options = new list<SelectOption>();
@@ -106,7 +86,7 @@ global class Utilities {
         }
         return options;
    }
-   
+
    public static list<SelectOption> getCallFileSelectOptions() {
         list<vhc__Campaign__c> callfiles = CallFileDAO.getAllCallFiles();
         list<SelectOption> options = new list<SelectOption>();
@@ -117,7 +97,7 @@ global class Utilities {
         }
         return options;
    }
-   
+
    //Change to get Object info with flag in it
    public static String getObjectInfo(String input, String typeInfo) {
         if (input != null) {
@@ -138,37 +118,37 @@ global class Utilities {
         }
         return null;
    }
-   
+
    public static String getPardotUserKey() {
         String userKey = Credential__c.getValues('live').Pardot_User_Key__c;
         return userKey;
    }
-   
+
    public static String getPardotUserPassword() {
         String userPassword = Credential__c.getValues('live').User_Password__c;
         return userPassword;
    }
-   
+
    public static String getPardotUserEmail() {
         String userEmail = Credential__c.getValues('live').User_Email__c;
         return userEmail;
    }
-   
+
    public static String getDNCRTeleMarketerId() {
         String teleMarketId = Credential__c.getValues('live').DNCR_Tele_Marketer_Id__c;
         return teleMarketId;
    }
-   
+
    public static String getDNCRTeleMarketerPassword() {
         String teleMarketPassword = Credential__c.getValues('live').DNCR_Tele_Marketer_Password__c;
         return teleMarketPassword;
    }
-   
+
    public static String getDNCRTEndUrlId() {
         String endUrl = Credential__c.getValues('live').DNCR_End_Url__c;
         return endUrl;
    }
-   
+
    public static String byteAbbreviate(String stringToAbbreviate, Integer byteLength) {
         //First abbrevate using the character length. This will get us close
         stringToAbbreviate = stringToAbbreviate.abbreviate(byteLength);
@@ -179,7 +159,7 @@ global class Utilities {
         }
         return stringToAbbreviate;
   }
-  
+
   public static String accordingToFieldValueToReturnQuery(DNC_Wash_Rule__c rule) {
         String value = '';
         String objectFieldType = Utilities.getObjectInfo(rule.Api_Field_Name__c, Utilities.SOBJECT_TYPE);
@@ -201,7 +181,7 @@ global class Utilities {
         }
         return value;
   }
-  
+
   public static void generateAddressReport() {
         String txtToInsert = 'leadId, Street, City, PostalCode, full address' + ' \n';
         List<Lead> leads = new List<lead>();
@@ -210,7 +190,7 @@ global class Utilities {
                 && lead.City != null && lead.City != ''
                 && lead.PostalCode != null && lead.PostalCode != '') {
                 String address = lead.Street + ' ' + lead.City + ' ' + lead.PostalCode;
-                txtToInsert += lead.Id + ',' + lead.Street + ',' + lead.City + ',' + lead.PostalCode + ',' + address + '\n';            
+                txtToInsert += lead.Id + ',' + lead.Street + ',' + lead.City + ',' + lead.PostalCode + ',' + address + '\n';
                 lead.Sent_Address_To_Scrape_Hero__c = true;
                 leads.add(lead);
             }
@@ -224,11 +204,12 @@ global class Utilities {
         doc.Body = Blob.valueOf(txtToInsert);
         insert doc;
         update leads;
-        /*if (report != null && report.reportBeans.size() > 0) { 
+        /*if (report != null && report.reportBeans.size() > 0) {
             String txtToInsert = 'EmployeeID, WorkerType, EmployeePayPeriod, TotalGrossPay, SuperannuationCharges, AssignmentNumber' + ' \n';
             for (MonthlyPayrollTGenerationSchedule.SuperReportBean row : report.reportBeans) {
                 txtToInsert += row.employeeId + ',' + row.workerType + ',' + row.employeePayPeriod + ',' + row.totalGrossPay + ',' + row.superannuationCharges + ',' + row.assignmentId + '\n';
             }
+<<<<<<< Updated upstream
             txtToInsert = txtToInsert.substring(0, txtToInsert.length() - 1);
             txtToInsert = txtToInsert.replaceAll('null', '');
             Document doc = new Document (Name = report.reportType + '-'+ report.reportCreatedDate + '.csv');
@@ -239,7 +220,7 @@ global class Utilities {
             insert doc;
         }*/
     }
-    
+
     Webservice static void sendAppointmentConfirmEmail(Id apppointmentId) {
         EmailTemplate emailTemplate;
         List<String> emailAddress = new List<String>();
@@ -302,21 +283,29 @@ global class Utilities {
                 //emailWithActivityTracking.setToAddresses(emailList);
                 emailWithActivityTracking.setTargetObjectId(contactId);
                 //PardotActivitiesUtilities.sendOneToOneEmailFromPardot(emailAddress, mailTextBody, mailHtmlBody, mailSubject);
-                Messaging.sendEmail(new Messaging.SingleEmailmessage[] {emailWithActivityTracking});    
+                Messaging.sendEmail(new Messaging.SingleEmailmessage[] {emailWithActivityTracking});
             }
-        }   
+        }
     }
-    
+
     public static void sendEmail(List<String> recipients, String subject, String bodyText) {
 		List<Messaging.SingleEmailMessage> mailsS = new List<Messaging.SingleEmailMessage>();
         Messaging.SingleEmailMessage mailsSc = new Messaging.SingleEmailMessage();
-        
+
       	mailsSc.setToAddresses(recipients);
       	mailsSc.setSenderDisplayName(subject);
       	mailsSc.setSubject(subject);
-      	
+
       	mailsSc.setHtmlBody(bodyText);
       	mailsS.add(mailsSc);
       	Messaging.sendEmail(mailsS);
 	}
+
+   //   public static Blob getStaticResource(String resourcePath) {
+   //       PageReference somefileRef = new PageReference('/resource/' + resourcePath);
+   //       Blob ret = somefileRef.getContent();
+   //       System.debug(ret);
+   //       return ret;
+   //   }
+
 }
