@@ -37,7 +37,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		system.debug(LoggingLevel.INFO, 'Email Recipients: ' + recipients);
 	}
 
-	@future(callout=true)
+	// @future(callout=true)
 	public static void syncWithMercury(String oppoId, String accountId) {
 		String branchId = getBrokerBranch(oppoId);
 

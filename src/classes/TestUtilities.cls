@@ -1,6 +1,16 @@
 @isTest
 public class TestUtilities {
 
+   public static AsyncRequest__c createAsyncRequest(String reqType, String reqParam) {
+      AsyncRequest__c req = new AsyncRequest__c(type__c = reqType, params__c = reqParam);
+      return req;
+   }
+
+   public static AsyncRequest__c createAsyncRequest(Id oppoId, Id accId) {
+      String params = '{"oppoId":"'+ oppoId + '", "accId":"' + accId + '"}';
+      return createAsyncRequest('sync with mercury', params);
+   }
+
    public static Account createAccount(String accName, Boolean isPersonAccount) {
       Account ret = new Account();
       if(isPersonAccount) {
