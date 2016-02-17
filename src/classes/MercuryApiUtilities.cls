@@ -28,16 +28,17 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 		ACFSwitch__c acfswh         = ACFSwitch__c.getOrgDefaults();
 		emailSwh                    = (Boolean) acfswh.get('Mercury_Email_Switch__c');
-		ACFEmailList__c emaiSetting = ACFEmailList__c.getOrgDefaults();
-		recipients                  = ((String) emaiSetting.get('Mercury_Email_Receiver__c')).split(',');
-		Document doc                = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
-		debugEmailTemplate          = doc.body.toString();
-		pendingEmails               = new List<Map<String, String>>();
+		if(emailSwh) {
+			ACFEmailList__c emaiSetting = ACFEmailList__c.getOrgDefaults();
+			recipients                  = ((String) emaiSetting.get('Mercury_Email_Receiver__c')).split(',');
+			Document doc                = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
+			debugEmailTemplate          = doc.body.toString();
+			pendingEmails               = new List<Map<String, String>>();
+		}
 		system.debug(LoggingLevel.INFO, 'Email Switch: ' + emailSwh);
 		system.debug(LoggingLevel.INFO, 'Email Recipients: ' + recipients);
 	}
 
-	// @future(callout=true)
 	public static void syncWithMercury(String oppoId, String accountId) {
 		String branchId = getBrokerBranch(oppoId);
 
@@ -53,11 +54,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 		update oppo;
 		update contact;
-
-		system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
-		for(Map<String, String> pe : pendingEmails) {
-			sendEmail(pe);
-		}
+		sendEmail();
 		pendingEmails = new List<Map<String, String>>();
 	}
 
@@ -662,10 +659,13 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return gmtTimeValue;
 	}
 
-	public static void sendEmail(Map<String, String> msg) {
+	public static void sendEmail() {
 		if(emailSwh) {
-			String body = generateHTMLEmailBody(APPLICATION, 'MercuryApiUtilities', msg.get('methodName'), msg.get('details'));
-			Utilities.sendEmail(recipients, 'Salesforce Debug', body);
+			system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
+			for(Map<String, String> pe : pendingEmails) {
+				String body = generateHTMLEmailBody(APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details'));
+				Utilities.sendEmail(recipients, 'Salesforce Debug', body);
+			}
 		}
 	}
 
