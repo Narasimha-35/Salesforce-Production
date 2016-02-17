@@ -39,7 +39,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		system.debug(LoggingLevel.INFO, 'Email Recipients: ' + recipients);
 	}
 
-	public static void syncWithMercury(String oppoId, String accountId) {
+	public static void syncWithMercury(String oppoId, String accountId)  {
 		String branchId = getBrokerBranch(oppoId);
 
 		//Create Oppo
@@ -107,7 +107,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			}
 			System.debug(jsonToSendOver);
 			System.debug(res.getBody());
-			if (String.valueOf(res.getBody()) == '') {
+
+			if(res.getStatusCode() == 200) {
 				//Mark sync with mercury checkbox ticked
 				oppo.Sync_With_Mercury__c = true;
 				//Mark sync with mercury success ticked
@@ -115,8 +116,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			} else {
 				//Mark sync with mercury checkbox ticked
 				oppo.Sync_With_Mercury__c = true;
-
 				pendingEmails.add(new Map<String, String>{'methodName' => 'createOppoInMercury', 'details' => generateDetailPart(req, res)});
+				throw new MercurySyncException('StatusCode: ' + res);
 			}
 			return oppo;
 		}
@@ -179,7 +180,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			System.debug(res.getBody());
 			System.debug(res.getStatusCode());
 
-			if (String.valueOf(res.getBody()) == '') {
+			if (res.getStatusCode() == 200) {
 				//Mark sync with mercury checkbox ticked
 				contact.Sync_With_Mercury__c = true;
 				//Mark sync with mercury success ticked
@@ -188,8 +189,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			} else {
 				//Mark sync with mercury checkbox ticked
 				contact.Sync_With_Mercury__c = true;
-
 				pendingEmails.add(new Map<String, String>{'methodName' => 'createPeopleInMercury', 'details' => generateDetailPart(req, res)});
+				throw new MercurySyncException('StatusCode: ' + res);
 			}
 
 			//update opportunity
@@ -796,5 +797,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		}
 		return debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
 	}
+
+	public class MercurySyncException extends Exception {}
 
 }

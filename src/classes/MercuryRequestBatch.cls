@@ -1,10 +1,12 @@
 global class MercuryRequestBatch implements Database.Batchable<sObject>, Database.AllowsCallouts, Database.stateful {
 
 	String query;
+	String baseQuery;
 	Integer counter;
 
 	global MercuryRequestBatch(Integer start) {
-		query = 'SELECT id, Params__c, Type__c FROM AsyncRequest__c WHERE Type__c = \'sync with mercury\' AND Failed__c = false';
+		baseQuery = 'SELECT id, Params__c, Type__c FROM AsyncRequest__c WHERE Type__c = \'sync with mercury\' AND Failed__c = false';
+		query = baseQuery + ' LIMIT 1';
 		counter = start;
 	}
 
@@ -34,7 +36,7 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 	global void finish(Database.BatchableContext BC) {
 		System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] success count: ' + counter);
 
-		Integer remainingSize = Database.query(query).size();
+		Integer remainingSize = Database.query(baseQuery).size();
 		System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] remainingSize: ' + remainingSize);
 		if(remainingSize > 0) {
 			Database.executeBatch(new MercuryRequestBatch(counter), 1);

@@ -16,7 +16,11 @@ public class MercuryService {
 
 	@future(callout=true)
 	public static void futureSyncWithMercury(String oppoId, String accountId) {
-		MercuryApiUtilities.syncWithMercury(oppoId, accountId);
+		try {
+			MercuryApiUtilities.syncWithMercury(oppoId, accountId);
+		} catch (Exception e) {
+
+		}
 	}
 
 }
