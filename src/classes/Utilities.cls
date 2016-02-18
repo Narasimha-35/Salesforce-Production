@@ -255,26 +255,32 @@ global class Utilities {
         emailWithActivityTracking.setSubject(mailSubject);
         emailWithActivityTracking.setPlainTextBody(mailTextBody);
         emailWithActivityTracking.setHtmlBody(mailHtmlBody);
-        emailWithActivityTracking.setCcAddresses(emailAddress);
-        OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress where Address = 'appointments@creditandfinance.com.au'];
-        if ( owea.size() > 0 ) {
-          emailWithActivityTracking.setOrgWideEmailAddressId(owea.get(0).Id);
+
+        try {
+          emailWithActivityTracking.setCcAddresses(emailAddress);
+          OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress where Address = 'appointments@creditandfinance.com.au'];
+          if ( owea.size() > 0 ) {
+            emailWithActivityTracking.setOrgWideEmailAddressId(owea.get(0).Id);
+          }
+          //emailWithActivityTracking.setReplyTo('appointments@creditandfinance.com.au');
+          //emailWithActivityTracking.setSenderDisplayName('Appointment From ACF');
+          List<Messaging.Emailfileattachment> fileAttachments = new List<Messaging.Emailfileattachment>();
+          for (Attachment a : [select Name, Body, BodyLength from Attachment where ParentId = :emailTemplate.Id])
+          {
+            Messaging.Emailfileattachment efa = new Messaging.Emailfileattachment();
+            efa.setFileName(a.Name);
+            efa.setBody(a.Body);
+            fileAttachments.add(efa);
+          }
+          emailWithActivityTracking.setFileAttachments(fileAttachments);
+          //emailWithActivityTracking.setToAddresses(emailList);
+          emailWithActivityTracking.setTargetObjectId(contactId);
+          //PardotActivitiesUtilities.sendOneToOneEmailFromPardot(emailAddress, mailTextBody, mailHtmlBody, mailSubject);
+          Messaging.sendEmail(new Messaging.SingleEmailmessage[] {emailWithActivityTracking});
+        } catch (Exception e) {
+          sendEmail(new List<String>{'anthony.xuan@creditandfinance.com.au'}, 'Utilities Exception', 'appointment: ' + appointment.id + ' appointment.Opp_Owner_Email__c: ' + appointment.Opp_Owner_Email__c + '<br> Exception: ' + e.getMessage());
         }
-        //emailWithActivityTracking.setReplyTo('appointments@creditandfinance.com.au');
-        //emailWithActivityTracking.setSenderDisplayName('Appointment From ACF');
-        List<Messaging.Emailfileattachment> fileAttachments = new List<Messaging.Emailfileattachment>();
-        for (Attachment a : [select Name, Body, BodyLength from Attachment where ParentId = :emailTemplate.Id])
-        {
-          Messaging.Emailfileattachment efa = new Messaging.Emailfileattachment();
-          efa.setFileName(a.Name);
-          efa.setBody(a.Body);
-          fileAttachments.add(efa);
-        }
-        emailWithActivityTracking.setFileAttachments(fileAttachments);
-        //emailWithActivityTracking.setToAddresses(emailList);
-        emailWithActivityTracking.setTargetObjectId(contactId);
-        //PardotActivitiesUtilities.sendOneToOneEmailFromPardot(emailAddress, mailTextBody, mailHtmlBody, mailSubject);
-        Messaging.sendEmail(new Messaging.SingleEmailmessage[] {emailWithActivityTracking});
+
       }
     }
   }
