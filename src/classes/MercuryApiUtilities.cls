@@ -28,17 +28,18 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 		ACFSwitch__c acfswh         = ACFSwitch__c.getOrgDefaults();
 		emailSwh                    = (Boolean) acfswh.get('Mercury_Email_Switch__c');
-		ACFEmailList__c emaiSetting = ACFEmailList__c.getOrgDefaults();
-		recipients                  = ((String) emaiSetting.get('Mercury_Email_Receiver__c')).split(',');
-		Document doc                = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
-		debugEmailTemplate          = doc.body.toString();
-		pendingEmails               = new List<Map<String, String>>();
+		if(emailSwh) {
+			ACFEmailList__c emaiSetting = ACFEmailList__c.getOrgDefaults();
+			recipients                  = ((String) emaiSetting.get('Mercury_Email_Receiver__c')).split(',');
+			Document doc                = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
+			debugEmailTemplate          = doc.body.toString();
+			pendingEmails               = new List<Map<String, String>>();
+		}
 		system.debug(LoggingLevel.INFO, 'Email Switch: ' + emailSwh);
 		system.debug(LoggingLevel.INFO, 'Email Recipients: ' + recipients);
 	}
 
-	@future(callout=true)
-	public static void syncWithMercury(String oppoId, String accountId) {
+	public static void syncWithMercury(String oppoId, String accountId)  {
 		String branchId = getBrokerBranch(oppoId);
 
 		//Create Oppo
@@ -53,11 +54,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 		update oppo;
 		update contact;
-
-		system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
-		for(Map<String, String> pe : pendingEmails) {
-			sendEmail(pe);
-		}
+		sendEmail();
 		pendingEmails = new List<Map<String, String>>();
 	}
 
@@ -110,7 +107,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			}
 			System.debug(jsonToSendOver);
 			System.debug(res.getBody());
-			if (String.valueOf(res.getBody()) == '') {
+
+			if(res.getStatusCode() == 200) {
 				//Mark sync with mercury checkbox ticked
 				oppo.Sync_With_Mercury__c = true;
 				//Mark sync with mercury success ticked
@@ -118,8 +116,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			} else {
 				//Mark sync with mercury checkbox ticked
 				oppo.Sync_With_Mercury__c = true;
-
 				pendingEmails.add(new Map<String, String>{'methodName' => 'createOppoInMercury', 'details' => generateDetailPart(req, res)});
+				throw new MercurySyncException('StatusCode: ' + res);
 			}
 			return oppo;
 		}
@@ -182,7 +180,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			System.debug(res.getBody());
 			System.debug(res.getStatusCode());
 
-			if (String.valueOf(res.getBody()) == '') {
+			if (res.getStatusCode() == 200) {
 				//Mark sync with mercury checkbox ticked
 				contact.Sync_With_Mercury__c = true;
 				//Mark sync with mercury success ticked
@@ -191,8 +189,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			} else {
 				//Mark sync with mercury checkbox ticked
 				contact.Sync_With_Mercury__c = true;
-
 				pendingEmails.add(new Map<String, String>{'methodName' => 'createPeopleInMercury', 'details' => generateDetailPart(req, res)});
+				throw new MercurySyncException('StatusCode: ' + res);
 			}
 
 			//update opportunity
@@ -662,10 +660,13 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return gmtTimeValue;
 	}
 
-	public static void sendEmail(Map<String, String> msg) {
+	public static void sendEmail() {
 		if(emailSwh) {
-			String body = generateHTMLEmailBody(APPLICATION, 'MercuryApiUtilities', msg.get('methodName'), msg.get('details'));
-			Utilities.sendEmail(recipients, 'Salesforce Debug', body);
+			system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
+			for(Map<String, String> pe : pendingEmails) {
+				String body = generateHTMLEmailBody(APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details'));
+				Utilities.sendEmail(recipients, 'Salesforce Debug', body);
+			}
 		}
 	}
 
@@ -796,5 +797,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		}
 		return debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
 	}
+
+	public class MercurySyncException extends Exception {}
 
 }

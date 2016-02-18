@@ -1,8 +1,8 @@
 @isTest(SeeAllData=true)
 private class TestMercuryApiUtilities {
-	public static Opportunity oppo {get; set;}
-	public static Account account {get; set;}
-	public static Contact contact {get; set;}
+	private static Opportunity oppo {get; set;}
+	private static Account account {get; set;}
+	private static Contact contact {get; set;}
 	static {
 		account = TestUtilities.createAccount(true);
 		insert account;
@@ -11,18 +11,7 @@ private class TestMercuryApiUtilities {
 		oppo = TestUtilities.createOpportunity();
 		insert oppo;
 
-		setMock(oppo.id, account.id);
-	}
-
-	private static void setMock(String oppoId, String accountId) {
-		MultiStaticResourceCalloutMock multimock = new MultiStaticResourceCalloutMock();
-		multimock.setStaticResource('https://api.connective.com.au/api/mercuryLogin5.jsp', 'MercuryLoginSuccessResponse');
-		multimock.setStaticResource('https://api.connective.com.au/api/mercury5/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/loan/' + oppoId, 'MercuryLoanSuccessResponse');
-		multimock.setStaticResource('https://api.connective.com.au/api/mercury5/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/loan/' + oppoId.left(15), 'MercuryLoanFail1Response');
-		multimock.setStaticResource('https://api.connective.com.au/api/mercury5/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/person/' + accountId, 'MercuryPersonSuccessResponse');
-		multimock.setStatusCode(200);
-		multimock.setHeader('Content-Type', 'application/json');
-		Test.setMock(HttpCalloutMock.class, multimock);
+		MercuryTestUtilities.setMock(oppo.id, account.id);
 	}
 
 	static testMethod void testCreateOppoInMercuryWithDuplicate() {

@@ -1,6 +1,16 @@
 @isTest
 public class TestUtilities {
 
+   public static AsyncRequest__c createAsyncRequest(String reqType, String reqParam) {
+      AsyncRequest__c req = new AsyncRequest__c(type__c = reqType, params__c = reqParam);
+      return req;
+   }
+
+   public static AsyncRequest__c createAsyncRequest(Id oppoId, Id accId) {
+      String params = '{"oppoId":"'+ oppoId + '", "accId":"' + accId + '"}';
+      return createAsyncRequest('sync with mercury', params);
+   }
+
    public static Account createAccount(String accName, Boolean isPersonAccount) {
       Account ret = new Account();
       if(isPersonAccount) {
@@ -16,6 +26,10 @@ public class TestUtilities {
 
    public static Account createAccount(Boolean isPersonAccount) {
       return createAccount('test', isPersonAccount);
+   }
+
+   public static Account createAccount() {
+      return createAccount(true);
    }
 
    public static List<Account> createAccounts(Integer numOfRecords, Boolean isPersonAccount) {
@@ -95,6 +109,31 @@ public class TestUtilities {
       }
 
       return ret;
+   }
+
+   public static Market__c createMarket() {
+      return new Market__c();
+   }
+
+   public static Broker__c createBroker(String name, String mobile, String email, String street, String city, Market__c market, Boolean isActive) {
+      return new Broker__c(name = name, MobilePhone__c = mobile, Email__c = email, Street_Address__c = street, City__c = city, Primary_Market__c = market.id, Active_Broker__c = isActive);
+   }
+
+   public static Broker__c createBroker() {
+      Market__c m = createMarket();
+      insert m;
+      return createBroker('testBroker', '0000000000', 'test@test.com', 'street', 'city', m, true);
+   }
+
+   public static Appointment__c createAppointment() {
+      Opportunity o = createOpportunity();
+      Broker__c b = createBroker();
+      Market__c m = createMarket();
+
+      insert o;
+      insert b;
+      insert m;
+      return new Appointment__c(Opportunity__c = o.id, Broker__c = b.id, Market__c = m.id, Appointment_Date_and_Time__c = DateTime.now());
    }
 
    //@deprecated
