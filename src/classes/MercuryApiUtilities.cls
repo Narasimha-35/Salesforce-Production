@@ -41,6 +41,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 	public static void syncWithMercury(String oppoId, String accountId)  {
 		String branchId = getBrokerBranch(oppoId);
+		Id oId = oppoId;
+		Id aId = accountId;
 
 		//Create Oppo
 		System.debug(oppoId);
@@ -49,8 +51,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		System.debug(accountId);
 		Contact contact = MercuryApiUtilities.createPeopleInMercury(accountId, branchId);
 		//Create Connection between Oppo and People
-		String oppoAndaccountId = oppoId + '-' + accountId;
-		MercuryApiUtilities.createLoanPeopleInMercury(oppoAndaccountId, oppoId, accountId);
+		String oppoAndaccountId = oId + '-' + aId;
+		MercuryApiUtilities.createLoanPeopleInMercury(oppoAndaccountId, oId, aId);
 
 		update oppo;
 		update contact;
