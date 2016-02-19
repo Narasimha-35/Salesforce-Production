@@ -5,7 +5,7 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 	Integer counter;
 
 	global MercuryRequestBatch(Integer start) {
-		baseQuery = 'SELECT id, Params__c, Type__c FROM AsyncRequest__c WHERE Type__c = \'sync with mercury\' AND Failed__c = false';
+		baseQuery = 'SELECT id, Params__c, Type__c FROM AsyncRequest__c WHERE Type__c = \'sync to mercury\' AND Failed__c = false';
 		query = baseQuery + ' LIMIT 1';
 		counter = start;
 	}
