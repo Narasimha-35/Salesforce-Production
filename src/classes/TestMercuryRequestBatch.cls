@@ -11,7 +11,7 @@ public with sharing class TestMercuryRequestBatch {
 		oppo = TestUtilities.createOpportunity();
 		insert oppo;
 
-		TestMercuryApiUtilities.setMock(oppo.id, account.id);
+		MercuryTestUtilities.setMock(oppo.id, account.id);
 	}
 
 	public static testMethod void test() {

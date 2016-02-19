@@ -7,7 +7,7 @@ trigger TriggerOnAsyncRequest on AsyncRequest__c (after insert) {
    Boolean mercuryRequestBatchStartFlag = false;
    for(AsyncRequest__c ar : Trigger.new) {
       System.debug(LoggingLevel.INFO, '[TriggerOnAsyncRequest] Checking Request Type: ' + ar);
-      if(mercuryRequestBatchStartFlag == false && ar.type__c == 'sync with mercury' && incompleteJobCount == 0) {
+      if(mercuryRequestBatchStartFlag == false && ar.type__c == 'sync to mercury' && incompleteJobCount == 0) {
          mercuryRequestBatchStartFlag = true;
       }
    }

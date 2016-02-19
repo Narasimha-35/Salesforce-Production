@@ -8,7 +8,7 @@ public class TestUtilities {
 
    public static AsyncRequest__c createAsyncRequest(Id oppoId, Id accId) {
       String params = '{"oppoId":"'+ oppoId + '", "accId":"' + accId + '"}';
-      return createAsyncRequest('sync with mercury', params);
+      return createAsyncRequest('sync to mercury', params);
    }
 
    public static Account createAccount(String accName, Boolean isPersonAccount) {
