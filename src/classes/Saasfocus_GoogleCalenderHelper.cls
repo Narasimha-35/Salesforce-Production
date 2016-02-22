@@ -32,6 +32,7 @@ public with sharing class Saasfocus_GoogleCalenderHelper {
           //AuthenticateCred_Saasfocus objAuthenticateCred = new AuthenticateCred_Saasfocus ();  // Call Authenticate method to verify if the Access token is not expired.
                                                                                                // It will again authenticate it if it will expire
          // objAuthenticateCred.Authenticate();
+         try{
          for(Event o: lstApp){
          
              if(o.Google_Event_ID__c != null)
@@ -48,6 +49,7 @@ public with sharing class Saasfocus_GoogleCalenderHelper {
                 strBody = strBody.replace('end1','end'); 
                 List<String> tempArray = new list<String>();
                 tempArray  = strBody.split('attendees":');
+                //{
                 String tempAttendee = tempArray.get(1);
                 tempAttendee = 'attendees":['+tempAttendee ;
                 tempAttendee =  tempAttendee.subString(0,tempAttendee.length()-1);
@@ -87,9 +89,29 @@ public with sharing class Saasfocus_GoogleCalenderHelper {
                      
                 
                 }
+                else
+                {
+                   
+                    string body='';
+                    
+                    body+='<h3>Request body </h3>:'+req.getMethod()+' '+req.getEndPoint()+ '<br/>'+req.getBody()+'<br/>';
+                    body+='<h3>Response: </h3> Code:'+res.getStatusCode()+'<br/>'+'Error Message: '+res.getBody();
+                    mailSend(body);
+                }
+     
+                
          }
           update lstAppUP;
           ob.updategooglesettings();
+           }
+          catch(Exception ex)
+          {
+                   
+                    string body='';
+                    body='Exception: '+ex.getMessage()+', '+'Appointment: '+lstApp; 
+                    mailSend(body);
+              
+          }
     }
     
   
@@ -160,7 +182,20 @@ public with sharing class Saasfocus_GoogleCalenderHelper {
    public class ParseEventInsertResponse{
         public String id;
    }
-   
+    
+     public static void mailSend(String body)
+   {
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        String[] toaddress=new List<String>();
+        String[] tobcc=new List<String>();
+        toaddress.add('chen@creditandfinance.com.au');
+        tobcc.add('bijay.negi@saasforce.in');
+        mail.setToAddresses(toaddress);
+        mail.setBccAddresses(tobcc);
+        mail.setSubject('Error on Event Insertion');
+        mail.setHtmlBody(body);
+        Messaging.sendEmail(new Messaging.SingleEmailMessage[]{mail});
+   }
   
   
 }
