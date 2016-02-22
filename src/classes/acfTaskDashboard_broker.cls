@@ -23,11 +23,21 @@ public class acfTaskDashboard_broker {
         strTasksub = '';
         isBankTaskDone = false;
         isIDverifyDone = false;
+        String oppId='';
         if(user_id != null)
         {
             user_obj = [select id, name, email, ContactId,AccountId from user where id =: user_id];
             system.debug('user_obj------'+user_obj);
-            String oppId = acfCommon.getCurrentLoggedInOpportunityId(ulst[0].id); 
+             List<Opportunity> oppolst=new List<Opportunity>();
+             if(acid!=null)
+                {
+                    oppolst=[select id from opportunity where accountid =:acid and (recordtype.name ='Click Refi' or recordtype.name ='Click New Loans' ) limit 1];
+                }
+            if(oppolst<>null && oppolst.size()>0)
+            oppId = oppolst[0].id;
+            
+            
+            //String oppId = acfCommon.getCurrentLoggedInOpportunityId(ulst[0].id); 
             If(user_obj != null && user_obj.AccountId != null && oppId <> null)
             {
                 List_opp = [select id,acfBankdetailStatus__c,clickJumio_Status__c from opportunity where id=:oppId];
