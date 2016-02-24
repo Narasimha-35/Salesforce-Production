@@ -58,7 +58,15 @@ public class acfDashboardDocumentController_broker {
      Cookie currentUId = ApexPages.currentPage().getCookies().get('DocPopUp');
      if(currentUId <> null)
       IsPopupShow = currentUId.getvalue();
-     OpportunityId = acfCommon.getCurrentLoggedInOpportunityId(ulst[0].id);
+     //OpportunityId = acfCommon.getCurrentLoggedInOpportunityId(ulst[0].id);
+      List<Opportunity> oppolst=new List<Opportunity>();
+     if(acid!=null)
+        {
+            oppolst=[select id from opportunity where accountid =:acid and (recordtype.name ='Click Refi' or recordtype.name ='Click New Loans' ) limit 1];
+        }
+        if(oppolst<>null && oppolst.size()>0)
+            OpportunityId = oppolst[0].id;
+     
      // Bind Required Documents in Wrapper list.
      BindWrapperDocument(OpportunityId);
    }
@@ -71,7 +79,11 @@ public class acfDashboardDocumentController_broker {
      {
         lstWrapperDocumnets = new List<WrapperDocuments>();
         system.debug('**OpportunityId'+OpportunityId);
-        for(Required_Document__c objRequiredDoc:[select id,name,acfOpportunity__c,acfOpportunity__r.clickJumio_Status__c,acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,acf_Is_Identity_Verification_Doc__c,acfStatus__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c from Required_Document__c where acfOpportunity__c=:OpportunityId])
+        for(Required_Document__c objRequiredDoc:[select id,name,acfOpportunity__c,acfOpportunity__r.clickJumio_Status__c,
+                                                acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,
+                                                (select id,name, parentid from Attachments order by createddate desc limit 1),
+                                                acf_Is_Identity_Verification_Doc__c,acfStatus__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c 
+                                                from Required_Document__c where acfOpportunity__c=:OpportunityId])
         { 
             system.debug('OpportunityId'+objRequiredDoc.acfOpportunity__r.acfIs_Identity_Document_Rejected__c);
             system.debug('!@#$%^&'+objRequiredDoc.acfOpportunity__r.clickJumio_Status__c);
@@ -82,11 +94,11 @@ public class acfDashboardDocumentController_broker {
            
             objDocument.objRequiredDocumnets = objRequiredDoc;
             
-            list<Attachment> attList = [select id,name, parentid from Attachment where parentid = : objRequiredDoc.id order by createddate desc limit 1];
-            if(attList.isempty() == false){
+            //list<Attachment> attList = [select id,name, parentid from Attachment where parentid = : objRequiredDoc.id order by createddate desc limit 1];
+                      if(objRequiredDoc.Attachments.isempty() == false){
                     objDocument.imageURL= label.acf_Broker_Url+'/servlet/servlet.FileDownload?file='; 
-                    objDocument.imageURL= objDocument.imageURL + attList[0].id;
-            }
+                    objDocument.imageURL= objDocument.imageURL + objRequiredDoc.Attachments[0].id;
+                    }
                 
             lstWrapperDocumnets.add(objDocument);
         }
