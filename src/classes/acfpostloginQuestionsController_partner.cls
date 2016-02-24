@@ -876,6 +876,8 @@ TotalNoQuestionSlide++;
             leadobj.acfIs_Post_Login_Ques_Attempted__c=true;
             
             update leadobj;
+            system.debug('calling mercury');
+            MercuryApiUtilities.updateAccountF(UserAccountId, LoggedInLeadId);
             
         }
         
@@ -1832,8 +1834,8 @@ break;
                             list<Opportunity> oppList=[select id from Opportunity where Recordtype.name!='Click Refi' and accountId=:UserAccountId limit 1];
                             system.debug('opplist@@@=>'+oppList);
                             if(oppList.size()>0){                                
-                                system.debug('calling mercury');
-                                MercuryApiUtilities.updateAccountF(UserAccountId, oppList[0].id);
+                                //system.debug('calling mercury');
+                                //MercuryApiUtilities.updateAccountF(UserAccountId, oppList[0].id);
                                 
                             }
                             
