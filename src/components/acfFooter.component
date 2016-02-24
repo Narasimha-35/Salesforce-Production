@@ -1,4 +1,4 @@
-<apex:component controller="acfFooter" >
+<apex:component controller="acfFooter" > 
     <div class="container {!IF(pge_name != 'clickhome', 'container_cstm', '')}">
         <article class="col-md-3 col-sm-12">
            <div class="row">

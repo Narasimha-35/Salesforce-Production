@@ -1,4 +1,4 @@
-<apex:component controller="WLHeader" allowDML="true">
+<apex:component controller="WLHeader" allowDML="true"> 
 <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"/>
   <head>
   <meta name="google-site-verification" content="iRYw9nmvgUyV907ghtpW7fAhzOaySN8smW8SecjZhBE" />
