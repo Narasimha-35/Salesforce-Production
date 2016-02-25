@@ -17,10 +17,6 @@ public with sharing class AsyncApexJobSelector extends SObjectSelector {
 		return (List<AsyncApexJob>) super.selectByIds(ids);
 	}
 
-	public List<AsyncApexJob> getByOpenCondition(String condition) {
-		return (List<AsyncApexJob>) super.selectByOpenCondition(condition);
-	}
-
 	public List<AsyncApexJob> getIncompleteJobs() {
 		return (List<AsyncApexJob>) super.selectByOpenCondition('WHERE apexclassId = \'' + batchId + '\' AND Status != \'Aborted\' AND Status != \'Completed\' AND Status != \'Failed\'');
 	}

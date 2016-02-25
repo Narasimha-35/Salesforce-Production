@@ -304,4 +304,45 @@ global class Utilities {
   //       System.debug(ret);
   //       return ret;
   //   }
+
+  public static Id castId(String idString) {
+    id temp;
+    try{
+      temp = idString;
+      return temp;
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public static Datetime getGMTTime(Datetime lt) {
+    return Datetime.newInstance(lt.dateGmt(), lt.timeGmt());
+  }
+
+  public static Datetime getCurrentMonthStartTime() {
+    Datetime dt = Date.today();
+    return Datetime.newInstanceGmt(dt.year(), dt.month(), 1);
+  }
+
+  public static Object parseValue(Map<String, Schema.DisplayType> fieldTypeMap, String fieldName, Object o) {
+    try {
+      if(fieldTypeMap.get(fieldName) == Schema.DisplayType.DateTime) {
+        if(o instanceof Long) {
+          return Datetime.newInstance((Long) o);
+        } else if (o instanceof String) {
+          return Datetime.valueOf((String) o);
+        }
+      } else if(fieldTypeMap.get(fieldName) == Schema.DisplayType.Date) {
+        if(o instanceof Long) {
+          return (Date) Datetime.newInstance((Long) o);
+        } else if (o instanceof String) {
+          return Date.valueOf((String) o);
+        }
+      }
+    } catch (Exception e) {
+      return null;
+    }
+    return o;
+  }
+
 }

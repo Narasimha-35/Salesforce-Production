@@ -103,7 +103,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			req.setBody(jsonToSendOver);
 			req.setMethod(AbstractWebService.HTTP_METHOD_POST);
 			if (Test.isRunningTest()) {
-				res.setBody('');
+				res.setStatusCode(200);
 			} else {
 				res = http.send(req);
 			}
@@ -174,7 +174,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			System.debug(jsonToSendOver);
 			req.setMethod(AbstractWebService.HTTP_METHOD_POST);
 			if (Test.isRunningTest()) {
-				res.setBody('');
+				res.setStatusCode(200);
 			} else {
 				res = http.send(req);
 			}
@@ -215,6 +215,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		req.setMethod(AbstractWebService.HTTP_METHOD_POST);
 		if (Test.isRunningTest()) {
 			res.setBody('');
+			res.setStatusCode(200);
 		} else {
 			res = http.send(req);
 		}
@@ -731,13 +732,12 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return ret;
 	}
 
-	public static HttpResponse sendGetRequest(String sfObjectName, String rid) {
-		String token = MercuryAuth.getInstance().getToken();
+	public static HttpResponse sendGetRequest(String endPoint) {
 		HttpRequest req = new HttpRequest();
 		HttpResponse res = new HttpResponse();
 		Http http = new Http();
 		req.setHeader('Content-Type', 'application/json');
-		req.setEndPoint(DOMAIN + '/' + API_VERSION + '/' + APPLICATION + '/' + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '/' + rid);
+		req.setEndPoint(endPoint);
 		system.debug(req.getEndpoint());
 		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
 		res = http.send(req);
@@ -746,6 +746,18 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		}
 		system.debug(LoggingLevel.INFO, res);
 		return res;
+	}
+
+	public static HttpResponse sendGetRequest(String sfObjectName, MercuryModel.URLParams urlParams) {
+		String token = MercuryAuth.getInstance().getToken();
+		String endPoint = DOMAIN + '/' + API_VERSION + '/' + APPLICATION + '/' + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '?';
+		return sendGetRequest(endPoint + urlParams.toString());
+	}
+
+	public static HttpResponse sendGetRequest(String sfObjectName, String rid) {
+		String token = MercuryAuth.getInstance().getToken();
+		String endPoint = DOMAIN + '/' + API_VERSION + '/' + APPLICATION + '/' + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '/' + rid;
+		return sendGetRequest(endPoint);
 	}
 
 	public static Boolean checkRecord(String sfObjectName, String rid) {
@@ -802,4 +814,4 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 	public class MercurySyncException extends Exception {}
 
-}
+	}

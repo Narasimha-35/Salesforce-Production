@@ -4,4 +4,16 @@ public with sharing class OpportunitySelector extends SObjectSelector{
 		super('Opportunity', null, null);
 	}
 
+	public OpportunitySelector(Set<String> specFields, Set<String> excludeFields) {
+		super('Opportunity', specFields, excludeFields);
+	}
+
+	public List<Opportunity> getById(List<Id> ids) {
+		return (List<Opportunity>) super.selectByIds(ids);
+	}
+
+	public List<Opportunity> getByMercuryId(List<String> ids) {
+		return (List<Opportunity>) super.selectByOpenCondition('WHERE Mercury_Loan_Id__c IN :ids', ids);
+	}
+
 }

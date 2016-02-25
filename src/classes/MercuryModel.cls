@@ -1,16 +1,54 @@
 public without sharing class MercuryModel {
+	public static final Map<String, String> opportunityLoanMap;
+	static {
+		opportunityLoanMap = new Map<String, String>();
+		opportunityLoanMap.put('merc_uniqueId__c', 'uniqueId');
+		opportunityLoanMap.put('merc_branch__c', 'company');
+		opportunityLoanMap.put('merc_transaction_name__c', 'loanName');
+		opportunityLoanMap.put('merc_loan_writer__c', 'agentName');
+		opportunityLoanMap.put('merc_admin__c', 'personActingName');
+		opportunityLoanMap.put('merc_supervisor__c', 'personResponsibleName');
+		opportunityLoanMap.put('merc_current_status__c', 'status');
+		opportunityLoanMap.put('merc_lead_source__c', 'leadSourceDisplay');
+		opportunityLoanMap.put('merc_campagin__c', 'campaignName');
+		opportunityLoanMap.put('merc_internal_reference__c', 'partnerReference');
+		opportunityLoanMap.put('merc_opportunity_type__c', 'tranxType');
+		opportunityLoanMap.put('merc_lender__c', 'lender');
+		opportunityLoanMap.put('merc_loan_amount__c', 'amount');
+		opportunityLoanMap.put('merc_existing_amount__c', 'existingAmount');
+		opportunityLoanMap.put('merc_security_value__c', 'securityValue');
+		opportunityLoanMap.put('merc_lmi__c', 'lmi');
+		opportunityLoanMap.put('merc_status_notes__c', 'sitRep');
+		opportunityLoanMap.put('merc_transaction_type__c', 'tranxType');
+		opportunityLoanMap.put('merc_lender_reference__c', 'lenderReference');
+		opportunityLoanMap.put('merc_apply_online_id__c', 'nextGenId');
+		opportunityLoanMap.put('merc_finance_date__c', 'financeDate');
+		opportunityLoanMap.put('merc_deposit_due_date__c', 'depositDueDate');
+		opportunityLoanMap.put('merc_settlement_date__c', 'confirmedSettlementDate');
+		opportunityLoanMap.put('merc_fixed_rate_expiry__c', 'fixedRateExpiry');
+		opportunityLoanMap.put('merc_interest_only_expiry__c', 'interestOnlyExpiry');
+		opportunityLoanMap.put('merc_categories__c', 'metaData');
+	}
 
-	public class Partner {
+	public static final Map<String, String> loanOpportunityMap;
+	static {
+		loanOpportunityMap = new Map<String, String>();
+		for(String k : opportunityLoanMap.keySet()) {
+			loanOpportunityMap.put(opportunityLoanMap.get(k), k);
+		}
+	}
+
+	public class Partner extends Model {
 		public String uniqueId {get; set;}
 		public String name {get; set;}
 	}
 
-	public class PartnerResponse {
+	public class PartnerResponse extends Model {
 		public Boolean success {get; set;}
 		public List<MercuryModel.Partner> partnerList {get; set;}
 	}
 
-	public class People {
+	public class People extends Model {
 		public String uniqueId {get; set;}
 		public String company {get; set;}
 		public Boolean isDeleted {get; set;}
@@ -67,12 +105,12 @@ public without sharing class MercuryModel {
 		public String salutationOrFirstName {get; set;}
 	}
 
-	public class PersonResponse {
+	public class PersonResponse extends Model {
 		public Boolean success {get; set;}
 		public List<MercuryModel.People> People {get; set;}
 	}
 
-	public class Loan {
+	public class Loan extends Model {
 		public String uniqueId {get; set;}
 		public String company {get; set;}
 		public Boolean isDeleted {get; set;}
@@ -82,7 +120,7 @@ public without sharing class MercuryModel {
 		public String createdBy {get; set;}
 		public String isNew {get; set;}
 		public String loanName {get; set;}
-		public Long amount {get; set;}
+		public Double amount {get; set;}
 		public String lender {get; set;}
 		public String lenderNameShort {get; set;}
 		public String status {get; set;}
@@ -95,9 +133,9 @@ public without sharing class MercuryModel {
 		public String confirmedSettlementDate {get; set;}
 		public String leadSourceId {get; set;}
 		public String leadSourceDisplay {get; set;}
-		public Long discount {get; set;}
-		public Long existingAmount {get; set;}
-		public Long lmi {get; set;}
+		public Double discount {get; set;}
+		public Double existingAmount {get; set;}
+		public Double lmi {get; set;}
 		public Boolean settlementDateConfirmed {get; set;}
 		public String discountType {get; set;}
 		public String loanPersonRelationship {get; set;}
@@ -109,11 +147,11 @@ public without sharing class MercuryModel {
 		public String workspaceUsers {get; set;}
 		public String tranxType {get; set;}
 		public Long connectiveLodgeId {get; set;}
-		public Long peResidualAmount {get; set;}
-		public Long peRepaymentAmount {get; set;}
-		public Long peEffectiveRate {get; set;}
-		public Long peInterestRate {get; set;}
-		public Long peBrokerage {get; set;}
+		public Double peResidualAmount {get; set;}
+		public Double peRepaymentAmount {get; set;}
+		public Double peEffectiveRate {get; set;}
+		public Double peInterestRate {get; set;}
+		public Double peBrokerage {get; set;}
 		public String assetDescription {get; set;}
 		public String nextAction {get; set;}
 		public Long loanTerm {get; set;}
@@ -134,15 +172,14 @@ public without sharing class MercuryModel {
 		public String sitRep {get; set;}
 		public String campaignId {get; set;}
 		public String campaignName {get; set;}
-		public Long securityValue {get; set;}
+		public Double securityValue {get; set;}
 		public String aliApplicationId {get; set;}
 		public String metlifeApplicationId {get; set;}
 		public String interestOnlyExpiry {get; set;}
 	}
 
-	public class LoanResponse {
+	public class LoanResponse extends Model {
 		public Boolean success {get; set;}
-		public Integer totalVolume {get; set;}
 		public Integer total {get; set;}
 		public List<MercuryModel.Loan> loans {get; set;}
 		public List<String> idList {
@@ -158,7 +195,7 @@ public without sharing class MercuryModel {
 		}
 	}
 
-	public class URLParams {
+	public class URLParams extends Model {
 		public Long dc {get; set;}
 		public String currentPartnerId {get; set;}
 		public String currentGroupId {get; set;}
@@ -180,12 +217,14 @@ public without sharing class MercuryModel {
 		}
 
 		public override String toString() {
+			String paramString = JSON.serialize(params);
+			paramString = paramString.subString(1, paramString.length() - 1);
 			String ret = '';
 			ret += '_dc=' + dc;
 			ret += '&currentPartnerId=' + currentPartnerId;
 			ret += '&currentGroupId=' + currentGroupId;
 			ret += '&searchType=' + searchType;
-			ret += '&params=' + JSON.serialize(params);
+			ret += '&params={' + EncodingUtil.urlEncode(paramString, 'UTF-8') + '}';
 			ret += '&page=' + page;
 			ret += '&start=' + start;
 			ret += '&limit=' + lmt;
@@ -193,7 +232,7 @@ public without sharing class MercuryModel {
 		}
 	}
 
-	public class Params {
+	public class Params extends Model {
 		public String transactionType {get; set;}
 		public String transactionTypeRaw {get; set;}
 		public String loanWriter {get; set;}
