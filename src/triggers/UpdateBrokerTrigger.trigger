@@ -12,7 +12,7 @@ trigger UpdateBrokerTrigger on Appointment__c (after update) {
                 if(isQueuedMethod) {
                     System.debug(LoggingLevel.INFO, '[UpdateBrokerTrigger] Sync to queued batch method');
                     Map<String, String> params = new Map<String, String>{'oppoId' => app.Opportunity__c, 'accId' => app.Account_Id__c};
-                    requestList.add(new AsyncRequest__c(type__c = 'sync to mercury', params__c = (String) JSON.serialize(params)));
+                    requestList.add(new AsyncRequest__c(type__c = '' + AsyncRequestType.SF_TO_MERCURY, params__c = (String) JSON.serialize(params)));
                 } else {
                     System.debug(LoggingLevel.INFO, '[UpdateBrokerTrigger] Sync to future method');
                     if(!Test.isRunningTest()) MercuryService.futureSyncWithMercury(app.Opportunity__c, app.Account_Id__c);

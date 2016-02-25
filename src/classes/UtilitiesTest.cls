@@ -204,4 +204,11 @@ private class UtilitiesTest {
     // private static testMethod void testGetStaticResource() {
     //     System.assertNotEquals(null, Utilities.getStaticResource('MercuryLoanSuccessResponse'));
     // }
+
+    private static testMethod void testCastId() {
+        Account a = testUtilities.createAccount();
+        insert a;
+        System.assertEquals(a.id, Utilities.castId(a.id));
+        System.assertEquals(null, Utilities.castId('abc'));
+    }
 }
