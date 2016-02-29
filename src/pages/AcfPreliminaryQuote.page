@@ -7,7 +7,9 @@
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
 <title>Preliminary Quote</title>
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
 <script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
 <script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/> 
@@ -17,11 +19,19 @@
 </head>
  <c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
 <style>
+
+.img{
+    position: absolute;
+    left: 27%;
+    top: -12px;
+  }
+
 .resendLink {
     text-align: center;
     padding-bottom: 25px;
     font-size: 0.9em;
     color: #1f8acb;
+    
 }
 .otp_verfy{
     margin-top: -15px!important;
@@ -139,7 +149,7 @@
                         <apex:outputPanel rendered="{!if(strmsg == 'acfMailIdAlreadyRegister',true,false)}" style="color:red;margin-bottom:20px;text-align:center;"><p>{!$Label[strmsg]} Please<apex:commandLink value="Click here" action="{!RedirectToLandingPage}"/> to Login<br/> (OR) Enter another email ID for registration</p></apex:outputPanel>            
                         <div class="form-group cstm_form_grp" style="position:relative;">
                             <div class="col-md-8 col-md-offset-2">
-                                <apex:inputText id="txtEmail" value="{!username}" styleClass="form-control cstm_input" onBlur="if (this.value == '') {this.value = 'Enter your E-Mail';} VerifyMail();" onFocus="if (this.value == 'Enter your E-Mail') {this.value = '';}" /> 
+                                <apex:inputText id="txtEmail" value="{!username}" styleClass="form-control cstm_input" onBlur="if (this.placeholder == '') {this.placeholder = 'Enter your E-Mail';} VerifyMail();" onFocus="if (this.placeholder == 'Enter your E-Mail') {this.placeholder = '';}" html-placeholder="Enter your E-Mail"/>
                                 <span style="{!IF(isEmailVeriried,'display:block;','display:none;')}">&nbsp;</span>  
                                 <p>{!objRegHeaderCMS.acfShort_Description__c}</p>
                               </div> 
@@ -147,7 +157,7 @@
                          </apex:outputPanel>
                         <div class="form-group cstm_form_grp">
                           <div class="col-md-8 col-md-offset-2 plcholder_61 clsOnlynumeric">                      
-                           <apex:inputText value="{!mobile}" styleClass="form-control cstm_input" onBlur="if (this.value == '' || this.value == '') {this.value = 'Mobile Number';}" onFocus="if (this.value == 'Mobile Number') {this.value = '';}"/>    
+                          <apex:inputText id="inptMobId" value="{!mobile}" styleClass="form-control cstm_input" onFocus="if (this.placeholder == 'Mobile Number' && this.value == ' Mobile Number') {this.placeholder = '';this.value= '';}else{this.placeholder = '';}" onBlur="if (this.placeholder == '') {this.placeholder = 'Mobile Number';}" html-placeholder="Mobile Number"></apex:inputText>    
                             <p>{!objRegHeaderCMS.acfHeading_Caption__c}</p>
                           </div>
                         </div>
@@ -388,33 +398,46 @@
             $('[id$=hiddenTzoneId]').val(tz.name())
            }
         </script>
+        <apex:outputPanel rendered="{!if(ProductIdslist != null,false,true)}">
+          <apex:outputLabel value="Based on your loan detail we could be saving you upto $96,120 over the life of your Loan" styleClass="col-md-10 text-center cstm_smal_text"></apex:outputLabel>
+        </apex:outputPanel>  
           <apex:inputhidden id="selectedProdId" value="{!strProductLVRId}"/>  
           <apex:inputHidden value="{!strTimezoneId}" id="hiddenTzoneId"/>      
-          <ul class="nav nav-pills cstm_pills">
+          <ul class="nav nav-pills cstm_pills orange_cstm_pill">
             <apex:repeat value="{!lstWrapperProduct}" var="pvar"> 
+            
                 <li class="{!if(pvar.ProdLVRID== strProductLVRId, 'active','')} col-md-2 col-xs-12 lvrprodTab" id="{!pvar.ProdLVRID}tab">
                     <a onclick="ChangeProduct('{!pvar.ProdLVRID}');">{!pvar.strRateType}</a>
                 </li>
             </apex:repeat>
           </ul>
           
+          
+        
           <apex:repeat value="{!lstWrapperProduct}" var="pvar">
           <div class="row pre_cstm_sec lvrprod {!if(pvar.ProdLVRID == strProductLVRId, '','displaynone')}" id="{!pvar.ProdLVRID}">
-            <hgroup class="col-md-3 col-xs-3 col-sm-3 pree_hdng">
+             
+            
+           
+            <hgroup class="col-md-3 col-xs-3 col-sm-3 pree_hdng pree_hdng_orange">
                 <div class="row">
                     <h5 style="font-weight:bold;">{!pvar.decComparisionRate}%</h5>
                     <h6 >Comparison Rate</h6>
                 </div>
             </hgroup>
             
-            <hgroup class="col-md-4 col-xs-6 col-sm-6 pree_hdng_large">
+            <hgroup class="col-md-4 col-xs-6 col-sm-6 pree_hdng_large pree_hdng_orange">
+               <div class="row">
+                <div class="col-sm-12 img-port_mod">  <img src="{!pvar.strBnkImgURL}" class="img-responsive center-block" alt="Bank Logo" height="80" width="150" border="0"/></div>
+              </div>
                 <div class="row">
+                
                     <h5>{!pvar.decRate}%</h5>
                     <h6>{!pvar.strProdName}</h6>
                 </div>
             </hgroup>
             
-            <hgroup class="col-md-3 col-xs-3 col-sm-3 pree_hdng" style="border-right-color:white;">
+            <hgroup class="col-md-3 col-xs-3 col-sm-3 pree_hdng pree_hdng_orange" style="border-right-color:white;">
                 <div class="row">
                     <h5 style="font-weight:bold;">${!pvar.decMonthlyPayment}</h5>
                     <h6 >Monthly Repayment</h6>
@@ -422,7 +445,7 @@
             </hgroup>  
             <apex:outputPanel rendered="{!if(pvar.EstimatedMonthlySaving != 0,true,false)}">
             
-               <div class="col-md-10 col-xs-12 col-sm-12 pree_log_cption">
+               <div class="col-md-10 col-xs-12 col-sm-12 pree_log_cption pree_log_cption_orange">
                     <p>Based on your loan details we could be saving you up to 
                     <span>$<apex:outputText value="{0, number, ###,##0}">
                         <apex:param value="{!pvar.EstimatedMonthlySaving}"/>
@@ -431,9 +454,10 @@
                 </div> 
            </apex:outputPanel>       
           </div>
-            </apex:repeat> 
+            </apex:repeat>
+           
             <div class="col-md-4 col-md-offset-3">
-                <apex:commandButton action="{!Login}" styleClass="btn btn-default btn_cstm btn_w100" value="Continue" style="margin-right:0px;" status="loginstatus" onclick="setTimeZoneMethod();"/>          
+                <apex:commandButton action="{!Login}" styleClass="btn btn-default btn_cstm btn_w100" value="Continue" style="margin-right:0px; background-color:#f98b02!important;" status="loginstatus" onclick="setTimeZoneMethod();"/>          
                <apex:actionstatus id="loginstatus" starttext="verifying...">
                     <apex:facet name="start">
                         Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      

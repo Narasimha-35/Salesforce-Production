@@ -6,8 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
 <title>Question Stage1</title>
+
+
 <link href="{!URLFOR($Resource.acfResources, 'acfResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
- <link href="{!URLFOR($Resource.datepick)}" rel="stylesheet" />
+<link href="{!URLFOR($Resource.datepick)}" rel="stylesheet" />
+<link href="{!URLFOR($Resource.acfResources, 'acfResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/nav.js')}"></script>
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/html5.js')}"></script>
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/jquery.glide.min.js')}"></script>
@@ -15,7 +18,8 @@
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/> 
 <apex:includeScript value="{!URLFOR($Resource.DatePickerJS,'JqueryDatePick/jquery.plugin.js')}"/>
-<apex:includeScript value="{!URLFOR($Resource.DatePickerJS,'JqueryDatePick/jquery.datepick.js')}"/>  
+<apex:includeScript value="{!URLFOR($Resource.DatePickerJS,'JqueryDatePick/jquery.datepick.js')}"/>   
+
 <script>
  
 
@@ -207,6 +211,16 @@ function showNewQuesPnl(shwPnlid,HidePnlId)
 .quote_headaer {
   padding: 35px 0px 20px 0px;
 }
+
+.top-tab ul li a.sign_in {
+    position: relative;
+    border-radius: 5px;
+    border: 1px #f98b02 solid;
+    text-align: center;
+    padding: 5px 20px;
+    line-height: normal;
+}
+
 .quote_headaer .h3 {
   font-family: "Open Sans Bold"!important;
   font-weight: normal!important;
@@ -232,6 +246,9 @@ float:left;
  .btn-question:last-child{
     margin-right:auto!important;
     margin-bottom:15px!important;
+    }
+    .btn-continue{
+    background-color : #f98b02;
     }
 .relQues-margin {
 //margin-left: 13%;
@@ -490,11 +507,13 @@ margin-top:96px;
         font-size:1.6em;
     }
     .quote_footer{
-        background-color:#2a8ecc;
+        background-color:#f98b02!important;
         border-bottom-left-radius:5px;
         border-bottom-right-radius:5px;
         padding: 20px 0px 15px 0px;
     }
+    
+    
     .quote_footer .h4{
         font-size:1em;
     }
@@ -519,7 +538,7 @@ margin-top:96px;
   line-height: 20px;
   color: #fff;
   text-align: center;
-  background-color: #337ab7;
+  background-color: #f98b02;
   -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
   box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
   -webkit-transition: width .6s ease;
@@ -646,6 +665,7 @@ top:22px;
   white-space: normal;
   font-size:1.3em!important;
   }
+
 @media (max-width: 300px)
     {
         .post_log_goback a
@@ -946,9 +966,9 @@ top:22px;
                                                    </div>
                                                </apex:outputPanel>
                                                <apex:outputPanel id="preloginButtons" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Button',true,false)}">
-                                                    <div class="btnresponsive-margin-div col-md-12">
+                                                    <div class="btnresponsive-margin-div col-md-12 ">
                                                         <apex:repeat value="{!ques.lstSelectOptions}" var="Answers">
-                                                         <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question" action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn" status="counterStatus" oncomplete="slide();">
+                                                         <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question btn-question_orange" action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn" status="counterStatus" oncomplete="slide();">
                                                             <apex:param value="{!Answers.id}" assignTo="{!ques.strWrapAnswer}" name="QuesCount"/>
                                                          </apex:commandButton>
                                                         </apex:repeat> 
@@ -1500,7 +1520,7 @@ top:22px;
                                                        </apex:outputPanel>
                                                        <apex:outputPanel id="preloginText" rendered="{!if(OR(objRelatedQues.objWrapQuestion.acf_Type__c == 'Text',objRelatedQues.objWrapQuestion.acf_Type__c == 'Number'),true,false)}">
                                                           <div class="post_slide_question2">
-                                                           <apex:inputtext id="txtDependentForSlide" styleclass="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Number','clsOnlynumeric',if(objRelatedQues.objWrapQuestion.acf_Postal_Code__c == true,'addresspicker_map',''))} inputf relQues-margin drop_input_custom_30" value="{!objRelatedQues.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>
+                                                           <apex:inputtext id="txtDependentForSlide" styleclass="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Number','clsOnlynumeric',if(ques.objWrapQuestion.Date__c == true,'popupDatepicker',if(objRelatedQues.objWrapQuestion.acf_Postal_Code__c == true,'addresspicker_map','')))} inputf relQues-margin drop_input_custom_30" value="{!objRelatedQues.strWrapAnswer}" onBlur="if (this.placeholder == '') {this.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>
                                                             <script>
                                                                $('input[id$=txtDependentForSlide]').attr('autocomplete','off');
                                                            </script>
@@ -1556,7 +1576,7 @@ top:22px;
                                                </apex:repeat> 
                                                <div class="col-md-12">
                                                <div>
-                                                    <apex:commandButton value="Continue" styleclass="btn-question" action="{!NextQuestion}" rendered="{!if(ques.IsContinueDisplay == true,true,false)}" reRender="optStages,optStagesText,optErrormsg,optBackbtn,QuoteDetailsPnlId" status="counterStatus" oncomplete="slide();"/>
+                                                    <apex:commandButton value="Continue" styleclass="btn-question btn-continue" action="{!NextQuestion}" rendered="{!if(ques.IsContinueDisplay == true,true,false)}" reRender="optStages,optStagesText,optErrormsg,optBackbtn,QuoteDetailsPnlId" status="counterStatus" oncomplete="slide();"/>
                                                     <apex:actionstatus id="counterStatus" starttext="verifying">
                                                           <apex:facet name="start">
                                                               <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/> 
