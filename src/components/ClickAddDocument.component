@@ -1,0 +1,121 @@
+<apex:component controller="ClickAddDocumentController" allowDML="true" id="comId">
+<style>
+
+.lookupInput a
+{
+    display:block;
+    position:absolute;
+    top:0px;
+    margin-left:100%;
+}
+span.lookupInput
+{
+    position : relative;
+    display: inherit;
+}
+.lookupInput a,.lookupInput a
+{
+    border : none !important;
+    background : none !important;
+    width: auto !important;
+}
+.lookupIcon {
+    background-image: url("{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Bootstraplookup.gif')}");
+    background-position: 0 0;
+    /* width: 20px; */
+    height: 20px;
+    background-position: top left;
+}
+.lookupIconOn {
+    background-image: url("{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Bootstraplookup.gif')}");
+    background-position: 0 0;
+    width: 20px;
+    height: 20px;
+    background-position: top right;
+ }
+ .reqDocBtn
+ {
+   font-family: "OpenSans";
+    background-color: #2a8ecc;
+    color: #fff;
+    text-decoration: none;
+ }
+ .displaynone
+ {
+     display:none;
+ }
+ 
+      .Processing
+        {
+          position: fixed;
+          background: url('/img/loading32.gif');
+          background-repeat: no-repeat;
+          background-position: center;
+          width: 95%;
+          height: 95%;
+          z-index: 1004;
+          left: 5%;
+          top: 2%;
+        }
+</style>
+
+<script>
+function ResetReqDocPopup()
+{
+    ResetReqDocumentPopup();
+}
+function opnDoc()
+   {
+       $('#myModal10').modal('toggle');
+        $('#myModal10').modal('show');
+   }
+</script>
+  <apex:attribute name="cmpAccId" description="Attribute on the component." type="String"  assignTo="{!MyAccountId}"/>
+         <apex:actionstatus id="ResetDocstatusId" starttext="Processing..." startStyleClass="color:red;">
+<apex:facet name="start">
+            <div style="text-align:center;width:100%;height:100%;opacity:0.2;background-color:#000;position:fixed;left:0px;top:0px;z-index:99;">
+                <img style="position: relative;top: 127px;width:300px" src="{!URLFOR($Resource.AppointmentImage)}"  />
+            </div>    
+            </apex:facet>
+        </apex:actionStatus>
+   <div class="modal" id="myModal10">
+    <div class="modal-dialog" id="usrfeedPopUp">
+      <div class="modal-content popup_modalcontent cstm_pop_cont" id="pdivfaded">
+        <div class="modal-header cstm_modal_header" id="idSetupBox">
+          <button type="button" class="close pop_close gray_col" data-dismiss="modal" aria-hidden="true">×</button>
+         <h4 class="modal-title text-center" id="memLoginId"></h4> 
+        </div>
+        <div class="modal-body col-md-offset-1">
+   <apex:form id="reqFrmId">
+    <apex:actionFunction name="ResetReqDocumentPopup" action="{!resetReqDocPopup}" rerender="reqFrmId" status="ResetDocstatusId" oncomplete="opnDoc();"/> 
+
+    <apex:pageBlock >
+    <apex:outputpanel rendered="{!If(strerrMsg != null && strerrMsg != '',true,false)}" style="{!if(isDocAdded == false,'color:red;','color:#419ECC;')}">{!strerrMsg}</apex:outputpanel>
+        <apex:pageBlockSection rendered="{!isDocAdded == false}">
+        
+            <apex:inputText value="{!strReqDocName}" styleClass="form-control" label="Name"/><br/><br/> 
+            <!--apex:inputField value="{!ObjReqDocument.acfDocument_Master__c}" styleClass="form-control"/><br/><br/>-->
+            <apex:selectList value="{!docMasterId}" multiselect="false" size="1" styleClass="form-control" label="Document Type">          
+               <apex:selectOptions value="{!DocumentMasterNames}"></apex:selectOptions>
+            </apex:selectList>        
+        </apex:pageBlockSection> 
+        <div class="form-group" style="margin-top:10px;"> 
+         <div class="col-md-offset-2 col-md-9">
+             <div> 
+                 <apex:actionstatus id="ReqDocstatusId" starttext="verifying">
+                    <apex:facet name="start">
+                        <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute;margin-left: -34px;"/>                      
+                    </apex:facet>
+                </apex:actionStatus>   
+                <apex:commandButton action="{!insertReqDocument}" value="Add Document" styleClass="btn col-md-4 cst_btn_save_2 reqDocBtn" style="width:auto;" reRender="reqFrmId" rendered="{!isDocAdded == false}" status="ReqDocstatusId"/>
+                <apex:commandButton action="{!reqDocCancel}" value="{!if(isDocAdded == false,'Cancel','Close')}" styleClass="btn col-md-5 col-md-offset-1 cst_btn_save_2 reqDocBtn"/>
+            </div> 
+        </div> 
+       </div>
+    </apex:pageBlock>
+   </apex:form>   
+  </div>
+  </div>
+  </div>
+  </div>  
+</apex:component>
