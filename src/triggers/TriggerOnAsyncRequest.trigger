@@ -16,7 +16,7 @@ trigger TriggerOnAsyncRequest on AsyncRequest__c (after insert) {
       }
    }
 
-   if(mercuryRequestBatchStartFlag && aajs.getInCompleteJobs().size() != 0) {
+   if(mercuryRequestBatchStartFlag && aajs.getInCompleteJobs().size() == 0) {
       System.debug(LoggingLevel.INFO, '[TriggerOnAsyncRequest] Execute Async Request...');
       Database.executeBatch(new MercuryRequestBatch(0), 1);
    }
