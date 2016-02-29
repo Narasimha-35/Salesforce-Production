@@ -39,8 +39,11 @@ global with sharing class OpportunityService {
 	};
 
 	webservice static void syncOppoToMercury(Id oppoId) {
-		String branchId = MercuryApiUtilities.getBrokerBranch(oppoId);
-		MercuryApiUtilities.createOppoInMercury(oppoId, branchId);
+		OpportunitySelector os = new OpportunitySelector();
+		Opportunity o = os.getById(oppoId);
+
+		system.debug(LoggingLevel.INFO, o);
+		insert AsyncRequestService.createSyncToRequst(o.AccountId, o.id);
 	}
 
 	public static Opportunity castLoan(MercuryModel.Loan loan) {
