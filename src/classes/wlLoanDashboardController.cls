@@ -1,4 +1,4 @@
-public class wlLoanDashboardController 
+public without sharing class wlLoanDashboardController 
 {
     public integer prodListIndex{get;set;}
     public decimal strRate{get;set;}
@@ -48,7 +48,8 @@ public class wlLoanDashboardController
         If(lstUser != null && lstUser.size()>0){
            isPasswordReset = lstUser[0].acfIs_Password_Reset__c;
         }
-        OpportunityId = clickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');        
+        OpportunityId = clickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');  
+        system.debug('!@#$AnkitSingh'+OpportunityId);      
         if(OpportunityId <> null)
         {
            double HouseValue,LVR;   
@@ -57,7 +58,7 @@ public class wlLoanDashboardController
            
            if(lstOpportunity <> null && lstOpportunity.size()>0 && lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc <> null && lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc <> null)
            {
-               
+                system.debug('#$%^Ankit'+lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc);
                 if(IsValidDecimal(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc))
                       HouseValue = double.valueof(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc);
                 else
@@ -108,7 +109,7 @@ public class wlLoanDashboardController
                         DateExpectedSettlement = ConvertDateToString(lstOpportunity[0].acfExpected_Settlement_Date__c); 
                     IsSettlement = true;
                }
-               else if(lstOpportunity[0].stageName  == 'Settlement' && lstOpportunity[0].acf_Status__c  == 'Settled')
+               else if(lstOpportunity[0].stageName  == 'Settled' && lstOpportunity[0].acf_Status__c  == 'Settled')
                {
                     strDescription = lstOpportunity[0].Description;
                     strCustomLabelValue = 'acfLoan_Dashboard_Settled';
@@ -136,7 +137,7 @@ public class wlLoanDashboardController
                                                    acfOngoing_Fees__c,acfTotal_Fee__c,acfLegal_Fees__c,Product2.ClickFeature_1__c,Product2.ClickFeature_2__c,
                                                     Product2.ClickFeature_3__c,Product2.acfDebit_Card__c,Product2.acfRedraw__c,Product2.acfInterest_Only__c,
                                                     Product2.acfOffset_Account__c,Product2.acfMultiple_Splits__c,Product2.acfAdd_Repayments__c,product2.acfTenure_in_Years__c,
-                                                    product2.recordtype.name,Product2.Click_Loans_Bank_Detail__r.acfBank_Name__c
+                                                    product2.recordtype.name,Product2.Click_Loans_Bank_Detail__r.acfBank_Name__c,Product2.Click_Loans_Bank_Detail__r.acfImage_URL__c
                                                     from OpportunityLineItem where OpportunityId=:OpportunityId limit 1];
            If(lstOpplst != null && lstOpplst.size()>0)
            {
@@ -162,7 +163,7 @@ public class wlLoanDashboardController
                         objCurrentLoanDetails.OngoingFees    =  OppLi.acfOngoing_Fees__c;
                         objCurrentLoanDetails.TotalFee    =  OppLi.acfTotal_Fee__c;
                         objCurrentLoanDetails.LegalFees    =  OppLi.acfLegal_Fees__c;
-                        objCurrentLoanDetails.strBankName = OppLi.Product2.Click_Loans_Bank_Detail__r.acfBank_Name__c;  
+                        objCurrentLoanDetails.strBankLogo = OppLi.Product2.Click_Loans_Bank_Detail__r.acfImage_URL__c;  
                         
                       
                         if(OppLi.Product2.ClickFeature_1__c != null)
@@ -207,15 +208,19 @@ public class wlLoanDashboardController
         boolean isFixed3yrCompleted = false;
         boolean isFixed4yrCompleted = false;
         boolean isFixed5yrCompleted = false;
-        
-        for(acfSuggested_Product__c objSuggestedProduct:[select id,acfFilter__c,acfProduct__c,acfProduct_Family__c from acfSuggested_Product__c where acfOpportunity__c=:OpportunityId])
+        system.debug('!@#$Ankit'+OpportunityId);
+        List<acfSuggested_Product__c> lstSuggestedPro = [select id,acfFilter__c,acfProduct__c,acfProduct_Family__c from acfSuggested_Product__c where acfOpportunity__c=:OpportunityId];
+        if(lstSuggestedPro != null && lstSuggestedPro.size() > 0)
         {
-            if(objSuggestedProduct.acfFilter__c <> null && objSuggestedProduct.acfProduct__c <> null && objSuggestedProduct.acfFilter__c == 'Exclude')
+            for(acfSuggested_Product__c objSuggestedProduct:lstSuggestedPro)
             {
-                setProductIdToExclude.add(objSuggestedProduct.acfProduct__c);
+                if(objSuggestedProduct.acfFilter__c <> null && objSuggestedProduct.acfProduct__c <> null && objSuggestedProduct.acfFilter__c == 'Exclude')
+                {
+                    setProductIdToExclude.add(objSuggestedProduct.acfProduct__c);
+                }
+                
             }
-            
-        }
+         }
          // changes done by Ankit for Adding bank functionality
         set<id> setOfBankDetailId = new set<id>();
         List<Click_Loans_Bank__c> lstbank = new List<Click_Loans_Bank__c>();
@@ -239,7 +244,7 @@ public class wlLoanDashboardController
                                     acfApplication_Fee__c, acfLegal_Fees__c, acfValuation_Fee__c,acfOngoing_Fees_annual__c,
                                     acfMonthly_Fees__c,acfAnnual_Fees__c,acfEstablishment_Fee__c,acfMortgage_Risk_Fee__c,acfTitle_Protection_Fee__c,
                                     acfProduct__r.acfAdd_Repayments__c, acfProduct__r.acfRedraw__c, acfProduct__r.acfDebit_Card__c, acfProduct__r.acfInterest_Only__c, acfProduct__r.acfMultiple_Splits__c, acfProduct__r.acfOffset_Account__c,
-                                    clickLoan_Size_From__c,clickLVR_From__c, acfProduct__r.Click_Loans_Bank_Detail__r.acfBank_Name__c
+                                    clickLoan_Size_From__c,clickLVR_From__c,acfProduct__r.Click_Loans_Bank_Detail__r.acfImage_URL__c,acfProduct__r.Click_Loans_Bank_Detail__r.acfBank_Name__c
                                     from LVR_Rate__c 
                                     where clickLoan_Size_From__c <: CurrentLoanAmount 
                                     and acfLoan_Size__c >=:CurrentLoanAmount 
@@ -316,7 +321,7 @@ public class wlLoanDashboardController
                 objWrapVariableProduct.strcomparisionType = '';
                 objWrapVariableProduct.IndexNo     = IndexCount;
                 objWrapVariableProduct.ProductId   =  objLVRRate.acfProduct__c; 
-                objWrapVariableProduct.strBankName = objLVRRate.acfProduct__r.Click_Loans_Bank_Detail__r.acfBank_Name__c;
+                objWrapVariableProduct.strBankLogo = objLVRRate.acfProduct__r.Click_Loans_Bank_Detail__r.acfImage_URL__c;
                
                 objWrapVariableProduct.ProdLVRID   =  objLVRRate.id;
                 
@@ -457,6 +462,7 @@ public class wlLoanDashboardController
         public Integer IndexNo{get;set;}   
         public decimal EstimatedSaving{get;set;}     
         public decimal TenureInYears{get;set;} 
+        public string strBankLogo {get;set;}
         public string strBankName {get;set;}
         
         public decimal ApplicationFee {get;set;} 
