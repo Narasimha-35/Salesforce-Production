@@ -1,4 +1,4 @@
-public class WLBankInformationDetails 
+global class WLBankInformationDetails 
 {
     //public properties
     public integer intStepNumber{get;set;}
@@ -19,11 +19,12 @@ public class WLBankInformationDetails
     public list<string> lstUserCredentials;
     public list<string> lstUserQuearyType;
     public list<string> lstWaterMarkText;
-    public Boolean isSkipvisible {get;set;}
+   // public Boolean isSkipvisible {get;set;}
     public acResponse.bankSatementResponseSuccessorFailure bnk_stmt_success_failure;
     public boolean BankNotFound {get;set;}
     private string strNetworkId;
     private Click_Community_Setup__c objCommunitySetUp;
+    public boolean isOppExist {get;set;}
     //public string strUserCredentials;
     //Constructor
     public WLBankInformationDetails () 
@@ -35,6 +36,7 @@ public class WLBankInformationDetails
         strUserName = 'Card / Access Number';
         strPassword = 'Security Number';
         strErrorMsg = '';
+        isOppExist = false;
         strNetworkId = Network.getNetworkId();
         objCommunitySetUp = new Click_Community_Setup__c ();
         if(strNetworkId != null && strNetworkId != '')
@@ -48,6 +50,10 @@ public class WLBankInformationDetails
         if(objCommunitySetUp.Click_Page_Prefix__c != null)
         {
             loggedInOppId = ClickCommon.getCurrentLoggedInOpportunityId(UserInfo.getuserId(),objCommunitySetUp.Click_Page_Prefix__c);
+            if(loggedInOppId != null)
+            {
+                isOppExist = true;
+            }
         }
         loginType = '1';
         // 1 : Username and Password
@@ -67,7 +73,7 @@ public class WLBankInformationDetails
            mapBankstepSequance.put(i,objbankinfo);
            objbankinfo = new acfBank_Information__c();
         }
-        isSkipvisible = true;
+        /*isSkipvisible = true;
         String strLeadId = ClickCommon.getCurrentLoggedInLeadId(userinfo.getuserId());
         If(strLeadId <> '' && strLeadId !=null)
         {
@@ -79,7 +85,7 @@ public class WLBankInformationDetails
                         isSkipvisible = false;
                    }
             }
-        }
+        }*/
         //ClickQuoteDetail.intWidth = 10;
         WLQuoteDetail.setProgressBarWidth(0,0,objCommunitySetUp.Click_Page_Prefix__c+'BankInfoDetails',strNetworkId);
     }
@@ -273,19 +279,42 @@ public class WLBankInformationDetails
             bnkObj = [select id,name,acfBank_Name__c,acfBankSlugName__c from acfBank_Detail__c where acfBankSlugName__c =: strBankSlugName];        
             lead leadObj = new lead(acfBankNameForAccountDetails__c=bnkObj.id,acfIs_Bank_Statement_Submitted__c=true,acfBankdetailStatus__c = 'Completed', id= strParentId);
             update leadObj;
-            list<task> lstTask = [select id,subject,status from task where acf_Is_Upload_Bank_Stmt__c = true limit 1];
-            if(lstTask != null && lstTask.size()>0)
+            list<Required_Document__c> lstRequiredDoc = [select id, acfStatus__c from Required_Document__c where acf_Bank_Statement_Doc__c = true
+                                                          AND Lead__c=:leadObj.id];
+            if(lstRequiredDoc != null && lstRequiredDoc.size() > 0)
             {
-                lstTask[0].status = 'Completed';
-                if(!Test.isRunningTest()){
-                    update lstTask[0];
-                }
+                     lstRequiredDoc[0].click_Is_Uploaded__c= true; 
+                     update lstRequiredDoc[0];        
             }
-        }
-        
+                                        
+           
             String retUrl = ClickCommon.sendReturnUrl(UserInfo.getuserId(),false,objCommunitySetUp.Click_Page_Prefix__c+'BankInfoDetails',strNetworkId);
             PageReference pageref = new PageReference(retUrl);
             return(pageref);
+        }
+        else
+        {
+            if(loggedInOppId <> null)
+            {
+                list<Required_Document__c> lstRequiredDoc = [select id, acfStatus__c from Required_Document__c where acf_Bank_Statement_Doc__c = true
+                                                              AND acfOpportunity__c =:strParentId];
+                if(lstRequiredDoc != null && lstRequiredDoc.size() > 0)
+                {
+                     lstRequiredDoc[0].click_Is_Uploaded__c= true; 
+                     update lstRequiredDoc[0];    
+                     list<task> lstTask = [select id,subject,status,whatid from task where acf_Is_Upload_Bank_Stmt__c = true and whatid =:strParentId limit 1];
+                     if(lstTask != null && lstTask.size()>0)
+                     {
+                        lstTask[0].status = 'Completed';
+                        if(!Test.isRunningTest()){
+                            update lstTask[0];
+                        }
+                     }    
+                } 
+            }
+                                    
+        }
+        return null;      
    }
    
    public pagereference skipMethod() 
@@ -330,7 +359,7 @@ public class WLBankInformationDetails
      }
    
     @RemoteAction
-    public static List<acfBank_Detail__c> AutoCompleteBanklList(string strFilter)
+    global static List<acfBank_Detail__c> AutoCompleteBanklList(string strFilter)
     {  
         If(strFilter!=null && strFilter <> '')
         {
