@@ -321,7 +321,8 @@
                    <apex:outputpanel rendered="{!isLoggedIn == true}"> 
                     <a href="/clickdashboard">
                      <apex:outputpanel rendered="{!pge_name == 'clickhome'}">  <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/logo_landing.png')}" alt="click Refi"/></apex:outputpanel>
-                     <apex:outputpanel rendered="{!pge_name != 'clickhome'}">   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="click Refi"/> </apex:outputpanel>
+                     <apex:outputpanel rendered="{!pge_name != 'clickhome' && pge_name !='acfjumiointegration'}">   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="click Refi"/> </apex:outputpanel>
+                      <apex:outputpanel rendered="{!pge_name =='acfjumiointegration'}">   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/Whitelabel_headerlogo.png')}" alt="click Refi"/> </apex:outputpanel>
                     </a>
                    </apex:outputpanel>
                 </div>

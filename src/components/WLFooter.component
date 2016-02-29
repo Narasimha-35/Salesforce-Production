@@ -3,8 +3,8 @@
         .april_foter_left img {
             display: block;
             margin-top: 0px;
-            width: 182px!important;
-            height: 70px;
+            width: auto;
+            height: auto;
         }
     </style>
     <div class="container {!IF(pge_name != 'clickhome', 'container_cstm', '')}">
@@ -12,7 +12,9 @@
            <div class="row">
             <div class="row-fluid active april_foter_left">
                 <a>
-                   <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" alt="logo" style="width:75%; height:65px"/>
+                <!----------------- WLACLA-165 CHANGES ---------------->
+                   <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_footerlogo.png')}" alt="logo" />
+                <!----------------- WLACLA-165 CHANGES ---------------->
                 </a>
                 
                 <p class="mgtop10 col-md-12 col-xs-12 col-sm-12" style="margin-left: -15px;max-width:235px;">

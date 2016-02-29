@@ -249,14 +249,20 @@
                 <div class="logo {!IF(pge_name == 'acfdashboard', 'dashboard_border', '')}">
                    <apex:outputpanel rendered="{!isLoggedIn == false}">
                     <a href="{!strURLPrefix}acfhome">
-                     <apex:outputpanel rendered="{!pge_name == 'acfhome'}">  <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" alt="WL Refi"/></apex:outputpanel>
-                     <apex:outputpanel rendered="{!pge_name != 'acfhome'}">   <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" alt="WL Refi"/> </apex:outputpanel>
+                    <!----------------- WLACLA-165 CHANGES ---------------->
+                     <apex:outputpanel rendered="{!pge_name == 'acfhome'}">  <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_headerlogo.png')}" alt="WL Refi"/></apex:outputpanel>
+                    <!----------------- WLACLA-165 CHANGES ---------------->
+                     <apex:outputpanel rendered="{!pge_name != 'acfhome'}">   <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_headerlogo.png')}" alt="WL Refi"/> </apex:outputpanel>
+                    <!----------------- WLACLA-165 CHANGES ---------------->
                     </a>
                     </apex:outputpanel>
                    <apex:outputpanel rendered="{!isLoggedIn == true}"> 
                     <a href="{!strURLPrefix}acfdashboard">
-                     <apex:outputpanel rendered="{!pge_name == 'acfhome'}">  <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" alt="WL Refi"/></apex:outputpanel>
-                     <apex:outputpanel rendered="{!pge_name != 'acfhome'}">   <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" alt="WL Refi"/> </apex:outputpanel>
+                    <!----------------- WLACLA-165 CHANGES ---------------->
+                     <apex:outputpanel rendered="{!pge_name == 'acfhome'}">  <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_headerlogo.png')}" alt="WL Refi"/></apex:outputpanel>
+                     <!----------------- WLACLA-165 CHANGES ---------------->
+                     <apex:outputpanel rendered="{!pge_name != 'acfhome'}">   <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_headerlogo.png')}" alt="WL Refi"/> </apex:outputpanel>
+                     <!----------------- WLACLA-165 CHANGES ---------------->
                     </a>
                    </apex:outputpanel>
                 </div>
