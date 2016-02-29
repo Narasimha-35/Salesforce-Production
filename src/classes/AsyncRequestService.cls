@@ -8,4 +8,8 @@ public with sharing class AsyncRequestService {
 		insert arl;
 	}
 
+	public static AsyncRequest__c createSyncToRequst(String accId, String oppoId) {
+		return new AsyncRequest__c(type__c = '' + AsyncRequestType.SF_TO_MERCURY, params__c = '{"accId":"' + accId + '", "oppoId":"' + oppoId + '"}');
+	}
+
 }
