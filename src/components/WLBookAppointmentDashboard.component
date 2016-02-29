@@ -98,7 +98,26 @@
     .calenderBg{
        background-color:white;
     }
-    
+
+.btn_dash_book.btn_dash_orange,
+.btn_dash_book.btn_dash_orange:focus,
+.btn_dash_book.btn_dash_orange:hover,
+.btn_dash_book.btn_dash_orange:active,
+.btn_dash_book.btn_dash_orange:visited{
+background-color:#f98b02;
+}
+
+
+.datepicker table tr td span.active.active,
+.datepicker table tr td.active:hover,.datepicker table tr td.active:hover:hover, .datepicker table tr td.active.disabled:hover, .datepicker table tr td.active.disabled:hover:hover, .datepicker table tr td.active:focus, .datepicker table tr td.active:hover:focus, .datepicker table tr td.active.disabled:focus, .datepicker table tr td.active.disabled:hover:focus, .datepicker table tr td.active:active, .datepicker table tr td.active:hover:active, .datepicker table tr td.active.disabled:active, .datepicker table tr td.active.disabled:hover:active, .datepicker table tr td.active.active, .datepicker table tr td.active:hover.active, .datepicker table tr td.active.disabled.active, .datepicker table tr td.active.disabled:hover.active, .open .dropdown-toggle.datepicker table tr td.active, .open .dropdown-toggle.datepicker table tr td.active:hover, .open .dropdown-toggle.datepicker table tr td.active.disabled, .open .dropdown-toggle.datepicker table tr td.active.disabled:hover{
+    background-color: #f98b02!important;
+}
+
+.btn_dash_book.btn_dash_orange{
+    background-color: #f5f5f5;
+    color: orange;
+    border: 3px solid #f98b02;
+}
 </style>
 
                    <script>
@@ -115,7 +134,7 @@
                 <div class="clearfix"></div>
                   <section class="col-md-12 col-md-offset-0 col-xs-10 col-xs-offset-1" id="bkNAPt">
                     <div class="row" style="display:block;" >
-                        <apex:commandLink value="Book an Appointment" onclick="HideBtn();" styleclass=" col-md-12 col-xs-12 btn btn-default btn_dash_book" id="BtnApp" rerender="bdy" />
+                        <apex:commandLink value="Book an Appointment" onclick="HideBtn();" styleclass=" col-md-12 col-xs-12 btn btn-default btn_dash_book btn_dash_orange" id="BtnApp" rerender="bdy" />
                     </div>
                   </section>
                   <div id="opt" class="calenderBg" >
@@ -131,7 +150,7 @@
                       
                        <section class="col-md-12 col-xs-12">
                         <div class="row"  >
-                            <apex:commandButton styleclass="btn apoint-btn col-md-6 col-md-offset-3 datp_pic_book_btn"  action="{!createTask}" oncomplete="ShowBtn();" value="Book Now" reRender="frm" status="taskstatus"/>
+                            <apex:commandButton styleclass="btn apoint-btn col-md-6 col-md-offset-3 datp_pic_book_btn datp_pic_book_btn_orange"  action="{!createTask}" oncomplete="ShowBtn();" value="Book Now" reRender="frm" status="taskstatus"/>
                             <apex:actionstatus id="taskstatus" starttext="verifying...">
                                 <apex:facet name="start">
                                     Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
