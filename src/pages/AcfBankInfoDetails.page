@@ -3,13 +3,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
-<title>Bank Info Details</title>
+<title>Bank Info Details</title> 
 
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.css')}" rel="stylesheet" type="text/css"/>
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.min.css')}" rel="stylesheet" type="text/css"/>
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
 
+
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
 
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
@@ -57,7 +59,7 @@
        // alert(arrBankList);
         for(var i=0; i<arrBankList.length; i++)
         {
-            strBankListHtml = strBankListHtml + '<li value="'+arrBankList[i].acfBank_Name__c+'"><span class="bank-img"><img src="{!$Label.acfSite_Url}'+arrBankList[i].acfImage_URL__c+'" height="70px;" width="auto"/></span><span style="vertical-align: center;padding-left:10px;"><b class="bnkName">'+arrBankList[i].acfBank_Name__c+'</b></span><span class="BnkOpt" style="display:none;">'+arrBankList[i].acfBankSlugName__c+'</span></li>';
+            strBankListHtml = strBankListHtml + '<li value="'+arrBankList[i].acfBank_Name__c+'"><span class="bank-img"><img src="{!$Label.site_URL}'+arrBankList[i].acfImage_URL__c+'" height="70px;" width="auto"/></span><span style="vertical-align: center;padding-left:10px;"><b class="bnkName">'+arrBankList[i].acfBank_Name__c+'</b></span><span class="BnkOpt" style="display:none;">'+arrBankList[i].acfBankSlugName__c+'</span></li>';
         }
         
         //alert(strBankListHtml);
@@ -171,6 +173,7 @@ color:#223972;
 font-size:0.9em;
 font-weight:bold;
 }
+
 
 /******************For statement retrival close here**********/
 .setup-box.new-bank-stmnt-retrival{
@@ -333,10 +336,10 @@ background-color:#eee;
                             </script>                     
                             </div>   
                            <div class="col-md-6">
-                                <apex:commandLink id="btnSelectBank" value="Show All" styleclass="btn-virifie ShowAllBtnheightEqualizer" oncomplete="queryData('%');" reRender="pnlMain" status="RegLoadstatus"/>
+                                <apex:commandLink id="btnSelectBank" value="Show All" styleclass="btn-virifie ShowAllBtnheightEqualizer btn-virifie_orange" oncomplete="queryData('%');" reRender="pnlMain" status="RegLoadstatus"/>
                            </div>
                            <div class="col-md-6">
-                               <apex:commandButton action="{!skipMethod}" value="Skip" styleClass="btn-virifie btn-light_blue ShowAllBtnheightEqualizer"/> 
+                               <apex:commandButton action="{!skipMethod}" value="Skip" styleClass="btn-virifie btn-light_blue ShowAllBtnheightEqualizer btn-virifie_orange"/> 
                            </div>
                           <!-- <a href="#" class="c_fnd_bank"> Can't find your bank? </a> -->
                              <div class="clearfix"></div> 
@@ -394,10 +397,10 @@ background-color:#eee;
                        </apex:outputPanel>       
                  </apex:repeat> 
                  <div class="col-md-6">
-                           <apex:commandButton id="gobackbtn1" value="Go Back" action="{!gobackmethod}" styleclass="btn-virifie" rerender="pnlMain" status="RegLoadstatus1"/>
+                           <apex:commandButton id="gobackbtn1" value="Go Back" action="{!gobackmethod}" styleclass="btn-virifie btn-virifie_orange" rerender="pnlMain" status="RegLoadstatus1"/>
                  </div>
                  <div class="col-md-6">
-                     <apex:commandButton id="btnLogin" value="Submit" action="{!BankLogin}" styleclass="btn-virifie" rerender="pnlMain" status="RegLoadstatus1"/> 
+                     <apex:commandButton id="btnLogin" value="Submit" action="{!BankLogin}" styleclass="btn-virifie btn-virifie_orange" rerender="pnlMain" status="RegLoadstatus1"/> 
                      <apex:actionstatus id="RegLoadstatus1" starttext="verifying...">
                        <apex:facet name="start">
                           Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute;"/>                      
