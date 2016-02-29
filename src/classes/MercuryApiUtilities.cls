@@ -131,7 +131,9 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	}
 
 	public static Contact createPeopleInMercury(String accountId, String branchId, Boolean testMode) {
-		Account account = [Select id, name, FirstName, LastName, PersonContactId FROM Account where id =: accountId];
+		AccountSelector accSelector = new AccountSelector();
+		Account account = accSelector.getById(accountId);
+		// Account account = [Select id, name, FirstName, LastName, PersonContactId FROM Account where id =: accountId];
 		Contact contact = [Select id, name, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Job_Title__c, Gender__c, Title, Phone, FirstName, LastName, Birthday__c, Email, Annual_Income__c, MobilePhone, Marital_Status__c, Employer_Name__c, Current_Role__c, Number_of_Children__c, Employment_Status__c FROM Contact where id = :account.PersonContactId];
 		return createPeopleInMercury(account, contact, branchId, testMode);
 	}
@@ -151,7 +153,14 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			String maritalStatus = contact.Marital_Status__c != null && contact.Marital_Status__c.trim() != '' ? contact.Marital_Status__c : '';
 			String employerName = contact.Employer_Name__c != null && contact.Employer_Name__c.trim() != '' ? contact.Employer_Name__c : '';
 			String currentRole = contact.Current_Role__c != null && contact.Current_Role__c.trim() != '' ? contact.Current_Role__c : '';
-			Integer childrenNum = contact.Number_of_Children__c != null && contact.Number_of_Children__c != '' ? Integer.valueOf(contact.Number_of_Children__c) : 0;
+			Integer childrenNum;
+			if(contact.Number_of_Children__c == '5+') {
+				childrenNum = 5;
+			} else {
+				childrenNum = contact.Number_of_Children__c != null && contact.Number_of_Children__c != '' ? Integer.valueOf(contact.Number_of_Children__c) : 0;
+			}
+
+
 			String employmentType = contact.Employment_Status__c != null && contact.Employment_Status__c.trim() != '' ? contact.Employment_Status__c : '';
 			String gender = contact.Gender__c != null && contact.Gender__c.trim() != '' ? contact.Gender__c : '';
 			String birthday = contact.Birthday__c != null ? '"' + convertCurrentTimeToGMTWithTimeZone(contact.Birthday__c) + '"' : null;
@@ -266,7 +275,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	}
 
 	public static void updatePeopleInMercury(String accountId, String token, String branchId) {
-		Account account = [Select id, name, FirstName, Mercury_People_ID__c, LastName, PersonContactId FROM Account where id =: accountId];
+		AccountSelector accSelector = new AccountSelector();
+		Account account = accSelector.getById(accountId);
 		if (account != null && account.PersonContactId != null) {
 			Contact contact = [Select id, name, acf_applicant_DOB__c, acf_Applicant_Dependants__c, acfAnnual_Salary__c, acf_applicant_Marital_Status__c, acf_Applicant_Employment_Type__c, acf_applicant_Monthlly_Salary__c, acf_applicant_Employer_Name__c, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Job_Title__c, Gender__c, Title, Phone, FirstName, LastName, Birthday__c, Email, Annual_Income__c, MobilePhone, Marital_Status__c, Employer_Name__c, Current_Role__c, Number_of_Children__c, Employment_Status__c FROM Contact where id = :account.PersonContactId];
 			String createdTime = convertCurrentTimeToGMTWithTimeZone();
@@ -279,7 +289,13 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			String maritalStatus = contact.Marital_Status__c != null && contact.Marital_Status__c.trim() != '' ? contact.Marital_Status__c : '';
 			String employerName = contact.Employer_Name__c != null && contact.Employer_Name__c.trim() != '' ? contact.Employer_Name__c : '';
 			String currentRole = contact.Current_Role__c != null && contact.Current_Role__c.trim() != '' ? contact.Current_Role__c : '';
-			Integer childrenNum = contact.acf_Applicant_Dependants__c != null && contact.acf_Applicant_Dependants__c != '' ? Integer.valueOf(contact.acf_Applicant_Dependants__c) : contact.Number_of_Children__c != null && contact.Number_of_Children__c != '' ? Integer.valueOf(contact.Number_of_Children__c) : 0;
+			Integer childrenNum;
+			if(contact.Number_of_Children__c == '5+') {
+				childrenNum = 5;
+			} else {
+				childrenNum = contact.Number_of_Children__c != null && contact.Number_of_Children__c != '' ? Integer.valueOf(contact.Number_of_Children__c) : 0;
+			}
+
 			String employmentType = contact.Employment_Status__c != null && contact.Employment_Status__c.trim() != '' ? contact.Employment_Status__c : '';
 			String gender = contact.Gender__c != null && contact.Gender__c.trim() != '' ? contact.Gender__c : '';
 			String birthday = contact.Birthday__c != null ? '"' + convertCurrentTimeToGMTWithTimeZone(contact.Birthday__c) + '"' : null;
