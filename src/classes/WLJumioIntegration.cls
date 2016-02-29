@@ -13,10 +13,12 @@ public class WLJumioIntegration
     public string strIframeURL {get; set;}
     public string strLeadId {get; set;}
     public ID LoggedInLeadId;
-    Public Boolean isSkipvisible {get;set;}
+    Public Boolean isOppExist {get;set;}
     Public Click_Community_Setup__c objCommunity = new Click_Community_Setup__c();
     Public string strNetworkId;
     Public string strURLPrifix {get{return ClickCommon.URLPRefix;}set;}
+    Public string loggedInOppId;
+    
     //Constructor
     public  WLJumioIntegration()
     {
@@ -24,17 +26,18 @@ public class WLJumioIntegration
         if(strNetworkId != null) objCommunity = ClickCommon.getCommunitySetup(strNetworkId);
          
         LoggedInLeadId  = ClickCommon.getCurrentLoggedInLeadId(UserInfo.getUserId()); 
-        isSkipvisible = true;
-        If(LoggedInLeadId != null)
+        loggedInOppId = ClickCommon.getCurrentLoggedInOpportunityId(UserInfo.getuserId(),(ClickCommon.getCommunitySetup(strNetworkId)).Click_Page_Prefix__c);
+        isOppExist = false;
+        If(loggedInOppId != null)
         {
-            System.debug('@@@leadid'+LoggedInLeadId);
-            List<Lead> lstLead = [select id,acfIs_Bank_Statement_Submitted__c,acfIs_Post_Login_Ques_Attempted__c from lead where id=:LoggedInLeadId];
+           isOppExist = true;
+           /* List<Lead> lstLead = [select id,acfIs_Bank_Statement_Submitted__c,acfIs_Post_Login_Ques_Attempted__c from lead where id=:LoggedInLeadId];
             If(lstLead != null && lstLead.size()>0){
                    System.debug('@@@leadid'+lstLead);
-                   If(lstLead[0].acfIs_Bank_Statement_Submitted__c && lstLead[0].acfIs_Post_Login_Ques_Attempted__c){
-                        isSkipvisible = false;
+                   If(lstLead[0].isConverted){
+                        isLeadConverted = true;
                    }
-            }
+            }*/
          }
          WLQuoteDetail.setProgressBarWidth(0,0,(ClickCommon.getCommunitySetup(strNetworkId)).Click_Page_Prefix__c+'jumiointegration',strNetworkId);
     }
@@ -98,8 +101,25 @@ public class WLJumioIntegration
         system.debug('@@@json'+jsonResponseBody);  
                     
         RootObject objRootObject = parse(jsonResponseBody);
-        strIframeURL = objRootObject.clientRedirectUrl;
-        
+        strIframeURL = objRootObject.authorizationToken;
+        //Update Document Object and Lead.
+        List<lead> lstLead = [select id,IsConverted,convertedOpportunityId from Lead where id =: LoggedInLeadId];
+        if(lstLead != null && lstLead.size() > 0)
+        {
+            if(objRootObject.jumioIdScanReference <> null)
+            {
+                   List<Required_Document__c>lstRequiredDoc = [select id,acfStatus__c,acf_Reference_No__c,acfDocument_Master__c from Required_Document__c 
+                                                               Where acfDocument_Master__c <> null AND ((Lead__c <> null AND Lead__c=:LoggedInLeadId) OR (acfOpportunity__c <> null AND acfOpportunity__c=:lstLead[0].convertedOpportunityId)) 
+                                                               AND acfDocument_Master__r.acf_Source__c =: 'Jumio' limit 1];
+                   system.debug('@@karthik'+lstRequiredDoc+'!@#'+objRootObject.jumioIdScanReference+'@@@'+LoggedInLeadId +'@@'+ lstLead[0].convertedOpportunityId);
+                   if(lstRequiredDoc <> null && lstRequiredDoc.size()>0)
+                   {
+                      // lstRequiredDoc[0].acfStatus__c = 'Awaited';
+                       lstRequiredDoc[0].acf_Reference_No__c = objRootObject.jumioIdScanReference;
+                       update lstRequiredDoc;
+                   }
+            }
+        }
         /*List<lead> lstLead = [select id, IsConverted from Lead where id =: strLeadId];
         if(lstLead != null && lstLead.size() > 0)
         {
@@ -113,11 +133,11 @@ public class WLJumioIntegration
                 //TODO: Update contact code here                
             }
         }*/
-        //Update Document Object and Lead.
-        List<lead> lstLead = [select id, IsConverted from Lead where id =: LoggedInLeadId];
-        if(lstLead != null && lstLead.size() > 0)
+        
+       /* if(loggedInOppId != null && objRootObject.jumioIdScanReference <> null)
         {
-            if(!lstLead[0].IsConverted && objRootObject.jumioIdScanReference <> null)
+            list<Opportunity> lstOpportnity = [select id from opportunity where id=: loggedInOppId];
+            if(lstOpportnity != null && lstOpportnity.size()>0)
             {
                    List<Required_Document__c>lstRequiredDoc = [select id,acfStatus__c,acf_Reference_No__c,acfDocument_Master__c from Required_Document__c where acfDocument_Master__c <> null and Lead__c=:LoggedInLeadId and acfDocument_Master__r.acf_Source__c = 'Jumio' limit 1];
                    if(lstRequiredDoc <> null && lstRequiredDoc.size()>0)
@@ -127,7 +147,7 @@ public class WLJumioIntegration
                        update lstRequiredDoc;
                    }
             }
-        }
+        }*/
     }
     
     public class RootObject
@@ -146,7 +166,7 @@ public class WLJumioIntegration
     /***added by karthik 02-01-2015******/
     Public pagereference redirectToNextPage()
     {
-        string loggedInOppId = ClickCommon.getCurrentLoggedInOpportunityId(UserInfo.getuserId(),(ClickCommon.getCommunitySetup(strNetworkId)).Click_Page_Prefix__c);
+       
         if(loggedInOppId == null)
         {
                 string strLoggedInleadid = ClickCommon.getCurrentLoggedInLeadId(userInfo.getuserId());
