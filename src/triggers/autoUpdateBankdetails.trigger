@@ -39,4 +39,23 @@ trigger autoUpdateBankdetails on Attachment (after insert) {
     If(lstBankdetails != null && lstBankdetails.size()>0){
          Update lstBankdetails;
     }
+    
+    List<Click_Uploaded_Documents__c> lstUploadDoc = new List<Click_Uploaded_Documents__c>();
+    for(Attachment objAttach : trigger.new)
+    {
+        if(objAttach != null && objAttach.ParentId != null && objAttach.ParentId.getSObjectType().getDescribe().getName() == 'Required_Document__c')
+        {
+            Click_Uploaded_Documents__c objUploadDoc = new Click_Uploaded_Documents__c();
+            objUploadDoc.Click_Loans_Required_Document__c = objAttach.parentId;
+            objUploadDoc.click_Is_deleted__c = false;
+            objUploadDoc.Name = objAttach.name;
+            objUploadDoc.Click_Attachment_Id__c = objAttach.Id;
+            lstUploadDoc.add(objUploadDoc);
+        }
+    }
+    
+    if(lstUploadDoc != null && lstUploadDoc.size() > 0)
+    {
+        insert lstUploadDoc;
+    }
 }
