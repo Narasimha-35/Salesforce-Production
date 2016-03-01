@@ -7,7 +7,7 @@
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
 <title>Question Stage1</title>
 <link href="{!URLFOR($Resource.acfResources, 'acfResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
-
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/nav.js')}"></script>
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/html5.js')}"></script>
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/jquery.glide.min.js')}"></script>
@@ -18,7 +18,7 @@
 <script>
   function slide()
   {
-    if($('[id$=ipthdn]').val() === 'true')
+    if($('[id$=ipthdn]').val() === 'true') 
     {
        $('.slider-arrow--right').trigger('click');
     } 
@@ -275,6 +275,8 @@ margin-bottom:100px!important;
     }
     .btn-question.q-right.prlelogin-ques{
       margin-left: 30%;
+      background-color : #f98b02;
+      
     }
     .preloader
     {
@@ -309,8 +311,8 @@ margin-bottom:100px!important;
     
     /*CSS For Old Header and Footer Start*/
     .header .logo img {
-      width: 182px;
-      height: 69px;
+      width: 250px;
+      height: 60px;
       margin-top: 8px;
     }
     
@@ -393,11 +395,11 @@ margin-bottom:100px!important;
         margin-left: 10px;
         width:50%;
     }
-    .percent_icon:before
+   .percent_icon:before
     {
         right:27%;
         top: 30%;
-    }
+    } 
     .mgleft_minus_37
     {
         margin-left:-37px!important;
@@ -447,11 +449,14 @@ left: 73%;
   margin-right: auto;
   margin-top:10px;
   white-space: normal;
-  
+}
+#IdBtn {
+  background-color: #f98b02;
 }
 .w180
 {
   max-width:180px !important;
+  
 }
 
 
@@ -536,10 +541,7 @@ left: 73%;
         position: relative!important;
         display: block!important;
     }
-    .percent_icon:before{
-          top : 28%!important;
-          right :8%!important;
-    }
+
 }
 @media (max-width: 300px)
     {
@@ -709,7 +711,7 @@ and (orientation : portrait)
 
                            <div class="col-md-12 col-xs-12">                                           
                             <apex:repeat value="{!ques.lstSelectOptions}" var="Answers">
-                             <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question center-block" action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg" status="counterStatus" oncomplete="slide();">
+                             <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question center-block btn-question_orange" action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg" status="counterStatus" oncomplete="slide();">
                                 <apex:param value="{!Answers.id}" assignTo="{!ques.strWrapAnswer}" name="QuesCount"/>
                              </apex:commandButton>
                             </apex:repeat> 
@@ -766,7 +768,7 @@ and (orientation : portrait)
                                <apex:outputPanel id="preloginButtons" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Button',true,false)}">
                                 <div class="col-md-12 col-xs-12">
                                 <apex:repeat value="{!objRelatedQues.lstSelectOptions}" var="Answers">
-                                 <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question center-block" action="{!AddingRelatedQuestion}" reRender="optQuestion,optStages,optStagesText,optErrormsg" status="counterStatus" oncomplete="slide();">
+                                 <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question center-block btn-question_orange " action="{!AddingRelatedQuestion}" reRender="optQuestion,optStages,optStagesText,optErrormsg" status="counterStatus" oncomplete="slide();">
                                     <apex:param value="{!Answers.id}" assignTo="{!objRelatedQues.strWrapAnswer}" name="QuesCountAns"/>
                                     <apex:param value="{!Count}" assignTo="{!QuesNo}" name="QuesCount"/>
                                  </apex:commandButton>
