@@ -22,6 +22,7 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 	}
 
 	global void execute(Database.BatchableContext BC, List<AsyncRequest__c> scope) {
+		if(!ACFSwitch__c.getOrgDefaults().QueuedAsyncRequestSwitch__c) return;
 		AsyncRequest__c request = scope[0];
 		Map<String, Object> param = (Map<String, Object>) JSON.deserializeUntyped((String)(request.get('params__c')));
 
@@ -36,14 +37,14 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 					Opportunity o = OpportunityService.castLoan(loan);
 					System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] casted Opportunity: ' + o);
 					OpportunitySelector os = new OpportunitySelector();
-					List<Opportunity> ol = os.getByMercuryId(new List<String>{loan.uniqueId});
+					List<Opportunity> olMercuryId = os.getByMercuryId(new List<String>{loan.uniqueId});
 
-					if(Utilities.castId(loan.uniqueId) != null || ol.size() == 1) {
+					if(!MercuryApiUtilities.isMercuryOpportunity(loan.uniqueId)) {
 						//update Opportunity
 						if(Utilities.castId(loan.uniqueId) != null) {
 							o.id = loan.uniqueId;
 						} else {
-							o.id = ol[0].id;
+							o.id = olMercuryId[0].id;
 						}
 						update o;
 						System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] update Opportunity: ' + o);
@@ -72,6 +73,7 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 	}
 
 	global void finish(Database.BatchableContext BC) {
+		if(!ACFSwitch__c.getOrgDefaults().QueuedAsyncRequestSwitch__c) return;
 		System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] success count: ' + counter);
 
 		Integer remainingSize = Database.query(baseQuery).size();
