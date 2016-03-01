@@ -118,6 +118,8 @@ background-color:transparent;
 .cstm_panel_body{
 background-color:#fff!important;
 }
+.cstm_border_btm{display:none;}
+.pd25btm{padding-bottom:25px;}
 </style>
 
 <script>
@@ -206,7 +208,7 @@ function UploadDocument(indexval)
 
 <apex:actionFunction action="{!UploadDocumentsNotification}" name="UploadDocumentsNotification" status="ProcessStatus"  />
 <apex:actionFunction action="{!uploadDoc}" name="UploadDocuments" status="ProcessStatus" />
-<apex:actionFunction action="{!UploadDragableFile}" name="UploadDraggableFile" status="ProcessStatus" />
+<!--<apex:actionFunction action="{!UploadDragableFile}" name="UploadDraggableFile" status="ProcessStatus" />   -->
 <apex:actionFunction action="{!DeleteDoc}" name="DeleteDoc" status="ProcessStatus" />
 <apex:actionFunction action="{!previewdoc}" name="previewdoc" status="ProcessStatus" />
 
@@ -215,12 +217,12 @@ function UploadDocument(indexval)
     <hgroup class="dash_tab_hdng">
         <h3 class="col-md-5 col-xs-12">Document</h3>
         <h3 class="col-md-6 col-xs-12 text-center" id="upload_text">Upload</h3>
-       <div class="cstm_border_btm dash_row_10">&nbsp;</div>                                
+                          
     </hgroup>
     
     <apex:variable value="{!0}" var="Count"/> 
     <apex:repeat value="{!lstWrapperDocumnets}" var="doc"> 
-    <section class="dash_doc">
+    <section class="dash_doc cstm-row-dash pd25btm">
         <div class="col-md-6 col-xs-12 h4">{!doc.objRequiredDocumnets.Name}</div>
         <div class="col-md-6 col-xs-12">
             <apex:outputPanel rendered="{!if(OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Awaited',AND(doc.objRequiredDocumnets.acfStatus__c == 'Not Verified',doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c)),true,false)}">
