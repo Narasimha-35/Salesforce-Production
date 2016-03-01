@@ -1,5 +1,6 @@
 public without sharing class MercuryApiUtilities extends AbstractWebService{
 	// public static final String CLICK_PEP_BRANCH_ID = 'c68fcac0-79ab-4a73-b1b3-592f4a3adae6';
+	private static final String ACF_BRANCH_ID              = 'P200019';
 	private static final Credential__c credential          = Credential__c.getAll().get('Mercury');
 	private static final String USER_NAME                  = credential.Mercury_Username__c;
 	private static final String PASSWORD                   = credential.Mercury_Password__c;
@@ -219,7 +220,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		String createdTime = convertCurrentTimeToGMTWithTimeZone();
 		req.setHeader('Content-Type', 'application/json');
 		req.setEndPoint('https://api.connective.com.au/api/mercury5/' + token + '/loanPeople');
-		String jsonToSendOver = '{"uniqueId":"' + oppoAndaccountId + '","isDeleted":false,"createdOn":"' + createdTime + '","deletedOn":null,"company":"P200019","createdBy":"CA47482","loanID":"' + oppId + '","personID":"' + accountId + '","fullName":"' + oppoAndaccountId + '","relationship":"Primary Applicant"}';
+		String jsonToSendOver = '{"uniqueId":"' + oppoAndaccountId + '","isDeleted":false,"createdOn":"' + createdTime + '","deletedOn":null,"company":"' + ACF_BRANCH_ID + '","createdBy":"CA47482","loanID":"' + oppId + '","personID":"' + accountId + '","fullName":"' + oppoAndaccountId + '","relationship":"Primary Applicant"}';
 		req.setBody(jsonToSendOver);
 		req.setMethod(AbstractWebService.HTTP_METHOD_POST);
 		if (Test.isRunningTest()) {
@@ -255,8 +256,16 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	}
 
 	public static String getBrokerBranch(String oppoId) {
+		String acfBranch = getBrokerBranchRaw(oppoId);
+		if(acfBranch == null || acfBranch == '') {
+			return ACF_BRANCH_ID;
+		}
+		return acfBranch;
+	}
+
+	public static String getBrokerBranchRaw(String oppoId) {
 		//default ACF Branch
-		String acfBranch = 'P200019';
+		String acfBranch = ACF_BRANCH_ID;
 		List<Opportunity> oppos = [Select Id, Current_Assigned_Broker__c From Opportunity Where Id = :oppoId];
 		if (oppos.size() == 1) {
 			if (oppos.get(0).Current_Assigned_Broker__c != null) {
@@ -388,7 +397,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		req.setEndpoint('https://api.connective.com.au/api/mercury5/' + token + '/loan/' + oppoId);
 		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
 		if (Test.isRunningTest()) {
-			res.setBody('{"success":true,"totalVolume":0.0,"total":1,"loans":[{"uniqueId":"c3170974-3632-4d3e-8960-ef20f127e908","company":"P200019","isDeleted":false,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"loanName":",","amount":0.0,"lender":"","lenderNameShort":null,"status":"Lead","agent":"","personActing":"CA42767","personResponsible":"","lenderReference":"","financeDate":null,"expectedSettlementDate":null,"confirmedSettlementDate":null,"leadSourceId":null,"leadSourceDisplay":null,"discount":0.0,"existingAmount":0.0,"lmi":0.0,"settlementDateConfirmed":false,"discountType":"","loanPersonRelationship":null,"transactionType":"Loan","notePadText":null,"partnerReference":"","nextGenId":null,"parentId":null,"workspaceUsers":"","tranxType":"","connectiveLodgeId":0,"peResidualAmount":0.0,"peRepaymentAmount":0.0,"peEffectiveRate":0.0,"peInterestRate":0.0,"peBrokerage":0.0,"assetDescription":null,"nextAction":null,"loanTerm":0,"metaData":null,"fixedRateExpiry":null,"depositDueDate":null,"vbo":false,"barCodeId":null,"agentName":" ","personActingName":"Cristina Jarina","personResponsibleName":" ","defaultPath":null,"partnerName":"Australian Credit and Finance","partnerSharedWithId":null,"partnerSharedWithName":null,"statusLastUpdated":1405417339000,"lenderComments":null,"sitRep":null,"campaignId":null,"campaignName":null,"securityValue":0.0,"aliApplicationId":"","interestOnlyExpiry":null}]}');
+			res.setBody('{"success":true,"totalVolume":0.0,"total":1,"loans":[{"uniqueId":"c3170974-3632-4d3e-8960-ef20f127e908","company":"' + ACF_BRANCH_ID + '","isDeleted":false,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"loanName":",","amount":0.0,"lender":"","lenderNameShort":null,"status":"Lead","agent":"","personActing":"CA42767","personResponsible":"","lenderReference":"","financeDate":null,"expectedSettlementDate":null,"confirmedSettlementDate":null,"leadSourceId":null,"leadSourceDisplay":null,"discount":0.0,"existingAmount":0.0,"lmi":0.0,"settlementDateConfirmed":false,"discountType":"","loanPersonRelationship":null,"transactionType":"Loan","notePadText":null,"partnerReference":"","nextGenId":null,"parentId":null,"workspaceUsers":"","tranxType":"","connectiveLodgeId":0,"peResidualAmount":0.0,"peRepaymentAmount":0.0,"peEffectiveRate":0.0,"peInterestRate":0.0,"peBrokerage":0.0,"assetDescription":null,"nextAction":null,"loanTerm":0,"metaData":null,"fixedRateExpiry":null,"depositDueDate":null,"vbo":false,"barCodeId":null,"agentName":" ","personActingName":"Cristina Jarina","personResponsibleName":" ","defaultPath":null,"partnerName":"Australian Credit and Finance","partnerSharedWithId":null,"partnerSharedWithName":null,"statusLastUpdated":1405417339000,"lenderComments":null,"sitRep":null,"campaignId":null,"campaignName":null,"securityValue":0.0,"aliApplicationId":"","interestOnlyExpiry":null}]}');
 		} else {
 			res = http.send(req);
 		}
@@ -459,7 +468,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		req.setEndpoint(url);
 		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
 		if (Test.isRunningTest()) {
-			res.setBody('{"success":true,"people":{"uniqueId":"33e1600c-2d1b-4685-8cec-43b5acb397e6","company":"P200019","isDeleted":false,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":"CA42767","isNew":null,"firstName":"","lastName":"","middleName":null,"salutation":null,"title":null,"occupation":"","employer":null,"jobTitle":null,"maritalStatus":null,"driversLicenceNumber":null,"driversLicenceExpiry":null,"driversLicenceState":null,"gender":null,"dateOfBirth":null,"employmentStatus":"","employmentCommenced":null,"phoneDisplayType1":"Home","phoneDisplayType2":"Mobile","phoneDisplayType3":"Business","phoneDisplayType4":"Business Fax","addressDisplay":"Home","homePhone":"","businessPhone":null,"mobile":"","email":"","personDataType":"Full","notes":null,"relationshipManager":null,"annualSalary":0.0,"contactType":null,"abn":null,"acn":null,"trustName":null,"homeSuburb":null,"numberOfDependents":0,"doNotMail":false,"funambolUsers":"CA45753","markAsPrivate":false,"importDocumentId":"","partnerName":"Australian Credit and Finance","emailBounced":false,"webPassword":"","webAccess":false,"contactMethods":[{"uniqueId":"2ca1b6fa-0c02-11e4-ad0e-00155d0a3619","company":null,"isDeleted":null,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"personID":"33e1600c-2d1b-4685-8cec-43b5acb397e6","contactMethod":"Home","content":"","type":"phone"},{"uniqueId":"2ca26af4-0c02-11e4-ad0e-00155d0a3619","company":null,"isDeleted":null,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"personID":"33e1600c-2d1b-4685-8cec-43b5acb397e6","contactMethod":"Mobile","content":"","type":"phone"},{"uniqueId":"2ca372c8-0c02-11e4-ad0e-00155d0a3619","company":null,"isDeleted":null,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"personID":"33e1600c-2d1b-4685-8cec-43b5acb397e6","contactMethod":"Email 1","content":"","type":"email"}],"fullName":" ","salutationOrFirstName":""}}');
+			res.setBody('{"success":true,"people":{"uniqueId":"33e1600c-2d1b-4685-8cec-43b5acb397e6","company":"' + ACF_BRANCH_ID + '","isDeleted":false,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":"CA42767","isNew":null,"firstName":"","lastName":"","middleName":null,"salutation":null,"title":null,"occupation":"","employer":null,"jobTitle":null,"maritalStatus":null,"driversLicenceNumber":null,"driversLicenceExpiry":null,"driversLicenceState":null,"gender":null,"dateOfBirth":null,"employmentStatus":"","employmentCommenced":null,"phoneDisplayType1":"Home","phoneDisplayType2":"Mobile","phoneDisplayType3":"Business","phoneDisplayType4":"Business Fax","addressDisplay":"Home","homePhone":"","businessPhone":null,"mobile":"","email":"","personDataType":"Full","notes":null,"relationshipManager":null,"annualSalary":0.0,"contactType":null,"abn":null,"acn":null,"trustName":null,"homeSuburb":null,"numberOfDependents":0,"doNotMail":false,"funambolUsers":"CA45753","markAsPrivate":false,"importDocumentId":"","partnerName":"Australian Credit and Finance","emailBounced":false,"webPassword":"","webAccess":false,"contactMethods":[{"uniqueId":"2ca1b6fa-0c02-11e4-ad0e-00155d0a3619","company":null,"isDeleted":null,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"personID":"33e1600c-2d1b-4685-8cec-43b5acb397e6","contactMethod":"Home","content":"","type":"phone"},{"uniqueId":"2ca26af4-0c02-11e4-ad0e-00155d0a3619","company":null,"isDeleted":null,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"personID":"33e1600c-2d1b-4685-8cec-43b5acb397e6","contactMethod":"Mobile","content":"","type":"phone"},{"uniqueId":"2ca372c8-0c02-11e4-ad0e-00155d0a3619","company":null,"isDeleted":null,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"personID":"33e1600c-2d1b-4685-8cec-43b5acb397e6","contactMethod":"Email 1","content":"","type":"email"}],"fullName":" ","salutationOrFirstName":""}}');
 		} else {
 			res = http.send(req);
 		}
@@ -591,7 +600,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		req.setEndpoint(url);
 		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
 		if (Test.isRunningTest()) {
-			res.setBody('{"success":true,"partnerList":[{"uniqueId":"09942540-da5d-47ba-b662-b0315c52ef5f","company":null,"isDeleted":null,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"parentId":"P200019","name":"Adam Harling","businessEntityName":null,"postalAddressLine1":null,"postalAddressLine2":null,"postalCity":null,"postalState":null,"postalPostCode":null,"phone":null,"fax":null,"otherPhone":null,"abn":null,"userDefinedId":"AH","zendeskId":null,"bdm":null,"myMarketingPlanId":null,"oneTouch":null,"children":null,"linkedPartners":null,"vcCategories":null,"finconnect":false,"ybr":false}]}');
+			res.setBody('{"success":true,"partnerList":[{"uniqueId":"09942540-da5d-47ba-b662-b0315c52ef5f","company":null,"isDeleted":null,"deletedBy":null,"deletedOn":null,"createdOn":null,"createdBy":null,"isNew":null,"parentId":"' + ACF_BRANCH_ID + '","name":"Adam Harling","businessEntityName":null,"postalAddressLine1":null,"postalAddressLine2":null,"postalCity":null,"postalState":null,"postalPostCode":null,"phone":null,"fax":null,"otherPhone":null,"abn":null,"userDefinedId":"AH","zendeskId":null,"bdm":null,"myMarketingPlanId":null,"oneTouch":null,"children":null,"linkedPartners":null,"vcCategories":null,"finconnect":false,"ybr":false}]}');
 		} else {
 			res = http.send(req);
 		}
