@@ -14,8 +14,10 @@ public with sharing class MercurySyncRecoveryScheduler implements Schedulable {
 				recoverList.add(r);
 			}
 		}
+		System.debug(LoggingLevel.INFO, '[MercurySyncRecoveryScheduler] Recover List ' + recoverList);
 		update recoverList;
 
+		if(!ACFSwitch__c.getOrgDefaults().QueuedAsyncRequestSwitch__c) return;
 		AsyncApexJobSelector aajs = new AsyncApexJobSelector();
 		if(recoverList.size() != 0 && aajs.getInCompleteJobs().size() == 0) {
 			System.debug(LoggingLevel.INFO, '[MercurySyncRecoveryScheduler] Execute Async Request...');
