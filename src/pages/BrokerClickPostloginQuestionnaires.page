@@ -1084,7 +1084,7 @@ total questions =>{!TotalNoQuestionSlide}
                                                     </div>
                                                     <apex:commandButton value="Check E-Consent " styleClass="btn-question" action="{!checkUserResponse}" ></apex:commandButton>
                                                     <br/><br/><br/>
-                                                    <apex:commandButton value="Re-Send " styleClass="btn-question" action="{!resendEconsent}" ></apex:commandButton>
+                                                    <apex:commandButton value="Re-Send E-Consent " styleClass="btn-question" action="{!resendEconsent}" ></apex:commandButton>
                                                     <br/><br/><br/>
                                                    
                                                     
@@ -1105,7 +1105,7 @@ total questions =>{!TotalNoQuestionSlide}
                                                         <apex:param value="{!Answers.id}" assignTo="{!ques.strWrapAnswer}" name="QuesCount"/>
                                                     </apex:commandButton>
                                                 </apex:repeat> <br/><br/><br/>
-                                                <apex:commandButton value="Re-Send " styleClass="btn-question" action="{!resendEconsent}" ></apex:commandButton>
+                                                <apex:commandButton value="Re-Send E-Consent  " styleClass="btn-question" action="{!resendEconsent}" ></apex:commandButton>
                                                     <br/><br/><br/>
                                                    
                                                 <apex:actionstatus id="contConsent" starttext="verifying">
@@ -1689,26 +1689,38 @@ total questions =>{!TotalNoQuestionSlide}
                                                             </apex:outputPanel>
                                                             <apex:outputPanel id="preloginText" rendered="{!if(OR(objRelatedQues.objWrapQuestion.acf_Type__c == 'Text',objRelatedQues.objWrapQuestion.acf_Type__c == 'Number'),true,false)}">
                                                                 <div class="post_slide_question2">
+                                                                           
+
                                                                     <apex:input type="{!if(ques.objWrapQuestion.acf_Type__c == 'Number','tel','text')}" id="txtDependentForSlide"
                                                                                 styleclass="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Number','clsOnlynumeric',if(objRelatedQues.objWrapQuestion.acf_Postal_Code__c == true,'addresspicker_map',''))} {!if(objRelatedQues.objWrapQuestion.Date__c==true,'relatedDatepicker ','')}  inputf drop_input_custom_30 post_w100"
                                                                                 onclick="showDatePickerone(this);" onfocus="showDatePickerone(this);" value="{!objRelatedQues.strWrapAnswer}"  html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>
                                                                     <script>
+                                                                    
                                                                     function showDatePickerone(elmnt){
-                                                                        if (elmnt.placeholder == '') {elmnt.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}
-                                                                           
-                                                                        $(elmnt).blur();
-                                                                        $(elmnt).focus();
-                                                                            $('.relatedDatepicker').datepick({
+                                                                        //alert('hello');                                                                      
+                                                                        
+                                                                        // $(elmnt).blur();
+                                                                        //$(elmnt).focus();
+                                                                        $('.relatedDatepicker').datepick({
                                                                             dateFormat: 'dd/mm/yyyy',
                                                                             changeMonth: true,
                                                                             yearRange : '1930:2025',
                                                                             changeYear: true});  
-                                         
-                                                                        $('.datepick').css("margin-top","350px");
+                                                                        
+                                                                        
+                                                                        $('.datepick').css("margin-top","350px"); 
+                                                                        
+                                                                        
+                                                                        
                                                                         
                                                                     }
+                                                                    $('.relatedDatepicker').datepick({
+                                                                            dateFormat: 'dd/mm/yyyy',
+                                                                            changeMonth: true,
+                                                                            yearRange : '1930:2025',
+                                                                            changeYear: true}); 
                                                                     </script>
-                                                                     
+                                                                    
                                                            <script>
                                                                $('input[id$=txtDependentForSlide]').attr('autocomplete','off');
                                                            </script>
@@ -1835,5 +1847,6 @@ total questions =>{!TotalNoQuestionSlide}
                         $('.app2question').hide();
                     }                                           
 </script>
+
 </html>
 </apex:page>
