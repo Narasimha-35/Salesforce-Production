@@ -30,17 +30,30 @@
          top: 0%;
      }
  </style>
-    <apex:form title="Click Loans" style="font-size:15px;" id="frm">
-      <apex:pageMessages ></apex:pageMessages>
+ <script>
+ function preloginQues()
+ {
+     PreLoginQuestion();
+ }
+ </script>
+    <apex:form title="Click Loans" style="font-size:15px;" id="frm">  
+      <apex:actionFunction action="{!PreLoginQuestion}" name="PreLoginQuestion" reRender="pgBlockId,pgmsg" status="statusProcessing"/>
        <apex:actionStatus id="statusProcessing" startStyleClass="Processing"/>
         <apex:pageBlock title="Click Loans">
+         <apex:pageMessages id="pgmsg"></apex:pageMessages>
             <apex:pageblockSection >
-                <apex:inputField value="{!objLead.Click_Loan_Type__c}" required="true">
-                      <apex:actionSupport event="onchange" action="{!PreLoginQuestion}" rerender="pgBlockId"/>
-                </apex:inputField>
+                <apex:selectList value="{!selectedCommunity}" size="1" label="Community" onchange="preloginQues();">
+                    <apex:selectOptions value="{!Community}"/>
+                 </apex:selectList> 
+           <!--      <apex:inputField value="{!objLead.Click_Loan_Type__c}" required="true">
+                     <apex:actionSupport event="onchange" action="{!PreLoginQuestion}" rerender="pgBlockId"/>    
+                </apex:inputField>  -->
+                <apex:selectList value="{!selectedLoanType}" size="1" label="Loan Type" onchange="preloginQues();">
+                    <apex:selectOptions value="{!LoanType}"/>
+                </apex:selectList>   
             </apex:pageblockSection>   
         </apex:pageBlock>
-        <apex:pageBlock title="PreLoginQuestion" id="pgBlockId">
+        <apex:pageBlock title="PreLoginQuestion" id="pgBlockId" >
         <center><span id="error" style="color: Red; display: none">* Input digits (0 - 9)</span></center>
          <apex:pageBlockSection columns="2" id="pbs">    
            <apex:repeat value="{!lstWrapperQuestion}" var="ques" id="rptId">
@@ -82,7 +95,7 @@
                 function loadMyScript() {
                   var script = document.createElement('script');
                   script.type = "text/javascript";
-                  script.src = "http://code.jquery.com/jquery-latest.min.js";
+                  script.src = "https://code.jquery.com/jquery-latest.min.js";
                   document.body.appendChild(script);
                 }
                 
@@ -93,7 +106,9 @@
                       
        </apex:pageBlockSection> 
        <apex:pageblockSection >
-            <apex:commandButton action="{!saveLead}" value="Save" style="color:black;margin-left:600px;" reRender="frm" status="statusProcessing"/>
+           <apex:outputpanel rendered="{!if(lstWrapperQuestion.size > 0,true,false)}">
+                <apex:commandButton action="{!saveLead}" value="Save" style="color:black;margin-left:600px;" reRender="frm" status="statusProcessing"/>
+           </apex:outputpanel>
        </apex:pageblockSection> 
        </apex:pageBlock>
 </apex:form>
