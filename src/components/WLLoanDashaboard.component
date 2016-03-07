@@ -9,7 +9,7 @@
      margin-top: 6px;
      margin-right: 20px!important;;
     }
-.lon_orng_text{
+.lon_orng_text{ 
 font-size:16px;
 }
 .lon_orng_text h5,
@@ -107,79 +107,79 @@ padding:22px 0px 12px 0px;
             <apex:variable value="{!1}" var="Count"/> 
             <apex:repeat value="{!lstWrapperProduct}" var="pvar">  
                  <apex:outputpanel styleclass="cstm-row-dash active" rendered="{!Count == 1}">
-                    <div class="col-sm-5ths_grtr img-custom">
+                    <div class="col-sm-4 mng-width">
                         <apex:image value="{!pvar.strBankLogo}"  />
                    </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
+                     <div class="col-sm-2 lon_orng_text">
                          <h5>{!pvar.decRate}%</h5>
                          <p>Variable Rate</p>
                      </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
+                     <div class="col-sm-2 lon_orng_text">
                          <h5>{!pvar.decComparisionRate}%</h5>
                          <p>Comparison Rate</p>
                      </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
+                     <div class="col-sm-2 lon_orng_text">
                          <h5>${!pvar.TotalFee}</h5>
                          <p>Upfront Fees</p>
                      </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
-                         <h5>${!pvar.LoanFees}</h5>
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!pvar.decMonthlyPayment}</h5>
                          <p>Estimated monthly payment</p>
                      </div>              
                 </apex:outputpanel>
 
                 <apex:outputpanel styleclass="cstm-row-dash" rendered="{!Count < 5 && Count > 1}">
-                    <div class="col-sm-5ths_grtr img-custom">
+                    <div class="col-sm-4 mng-width">
                         <apex:image value="{!pvar.strBankLogo}"  />
                    </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
+                     <div class="col-sm-2 lon_orng_text">
                          <h5>{!pvar.decRate}%</h5>
                          <p>Variable Rate</p>
                      </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
+                     <div class="col-sm-2 lon_orng_text">
                          <h5>{!pvar.decComparisionRate}%</h5>
                          <p>Comparison Rate</p>
                      </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
+                     <div class="col-sm-2 lon_orng_text">
                          <h5>${!pvar.TotalFee}</h5>
                          <p>Upfront Fees</p>
                      </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
-                         <h5>${!pvar.LoanFees}</h5>
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!pvar.decMonthlyPayment}</h5>
                          <p>Estimated monthly payment</p>
                      </div>              
                 </apex:outputpanel>
 
                 <apex:outputpanel styleclass="row" rendered="{!Count == 5}">
-                    <div class="col-sm-5ths_grtr img-custom">
+                    <div class="col-sm-4 mng-width">
                         <apex:image value="{!pvar.strBankLogo}"  />
                    </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
+                     <div class="col-sm-2 lon_orng_text">
                          <h5>{!pvar.decRate}%</h5>
                          <p>Variable Rate</p>
                      </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
+                     <div class="col-sm-2 lon_orng_text">
                          <h5>{!pvar.decComparisionRate}%</h5>
                          <p>Comparison Rate</p>
                      </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
+                     <div class="col-sm-2 lon_orng_text">
                          <h5>${!pvar.TotalFee}</h5>
                          <p>Upfront Fees</p>
                      </div>
                      
-                     <div class="col-sm-5ths lon_orng_text">
-                         <h5>${!pvar.LoanFees}</h5>
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!pvar.decMonthlyPayment}</h5>
                          <p>Estimated monthly payment</p>
                      </div>              
                 </apex:outputpanel>
@@ -212,7 +212,6 @@ padding:22px 0px 12px 0px;
             <div class="clearfix"></div>
             </apex:outputPanel>
             <apex:outputPanel id="CurrentLoanpnlid" rendered="{!!IsApplication}">
-                this is a test
                <apex:outputPanel rendered="{!isCurrentLoanPanelDisplay}">
                  <section class="dash_heading RecLoan" style="margin-top: 15px;display: inline-block;">
                      
