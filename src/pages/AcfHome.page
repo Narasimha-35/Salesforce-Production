@@ -1,4 +1,4 @@
-<apex:page docType="html-5.0" standardStylesheets="false" showHeader="false" controller="WLHomeController" cache="false" >
+<apex:page docType="html-5.0" standardStylesheets="false" showHeader="false" controller="WLHomeController" cache="false" action="{!RedirectLoggedInUser}">
 <apex:form >
 <div style="width:90%;float:left;">
     <apex:commandButton value="Refinace" action="/AcfPreloginQuestions?type=refi"/> &nbsp;&nbsp;

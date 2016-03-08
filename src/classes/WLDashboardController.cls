@@ -6,16 +6,18 @@ public class WLDashboardController
     //Property to display and maintain selected tab
     public string strActiveTab{get;set;}
     public boolean isPasswordReset {get;set;}
+    public id accntid{set;get;}
     
     //Constructor
     public WLDashboardController()
     {
         Cookie cookieActiveTab = ApexPages.currentPage().getCookies().get('cookieActiveTab');
         isPasswordReset = false;
-        List<User> lstUser = [select id,acfIs_Password_Reset__c from User where id =: UserInfo.getuserId() AND IsActive =: true];
+        List<User> lstUser = [select id,AccountId,acfIs_Password_Reset__c from User where id =: UserInfo.getuserId() AND IsActive =: true];
         If(lstUser != null && lstUser.size()>0)
         {
            isPasswordReset = lstUser[0].acfIs_Password_Reset__c;
+           accntid = lstUser[0].AccountId;
         }
         if(cookieActiveTab != null && cookieActiveTab.getvalue() != null && cookieActiveTab.getValue() != '')
             strActiveTab = cookieActiveTab.getValue();
@@ -28,12 +30,12 @@ public class WLDashboardController
     {
       string returnURL;
       string strNetworkId =  Network.getNetworkId();
+     
       if(strNetworkId != null)
       {
               system.debug('=======Network ID======'+strNetworkId);
-              returnURL = ClickCommon.redirect(userinfo.getuserId(),(ClickCommon.getCommunitySetup(strNetworkId)).Click_Page_Prefix__c+'dashboard',strNetworkId);
+            returnURL = ClickCommon.redirect(userinfo.getuserId(),(ClickCommon.getCommunitySetup(strNetworkId)).Click_Page_Prefix__c+'dashboard',strNetworkId);
       }
-      
       if(returnURL != null && returnURL <> '' && returnURL != 'false') return new Pagereference(returnURL);
       else return null;
       

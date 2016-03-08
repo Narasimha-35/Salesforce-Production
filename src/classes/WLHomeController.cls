@@ -160,7 +160,9 @@ public without sharing class WLHomeController
         if (UserInfo.getName().tolowercase().contains('guest'))
                 return null;
             else
-                return new pageReference('/ClickDashboard');
+            {
+                return new pageReference('/'+lstCommunity[0].Click_Page_Prefix__c+'Dashboard');
+            }
         return null;
     }   
     
@@ -196,7 +198,7 @@ public without sharing class WLHomeController
         Cookie Bname = new Cookie('Bname','',null,-1,true); 
         ApexPages.currentPage().setCookies( new Cookie[]{Bname});
         Cookie currentUId = ApexPages.currentPage().getCookies().get('Bname');
-        Cookie IsNewHomeLoan = new Cookie('IsNewHomeLoan','',null,-1,true);     
+        Cookie IsNewHomeLoan = new Cookie('IsNewHomeLoan','false',null,-1,true);     
                 ApexPages.currentPage().setCookies( new Cookie[]{IsNewHomeLoan});
         system.debug('@@@@@'+currentUId);
         pagereference pageref = new pagereference('/apex/'+ lstCommunity[0].Click_Page_Prefix__c+ 'PreloginQuestions');
