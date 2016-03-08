@@ -2,6 +2,11 @@
 //To add assets & Liabilities to current logged in user
 public class WLAssetLiabilitiesControllerExtn {
 
+    public WLAssetLiabilitiesControllerExtn(WLpostloginQuestionsControllerBeta controller) {
+
+    }
+
+
     /*public WLAssetLiabilitiesControllerExtn(WLpostloginQuestionsControllerClone controller) {
 
     }
