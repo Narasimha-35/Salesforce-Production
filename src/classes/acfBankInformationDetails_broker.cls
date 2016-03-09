@@ -1,4 +1,4 @@
-public class acfBankInformationDetails_broker
+global class acfBankInformationDetails_broker
 {
     //public properties
     public integer intStepNumber{get;set;}
@@ -290,7 +290,7 @@ public class acfBankInformationDetails_broker
      }
    
     @RemoteAction
-    public static List<acfBank_Detail__c> AutoCompleteBanklList(string strFilter)
+    global static List<acfBank_Detail__c> AutoCompleteBanklList(string strFilter)
     {  
     If(strFilter!=null && strFilter <> ''){
         //List<acfBank_Detail__c> lstBank = [select id,acfBank_Name__c,acfImage_URL__c,acfAttachmentId__c,acfBankSlugName__c,acfBank_Short_Name__c,click_is_Active__c from acfBank_Detail__c where click_is_Active__c = true AND (acfBank_Name__c like: strFilter+'%' OR acfBank_Short_Name__c like: strFilter+'%')];

@@ -39,7 +39,7 @@
                  if(event.status){ 
                      var data = {results: []}
                      data.results = result;
-                    // alert(data.results);
+                    // alert(JSON.stringify(data.results));
                      BindBankList(data.results);                  
                  }
                  else{
@@ -57,7 +57,7 @@
        // alert(arrBankList);
         for(var i=0; i<arrBankList.length; i++)
         {
-            strBankListHtml = strBankListHtml + '<li value="'+arrBankList[i].acfBank_Name__c+'"><span class="bank-img"><img src="{!$Label.acfSite_Url}'+arrBankList[i].acfImage_URL__c+'" height="70px;" width="auto"/></span><span style="vertical-align: center;padding-left:10px;"><b class="bnkName">'+arrBankList[i].acfBank_Name__c+'</b></span><span class="BnkOpt" style="display:none;">'+arrBankList[i].acfBankSlugName__c+'</span></li>';
+            strBankListHtml = strBankListHtml + '<li value="'+arrBankList[i].acfBank_Name__c+'"><span class="bank-img"><img src="{!$Label.acfBroker_url}'+arrBankList[i].acfImage_URL__c+'" height="70px;" width="auto"/></span><span style="vertical-align: center;padding-left:10px;"><b class="bnkName">'+arrBankList[i].acfBank_Name__c+'</b></span><span class="BnkOpt" style="display:none;">'+arrBankList[i].acfBankSlugName__c+'</span></li>';
         }
         
         //alert(strBankListHtml);
@@ -246,16 +246,19 @@ background-color:#eee;
 
 <body id="bd">
 <main class="container-fluid" style="padding:0;" id="mn">
+  <apex:outputPanel rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}" layout="none">
     <header class="row-fluid">
+    
         <c:BrokeracfHeader ></c:BrokeracfHeader>
     </header>
+    </apex:outputPanel>
     
     
 <div class="clearfix"></div>
 
 <section class="row" >
     <div class="container container_cstm">       
-        <section class="post_login">       
+        <section class="{!if(($CurrentPage.parameters.header)!='false','post_login','')}">       
             <article class="col-md-8 post_log_back" style="min-height: 483px;">          
                 <section class="row-fluid slider id-slider">              
                     <div class="row-fluid">     
@@ -271,7 +274,7 @@ background-color:#eee;
                             <h2 class="slide-heading id-veryfi-heading" style="font-size: 1.3em;text-align: center;"><apex:outputText value="{!$Label['acfBankNotFoundErrorMsg']}" escape="false"/></h2>
                         </article>  
                         <div class="set-up-row auto">
-                            <apex:commandButton value="Continue" styleClass="btn faq-btn prf-submit-btn center-block" action="{!skipMethod}"/> 
+                            <apex:commandButton value="Continue" styleClass="btn faq-btn prf-submit-btn center-block" action="{!skipMethod}" rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}"/> 
                         </div>
                         <div class="clearfix"></div> 
                         </div>
@@ -304,7 +307,7 @@ background-color:#eee;
                              <div  class="set-up-box col-md-12  col-sm-12">
                              <!--<input type="text" id ="textId" name="user" class="set-up-box col-md-8  col-sm-12" value="Type to search here" onblur="if (this.value == '') {this.value = 'Type to search here';}" onfocus="if (this.value == 'Type to search here') {this.value = '';}"/> -->
                              <apex:inputText id="textId" value="{!strBankName}" onBlur="if (this.placeholder == '') {this.placeholder = 'or type to search here';}" onFocus="if (this.placeholder == 'or type to search here') {this.placeholder = '';}" html-placeholder="or type to search here"/>
-                             <a href="#" class="search_icon">&nbsp;</a>
+                             <a href="javascript:void(0);" class="search_icon">&nbsp;</a>
                              </div>
 
                              <ul class="bank-list_2">
@@ -335,11 +338,11 @@ background-color:#eee;
                                 <apex:commandLink id="btnSelectBank" value="Show All" styleclass="btn-virifie ShowAllBtnheightEqualizer" oncomplete="queryData('%');" reRender="pnlMain" status="RegLoadstatus"/>
                            </div>
                            <div class="col-md-6">
-                               <apex:commandButton action="{!skipMethod}" value="Skip" styleClass="btn-virifie btn-light_blue ShowAllBtnheightEqualizer"/> 
+                               <apex:commandButton action="{!skipMethod}" value="Skip" styleClass="btn-virifie btn-light_blue ShowAllBtnheightEqualizer" rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}"/> 
                            </div>
                           <!-- <a href="#" class="c_fnd_bank"> Can't find your bank? </a> -->
                              <div class="clearfix"></div> 
-                           <apex:commandLink styleClass="c_fnd_bank col-md-12" value="Can't find your bank?" action="{!skipMethod}" rerender="pnlMain" status="RegLoadstatus"/>                
+                           <apex:commandLink styleClass="c_fnd_bank col-md-12" value="Can't find your bank?" action="{!skipMethod}" rerender="pnlMain" status="RegLoadstatus" rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}"/>                
                            
                         </div>  
                 </apex:form> 
@@ -499,7 +502,11 @@ background-color:#eee;
                   <div class="col-md-12" style="text-align: center;margin-top: 10px;">
                    <!--- <script src="//cdn.ywxi.net/js/inline.js?w=81"></script>---->
                         <a target="_blank" href="https://www.mcafeesecure.com/verify?host=www.clickloans.com.au">
+                           
+                           <apex:outputPanel rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}" layout="none">
                             <img class="mfes-trustmark mfes-trustmark-hover" border="0" src="https://cdn.ywxi.net/meter/www.clickloans.com.au/102.gif" width="81" height="33" title="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams" alt="McAfee SECURE sites help keep you safe from identity theft, credit card fraud, spyware, spam, viruses and online scams"  />
+                           </apex:outputPanel> 
+                        
                         </a>
                  </div>
                  <div class="col-md-6" style="margin-top: 10px;">
@@ -511,16 +518,17 @@ background-color:#eee;
              
               </section>    
             </article> <!--left panel close here-->
-    <c:ClickQuoteDetail_partner />
+    <c:ClickQuoteDetail_partner rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}" />
         </section>
         
   </div><!--container close-->
 </section><!--row fluid close-->
  <!---Footer start here---------------> 
+               <apex:outputPanel rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}">
                <footer class="footer april_footer row">
                 <c:BrokerFooter ></c:BrokerFooter>
             </footer>
-
+            </apex:outputPanel>    
 
 </main>
 </body>
