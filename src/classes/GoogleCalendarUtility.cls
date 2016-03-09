@@ -11,12 +11,15 @@ public with sharing class GoogleCalendarUtility {
 
 	//TODO: remove broker and make this class can handle a list of event
 	public static HttpResponse insertCalenderEvent(Event event, Broker__c broker) {
+		System.debug(LoggingLevel.INFO, '[GoogleCalendarUtility.insertCalenderEvent] event: ' + event);
+		System.debug(LoggingLevel.INFO, '[GoogleCalendarUtility.insertCalenderEvent] broker: ' + broker);
 		GoogleCalendarModel.RequestBody reqBody = new GoogleCalendarModel.RequestBody(event);
 		HttpRequest req = new HttpRequest();
 		req.setMethod('POST');
 		req.setEndpoint(constructEndPoint(event, broker.email__c));
 		req.setHeader('Content-Type','application/json');
 		req.setHeader('Authorization','Bearer ' + GoogleCalendarUtility.getAccessToken());
+		System.debug(LoggingLevel.INFO, '[GoogleCalendarUtility.insertCalenderEvent] request body: ' + reqBody.getJSON());
 		req.setBody(reqBody.getJSON());
 
 		Http http = new Http();

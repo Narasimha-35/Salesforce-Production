@@ -134,12 +134,19 @@ public class SaaSFocus_AppointmentController_beta
             selfid = selfappointment();
             if(selfid != null )
             {
-                if(Appointob.Speciality_Skills__c == null)
-                LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  from Market_Broker_Association__c  where Broker__r.Id =:selfid and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName()  and Broker__r.Active_Broker__c = true and Broker__r.Channel__c ='Phone Broker'];// Input All brokerâs Id in the system.
-                else
-                LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  from Market_Broker_Association__c  where Broker__r.Speciality_Skills__c includes(:Appointob.Speciality_Skills__c) and Broker__r.Id =:selfid and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() and Broker__r.Active_Broker__c = true and Broker__r.Channel__c ='Phone Broker'];// Input All brokerâs Id in the system.
-                if( LstBrokerMarket.size()==0)
-                LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  from Market_Broker_Association__c  where Broker__r.Speciality_Skills__c includes(:Appointob.Speciality_Skills__c)  and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() and Broker__r.Active_Broker__c = true and Broker__r.Channel__c ='Phone Broker'];// Input All brokerâs Id in the system.
+                if(Appointob.Speciality_Skills__c == null) {
+                    LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  from Market_Broker_Association__c  where Broker__r.Id =:selfid and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName()  and Broker__r.Active_Broker__c = true and Broker__r.Channel__c ='Phone Broker'];// Input All brokerâs Id in the system.
+                    System.debug(LstBrokerMarket);
+                } else {
+                    LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  from Market_Broker_Association__c  where Broker__r.Speciality_Skills__c includes(:Appointob.Speciality_Skills__c) and Broker__r.Id =:selfid and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() and Broker__r.Active_Broker__c = true and Broker__r.Channel__c ='Phone Broker'];// Input All brokerâs Id in the system.
+                    System.debug(LstBrokerMarket);
+                }
+
+                if( LstBrokerMarket.size()==0) {
+                    LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  from Market_Broker_Association__c  where Broker__r.Speciality_Skills__c includes(:Appointob.Speciality_Skills__c)  and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() and Broker__r.Active_Broker__c = true and Broker__r.Channel__c ='Phone Broker'];// Input All brokerâs Id in the system.
+                    System.debug(LstBrokerMarket);
+                }
+
             }
             while(prevdays>=0)
             {

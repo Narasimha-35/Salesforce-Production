@@ -1,10 +1,8 @@
 public with sharing class GoogleCalendarModel {
 
 	public class RequestBody extends Model {
-		public CalendarTime endTime {get; set;}
-		public CalendarTime startTime {get; set;}
-		public String param_end {get; set;}
-		public String param_start {get; set;}
+		public CalendarTime param_end {get; set;}
+		public CalendarTime param_start {get; set;}
 		public String description {get; set;}
 		public List<Attendee> attendees {get; set;}
 		public String summary {get; set;}
@@ -13,10 +11,8 @@ public with sharing class GoogleCalendarModel {
 		public Boolean guestsCanInviteOthers {get; set;}
 
 		public RequestBody(Event e) {
-			startTime = new CalendarTime(e.startDateTime, e.timeZone__c);
-			endTime = new CalendarTime(e.endDateTime, e.timeZone__c);
-			param_start = startTime.getJSON();
-			param_end = endTime.getJSON();
+			param_start = new CalendarTime(e.startDateTime, e.timeZone__c);
+			param_end = new CalendarTime(e.endDateTime, e.timeZone__c);
 			description = e.description;
 			summary = e.subject;
 			location = e.location;
@@ -25,7 +21,7 @@ public with sharing class GoogleCalendarModel {
 		}
 
 		public String getJSON() {
-			return JSON.serialize(this).replace('param_','').replace('\\', '');
+			return JSON.serialize(this).replace('param_','');
 		}
 	}
 
@@ -36,10 +32,6 @@ public with sharing class GoogleCalendarModel {
 		public CalendarTime(Datetime dt, String TimeZone) {
 			param_dateTime = dt;
 			this.timeZone = timezone;
-		}
-
-		public String getJSON() {
-			return '{"dateTime":"' + param_dateTime.format('yyyy-MM-dd\'T\'HH:mm:ss', timezone) + '", "timeZone":"' + timeZone + '"}';
 		}
 	}
 
