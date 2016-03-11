@@ -1,5 +1,9 @@
 trigger TriggerOnAsyncRequest on AsyncRequest__c (after insert) {
    System.debug(LoggingLevel.INFO, '[TriggerOnAsyncRequest] Async Request Inserted: ' + Trigger.new);
+   // AsyncRequestSelector ars = new AsyncRequestSelector();
+   // List<AsyncRequest__c> pendingRequest = ars.getPendingRequests(AsyncRequestType.SF_TO_MERCURY);
+   // AsyncRequestService.deduplicateRequest(Trigger.new, pendingRequest);
+
    if(!ACFSwitch__c.getOrgDefaults().QueuedAsyncRequestSwitch__c) return;
    System.debug(LoggingLevel.INFO, '[TriggerOnAsyncRequest] QueuedAsyncRequestSwitch__c is on');
    AsyncApexJobSelector aajs = new AsyncApexJobSelector();

@@ -12,4 +12,17 @@ public with sharing class AsyncRequestService {
 		return new AsyncRequest__c(type__c = '' + AsyncRequestType.SF_TO_MERCURY, params__c = '{"accId":"' + accId + '", "oppoId":"' + oppoId + '"}');
 	}
 
+	public static void deduplicateRequest(List<AsyncRequest__c> newRequests, List<AsyncRequest__c> pendingRequest) {
+		Set<String> params = new Set<String>();
+		for(AsyncRequest__c req : pendingRequest) {
+			params.add(req.params__c);
+		}
+
+		for(Integer i = 0; i < newRequests.size(); i++) {
+			AsyncRequest__c req = newRequests[i];
+			newRequests.remove(i);
+			delete req;
+		}
+	}
+
 }

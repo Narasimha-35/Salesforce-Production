@@ -34,25 +34,14 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 				System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] Sync from Mercury...' + param);
 				if((String) param.get('objectName') == 'Opportunity') {
 					MercuryModel.Loan loan = MercuryService.getLoan((String) param.get('uniqueId'));
-					Opportunity o = OpportunityService.castLoan(loan);
-					System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] casted Opportunity: ' + o);
-					OpportunitySelector os = new OpportunitySelector();
-					List<Opportunity> olMercuryId = os.getByMercuryId(new List<String>{loan.uniqueId});
-
-					if(!MercuryApiUtilities.isMercuryOpportunity(loan.uniqueId)) {
-						//update Opportunity
-						if(Utilities.castId(loan.uniqueId) != null) {
-							o.id = loan.uniqueId;
-						} else {
-							o.id = olMercuryId[0].id;
-						}
-						update o;
-						System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] update Opportunity: ' + o);
+					Mercury_Opportunity__c merc_oppo = MercuryOpportunityService.castMercuryOpportunity(loan);
+					System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] casted mercury Opportunity: ' + merc_oppo);
+					Opportunity oppo = MercuryOpportunityService.castOpportunity(merc_oppo);
+					System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] casted Opportunity: ' + oppo);
+					if(oppo.id == null) {
+						upsert merc_oppo;
 					} else {
-						//insert into mercury Opportunity
-						Mercury_Opportunity__c mo = OpportunityService.castMercuryOpportunity(o);
-						System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] insert mercury Opportunity: ' + mo);
-						insert mo;
+						update oppo;
 					}
 				}
 			}
