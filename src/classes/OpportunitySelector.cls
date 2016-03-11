@@ -16,8 +16,8 @@ public with sharing class OpportunitySelector extends SObjectSelector{
 		return (Opportunity) super.selectByIds(new List<Id>{rid})[0];
 	}
 
-	public List<Opportunity> getByMercuryId(List<String> ids) {
-		return (List<Opportunity>) super.selectByOpenCondition('WHERE Mercury_Loan_Id__c IN :ids', ids);
+	public Opportunity getByMercuryId(String rid) {
+		return (Opportunity) super.selectByOpenCondition('WHERE Mercury_Loan_Id__c = \'' + rid + '\'')[0];
 	}
 
 }

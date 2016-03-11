@@ -837,22 +837,6 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
 	}
 
-	public static Boolean isMercuryOpportunity(String ids) {
-		Boolean ret = false;
-		OpportunitySelector os = new OpportunitySelector();
-		List<Opportunity> olMercuryId = os.getByMercuryId(new List<String>{ids});
-		try{
-			os.getById(ids);
-		} catch (Exception e) {
-			ret = true;
-		}
-
-		if(Utilities.castId(ids) == null && olMercuryId.size() != 1) {
-			ret = true;
-		}
-		return ret;
-	}
-
 	public class MercurySyncException extends Exception {
 	}
 

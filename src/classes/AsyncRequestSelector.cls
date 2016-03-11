@@ -14,4 +14,8 @@ public with sharing class AsyncRequestSelector extends SObjectSelector{
 	public List<AsyncRequest__c> getSyncBackRequests() {
 		return (List<AsyncRequest__c>) super.selectByOpenCondition('WHERE type__c = \'' + AsyncRequestType.MERCURY_TO_SF + '\' AND failed__c = false');
 	}
+
+	public List<AsyncRequest__c> getPendingRequests(AsyncRequestType type) {
+		return (List<AsyncRequest__c>) super.selectByOpenCondition('WHERE failed__c = false AND type__c = \'' + type + '\'');
+	}
 }
