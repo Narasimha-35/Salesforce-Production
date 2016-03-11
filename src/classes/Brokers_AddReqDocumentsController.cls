@@ -6,12 +6,18 @@ public class Brokers_AddReqDocumentsController
     public string strerrMsg{get;set;}
     public boolean isDocAdded {get;set;}
     public string docMasterId {get;set;}
+    public Id netwrkid;
+    public Id acid;//use by laxman
+    public List<User> ulst;//use by laxman
+
     public Brokers_AddReqDocumentsController()
     {
         strerrMsg = ''; 
         isDocAdded = false;
         docMasterId = '';   
         strReqDocName = '';
+        MyAccountId =apexpages.currentpage().getparameters().get('cid');//updated by laxman
+        ulst=[select id,name from user where accountid =:MyAccountId limit 1];//updated by laxman
     }
     
     public Account getObjAccount()
@@ -37,18 +43,39 @@ public class Brokers_AddReqDocumentsController
         {
            if(strReqDocName != null && strReqDocName <> '' && docMasterId != null && docMasterId <> '')
            { 
+               List<Document_Master__c> lstDocMaster = [select id,acf_Source__c from Document_Master__c where id=:docMasterId and       
+                                                            (acf_Source__c = 'Jumio' OR acf_Source__c = 'Bank Statement' OR acf_Source__c = 'Note')];
+           
                 Required_Document__c ObjReqDocument = new Required_Document__c();
                 ObjReqDocument.Name = strReqDocName;
                 ObjReqDocument.acfStatus__c = 'Pending';
                 ObjReqDocument.acfDocument_Master__c = docMasterId;
+                 if(lstDocMaster <> null && lstDocMaster.size() > 0)
+                {
+                    if(lstDocMaster[0].acf_Source__c == 'Jumio')
+                    {
+                        ObjReqDocument.acf_Is_Identity_Verification_Doc__c = true;
+                    }
+                    if(lstDocMaster[0].acf_Source__c == 'Bank Statement')
+                    {
+                        ObjReqDocument.acf_Bank_Statement_Doc__c = true;
+                    }
+                    if(lstDocMaster[0].acf_Source__c == 'Note')
+                    {
+                        ObjReqDocument.Click_Is_Note_Type__c = true;
+                    }
+                }
+                if(objAccount.acf_Lead__pc != null && objAccount.acf_Lead__pr.isConverted == true)
+                {
+                   ObjReqDocument.acfOpportunity__c = objAccount.acf_Lead__pr.ConvertedOpportunityId;
+                }
+                
+                
                /* if(objAccount.acf_Lead__pc != null && objAccount.acf_Lead__pr.isConverted == false)
                 {
                     ObjReqDocument.Lead__c = objAccount.acf_Lead__pc;
                 }else*/
-                    if(objAccount.acf_Lead__pc != null && objAccount.acf_Lead__pr.isConverted == true)
-                    {
-                       ObjReqDocument.acfOpportunity__c = objAccount.acf_Lead__pr.ConvertedOpportunityId;
-                    }
+                    
                 insert ObjReqDocument;
                 strerrMsg = 'Required document added successfully.';
                 isDocAdded = true;

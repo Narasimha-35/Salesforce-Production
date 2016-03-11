@@ -177,39 +177,60 @@ padding-right:10px;
 ul.bank-list_2 li:hover{
 background-color:#eee;
 }
+
 .mg_move15{margin-left:5px;}
+
+#JUMIOIFRAME-iframe     
+{       
+    width:100%!important;       
+}
 </style>
 
 </head>
 
 <body id="bd">
 <main class="container-fluid" id="mn" style="padding:0;">
+    <apex:outputPanel rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}" layout="none">
      <header class="row-fluid">
             <c:BrokeracfHeader ></c:BrokeracfHeader>
         </header>
+   </apex:outputPanel>    
         
 <div class="clearfix"></div>
 
 <section class="row">
     <div class="container container_cstm">
         
-        <section class="post_login">
+        <section class="{!if(($CurrentPage.parameters.header)!='false','post_login','')}">
         
-          <article class="col-md-8 post_log_back" style="height:572px;">
+          <article class="col-md-8 post_log_back" style="height:572px;{!if(($CurrentPage.parameters.header)=='false','display:block!important;width:100% !important;','')}">
                       <section class="row-fluid slider id-slider">
-                                            
+                       <script type="text/javascript" src="https://netverify.com/widget/jumio-verify/2.0/iframe-script.js">                                                     
+                       </script>        
+                        <script type="text/javascript">     
+                            /*<![CDATA[*/       
+                            JumioClient.setVars({       
+                            authorizationToken: "{!strIframeURL}"       
+                            }).initVerify("JUMIOIFRAME");       
+                            /*]]>*/     
+                        </script>                     
                                    <apex:form id="Frm"> 
+                                   
+                                    <apex:outputPanel rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}" layout="none">        
                                     <div style="float: right;margin-right: 25px;"><u><apex:commandLink action="{!redirectToNextPage}" value="Skip" style="color: #1f8bcc;"/></u></div>
-                                    <div style="float: right;margin-right: 25px;"><u><a href="{!strBaseURL}/apex/Brokerclickjumiointegration?cid={!AccountIdUser}" style="color: #1f8bcc;">Reset</a></u></div>
-                                        <apex:iframe src="{!strIframeURL}"/>
-                                    </apex:form>    
+                                    <div style="float: right;margin-right: 25px;"><u><a href="/Brokerclickjumiointegration?cid={!AccountIdUser}" style="color: #1f8bcc;">Reset</a></u></div>
+                                    </apex:outputPanel> 
+                                        <apex:iframe src="{!strIframeURL}" id="JUMIOIFRAME"/>
+                                         
+                                                                         </apex:form>    
                                 <!--colxs-8 close-->        
                           
                      </section>
                 
                   </article> <!--left panel close here-->
-                  
+               <apex:outputPanel rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}" layout="none">   
                <c:ClickQuoteDetail_partner ></c:ClickQuoteDetail_partner>
+               </apex:outputPanel>
             
         </section>
         
@@ -218,9 +239,12 @@ background-color:#eee;
 
 
 <!---Feature section start here-------->
+<apex:outputPanel rendered="{!if(($CurrentPage.parameters.header)!='false',true,false)}" layout="none">   
 <footer class="footer april_footer row">
     <c:BrokerFooter ></c:BrokerFooter>
-</footer>                                                                                 
+    
+</footer>
+</apex:outputPanel>                                                                                 
 <!---Footer ends here--------------->
 </main>
 </body>
