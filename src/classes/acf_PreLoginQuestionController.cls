@@ -356,7 +356,7 @@ public without sharing class acf_PreLoginQuestionController{
          }
          system.Debug('objInsertLead================='+ objInsertLead);
         
-        string Feedback = ClickEnablePortalUserFromCRM.createPortalUserFromCRMWithAccount(MyAccountId,objInsertLead.FirstName,objInsertLead.LastName,objInsertLead.Email,objInsertLead.MobilePhone,objInsertLead.id);
+        string Feedback = ClickEnablePortalUserFromCRM.createPortalUserFromCRMWithAccounts(MyAccountId,objInsertLead.FirstName,objInsertLead.LastName,objInsertLead.Email,objInsertLead.MobilePhone,objInsertLead.id,communityid);
         //string feedback='';
         
         if(Feedback.contains('Portal user created.') || Feedback == '')
