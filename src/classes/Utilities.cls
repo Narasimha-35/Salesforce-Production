@@ -3,6 +3,7 @@ global class Utilities {
   public static final String SOBJECT_NAME= 'sobjectName';
   public static final String SOBJECT_TYPE = 'sobjectType';
   public static final Map<String, String> stateTimeZoneMap;
+  private static final String debugEmailTemplate;
   static{
     stateTimeZoneMap = new Map<String, String>();
     stateTimeZoneMap.put('WA', '(UTC+08:00) Perth');
@@ -13,7 +14,12 @@ global class Utilities {
     stateTimeZoneMap.put('QLD', '(UTC+10:00) Brisbane');
     stateTimeZoneMap.put('SA', '(UTC+09:30) Adelaide');
     stateTimeZoneMap.put('TAS', '(UTC+10:00) Hobart');
+
+    Document doc = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
+    debugEmailTemplate = doc.body.toString();
   }
+
+
 
   public static void updateTimezoneOnLead(Lead lead) {
     if (lead.PostalCode == null || lead.PostalCode == '' || !lead.PostalCode.isNumeric()) {
@@ -298,6 +304,35 @@ global class Utilities {
     Messaging.sendEmail(mailsS);
   }
 
+  public static String generateHTMLEmailBody(String projectName, String className, String methodName, String detail) {
+    return debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
+  }
+
+  public static void sendDebugEmail(SFModel.DebugEmailRequest req) {
+    String body = generateHTMLEmailBody(req.projectName, req.className, req.methodName, req.detail);
+    sendEmail(req.recipients, req.subject, body);
+  }
+
+  public static String generateDebugEmailDetailPart(HttpRequest req, HttpResponse res) {
+    String ret = '';
+
+    ret += '<span>Header</span>';
+    ret += '<p>' + 'Content-Type: ' + req.getHeader('Content-Type') + '</p>';
+    ret += '<span>End Point</span>';
+    ret += '<p>' + req.getEndpoint() + '</p>';
+    ret += '<span>Http Method</span>';
+    ret += '<p>' + req.getMethod() + '</p>';
+    ret += '<span>Request Body<span>';
+    ret += '<p>' + req.getBody() + '</p>';
+    ret += '<span>========================================</span><br/>';
+    ret += '<span>Status Code</span>';
+    ret += '<p>' + res.getStatusCode() + '</p>';
+    ret += '<span>Response Body</span>';
+    ret += '<p>\"'+ res.getBody() + '\"</p>';
+
+    return ret;
+  }
+
   //   public static Blob getStaticResource(String resourcePath) {
   //       PageReference somefileRef = new PageReference('/resource/' + resourcePath);
   //       Blob ret = somefileRef.getContent();
@@ -322,27 +357,6 @@ global class Utilities {
   public static Datetime getCurrentMonthStartTime() {
     Datetime dt = Date.today();
     return Datetime.newInstanceGmt(dt.year(), dt.month(), 1);
-  }
-
-  public static Object parseValue(Map<String, Schema.DisplayType> fieldTypeMap, String fieldName, Object o) {
-    try {
-      if(fieldTypeMap.get(fieldName) == Schema.DisplayType.DateTime) {
-        if(o instanceof Long) {
-          return Datetime.newInstance((Long) o);
-        } else if (o instanceof String) {
-          return Datetime.valueOf((String) o);
-        }
-      } else if(fieldTypeMap.get(fieldName) == Schema.DisplayType.Date) {
-        if(o instanceof Long) {
-          return (Date) Datetime.newInstance((Long) o);
-        } else if (o instanceof String) {
-          return Date.valueOf((String) o);
-        }
-      }
-    } catch (Exception e) {
-      return null;
-    }
-    return o;
   }
 
 }

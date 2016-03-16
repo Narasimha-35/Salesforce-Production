@@ -10,7 +10,6 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	private static final String API_VERSION                = 'api';
 	private static Boolean emailSwh                        = false;
 	private static List<String> recipients                 = null;
-	private static String debugEmailTemplate               = null;
 	private static List<Map<String, String>> pendingEmails = null;
 
 	//The object map between salesforce and mercury
@@ -32,8 +31,6 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		if(emailSwh) {
 			ACFEmailList__c emaiSetting = ACFEmailList__c.getOrgDefaults();
 			recipients                  = ((String) emaiSetting.get('Mercury_Email_Receiver__c')).split(',');
-			Document doc                = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
-			debugEmailTemplate          = doc.body.toString();
 			pendingEmails               = new List<Map<String, String>>();
 		}
 		system.debug(LoggingLevel.INFO, 'Email Switch: ' + emailSwh);
@@ -119,7 +116,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			} else {
 				//Mark sync with mercury checkbox ticked
 				oppo.Sync_With_Mercury__c = true;
-				pendingEmails.add(new Map<String, String>{'methodName' => 'createOppoInMercury', 'details' => generateDetailPart(req, res)});
+				pendingEmails.add(new Map<String, String>{'methodName' => 'createOppoInMercury', 'details' => Utilities.generateDebugEmailDetailPart(req, res)});
 				throw new MercurySyncException('StatusCode: ' + res);
 			}
 			return oppo;
@@ -201,7 +198,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			} else {
 				//Mark sync with mercury checkbox ticked
 				contact.Sync_With_Mercury__c = true;
-				pendingEmails.add(new Map<String, String>{'methodName' => 'createPeopleInMercury', 'details' => generateDetailPart(req, res)});
+				pendingEmails.add(new Map<String, String>{'methodName' => 'createPeopleInMercury', 'details' => Utilities.generateDebugEmailDetailPart(req, res)});
 				throw new MercurySyncException('StatusCode: ' + res);
 			}
 
@@ -692,30 +689,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		if(emailSwh) {
 			system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
 			for(Map<String, String> pe : pendingEmails) {
-				String body = generateHTMLEmailBody(APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details'));
+				String body = Utilities.generateHTMLEmailBody(APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details'));
 				Utilities.sendEmail(recipients, 'Salesforce Debug', body);
 			}
 		}
-	}
-
-	public static String generateDetailPart(HttpRequest req, HttpResponse res) {
-		String ret = '';
-
-		ret += '<span>Header</span>';
-		ret += '<p>' + 'Content-Type: ' + req.getHeader('Content-Type') + '</p>';
-		ret += '<span>End Point</span>';
-		ret += '<p>' + req.getEndpoint() + '</p>';
-		ret += '<span>Http Method</span>';
-		ret += '<p>' + req.getMethod() + '</p>';
-		ret += '<span>Request Body<span>';
-		ret += '<p>' + req.getBody() + '</p>';
-		ret += '<span>========================================</span><br/>';
-		ret += '<span>Status Code</span>';
-		ret += '<p>' + res.getStatusCode() + '</p>';
-		ret += '<span>Response Body</span>';
-		ret += '<p>\"'+ res.getBody() + '\"</p>';
-
-		return ret;
 	}
 
 	public static String getAuthToken() {
@@ -734,7 +711,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		if(res.getStatusCode() != 200 || !MercuryApiUtilities.getApproveFromXml(doc) || token == null) {
 			Map<String, String> email = new Map<String, String>{
 				'methodName' => 'loginToMercury',
-				'details'    => MercuryApiUtilities.generateDetailPart(req, res)
+				'details'    => Utilities.generateDebugEmailDetailPart(req, res)
 			};
 			pendingEmails.add(email);
 		}
@@ -767,7 +744,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
 		res = http.send(req);
 		if(res.getStatusCode() != 200) {
-			pendingEmails.add(new Map<String, String>{'methodName' => 'sendGetRequest', 'details' => generateDetailPart(req, res)});
+			pendingEmails.add(new Map<String, String>{'methodName' => 'sendGetRequest', 'details' => Utilities.generateDebugEmailDetailPart(req, res)});
 		}
 		system.debug(LoggingLevel.INFO, res);
 		return res;
@@ -827,14 +804,6 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		System.Debug(rid);
 		if(String.valueOf(m.get('uniqueId')).equals(rid)) return true;
 		return false;
-	}
-
-	public static String generateHTMLEmailBody(String projectName, String className, String methodName, String detail) {
-		if(debugEmailTemplate == null) {
-			Document doc = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
-			debugEmailTemplate = doc.body.toString();
-		}
-		return debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
 	}
 
 	public class MercurySyncException extends Exception {

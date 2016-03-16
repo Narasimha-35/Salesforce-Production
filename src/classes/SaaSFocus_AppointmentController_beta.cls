@@ -125,7 +125,7 @@ public class SaaSFocus_AppointmentController_beta
             List<id> ids = new List<id>();
             ids.add(ApexPages.currentPage().getParameters().get('aid'));
             system.debug('harish' +ids);
-            Saasfocus_GoogleCalenderHelper.processEvent(ids);
+            GoogleCalendarService.insertGoogleEvent(ids);
             return new pagereference('/'+ApexPages.currentPage().getParameters().get('id'));
 
         }

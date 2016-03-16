@@ -18,7 +18,7 @@ public Id NewEventId;
 
 public List<SelectOption> getBroker()
     {
-    
+
          idb = ApexPages.currentPage().getParameters().get('id');
         BrokerList =new list<Broker__c >();
          Appointment__c Appobjtemp = [Select Name,Broker__r.name,Broker__c,Appointment_Type__c,Broker_Email__c,Broker_Mobile__c from Appointment__c where id=:idb ];
@@ -29,92 +29,92 @@ public List<SelectOption> getBroker()
          {
               BrokerList = [Select name from Broker__c where Active_Broker__c = true AND name != 'Unallocated Broker' AND (Channel__c='Partner' OR Channel__c='Employee')];
          }
-        
+
         List<SelectOption> options = new List<SelectOption>();
-        
+
         options.add(new SelectOption('','--Please select a Broker--'));
-        
+
         for (Broker__c br: BrokerList )
         {
             if(br.id != Appobjtemp.Broker__c )
             options.add(new SelectOption(br.id ,br.name));
-            
+
         }
         return options;
- 
+
     }
-    
+
     public ChangeAppointment_Class()
     {
      idb = ApexPages.currentPage().getParameters().get('id');
      Appobj = [Select Name,Account_Name__c,Street_Address__c,City__c,Postal_Code__c,State__c,Broker__c,Appointment_Date_and_Time__c,Broker__r.name,Broker_Email__c,Broker_Mobile__c from Appointment__c where id=:idb ];
-     
+
      save1completed = false;
      save2completed = false;
-    
+
     }
-    
-    public void updateBroker()    
+
+    public void updateBroker()
     {
        Appointment__c newapp = new Appointment__c(id = idb);
        newapp.Broker__c = brokername;
       // Appobj.Broker__c = brokername;
-       update newapp;     
+       update newapp;
     }
-    
+
     public void save()
     {
-    
+
     //Brkobj  = new Broker__c();
-  
+
     Appobjnew = new Appointment__c();
-   
+
     // Step 1
     updateBroker();
-   
-   // Step 2 
+
+   // Step 2
    SendNoticationNew();
    SendNoticationOld();
-   
-   
-   // Step 3   
+
+
+   // Step 3
     NewEventId =  InsertEvent();
-     
-  
-      
-      
+
+
+
+
         save1completed = true;
         system.debug('save1completed called save 2');
     }
-    
-   
+
+
     Public pagereference save2()
     {
-     // Step 4  
+     // Step 4
      system.debug('Debug called save 2');
-      Saasfocus_GoogleCalenderHelper.processEvent(new list<ID>{NewEventId});
-      save2completed = true; 
+      GoogleCalendarService.insertGoogleEvent(new list<ID>{NewEventId});
+      save2completed = true;
       return null;
     }
-    
+
     public pagereference Save3()
-    {    
-    
+    {
+
     // Step 5 - Send SMS to new broker.
     Appointment__c Appobjnew = [Select Name, Street_Address__c,City__c,Broker__c,Postal_Code__c,State__c,Broker__r.name ,Appointment_Date_and_Time__c,Broker_Email__c,Broker_Mobile__c from Appointment__c where id=:idb ];
      // Define SMS template++
     String NewSMSTemplate = 'The appointment '+Appobjnew.Name+' with '+Appobjnew.Street_Address__c+' '+Appobjnew.City__c+' '+Appobjnew.Postal_Code__c+' '+Appobjnew.State__c+' on '+Appobjnew.Appointment_Date_and_Time__c+' is allocated to you.';
-     
-     
+
+
      acfCommon.sendSMS(Appobjnew.Broker__r.name,Appobjnew.Broker_Mobile__c,NewSMSTemplate,true);
      System.debug('MobileNew'+Appobjnew.Broker_Mobile__c);
-    
+
     // Step 6 - Delete old Event from salesforce and google calendar
-    
+
     List<Event> lstevobj = [Select id,Google_Event_ID__c from Event where whatid =: Appobj.Broker__c AND Subject like :Appobj.Name+'%'  LIMIT 1];
-  
+
       if(lstevobj.size()>0)
-      {   
+      {
         if(lstevobj[0].Google_Event_ID__c != null)
         {
             System.debug('Amit'+lstevobj[0].Google_Event_ID__c);
@@ -126,26 +126,26 @@ public List<SelectOption> getBroker()
          {
             Apexpages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,''+'No Google Event Id Found!'));
          }
-        
+
      }
-    
-    
-    
+
+
+
     // Step 7 - Email to old broker
-        
-    
+
+
     // Step 8 - SMS to Old broker
-    
+
     String OldSMSTemplate = 'The appointment '+Appobj.Name+' with '+Appobj.Street_Address__c+' '+Appobj.City__c+' '+Appobj.Postal_Code__c+' '+Appobj.State__c+' on '+Appobj.Appointment_Date_and_Time__c+'  is cancelled.';
-     
-     
+
+
      acfCommon.sendSMS(Appobj.Broker__r.name,Appobj.Broker_Mobile__c,OldSMSTemplate ,true);
      System.debug('MobileOld'+Appobj.Broker_Mobile__c);
      return new pagereference('/'+idb);
      //return null;
      }
-               
-      // Email Notification to old broker       
+
+      // Email Notification to old broker
      public void SendNoticationOld()
      {
           EmailTemplate templateId = [select id,subject,body, name,HtmlValue from EmailTemplate where DeveloperName = 'Old_BrokerTemplate' AND isActive=true];
@@ -184,24 +184,24 @@ public List<SelectOption> getBroker()
           body1=body1.replace('[[apptref]]','');
           }
 
-          Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();   
-          
+          Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+
           email.setSubject(templateId.subject);
           email.setToAddresses( new string [] {Appobj.Broker_Email__c});
           email.setHtmlBody(body1);
           email.setBccSender(true);
-        
-          Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});  
-        
-            
-            
+
+          Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});
+
+
+
       }
-            // Email Notification to New broker   
+            // Email Notification to New broker
             public void SendNoticationNew()
             {
-            
+
                 Appobjnew = [Select name,Car_Loan_Balance__c,Personal_Loan_Balance__c,Credit_Card_Balance__c,Partner_Income__c,Annual_Income__c,Industry__c,Employment_Status__c,Age_of_Current_Loan__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Current_Financials_Up_to_Date__c,Current_Interest_Rate_Type__c,Current_Interest_Rate__c,Current_Loan_Type__c,Current_Loan_Value__c,Current_Lender__c,Transaction_Type__c,Pre_Sales_Notes__c,Appointment_Type__c,Street_Address__c,City__c,Postal_Code__c,State__c,Alternate_Phone__c,Phone__c,Mobile__c,Account_Name__c,Account_Email__c,Pre_Sales_User__c,Broker__r.name,Appointment_Date_and_Time__c,Broker_Email__c,Broker_Mobile__c from Appointment__c where id=:idb ];
-                
+
                 EmailTemplate templateIdnew = [select id,subject,body, name,HtmlValue from EmailTemplate where DeveloperName = 'New_BrokerTemplate' AND isActive=true];
                   string body2='';
                   body2=templateIdnew.HtmlValue;
@@ -461,61 +461,61 @@ public List<SelectOption> getBroker()
                   {
                   body2=body2.replace('[[CarLoanBalance]]','');
                   }
-         
-                 Messaging.SingleEmailMessage emailnew = new Messaging.SingleEmailMessage();   
-                  
+
+                 Messaging.SingleEmailMessage emailnew = new Messaging.SingleEmailMessage();
+
                 emailnew.setSubject(templateIdnew.subject);
                 emailnew.setToAddresses( new string [] {Appobjnew.Broker_Email__c});
                 emailnew.setHtmlBody(body2);
                 emailnew.setBccSender(true);
-                
+
                 Messaging.sendEmail(new Messaging.SingleEmailMessage[]{emailnew});
-            
+
             }
-    
+
            public time  convertStringToTime(String selectedtime) // Define a method for convert string to time
             {
             List<String> newLst = new List<String>();
             newLst= selectedtime.split(':');
             return Time.newInstance(Integer.valueOf(newLst[0]),Integer.valueOf(newLst[1]),0,0);
-           
+
             }
-    
+
     // Insert Event under new Broker
     public Id InsertEvent()
     {
         //Broker__c Brkobjnew = new Broker__c();
         //Brkobjnew = [Select id,Name,Email__c,MobilePhone__c from Broker__c where Id=:brokername limit 1];
-        
-       
+
+
        Allocate_Appointment__c  objappAll =  Allocate_Appointment__c.getValues('Phone_Broker');
        DurationOfMeeting = Integer.valueOf(objappAll.DurationOfMeeting__c);
-       
-       
-       
+
+
+
        Appointment__c obj = new Appointment__c();
        obj =[SELECT Id,Name,Account_Name__c,Account_Email__c,Appointment_Date_and_Time__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Time_and_Date_Adj__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id FROM Appointment__c where id=:idb ];
-       
+
         Time selectedT = Datetime.valueOf(obj.Appointment_Time_and_Date_Adj__c).time();
        //offset = (Integer) (obj.region__r.Sydney_Timezone_Offset__c *60);
-       
-       
+
+
          Broker__c Assignedbroker = [select id,Email__c,Primary_Market__r.Region__r.Sydney_Timezone_Offset__c from Broker__c where id =:brokername];
-          
+
           List<User> brokeruser = [select id , Email from User where Email = :Assignedbroker.Email__c];
           AppStarttime  =  Datetime.newInstance(obj.Appointment_Time_and_Date_Adj__c.date(),selectedT);
           Datetime DT = Datetime.newInstance(obj.Appointment_Time_and_Date_Adj__c.year(),obj.Appointment_Time_and_Date_Adj__c.month(),obj.Appointment_Time_and_Date_Adj__c.day(),selectedT.hour(),selectedT.minute(),0);
-         
-         
+
+
          Event e = new Event();
-         
+
          if(brokeruser.size()>0)
          e.ownerid = brokeruser[0].id;
-         
+
          e.Startdatetime= DT;
          e.Enddatetime= e.Startdatetime.addminutes(DurationOfMeeting);
-        
-        
+
+
           /*List<Event> lstevobj = [Select id,Google_Event_ID__c,startdatetime,enddatetime from Event where whatid =: Appobj.Broker__c AND Subject like :Appobj.Name+'%'  LIMIT 1];
           if(lstevobj.size()>0)
           {
@@ -523,31 +523,31 @@ public List<SelectOption> getBroker()
           e.enddatetime = lstevobj[0].enddatetime ;
           }
         */
-          if(offset !=null) 
-          {  
+          if(offset !=null)
+          {
                e.startdatetime = e.startdatetime.addMinutes(offset);
                e.enddatetime = e.enddatetime.addMinutes(offset);
           }
-          
-          
+
+
          String sfdcBaseURL = URL.getSalesforceBaseUrl().toExternalForm();
 
          e.whatid= Appobjnew.Broker__c;
                  if(Test.isRunningTest()){
-                    
+
                  e.IsAllDayEvent = true;
                  e.ActivityDate = System.today();
                  }
-        
+
          e.Subject= obj.Name+ '-' +obj.Street_Address__c +' ' +obj.City__c +' ' +obj.State__c +' '  +obj.Postal_Code__c +'-' +obj.Phone__c +'-' +obj.Appointment_Type__c;
          e.Subject=e.Subject.replace('-null','');
          e.Subject=e.Subject.replace('null-','');
          e.Subject=e.Subject.replace('null','');
-         e.Location = obj.Street_Address__c+','+obj.City__c+','+obj.State__c+','+obj.Postal_Code__c;   
+         e.Location = obj.Street_Address__c+','+obj.City__c+','+obj.State__c+','+obj.Postal_Code__c;
          e.Location =e.Location.replace(',null','');
          e.Location =e.Location.replace('null,','');
-         e.Location =e.Location.replace('null','N/A');   
-         
+         e.Location =e.Location.replace('null','N/A');
+
           string s1 = '';
          if(obj.Pre_Sales_Notes__c != null){
              s1 = obj.Pre_Sales_Notes__c;
@@ -559,14 +559,14 @@ public List<SelectOption> getBroker()
          e.Description = 'Appointment Reference: ' + obj .Name + nextline+ 'Date and Time Of Appointment:'+' '+obj .Appointment_Date_and_Time__c.format('dd/MM/yyyy hh:mm a')+nextline+
          'Customer Mobile:'+' '+obj .Mobile__c+nextline+
          'Customer Phone:'+' '+ obj .Phone__c +nextline+
-         'Customer Location:'+' '+obj .Street_Address__c+','+obj .City__c+','+obj .State__c+','+obj .Postal_Code__c+nextline+ 
+         'Customer Location:'+' '+obj .Street_Address__c+','+obj .City__c+','+obj .State__c+','+obj .Postal_Code__c+nextline+
          'Customer Email:'+' '+obj .Account_Email__c+nextline+
          'Customer Name:'+' '+obj .Account_Name_Text__c+nextline+nextline+
          'Notes from Pre Sales' +nextline+
          +s1+nextline+nextline+
          'Opportunity Details:'+' '+nextline+
          'Transaction Type:'+' '+obj .Transaction_Type__c+nextline+
-         'Current Lender:'+' ' +obj .Current_Lender__c+nextline+ 
+         'Current Lender:'+' ' +obj .Current_Lender__c+nextline+
          'Current Loan Value:'+' ' +obj .Current_Loan_Value__c+nextline+
          'Current Loan Type:' +' '+obj .Current_Loan_Type__c+nextline+
          'Current Interest Rate:'+' '+obj .Current_Interest_Rate__c+nextline+
@@ -585,14 +585,14 @@ public List<SelectOption> getBroker()
           e.Description=e.Description.replace(',null','');
           e.Description=e.Description.replace('null,','');
           e.Description=e.Description.replace('null','N/A');
-         
-            
+
+
          System.debug('capacity' +e);
          insert e;
-        
-        return e.id; 
+
+        return e.id;
         }
-        
+
         public pagereference Cancel()
         {
             PageReference pageRef = new PageReference('/'+idb );

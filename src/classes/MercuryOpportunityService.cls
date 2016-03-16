@@ -59,7 +59,7 @@ public with sharing class MercuryOpportunityService {
 		for(String field : syncList) {
 			if(!MercuryModel.loanOpportunityMap.containsKey(field)) continue;
 			fieldName = MercuryModel.loanOpportunityMap.get(field);
-			tempObj = Utilities.parseValue(fieldTypeMap, fieldName, loan.get(field));
+			tempObj = MercuryUtility.parseJsonValue(fieldTypeMap, fieldName, loan.get(field));
 			System.debug(LoggingLevel.INFO, '[MercuryOpportunityService.castMercuryOpportunity] field:' + fieldName + ' field Type: ' + fieldTypeMap.get(fieldName));
 			ret.put(fieldName, tempObj);
 		}
