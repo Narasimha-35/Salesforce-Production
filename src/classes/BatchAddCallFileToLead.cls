@@ -5,7 +5,7 @@ global without sharing class BatchAddCallFileToLead implements Database.Batchabl
 
 	global Database.QueryLocator start(Database.BatchableContext BC) {
 		LeadSelector selector = new LeadSelector();
-		String query = selector.getQueryPartOne() + 'WHERE Is_Updated__c = false AND AddToCallFileDate__c = today LIMIT 10000';
+		String query = selector.getQueryPartOne().replace(',geocodeaccuracy', '') + 'WHERE Is_Updated__c = false AND AddToCallFileDate__c = today LIMIT 10000';
 		return Database.getQueryLocator(query);
 	}
 
@@ -26,7 +26,7 @@ global without sharing class BatchAddCallFileToLead implements Database.Batchabl
 				}
 			}
 		}
-
+        System.debug(updateList);
 		update updateList;
 	}
 
