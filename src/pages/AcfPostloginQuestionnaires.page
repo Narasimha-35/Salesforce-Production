@@ -18,7 +18,7 @@
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/> 
 <apex:includeScript value="{!URLFOR($Resource.DatePickerJS,'JqueryDatePick/jquery.plugin.js')}"/>
-<apex:includeScript value="{!URLFOR($Resource.DatePickerJS,'JqueryDatePick/jquery.datepick.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.DatePickerJS,'JqueryDatePick/jquery.datepick.js')}"/>  
 
 <script>
  
@@ -104,7 +104,7 @@
                 $('[id$=assetActionBtnId]').css('display','none');
                 $('[id$=liabActionBtnId]').css('display','block');
             }   
-       resetPopup(); 
+       //resetPopup(); 
        $('[id$=cmdResetPnl]').trigger('click');
        $('#reqcallPopId').css('display','block');
        
@@ -708,7 +708,7 @@ top:22px;
          <apex:commandbutton action="{!resetPopupMethod}" id="cmdResetPnl" value="submit" reRender="assetShowPnlId" status="assetLoadstatus" style="display:none;"/>
          <apex:inputHidden value="{!strSelectedParentType}" id="hdnparentTypeId"/>
          <apex:inputHidden value="{!strSelectedChildType}" id="hdnChildTypeId"/>
-         <apex:actionFunction action="{!resetPopupMethod}" name="resetPopup" reRender="assetShowPnlId" status="assetLoadstatus"/> 
+         <!--<apex:actionFunction action="{!resetPopupMethod}" name="resetPopup" reRender="assetShowPnlId" status="assetLoadstatus"/> -->
         <a href="#" class="pop-close" id="reqPopCloseId">Close<span class="fa fa-close">&nbsp;</span></a>
             <hgroup>
                  <div id="assetHeadingId"><h3 class="h3">Add <span class="upd-bold">Asset</span></h3> </div>
@@ -790,7 +790,7 @@ top:22px;
                                
                             </div> 
                         </apex:outputpanel>  
-                        </apex:outputPanel>                 
+                </apex:outputPanel>                 
                         <div class="row-fluid">
                             <div class="col-md-12 col-md-offset-0 col-sm-12" >
                                     <apex:CommandButton value="Add Asset" styleclass="btn center-block cstm_btn_w180" action="{!assetaddMethod}" rerender="preloginComponent" status="assetLoadstatus" oncomplete="assetPopupClose();" id="assetActionBtnId"/>
