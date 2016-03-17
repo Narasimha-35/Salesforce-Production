@@ -309,7 +309,7 @@
                                 <a href="{!strURLPrefix}acfEditProfile" class="edit">Edit Profile</a>                    
                                 <apex:outputpanel rendered="{!isLoggedIn == false}"> <a href="#myModal" data-toggle="modal" class="sign_in memebrloginClass">Sign In</a> </apex:outputpanel>
                                 <apex:outputpanel rendered="{!isLoggedIn == true}"> <a href="{!strURLPrefix}secur/logout.jsp" oncomplete="ResetCookies();" class="sign_in">Log Out</a> </apex:outputpanel>
-                            </div>  
+                            </div>   
                        </nav>
                         <div class="clearfix"></div>
                              
