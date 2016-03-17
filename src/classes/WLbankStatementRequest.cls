@@ -74,6 +74,7 @@ public class WLbankStatementRequest
                 
                 if(Statuscode == '200')
                 {
+                    
                     return new acResponse.bankSatementResponseSuccessorFailure(bankStatementResponse.parse(responseFromHttp),true,'Successful Hit.');
                 }else
                 {
@@ -83,6 +84,7 @@ public class WLbankStatementRequest
             catch(Exception e)
             {
                 response = e.getMessage();
+                system.debug('!@#$%error'+e.getMessage());
                 return new acResponse.bankSatementResponseSuccessorFailure(Null,false,response);
             }
         }
@@ -107,36 +109,78 @@ public class WLbankStatementRequest
             user_Token = objtoProcess.response.user_token;
          
             System.debug('$$$$$#### - ' + user_Token);
-         
-            populate(user_Token, selectedAccounts,bankname);
             FetchFile(user_Token, parentId);
+            string ReqDocId = '';
+            if(parentId <> null)
+            {
+                system.debug('parentId**************'+parentId);
+                list<Lead> lstLead = [select id, IsConverted, ConvertedOpportunityId from Lead where id =:parentId];
+                system.debug('lstLead**************'+lstLead);
+                if(lstLead != null && lstLead.size() > 0)
+                {
+                    if(lstLead[0].IsConverted == true)
+                    {
+                        system.debug('lstLead[0].IsConverted*****************************');
+                        list<Opportunity> lstOpportunity = [select Id , 
+                                                            (select id from Required_Documents__r where acf_Bank_Statement_Doc__c = true)
+                                                            from Opportunity where Id =: lstLead[0].ConvertedOpportunityId];
+                        system.debug('lstOpportunity**************'+lstOpportunity);
+                        if(lstOpportunity != null && lstOpportunity.size() > 0)
+                        {
+                           if(lstOpportunity[0].Required_Documents__r != null && lstOpportunity[0].Required_Documents__r.size() > 0)
+                           {
+                                system.debug('lstOpportunity**************'+lstOpportunity[0].Required_Documents__r);
+                                ReqDocId = string.valueOf(lstOpportunity[0].Required_Documents__r[0].id);
+                                system.debug('ReqDocId**************'+ReqDocId);
+                           }
+                        }
+                    }
+                    else
+                    {
+                        list<Lead> lstLeadTemp = [select id, 
+                                                    (select id, acfStatus__c from Required_Documents__r where acf_Bank_Statement_Doc__c = true)
+                                                    from Lead where id =:parentId];
+                        system.debug('lstLeadTemp **************'+lstLeadTemp);
+                        if(lstLeadTemp != null && lstLeadTemp.size() > 0)
+                        {
+                            if(lstLeadTemp[0].Required_Documents__r != null && lstLeadTemp[0].Required_Documents__r.size() > 0)
+                            {
+                                system.debug('lstLeadTempABC **************'+lstLeadTemp[0].Required_Documents__r);
+                                ReqDocId = string.valueOf(lstLeadTemp[0].Required_Documents__r[0].id);
+                                system.debug('ReqDocIdAnkit**************'+ReqDocId);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    list<Opportunity> lstOpportunity = [select Id , 
+                                                            (select id from Required_Documents__r where acf_Bank_Statement_Doc__c = true)
+                                                            from Opportunity where Id =: parentId];
+                        system.debug('lstOpportunity**************'+lstOpportunity);
+                        if(lstOpportunity != null && lstOpportunity.size() > 0)
+                        {
+                           if(lstOpportunity[0].Required_Documents__r != null && lstOpportunity[0].Required_Documents__r.size() > 0)
+                           {
+                                system.debug('lstOpportunity**************'+lstOpportunity[0].Required_Documents__r);
+                                ReqDocId = string.valueOf(lstOpportunity[0].Required_Documents__r[0].id);
+                                system.debug('ReqDocId**************'+ReqDocId);
+                           }
+                        }
+                }
+                
+            }
+            populate(user_Token, selectedAccounts,bankname,ReqDocId);
+            
         }
         
         return null;   
     }
     
     //Method to call statemnt method to set account number to fetch statement from
-    public void populate(string user_Token, string selectedAccounts, string bankname)
+    public void populate(string user_Token, string selectedAccounts, string bankname,string ReqDocId)
     {
-        String body = '{"user_token":"'+user_Token+'","accounts":{"'+bankname+'":['+selectedAccounts+']}}';
-        
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint(strEndpoint+'/statements');
-        req.setMethod('POST');
-        req.setHeader('content-type', 'application/json');
-        req.setHeader('Accept', 'application/json');
-        req.setHeader('X-API-KEY',strApiKey);
-        req.setbody(body);
-        req.setTimeout(100000);
-        
-        System.debug('!!!!Statement Body -'+body);
-        
-        Http http = new Http();
-        HTTPResponse res = http.send(req);
-        String Statuscode = String.valueOf(res.getStatusCode());
-        String response = res.getBody();
-        
-        System.debug('!!!! XML Response - '+response);
+         acfFetchBankStatementFile.BankStatementFetchFile(user_Token,selectedAccounts,bankname,strEndpoint,strApiKey,ReqDocId);   
     }
     
     //Method to fetch file from bank statement and save it in salesforce
