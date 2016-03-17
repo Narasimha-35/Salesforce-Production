@@ -18,11 +18,16 @@ public class ClickCommon
     {
         get
         {
-            string strURLPrefix = '/';
-            list<Network> lstNetwork = [SELECT id,Name,UrlPathPrefix FROM Network where id =: Network.getNetworkId()];
-            if(lstNetwork != null && lstNetwork.size() > 0 && lstNetwork[0].UrlPathPrefix != null)
-              strURLPrefix = strURLPrefix + lstNetwork[0].UrlPathPrefix + '/';
-            return strURLPrefix;
+           string strRetURL = '/';
+         /*  if(Network.getNetworkId() != null)
+           {
+               Click_Community_Setup__c objComm = ClickCommon.getCommunitySetup(Network.getNetworkId());
+               if(objComm != null && objComm.Click_Site_Prefix__c <> null)
+               {
+                   strRetURL = strRetURL+objComm.Click_Site_Prefix__c+'/';
+               }
+           } */              
+           return strRetURL;
         }
         set;
     }
@@ -221,7 +226,7 @@ public class ClickCommon
     // -------------------------------------------------------------------------------------------
     // 1.0         1/22/2014       Lokesh Pant            Initial Version
     // -------------------------------------------------------------------------------------------
-    public static void sendTemplatedEmail(ID targetObjId , string strContent, string strSubject,List<string>lstToEmail,List<string>lstCcEmail)
+    public static void sendTemplatedEmail(ID targetObjId , string strContent, string strSubject,List<string> lstToEmail,List<string> lstCcEmail)
     {
         //try 
         //{
@@ -270,10 +275,7 @@ public class ClickCommon
     }
     public static map<string,string>getLeadApiNameToType(string strAnswers)
     {
-       Click_Community_Setup__c objCommSetup;
-       string CommID =  Network.getNetworkId();
-       if(CommID != null && CommID != '')
-         objCommSetup = getCommunitySetup(CommID);
+       Click_Community_Setup__c objCommSetup = getCommunitySetup(Network.getNetworkId());
        if(objCommSetup != null)
        {
            List<Script__c>lstScript = [select id,acf_Sequence_no__c,acf_Type__c,Click_Community_Setup__c from Script__c where acf_Type__c=:'Pre-Login' AND Click_Community_Setup__c =: objCommSetup.Id order by acf_Sequence_no__c limit 1]; 
@@ -406,7 +408,7 @@ public class ClickCommon
         }
         else
         {
-            return(URLPrefix+strReturnUrl);
+          return(URLPrefix+strReturnUrl);
         }
     }
     //
@@ -436,23 +438,28 @@ public class ClickCommon
     {
         List<Opportunity> List_opp = new List<Opportunity>();
         List<User>lstUser = [select id , ContactId, AccountId from User where id=:CurrentUserId];
-        string strNetworkId = Network.getNetWorkId();
-        Click_Community_Setup__c objCommunity = getCommunitySetup(strNetworkId);
+     //   string strNetworkId = Network.getNetWorkId();
+       // system.debug('strNetworkId%%%%%%%%'+strNetworkId);
+        Click_Community_Setup__c objCommunity = getCommunitySetup(Network.getNetWorkId());
+        system.debug('objCommunity%%%%%%%%'+objCommunity);
         string strNewLoanType = objCommunity.Click_Page_Prefix__c+' New Loans';
         string strRefiType = objCommunity.Click_Page_Prefix__c+' Refi';
         List_opp = [select id,Recordtype.Name from opportunity where accountId=:lstUser[0].AccountId AND (Recordtype.Name=:strNewLoanType OR Recordtype.Name=:strRefiType)];
-        
+        system.debug('List_opp%%%%%%%%'+List_opp);
         If(!List_opp.isEmpty())
         {
+            system.debug('##########################');
             return List_opp[0].Id;
         }
         return null;
     }
     //Method to Find Required Documents Based on the Answer Selected.
+    // for CRM User
     public static void getRequiredDocumentsFromAnswers(Id LeadId,set<string> setSelectedAnswer)
     {
         system.debug('@@#$$%');
-       List<Required_Document__c>lstRequiredDocumentToInsert = new List<Required_Document__c>();    
+       List<Required_Document__c>lstRequiredDocumentToInsert = new List<Required_Document__c>();  
+       system.debug('@@@@@@@@@@@@@@@@@'+setSelectedAnswer);  
        if(setSelectedAnswer <> null && setSelectedAnswer.size()>0)
        {
             for(Dependent_Document__c objDependentDocument:[select id,acfAnswer__c,acfDocument_Master__c,acfActive__c ,name
@@ -472,16 +479,62 @@ public class ClickCommon
             }                                           
        }     
     }
+    
+     //Method to Find Required Documents Based on the Answer Selected.
+    public static void getRequiredDocumentsFromAnswersFromCRM(Id LeadId,set<string> setSelectedAnswer,Id CommunitySetupId)
+    {
+        system.debug('@@#$$%'+CommunitySetupId);
+       List<Required_Document__c>lstRequiredDocumentToInsert = new List<Required_Document__c>();    
+       if(setSelectedAnswer <> null && setSelectedAnswer.size()>0 && CommunitySetupId <> null)
+       {
+       
+           Set<String> st = new Set<String>();
+            for(Dependent_Document__c objDependentDocument:[select id,acfAnswer__c,acfDocument_Master__c,acfDocument_Master__r.Click_Community_Setup__c,
+                                                            acfActive__c,name
+                                                            from Dependent_Document__c where acfAnswer__c in:setSelectedAnswer and acfActive__c = true
+                                                            and acfDocument_Master__r.Click_Community_Setup__c =:CommunitySetupId])
+            {
+                   if(!st.contains(objDependentDocument.Name)){
+                       system.debug('@@#$$%Ankit'+objDependentDocument);
+                       Required_Document__c objRequiredDocument  =  new Required_Document__c();
+                       objRequiredDocument.Name                  =  objDependentDocument.Name;
+                       objRequiredDocument.acfDocument_Master__c =  objDependentDocument.acfDocument_Master__c;
+                       objRequiredDocument.Lead__c               =  LeadId;
+                       objRequiredDocument.acfStatus__c          =  'Pending';
+                       lstRequiredDocumentToInsert.add(objRequiredDocument);       
+                       st.add(objDependentDocument.Name);
+                   }
+            }
+            system.debug(':::::'+lstRequiredDocumentToInsert);
+            if(lstRequiredDocumentToInsert <> null && lstRequiredDocumentToInsert.size()>0)
+            {
+                insert lstRequiredDocumentToInsert;
+            }                                           
+       }     
+    }
+    
     public static Click_Community_Setup__c getCommunitySetup(string NetworkId)
     {
-        if(NetworkId != null)
-            NetworkId = NetworkId.substring(0, 15);
-        Click_Community_Setup__c CommSetup = new Click_Community_Setup__c();
-        list<Click_Community_Setup__c> lstCommSetup = [select id,Click_Network_ID__c,Click_URL__c,Community_User_Name_Prefix__c,Click_IsActive__c,Click_Page_Prefix__c,Click_Support_Team_Name__c,click_Home_Page_URL__c from Click_Community_Setup__c where Click_Network_ID__c = : NetworkId  AND Click_IsActive__c = true limit 1];
-        if(lstCommSetup!=null && lstCommSetup.size()>0){
-            CommSetup = lstCommSetup[0];
+       Click_Community_Setup__c CommSetup = new Click_Community_Setup__c();
+       if(!test.isrunningTest())
+       {
+            if(NetworkId != null)
+            {
+                NetworkId = NetworkId.substring(0, 15);
+                list<Click_Community_Setup__c> lstCommSetup = [select id,Click_Site_Prefix__c,Click_Network_ID__c,Click_URL__c,Community_User_Name_Prefix__c,Click_IsActive__c,Click_Page_Prefix__c,Click_Support_Team_Name__c,click_Home_Page_URL__c from Click_Community_Setup__c where Click_Network_ID__c = : NetworkId  AND Click_IsActive__c = true limit 1];
+                if(lstCommSetup!=null && lstCommSetup.size()>0)
+                {
+                    CommSetup = lstCommSetup[0];
+                }
+            }
         }
-        
+        else
+        {
+            list<Click_Community_Setup__c> lstCommSetup = [select id,Click_Network_ID__c,Click_URL__c,Community_User_Name_Prefix__c,Click_IsActive__c,Click_Page_Prefix__c,Click_Support_Team_Name__c,click_Home_Page_URL__c from Click_Community_Setup__c where Click_IsActive__c = true limit 1];
+            if(lstCommSetup!=null && lstCommSetup.size()>0){
+            CommSetup = lstCommSetup[0];
+            }
+        }
         return CommSetup;
     }
     
