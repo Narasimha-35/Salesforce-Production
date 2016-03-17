@@ -1,6 +1,35 @@
 @isTest
 public class TestUtilities {
 
+   public static Lead createLead(String lastName) {
+      return new Lead(lastName = lastname);
+   }
+
+   public static Lead createLead() {
+      return createLead('test');
+   }
+
+   public static List<Lead> createLeads(Integer numOfRecords) {
+      List<Lead> ret = new List<Lead>();
+      for(Integer i = 0; i < numOfRecords; i++) {
+         ret.add(createLead('test' + i));
+      }
+
+      return ret;
+   }
+
+   public static List<Lead> createLeads(Integer numOfRecords, Lead lead) {
+      List<Lead> ret = new List<Lead>();
+      Lead temp = null;
+      for(Integer i = 0; i < numOfRecords; i++) {
+         temp = lead.clone(false, true, false, false);
+         temp.lastName = lead.lastName + i;
+         ret.add(temp);
+      }
+
+      return ret;
+   }
+
    public static AsyncRequest__c createAsyncRequest(String reqType, String reqParam) {
       AsyncRequest__c req = new AsyncRequest__c(type__c = reqType, params__c = reqParam);
       return req;
