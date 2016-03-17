@@ -17,8 +17,14 @@ min-height:70px!important;
   width: 100px;
   height: 40px;
 } 
-  
+   
     }
+    
+ .header .logo img {
+    width: 250px;
+    height: 60px;
+    margin-top: 12px;
+}
     
     </style>
    <head>
@@ -109,10 +115,14 @@ min-height:70px!important;
             <h1 class="col-md-4 col-xs-7">
                 <div class="logo">
                     <apex:outputpanel rendered="{!isLoggedIn == false}">
-                        <a href="{!strURLPrefix}Acfhome"><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" alt="WL Refi"/></a>
+                    <!----------------- WLACLA-165 CHANGES ---------------->
+                        <a href="{!strURLPrefix}Acfhome"><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_headerlogo.png')}" alt="WL Refi"/></a>
+                    <!----------------- WLACLA-165 CHANGES ---------------->
                     </apex:outputpanel>
                     <apex:outputpanel rendered="{!isLoggedIn == true}">
-                        <a href="{!strURLPrefix}Acfdashboard"><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" alt="WL Refi"/></a>
+                    <!----------------- WLACLA-165 CHANGES ---------------->
+                        <a href="{!strURLPrefix}Acfdashboard"><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_headerlogo.png')}" alt="WL Refi"/></a>
+                    <!----------------- WLACLA-165 CHANGES ---------------->
                     </apex:outputpanel>
                 </div>
             </h1>
