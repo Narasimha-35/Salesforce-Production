@@ -201,11 +201,8 @@ public class Saasfocus_GetGoogleEvent {
                             if(rRuleRecurMap.keySet().size() >= 2) {
                                 //Condition For Interval between Events
                                 if(rRuleRecurMap.get('INTERVAL') != null) {
-                                    GObj.Interval__c = Integer.ValueOf(rRuleRecurMap.get('INTERVAL') != null);
-                                } else {
+                                    GObj.Interval__c = Integer.ValueOf(rRuleRecurMap.get('INTERVAL'));
                                     if(rRuleRecurMap.get('BYDAY') != null){
-                                        GObj.Interval__c = Integer.ValueOf(rRuleRecurMap.get('INTERVAL'));
-                                    } else {
                                         GObj.Interval__c = 1;
                                     }
                                 }

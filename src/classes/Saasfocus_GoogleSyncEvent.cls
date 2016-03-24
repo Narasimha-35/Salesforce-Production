@@ -343,11 +343,8 @@ public class Saasfocus_GoogleSyncEvent {
                         // Condition for get the interval between the event
                         if(con_array.size()>2) {
                             if(rRuleRecurMap.get('INTERVAL') != null) {
-                                GObj.Interval__c = Integer.ValueOf(rRuleRecurMap.get('INTERVAL') != null);
-                            } else {
+                                GObj.Interval__c = Integer.ValueOf(rRuleRecurMap.get('INTERVAL'));
                                 if(rRuleRecurMap.get('BYDAY') != null){
-                                    GObj.Interval__c = Integer.ValueOf(rRuleRecurMap.get('INTERVAL'));
-                                } else {
                                     GObj.Interval__c = 1;
                                 }
                             }
