@@ -189,20 +189,21 @@ public class Saasfocus_GoogleSyncEvent {
         ob.updategooglesettings();
     }
 
-    // This method is used for Get the google calender Event
-    Public void callgoogleAPI(Broker__c bobject) {
+    public String getEndPoint(Broker__c bobject) {
         String Endpoint = 'https://www.googleapis.com/calendar/v3/calendars/'+bobject.Email__c+'/events?access_token='+obj.Access_Token__c+'&timeMin='+Starttime+'&timeMax='+endtime +'&timeZone=GMT';
         if(bobject.Next_Sync_Token__c== null) {
             Endpoint = 'https://www.googleapis.com/calendar/v3/calendars/'+bobject.Email__c+'/events?access_token='+obj.Access_Token__c+'&timeMin='+Starttime+'&timeMax='+endtime +'&timeZone=GMT';
-        }
-
-        else If(nextpagetoken != null && bobject.Next_Sync_Token__c!= null ) {
+        } else if (nextpagetoken != null && bobject.Next_Sync_Token__c!= null ) {
             Endpoint = 'https://www.googleapis.com/calendar/v3/calendars/'+bobject.Email__c+'/events?access_token='+obj.Access_Token__c+'&syncToken='+bobject.Next_Sync_Token__c+'&pageToken='+nextpagetoken+'&timeZone=GMT';
-        }
-
-        else if(nextpageToken == null && bobject.Next_Sync_Token__c!= null) {
+        } else if (nextpageToken == null && bobject.Next_Sync_Token__c!= null) {
             Endpoint = 'https://www.googleapis.com/calendar/v3/calendars/'+bobject.Email__c+'/events?access_token='+obj.Access_Token__c+'&syncToken='+bobject.Next_Sync_Token__c+'&timeZone=GMT';
         }
+        return Endpoint;
+    }
+
+    // This method is used for Get the google calender Event
+    Public void callgoogleAPI(Broker__c bobject) {
+        String Endpoint = getEndPoint(bobject);
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint(Endpoint);
@@ -215,6 +216,7 @@ public class Saasfocus_GoogleSyncEvent {
         Http http = new Http();
         Httpresponse res = http.send(req);
 
+        //TODO: bad code to use recursion!
         if(res.getStatusCode()== 410) {// Sync token is no longer valid, a full sync is required.
             bobject.Next_Sync_Token__c =null;
             callgoogleAPI(bobject);
@@ -252,9 +254,17 @@ public class Saasfocus_GoogleSyncEvent {
                     system.debug('HHHHHHI'+deleteEvent_IDset);
                 }
 
-
                 // condition if google calender contains recurring event
                 if(RecRule != null) {
+                    //TODO:String recurResponse
+                    List<String> recurrenceList = new List<String>();
+                    for(Object o : recRule) {
+                        recurrenceList.add((String) o);
+                    }
+                    GoogleCalendarModel.Recurrence rec = GoogleCalendarUtility.parseRecurrence(recurrenceList);
+                    Map<String, String> rRuleRecurMap = GoogleCalendarUtility.parseRecur(rec.RRULE);
+
+
                     if(Stime != null && Etime != null && (String)Event_item.get('status')!='cancelled') {
                         //Logic to Convert the event start and End  DateTime in the specific format as required to assign th event Start And End time
                         System.debug('Stime ' + Stime +' Etime ' + Etime );
@@ -332,55 +342,45 @@ public class Saasfocus_GoogleSyncEvent {
 
                         // Condition for get the interval between the event
                         if(con_array.size()>2) {
-                            if(con_array[2].contains('INTERVAL=')) {
-                                String qt=con_array[2];
-                                GObj.Interval__c =Integer.ValueOf(String.valueOf(qt.replace('INTERVAL=','')));
+                            if(rRuleRecurMap.get('INTERVAL') != null) {
+                                GObj.Interval__c = Integer.ValueOf(rRuleRecurMap.get('INTERVAL') != null);
                             } else {
-                                if(con_array[1].contains('INTERVAL=')&&con_array[2].contains('BYDAY=')) {
-                                    String qt=con_array[1];
-                                    GObj.Interval__c=Integer.ValueOf(String.valueOf(qt.replace('INTERVAL=','')));
+                                if(rRuleRecurMap.get('BYDAY') != null){
+                                    GObj.Interval__c = Integer.ValueOf(rRuleRecurMap.get('INTERVAL'));
                                 } else {
-                                    GObj.Interval__c =1;
+                                    GObj.Interval__c = 1;
                                 }
                             }
                         }
 
-                        if(con_array.size()==2) {
-                            if(con_array[1].contains('INTERVAL=')) {
-                                String qt=con_array[1];
-                                GObj.Interval__c=Integer.ValueOf(String.valueOf(qt.replace('INTERVAL=','')));
+                        if(rRuleRecurMap.keySet().size() == 2) {
+                            if(rRuleRecurMap.get('INTERVAL') != null) {
+                                GObj.Interval__c = Integer.ValueOf(rRuleRecurMap.get('INTERVAL'));
                             } else {
-                                GObj.Interval__c=1;
+                                GObj.Interval__c = 1;
                             }
                         }
 
                         String []dayarray;
 
                         // Condition if event  repeat on weekday
-                        if(g_res.contains('BYDAY=')) {
-                            Integer i=g_res.indexOf('BYDAY');
-                            system.debug(i);
-                            integer j=i+6;
-                            string qt=g_res.substring(i,g_res.length());
-                            system.debug(qt);
-                            qt= qt.replace('BYDAY=','');
-                            String byday=qt.replace(',',';');
+                        if(rRuleRecurMap.get('BYDAY') != null) {
+                            String byday=rRuleRecurMap.get('BYDAY').replace(',',';');
                             GObj.ByDay__c= byday;
                         }
 
                         // Condition how many times Event will be repeated(Count)
-                        if(con_array.size()>=2) {
-                            if(con_array[1].contains('COUNT=')) {
-                                String qt=con_array[1];
-                                GObj.Count__c=Integer.ValueOf(String.valueOf(qt.replace('COUNT=','')));
+                        if(rRuleRecurMap.keySet().size() >= 2) {
+                            if(rRuleRecurMap.get('COUNT') != null) {
+                                GObj.Count__c=Integer.ValueOf(rRuleRecurMap.get('COUNT'));
                                 system.debug(GObj.Count__c);
                             }
                         }
 
                         // Condition for last date event will be repeated(UNTIL)
-                        if( con_array.size()>=2) {
-                            if(con_array[1].contains('UNTIL=')) {
-                                String datetm=con_array[1].replace('UNTIL=','');
+                        if(rRuleRecurMap.keySet().size() >= 2) {
+                            if(rRuleRecurMap.get('UNTIL') != null) {
+                                String datetm = rRuleRecurMap.get('UNTIL');
                                 String st='';
                                 if(datetm.length()>8){
                                     st=datetm.substring(0,4)+'-'+datetm.substring(4,6)+'-'+datetm.substring(6,11)+':'+datetm.substring(11,13)+':'+datetm.substring(13,16);
@@ -388,55 +388,12 @@ public class Saasfocus_GoogleSyncEvent {
                                     st=st.replace('Z','');
                                 } else {
                                     st=datetm.substring(0,4)+'-'+datetm.substring(4,6)+'-'+datetm.substring(6,8)+' 00:00:00';
-
                                 }
                                 GObj.Until__c=DateTime.valueOfGmt(st);
                             }
                         }
 
-                        // Condition if event is a weekly Event
-                        if(con_array[0]=='FREQ=WEEKLY') {
-                            String resday=condition.replace('RRULE:','');
-
-                            if(!resday.contains('BYDAY=')) {
-                                String byd=(GObj.Start_Date__c).format('E').left(2);
-                                GObj.ByDay__c=byd.toUpperCase();
-                                System.debug(byd+'hhhhhh'+GObj.ByDay__c);
-                            }
-                            GObj.Freq__c='WEEKLY';
-                        }
-
-                        // Condition if event is a daily event
-                        if(con_array[0]=='FREQ=DAILY') {
-                            GObj.Freq__c='DAILY';
-                        }
-
-                        // Condition if event is a Monthly Event
-                        if(con_array[0]=='FREQ=MONTHLY') {
-                            if(g_res.contains('BYDAY=')) {
-                                Integer i=g_res.indexOf('BYDAY');
-                                system.debug(i);
-                                integer j=i+6;
-                                string qt=g_res.substring(i,g_res.length());
-                                system.debug(qt);
-                                String bydayst = qt.replace('BYDAY=','');
-                                if(bydayst.contains('-1')) {
-                                    GObj.Repeats_on__c=(String)bydayst.substring(0,2);
-                                    GObj.ByDay__c=bydayst.substring(2);
-                                    system.debug( GObj.Repeats_on__c+'hhhhhhh'+GObj.ByDay__c);
-                                } else {
-                                    GObj.Repeats_on__c=(String)bydayst.substring(0,1);
-                                    GObj.ByDay__c=bydayst.substring(1);
-                                    system.debug( GObj.Repeats_on__c+'hhhhhhh'+GObj.ByDay__c);
-                                }
-                            }
-                            GObj.Freq__c='MONTHLY';
-                        }
-
-                        // Condition if Event is a yealy Event
-                        if(con_array[0]=='FREQ=YEARLY') {
-                            GObj.Freq__c='YEARLY';
-                        }
+                        GObj = GoogleCalendarUtility.parseRecurrence(rRuleRecurMap, GObj);
                         glist.add(GObj);
                     }
                 } else {

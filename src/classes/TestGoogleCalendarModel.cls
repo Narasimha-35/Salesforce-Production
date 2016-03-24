@@ -20,4 +20,12 @@ public with sharing class TestGoogleCalendarModel {
 		System.assertNotEquals(null, reqBody.getJSON());
 	}
 
+	private static testMethod void testConstructRecur() {
+		String recurString = 'RRULE:FREQ=WEEKLY;UNTIL=20151020T025959Z;BYDAY=TU';
+		GoogleCalendarModel.Recur recur = new GoogleCalendarModel.Recur(recurString);
+
+		System.assertEquals('WEEKLY', recur.FREQ);
+		System.assertEquals(DateTime.valueOfGmt('2015-10-20 02:59:59').getTime(), recur.UNTIL.getTime());
+	}
+
 }
