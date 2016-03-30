@@ -33,13 +33,12 @@ span.lookupInput
     height: 20px;
     background-position: top right;
  }
- .reqDocBtn
- {
-   font-family: "OpenSans";
-    background-color: #2a8ecc;
+ .reqDocBtn {
+    font-family: "OpenSans";
+    background-color: #f98b02!important;
     color: #fff;
     text-decoration: none;
- }
+}
  .displaynone
  {
      display:none;
