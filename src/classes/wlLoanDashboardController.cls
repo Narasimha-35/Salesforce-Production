@@ -1,4 +1,4 @@
-public without sharing class wlLoanDashboardController 
+public class wlLoanDashboardController 
 {
     public integer prodListIndex{get;set;}
     public decimal strRate{get;set;}
@@ -26,8 +26,8 @@ public without sharing class wlLoanDashboardController
     //Added By Lokesh on 16-12-14
     public Id OpportunityId;
     public List<WrapperProducts>lstWrapperProduct{get;set;}
+    public List<WrapperProducts>lstWrapperProductNotApplication{get;set;}
     //Added by karthik on 08-05-2015
-    public WrapperProducts objCurrentLoanDetails{get;set;}
     Public wlLoanDashboardController() 
     {
          IsApplication = false;
@@ -38,7 +38,7 @@ public without sharing class wlLoanDashboardController
          isButtonvisible = true;
          isPasswordReset = false;
          lstWrapperProduct = new List<WrapperProducts>();
-         objCurrentLoanDetails = new WrapperProducts(); 
+         lstWrapperProductNotApplication = new List<WrapperProducts>();
         //Created by lokesh on 15-12-2014
         strRate = 0.00;
         strComparsionRate = 0.00;
@@ -48,8 +48,7 @@ public without sharing class wlLoanDashboardController
         If(lstUser != null && lstUser.size()>0){
            isPasswordReset = lstUser[0].acfIs_Password_Reset__c;
         }
-        OpportunityId = clickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');  
-        system.debug('!@#$AnkitSingh'+OpportunityId);      
+        OpportunityId = clickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');        
         if(OpportunityId <> null)
         {
            double HouseValue,LVR;   
@@ -58,7 +57,7 @@ public without sharing class wlLoanDashboardController
            
            if(lstOpportunity <> null && lstOpportunity.size()>0 && lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc <> null && lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc <> null)
            {
-                system.debug('#$%^Ankit'+lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc);
+               
                 if(IsValidDecimal(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc))
                       HouseValue = double.valueof(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc);
                 else
@@ -109,7 +108,7 @@ public without sharing class wlLoanDashboardController
                         DateExpectedSettlement = ConvertDateToString(lstOpportunity[0].acfExpected_Settlement_Date__c); 
                     IsSettlement = true;
                }
-               else if(lstOpportunity[0].stageName  == 'Settled' && lstOpportunity[0].acf_Status__c  == 'Settled')
+               else if(lstOpportunity[0].stageName  == 'Settlement' && lstOpportunity[0].acf_Status__c  == 'Settled')
                {
                     strDescription = lstOpportunity[0].Description;
                     strCustomLabelValue = 'acfLoan_Dashboard_Settled';
@@ -130,24 +129,27 @@ public without sharing class wlLoanDashboardController
     public void DisplayOpportunityLIProducts(Id OpportunityId,decimal CurrentLoan,string PaymentType)
     {
         system.debug('Sumit Called method DisplayOpportunityLIProducts OpportunityId = ' + OpportunityId + '  CurrentLoan = '+ CurrentLoan+ ' PaymentType = '+ PaymentType);
+        
+
       if(OpportunityId <> null && CurrentLoan <> null && PaymentType <> null)
       { 
             //For Dispalying Values from Opportunity Line Items If any
            List<OpportunityLineItem> lstOpplst = [select id,Product2Id,acfComparison_Rate__c,acfRate__c,UnitPrice,product2.name,acfApplication_Fee__c, 
                                                    acfOngoing_Fees__c,acfTotal_Fee__c,acfLegal_Fees__c,Product2.ClickFeature_1__c,Product2.ClickFeature_2__c,
                                                     Product2.ClickFeature_3__c,Product2.acfDebit_Card__c,Product2.acfRedraw__c,Product2.acfInterest_Only__c,
-                                                    Product2.acfOffset_Account__c,Product2.acfMultiple_Splits__c,Product2.acfAdd_Repayments__c,product2.acfTenure_in_Years__c,
+                                                    Product2.acfOffset_Account__c,Click_Estimated_Monthly_Payment__c,Product2.acfMultiple_Splits__c,Product2.acfAdd_Repayments__c,product2.acfTenure_in_Years__c,
                                                     product2.recordtype.name,Product2.Click_Loans_Bank_Detail__r.acfBank_Name__c,Product2.Click_Loans_Bank_Detail__r.acfImage_URL__c
-                                                    from OpportunityLineItem where OpportunityId=:OpportunityId limit 1];
+                                                    from OpportunityLineItem where OpportunityId=:OpportunityId limit 10];
            If(lstOpplst != null && lstOpplst.size()>0)
            {
                system.debug('Sumit lstOpplst = '+ lstOpplst );
                    isCurrentLoanPanelDisplay  = true; 
                    for(OpportunityLineItem OppLi: lstOpplst)
                    {
+                        WrapperProducts objCurrentLoanDetails = new WrapperProducts();
                         objCurrentLoanDetails.decRate = OppLi.acfRate__c;
                         objCurrentLoanDetails.decComparisionRate= OppLi.acfComparison_Rate__c;
-                        objCurrentLoanDetails.decMonthlyPayment= integer.valueof(OppLi.UnitPrice);
+                        objCurrentLoanDetails.decMonthlyPayment= integer.valueof(OppLi.Click_Estimated_Monthly_Payment__c);
                         if(OppLi.product2.recordtype.name == 'Variable' && OppLi.product2.acfOffset_Account__c == false)
                         {
                              objCurrentLoanDetails.ProductName = OppLi.product2.name;
@@ -179,6 +181,8 @@ public without sharing class wlLoanDashboardController
                         objCurrentLoanDetails.InterestOnly    =  OppLi.Product2.acfInterest_Only__c;
                         objCurrentLoanDetails.OffsetAccount    =  OppLi.Product2.acfOffset_Account__c;
                         objCurrentLoanDetails.MultipleSplits    =  OppLi.Product2.acfMultiple_Splits__c;
+                        lstWrapperProductNotApplication.add(objCurrentLoanDetails);
+                        system.debug('####lstWrapperProductNotApplication'+lstWrapperProductNotApplication);
                         
                    }
            }else{
@@ -208,19 +212,15 @@ public without sharing class wlLoanDashboardController
         boolean isFixed3yrCompleted = false;
         boolean isFixed4yrCompleted = false;
         boolean isFixed5yrCompleted = false;
-        system.debug('!@#$Ankit'+OpportunityId);
-        List<acfSuggested_Product__c> lstSuggestedPro = [select id,acfFilter__c,acfProduct__c,acfProduct_Family__c from acfSuggested_Product__c where acfOpportunity__c=:OpportunityId];
-        if(lstSuggestedPro != null && lstSuggestedPro.size() > 0)
+        
+        for(acfSuggested_Product__c objSuggestedProduct:[select id,acfFilter__c,acfProduct__c,acfProduct_Family__c from acfSuggested_Product__c where acfOpportunity__c=:OpportunityId])
         {
-            for(acfSuggested_Product__c objSuggestedProduct:lstSuggestedPro)
+            if(objSuggestedProduct.acfFilter__c <> null && objSuggestedProduct.acfProduct__c <> null && objSuggestedProduct.acfFilter__c == 'Exclude')
             {
-                if(objSuggestedProduct.acfFilter__c <> null && objSuggestedProduct.acfProduct__c <> null && objSuggestedProduct.acfFilter__c == 'Exclude')
-                {
-                    setProductIdToExclude.add(objSuggestedProduct.acfProduct__c);
-                }
-                
+                setProductIdToExclude.add(objSuggestedProduct.acfProduct__c);
             }
-         }
+            
+        }
          // changes done by Ankit for Adding bank functionality
         set<id> setOfBankDetailId = new set<id>();
         List<Click_Loans_Bank__c> lstbank = new List<Click_Loans_Bank__c>();
@@ -246,9 +246,9 @@ public without sharing class wlLoanDashboardController
                                     acfProduct__r.acfAdd_Repayments__c, acfProduct__r.acfRedraw__c, acfProduct__r.acfDebit_Card__c, acfProduct__r.acfInterest_Only__c, acfProduct__r.acfMultiple_Splits__c, acfProduct__r.acfOffset_Account__c,
                                     clickLoan_Size_From__c,clickLVR_From__c,acfProduct__r.Click_Loans_Bank_Detail__r.acfImage_URL__c,acfProduct__r.Click_Loans_Bank_Detail__r.acfBank_Name__c
                                     from LVR_Rate__c 
-                                    where clickLoan_Size_From__c <: CurrentLoanAmount 
+                                    where clickLoan_Size_From__c <=: CurrentLoanAmount 
                                     and acfLoan_Size__c >=:CurrentLoanAmount 
-                                    and clickLVR_From__c <: usrLVR 
+                                    and clickLVR_From__c <=: usrLVR 
                                     and acfLVR__c>=:usrLVR 
                                     and acfProduct__r.Click_Loans_Bank_Detail__c =: setOfBankDetailId
                                     order by acfTerm_in_Years__c,acfRate__c,clickFixed_Interest_Rate__c asc])
@@ -298,14 +298,18 @@ public without sharing class wlLoanDashboardController
             }
         }
         
+        system.debug('lstBasicVariableLoans--------' +lstBasicVariableLoans);
         if(lstBasicVariableLoans != null && lstBasicVariableLoans.size()>0)
          {
              lstProductIdToLVR.add(lstBasicVariableLoans[0]);
          }
+         
+            system.debug('lstOffsetVariableLoans --------' +lstOffsetVariableLoans );
          if(lstOffsetVariableLoans != null && lstOffsetVariableLoans.size()>0)
          {
              lstProductIdToLVR.add(lstOffsetVariableLoans[0]);
          }
+         system.debug('lstFixedLoans------' +lstFixedLoans);
          if(lstFixedLoans != null && lstFixedLoans.size()>0)
          {
              lstProductIdToLVR.addall(lstFixedLoans);
@@ -366,6 +370,7 @@ public without sharing class wlLoanDashboardController
                 {
                     objWrapVariableProduct.decRate = objLVRRate.clickFixed_Interest_Rate__c;
                     objWrapVariableProduct.ProductName = objLVRRate.acfProduct__r.acfTenure_in_Years__c+' Yr '+objLVRRate.acfProduct__r.name;
+                    objWrapVariableProduct.strInterestRatelbl = objLVRRate.acfProduct__r.acfTenure_in_Years__c+' Year Fixed';
                     if(objLVRRate.acfProduct__r.acfvarTenure_In_Years__c != null)
                     {
                         objWrapVariableProduct.TenureInMonth = (objLVRRate.acfProduct__r.acfvarTenure_In_Years__c)*12;
@@ -380,8 +385,10 @@ public without sharing class wlLoanDashboardController
                    if( objLVRRate.acfProduct__r.acfOffset_Account__c == false)
                    {
                        objWrapVariableProduct.ProductName =  objLVRRate.acfProduct__r.name;
+                       objWrapVariableProduct.strInterestRatelbl = 'Variable';
                    }else{
                            objWrapVariableProduct.ProductName =  objLVRRate.acfProduct__r.name;
+                           objWrapVariableProduct.strInterestRatelbl = 'Variable with offset';
                            }
                    objWrapVariableProduct.TenureInMonth = (objLVRRate.acfProduct__r.acfvarTenure_In_Years__c)*12;
                     objWrapVariableProduct.TenureInYears = objLVRRate.acfProduct__r.acfvarTenure_In_Years__c;    
@@ -487,7 +494,8 @@ public without sharing class wlLoanDashboardController
         public boolean InterestOnly {get;set;}
         public boolean OffsetAccount {get;set;}
         public boolean MultipleSplits {get;set;}
-        
+        //added by karthik on 23-03-2-16
+        public string strInterestRatelbl {get;set;}
         public WrapperProducts()
         {
             ApplicationFee    =  0;
