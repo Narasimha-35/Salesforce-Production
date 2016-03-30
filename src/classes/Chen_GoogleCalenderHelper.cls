@@ -1,5 +1,5 @@
 global class Chen_GoogleCalenderHelper {
-	
+
 	public static Boolean deleteEventOnGoogleCalendar(String emailAddress, String googleEventId, Boolean sendNotification) {
 		Boolean result = false;
 		Saasfocus_GenerateToken ob= new Saasfocus_GenerateToken();
@@ -13,10 +13,10 @@ global class Chen_GoogleCalenderHelper {
         }
         String endPoint = 'https://www.googleapis.com/calendar/v3/calendars/' + brokerEmail + '/events/' + googleEventId + '?sendNotifications=true&key='+obj.API_KEY__c;
         HttpRequest req = new HttpRequest();
-        req.setEndpoint(endPoint);     
+        req.setEndpoint(endPoint);
         //req.setHeader('Content-Type','application/json');
         //req.setHeader('Accept','application/x-www-form-urlencoded');
-        // req.setHeader('Content-length', '200');  
+        // req.setHeader('Content-length', '200');
         req.setHeader('Authorization','Bearer '+obj.Access_Token__c);
         //req.setBody(strBody);
         req.setMethod('DELETE');
@@ -55,22 +55,22 @@ global class Chen_GoogleCalenderHelper {
         }
         return result;
 	}
-	
-	public static Datetime getGMT(Datetime l) {    
+
+	public static Datetime getGMT(Datetime l) {
         Date d = l.dateGmt();
         Time t = l.timeGmt();
          return Datetime.newInstance(d,t);
     }
-	
+
 	public static Datetime getLocalDateTime(Datetime z, decimal offset) {
-		System.debug(z);    
+		System.debug(z);
 		TimeZone tz = UserInfo.getTimeZone();
 		Datetime localTime = z.AddSeconds(tz.getOffset(z)/1000);
 		localTime = localTime.addMinutes((Integer)(offset * 60));
 		System.debug(localTime);
 		return localTime;
     }
-	
+
 	Webservice static Boolean deleteEventByAppointment(Id appointmentId) {
 		Boolean result = false;
 		//email, and appointment ref
@@ -92,9 +92,10 @@ global class Chen_GoogleCalenderHelper {
 				}
 			}
 		}
+		update appointments;
 		return result;
 	}
-	
+
 	Webservice static void rescheduleAppointment(Id appointmentId) {
 		List<Appointment__c> appointments = [select Id, RecordTypeId, Broker_Mobile__c, Broker__c, Appointment_Status__c From Appointment__c where Id = :appointmentId];
 		if (appointments.size() > 0) {
@@ -118,21 +119,21 @@ global class Chen_GoogleCalenderHelper {
 	        	//send chen email about the failure
 	        	sendChenFailedEmail(bodyText);
 			}
-			
+
 		}
 	}
-	
+
 	public static void sendChenFailedEmail(String bodyText) {
 		List<Messaging.SingleEmailMessage> mailsS = new List<Messaging.SingleEmailMessage>();
         	Messaging.SingleEmailMessage mailsSc = new Messaging.SingleEmailMessage();
         	List<String> sendToEmails = new List<String>();
       		sendToEmails.add('chen@creditandfinance.com.au');
       		mailsSc.setToAddresses(sendToEmails);
-      		
+
       		mailsSc.setReplyTo('chen@creditandfinance.com.au');
       		mailsSc.setSenderDisplayName('Reschedule Checker');
       		mailsSc.setSubject('Reschedule Failed');
-      		
+
       		mailsSc.setHtmlBody(bodyText);
       		mailsS.add(mailsSc);
       		Messaging.sendEmail(mailsS);
