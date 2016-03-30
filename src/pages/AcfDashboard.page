@@ -160,6 +160,10 @@ border:none;
 .ask_ques_cstm_orange a:active{color:#fff!important;}
 .row_mng{margin-left:-10px; margin-right:-10px;}
 
+.btn{background-color: #f98b02;}
+
+.btn:focus,.btn:active,.btn:hover,.btn:visited{background-color:#f98b02;}
+
 </style>
 <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
 </head>
@@ -399,7 +403,17 @@ $( document ).ready(function() {
      </article><!--article left close-->
         <aside class="dash_right_panel col-md-4 col-xs-12">  
                  <c:WLSendMessageDashboard />
-                 <c:WLBookAppointmentDashboard id="CBook" />
+             <!--    <c:WLBookAppointmentDashboard id="CBook" />  -->
+              <apex:outputPanel id="reqDocPopupId">
+                       <div class="clearfix"></div>
+                       <section class="col-md-12 col-md-offset-0 col-xs-10 col-xs-offset-1">
+                        <div class="row" style="display:block;" >
+                            <a href="#" class=" col-md-12 col-xs-12 btn btn-default btn_dash_book" onclick="ResetReqDocPopup();">Add New Document</a>
+                        </div>
+                       </section>
+                       <c:ClickAddDocument cmpAccId="{!accntid}"/>   
+                 </apex:outputPanel>
+             
                 <apex:outputPanel id="IdTskPannel"> 
                  <c:WLTaskDashboard />
                </apex:outputPanel> 
