@@ -1,3 +1,6 @@
-<apex:page controller="WLViewPdf" showHeader="false" standardStylesheets="false">
+<apex:page controller="WLViewPdf" showHeader="false" standardStylesheets="false" applyHTMLTag="false" >
+<head>
+     <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
+</head>
 <apex:iframe src="{!URLFOR($Action.Document.Download, strDocumentId)}"/>
 </apex:page>

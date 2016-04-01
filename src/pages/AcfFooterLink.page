@@ -1,5 +1,6 @@
-<apex:page docType="html-5.0" cache="false" standardStylesheets="false" showHeader="false" controller="WLFooterLinkController">
+<apex:page docType="html-5.0" cache="false" standardStylesheets="false" applyHTMLTag="false" showHeader="false" controller="WLFooterLinkController">
 <head>
+<link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
 <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>

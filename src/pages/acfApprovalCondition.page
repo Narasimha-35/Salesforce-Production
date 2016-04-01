@@ -1,4 +1,5 @@
-<apex:page standardController="Opportunity" extensions="acfApprovalCondition" showHeader="false" id="pid">
+<apex:page standardController="Opportunity" applyHTMLTag="false" extensions="acfApprovalCondition" showHeader="false" id="pid">
+ <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
 <apex:includescript value="{!URLFOR($Resource.CkEditor,'ckeditor/ckeditor.js')}"/>
 
 <link href="{!URLFOR($Resource.CkEditor,'ckeditor/contents.css')}" rel="stylesheet" type="text/css"/>

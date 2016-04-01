@@ -1,5 +1,6 @@
-<apex:page docType="html-5.0" cache="false" standardStylesheets="false" showHeader="false" controller="WLAboutus">
+<apex:page docType="html-5.0" cache="false" standardStylesheets="false" applyHTMLTag="false" showHeader="false" controller="WLAboutus">
 <head>
+ <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />

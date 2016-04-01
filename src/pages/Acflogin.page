@@ -1,5 +1,9 @@
-<apex:page controller="WLLoginController" showHeader="false" standardStylesheets="false" >
-    <c:WLHTMLResourceLink ></c:WLHTMLResourceLink>
+<apex:page controller="WLLoginController" showHeader="false" applyHTMLTag="false" standardStylesheets="false" action="{!RedirectLoggedInUser}">
+  
+  <head>
+      <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
+  </head> 
+  <c:WLHTMLResourceLink ></c:WLHTMLResourceLink>
     <style type="text/css">
 body{
 background-color:#e7eaef;

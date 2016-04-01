@@ -1,5 +1,6 @@
-<apex:page controller="WLBankInformationDetails" showHeader="false" standardStylesheets="false" id="pid" docType="html-5.0" cache="false" sidebar="false">
+<apex:page controller="WLBankInformationDetails" applyHTMLTag="false" showHeader="false" standardStylesheets="false" id="pid" docType="html-5.0" cache="false" sidebar="false">
   <head>
+   <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
@@ -245,22 +246,29 @@ padding-right:10px;
 ul.bank-list_2 li:hover{
 background-color:#eee;
 }
-
+.bankMarginScroll
+{
+    overflow-y: auto;
+    max-height: 500px;
+    overflow-x: hidden;
+}
 </style>
-<c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
+<c:ClickWebsiteOptimizer rendered="{!if(isOppExist,false,true)}" ></c:ClickWebsiteOptimizer>
 </head>
 <c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
 <body id="bd">
 <main class="container-fluid" id="mn">
-<div class="header row">
-<c:WLHeader ></c:WLHeader>
-</div>
+<apex:outputPanel rendered="{!if(isOppExist,false,true)}">
+    <div class="header row">
+        <c:WLHeader ></c:WLHeader>
+    </div>
+</apex:outputPanel>
 <div class="clearfix"></div>
 
 <section class="row" >
     <div class="container container_cstm">       
-        <section class="post_login">       
-            <article class="col-md-8 post_log_back" style="min-height: 483px;">          
+        <section class="{!if(isOppExist,'','post_login')}">       
+            <article class="col-md-8 post_log_back {!if(isOppExist,'bankMarginScroll','')}" style="min-height: 483px;">          
                 <section class="row-fluid slider id-slider">              
                     <div class="row-fluid">     
                   <apex:outputPanel id="pnlMain">               
@@ -275,7 +283,7 @@ background-color:#eee;
                             <h2 class="slide-heading id-veryfi-heading" style="font-size: 1.3em;text-align: center;"><apex:outputText value="{!$Label['acfBankNotFoundErrorMsg']}" escape="false"/></h2>
                         </article>  
                         <div class="set-up-row auto">
-                            <apex:commandButton value="Continue" styleClass="btn faq-btn prf-submit-btn center-block" action="{!skipMethod}"/> 
+                            <apex:commandButton value="Continue" styleClass="btn faq-btn prf-submit-btn center-block" action="{!skipMethod}" rendered="{!If(isOppExist == false,true,false)}"/> 
                         </div>
                         <div class="clearfix"></div> 
                         </div>
@@ -339,11 +347,11 @@ background-color:#eee;
                                 <apex:commandLink id="btnSelectBank" value="Show All" styleclass="btn-virifie ShowAllBtnheightEqualizer btn-virifie_orange" oncomplete="queryData('%');" reRender="pnlMain" status="RegLoadstatus"/>
                            </div>
                            <div class="col-md-6">
-                               <apex:commandButton action="{!skipMethod}" value="Skip" styleClass="btn-virifie btn-light_blue ShowAllBtnheightEqualizer btn-virifie_orange"/> 
+                               <apex:commandLink action="{!skipMethod}" value="Skip" styleClass="btn-virifie btn-light_blue ShowAllBtnheightEqualizer btn-virifie_orange" rerender="pnlMain" status="RegLoadstatus" rendered="{!If(isOppExist == false,true,false)}"/> 
                            </div>
                           <!-- <a href="#" class="c_fnd_bank"> Can't find your bank? </a> -->
                              <div class="clearfix"></div> 
-                           <apex:commandLink styleClass="c_fnd_bank col-md-12" value="Can't find your bank?" action="{!skipMethod}" rerender="pnlMain" status="RegLoadstatus"/>                
+                           <apex:commandLink styleClass="c_fnd_bank col-md-12" value="Can't find your bank?" action="{!skipMethod}" rerender="pnlMain" status="RegLoadstatus" rendered="{!If(isOppExist == false,true,false)}"/>                
                            
                         </div>  
                 </apex:form> 
@@ -486,20 +494,27 @@ background-color:#eee;
                         
                         <div class="clearfix"></div>
                          <div class="stmnt-sbmtd-prg text-center">
-                            <p>We have retrieved 210 days of statements for<br/> selected accounts, and sent them to <span>Click Loans</span><br/>  on your behalf.    
+                            <p>We have retrieved 210 days of statements for<br/> selected accounts, and sent them to <span>ACF Loans</span><br/>  on your behalf.    
                             The secure session with your bank has been closed.</p>
                            
                          </div>   
                         <div class="clearfix"></div>
                         <!--<a href="#" class="btn-virifie">Continue</a>   -->  
                         <div class="col-md-offset-3 col-md-9">
-                            <apex:commandLink action="{!redirectToNextpage}" styleClass="btn-virifie" value="Continue"/>      
+                            <apex:commandLink action="{!redirectToNextpage}" styleClass="btn-virifie" value="Continue" oncomplete="redirectDashboard();"/>  
+                            <script>    
+                                function redirectDashboard()
+                                {
+                                  top.location.href="{!$Label.site_URL}/AcfDashboard";
+                                }
+                            </script>
                         </div>  
                                   
                     </div>                                                         
                 </apex:form>       
                 
               </apex:outputPanel>
+              <apex:outputPanel rendered="{!if(isOppExist,false,true)}">
                   <div class="col-md-6" style="text-align: right;margin-top: 10px;">
                     <script src="//cdn.ywxi.net/js/inline.js?w=81"></script>
                  </div>
@@ -508,16 +523,17 @@ background-color:#eee;
                            <script language="javascript" type="text/javascript" src="//smarticon.geotrust.com/si.js"></script>
                       <!-- end  GeoTrust Smart Icon tag -->
                  </div> 
+              </apex:outputPanel>
               </div>
              
               </section>    
             </article> <!--left panel close here-->
-            <c:ClickQuoteDetail > </c:ClickQuoteDetail>
+            <c:ClickQuoteDetail rendered="{!if(isOppExist,false,true)}"> </c:ClickQuoteDetail>
         </section>
         
   </div><!--container close-->
 </section><!--row fluid close-->
-
+<apex:outputPanel rendered="{!If(isOppExist == false,true,false)}">
 
 
 <!---Feature section start here-------->
@@ -525,6 +541,7 @@ background-color:#eee;
     <c:WLFooter ></c:WLFooter>
 </footer>
 <!---Footer ends here--------------->
+</apex:outputPanel>
 </main>
 </body>
 </apex:page>

@@ -1,4 +1,7 @@
-<apex:page controller="WLJumioSuccess" sidebar="false" showHeader="false" action="{!UpdateSuccessOnLead}" id="pid">
+<apex:page controller="WLJumioSuccess" applyHTMLTag="false" sidebar="false" showHeader="false" action="{!UpdateSuccessOnLead}" id="pid">
+<head>
+     <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
+</head>
 <script>
  //var pgname = '{!retUrlPage}';
  //alert('hi');

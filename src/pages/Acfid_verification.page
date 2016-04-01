@@ -1,5 +1,6 @@
-<apex:page controller="WLId_VerifyController" docType="html-5.0" cache="false"  sidebar="false" showHeader="false" id="pgId" action="{!redirect}" standardStylesheets="false" >
+<apex:page controller="WLId_VerifyController" docType="html-5.0" applyHTMLTag="false" cache="false"  sidebar="false" showHeader="false" id="pgId" action="{!redirect}" standardStylesheets="false" >
   <head>
+   <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
   <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -11,6 +12,7 @@
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
 
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
 
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
@@ -61,6 +63,14 @@ line-height:30px;
 color:#999999;
 } 
 
+.top-tab ul li a.sign_in {
+    border-radius: 5px;
+    border: 1px #f98b02 solid;
+    display: inline-block!important;
+    padding: 5px 15px 5px 20px;
+    line-height: normal;
+}
+
 </style>
 </head>
 <c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
@@ -89,10 +99,10 @@ color:#999999;
                             <div class="clearfix"></div>
                             <apex:form >
                                 <div class="col-md-6 col-xs-12 col-sm-12">
-                                    <apex:commandButton action="{!redirectToNextPage}" value="Skip" styleClass="btn-virifie btn-light_blue"/> 
+                                    <apex:commandButton action="{!redirectToNextPage}" value="Skip" styleClass="btn-virifie btn-light_blue btn-virifie_orange"/> 
                                 </div>
                                 <div class="col-md-6 col-xs-12 col-sm-12">
-                                    <apex:commandButton action="{!redirectToJumio}" value="Continue" styleClass="btn-virifie"/> 
+                                    <apex:commandButton action="{!redirectToJumio}" value="Continue" styleClass="btn-virifie btn-virifie_orange"/> 
                                 </div> 
                             </apex:form>          
                         </div><!--colxs-8 close-->        
