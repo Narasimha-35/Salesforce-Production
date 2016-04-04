@@ -1,5 +1,6 @@
-<apex:page docType="html-5.0" cache="false" standardStylesheets="false" showHeader="false" controller="WLContactus">
+<apex:page docType="html-5.0" cache="false" standardStylesheets="false" showHeader="false" applyHtmlTag="false" controller="WLContactus">
 <head>
+ <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
 <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -32,6 +33,15 @@
 </head>
 <c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
 <body>
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-N5NLKF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-N5NLKF');</script>
+<!-- End Google Tag Manager -->
 <main class="container-fluid ">
 <header class="row">
 <div class="header">
