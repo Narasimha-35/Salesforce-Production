@@ -55,7 +55,11 @@ public class ClickCommon
         {
             List<smagicinteract__smsmagic__c> smsObjectList;
             smsObjectList = new List <smagicinteract__smsmagic__c>();
-            Sms_Magic__c objSetting = Sms_Magic__c.getValues('senderId');
+            
+         //  Click_Community_Setup__c objComm = ClickCommon.getCommunitySetup(Network.getNetworkId());   
+        //    Sms_Magic__c objSetting = Sms_Magic__c.getValues('senderId');   
+       Sms_Magic__c objSetting = Sms_Magic__c.getValues(getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+' senderId');
+       system.debug('objSetting-------------' +objSetting);
             if(objSetting == Null)
             {
                 response = 'Sender ID not found in custom settings.';
@@ -612,18 +616,27 @@ public class ClickCommon
             return false;
         }
     }
-    //Calculating EMI
+     //Calculating EMI
     public static double calculateMonthlyPayment(decimal loanAmount,double decRate,string strPaymentType,double decTenure)
     {
-        decRate   = decRate/1200;//here 1200 is 12*100.
-        decTenure = decTenure*12;
-        if(strPaymentType == 'Interest Only') 
-            return (Math.Round((loanAmount)*(decRate)));
-        else if(strPaymentType == 'Principal and Interest')
-        {    
-          return (Math.Round((loanAmount)*((decRate*(Math.pow((1+decRate),decTenure)))/((Math.pow((1+decRate),decTenure))-1))));
+        try{
+            if(decRate !=0){
+                decRate   = decRate/1200;//here 1200 is 12*100.
+                decTenure = decTenure*12;
+                if(strPaymentType == 'Interest Only') 
+                    return (Math.Round((loanAmount)*(decRate)));
+                else if(strPaymentType == 'Principal and Interest')
+                {    
+                  return (Math.Round((loanAmount)*((decRate*(Math.pow((1+decRate),decTenure)))/((Math.pow((1+decRate),decTenure))-1))));
+                }
+                return null;
+            }
         }
-        return null;
+
+        catch(Exception ex){
+            System.debug('ErrorMessage'+ex.getMessage());
+        }
+        return null; 
     }
     
     //user redirect method
