@@ -1,4 +1,5 @@
-<apex:page docType="html-5.0" standardStylesheets="false" showHeader="false" controller="WLHomeController" cache="false" action="{!RedirectLoggedInUser}">
+<apex:page docType="html-5.0" standardStylesheets="false" showHeader="false" applyHtmlTag="false" controller="WLHomeController" cache="false" action="{!RedirectLoggedInUser}">
+ <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
 <apex:form >
 <div style="width:90%;float:left;">
     <apex:commandButton value="Refinace" action="/AcfPreloginQuestions?type=refi"/> &nbsp;&nbsp;
