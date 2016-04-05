@@ -29,21 +29,7 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 		try {
 			if(request.type__c == '' + AsyncRequestType.SF_TO_MERCURY) {
 				System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] Sync to Mercury...' + param);
-				MercuryApiUtilities.syncWithMercury((String) param.get('oppoId'), (String) param.get('accId'));
-			} else if(request.type__c == '' + AsyncRequestType.MERCURY_TO_SF) {
-				System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] Sync from Mercury...' + param);
-				if((String) param.get('objectName') == 'Opportunity') {
-					MercuryModel.Loan loan = MercuryService.getLoan((String) param.get('uniqueId'));
-					Mercury_Opportunity__c merc_oppo = MercuryOpportunityService.castMercuryOpportunity(loan);
-					System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] casted mercury Opportunity: ' + merc_oppo);
-					Opportunity oppo = MercuryOpportunityService.castOpportunity(merc_oppo);
-					System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] casted Opportunity: ' + oppo);
-					if(oppo.id == null) {
-						upsert merc_oppo;
-					} else {
-						update oppo;
-					}
-				}
+				MercuryService.syncWithMercury((String) param.get('oppoId'), (String) param.get('accId'));
 			}
 
 			System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] Deleting Request...');

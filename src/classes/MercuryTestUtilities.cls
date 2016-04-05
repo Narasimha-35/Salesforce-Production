@@ -2,11 +2,18 @@
 public class MercuryTestUtilities {
 
    public static void setMock(String oppoId, String accountId) {
+      setMock(oppoId, accountId, new MercuryModel.URLParams());
+   }
+
+   public static void setMock(String oppoId, String accountId, MercuryModel.URLParams urlParams) {
+      String baseURL = MercuryApiUtilities.DOMAIN + '/' + MercuryApiUtilities.API_VERSION + '/' + MercuryApiUtilities.APPLICATION + '/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/';
+
       MultiStaticResourceCalloutMock multimock = new MultiStaticResourceCalloutMock();
-      multimock.setStaticResource('https://api.connective.com.au/api/mercuryLogin5.jsp', 'MercuryLoginSuccessResponse');
-      multimock.setStaticResource('https://api.connective.com.au/api/mercury5/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/loan/' + oppoId, 'MercuryLoanSuccessResponse');
-      multimock.setStaticResource('https://api.connective.com.au/api/mercury5/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/loan/' + oppoId.left(15), 'MercuryLoanFail1Response');
-      multimock.setStaticResource('https://api.connective.com.au/api/mercury5/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/person/' + accountId, 'MercuryPersonSuccessResponse');
+      multimock.setStaticResource(MercuryApiUtilities.LOGIN_END_POINT, 'MercuryLoginSuccessResponse');
+      multimock.setStaticResource(baseURL + 'loan/' + oppoId, 'MercuryLoanSuccessResponse');
+      multimock.setStaticResource(baseURL + 'loan/' + oppoId.left(15), 'MercuryLoanFail1Response');
+      multimock.setStaticResource(baseURL + 'person/' + accountId, 'MercuryPersonSuccessResponse');
+      multimock.setStaticResource(baseURL + 'loan?' + urlParams.toString(), 'MercuryLoanSuccessResponse');
       multimock.setStatusCode(200);
       multimock.setHeader('Content-Type', 'application/json');
       Test.setMock(HttpCalloutMock.class, multimock);

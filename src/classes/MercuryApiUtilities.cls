@@ -4,10 +4,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	private static final Credential__c credential          = Credential__c.getAll().get('Mercury');
 	private static final String USER_NAME                  = credential.Mercury_Username__c;
 	private static final String PASSWORD                   = credential.Mercury_Password__c;
-	private static final String LOGIN_END_POINT            = credential.Mercury_Login_End_Point__c;
-	private static final String DOMAIN                     = credential.Mercury_Domain__c;
-	private static final String APPLICATION                = credential.Mercury_Application__c;
-	private static final String API_VERSION                = 'api';
+	public static final String LOGIN_END_POINT            = credential.Mercury_Login_End_Point__c;
+	public static final String DOMAIN                     = credential.Mercury_Domain__c;
+	public static final String APPLICATION                = credential.Mercury_Application__c;
+	public static final String API_VERSION                = 'api';
 	private static Boolean emailSwh                        = false;
 	private static List<String> recipients                 = null;
 	private static String debugEmailTemplate               = null;
@@ -38,27 +38,6 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		}
 		system.debug(LoggingLevel.INFO, 'Email Switch: ' + emailSwh);
 		system.debug(LoggingLevel.INFO, 'Email Recipients: ' + recipients);
-	}
-
-	public static void syncWithMercury(String oppoId, String accountId)  {
-		String branchId = getBrokerBranch(oppoId);
-		Id oId = oppoId;
-		Id aId = accountId;
-
-		//Create Oppo
-		System.debug(oppoId);
-		Opportunity oppo = MercuryApiUtilities.createOppoInMercury(oppoId, branchId);
-		//Create People
-		System.debug(accountId);
-		Contact contact = MercuryApiUtilities.createPeopleInMercury(accountId, branchId);
-		//Create Connection between Oppo and People
-		String oppoAndaccountId = oId + '-' + aId;
-		MercuryApiUtilities.createLoanPeopleInMercury(oppoAndaccountId, oId, aId);
-
-		update oppo;
-		update contact;
-		sendEmail();
-		pendingEmails = new List<Map<String, String>>();
 	}
 
 	@future(callout=true)
@@ -120,7 +99,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 				//Mark sync with mercury checkbox ticked
 				oppo.Sync_With_Mercury__c = true;
 				pendingEmails.add(new Map<String, String>{'methodName' => 'createOppoInMercury', 'details' => generateDetailPart(req, res)});
-				throw new MercurySyncException('StatusCode: ' + res);
+				throw new MercurySyncOpportunityException('StatusCode: ' + res);
 			}
 			return oppo;
 		}
@@ -202,7 +181,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 				//Mark sync with mercury checkbox ticked
 				contact.Sync_With_Mercury__c = true;
 				pendingEmails.add(new Map<String, String>{'methodName' => 'createPeopleInMercury', 'details' => generateDetailPart(req, res)});
-				throw new MercurySyncException('StatusCode: ' + res);
+				throw new MercurySyncAccountException('StatusCode: ' + res);
 			}
 
 			//update opportunity
@@ -742,8 +721,6 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	}
 
 	public static Map<String, Object> handleGetResponse(HttpResponse res) {
-		//re authenticate if get status code equals 401
-		if(res.getStatusCode() == 401) MercuryAuth.getInstance().auth();
 		if(res.getStatusCode() != 200 || res.getBody() == '') return null;
 		Map<String, Object> ret = null;
 		try {
@@ -837,7 +814,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
 	}
 
-	public class MercurySyncException extends Exception {
+	public class MercurySyncOpportunityException extends Exception {
+	}
+
+	public class MercurySyncAccountException extends Exception {
 	}
 
 }
