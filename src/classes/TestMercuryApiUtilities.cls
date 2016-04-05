@@ -49,14 +49,6 @@ private class TestMercuryApiUtilities {
 		Test.stopTest();
 	}
 
-	static testMethod void syncWithMercuryTest() {
-		Test.startTest();
-		String accountId = account.Id;
-		String oppoId = oppo.Id;
-		MercuryApiUtilities.syncWithMercury(oppoId, accountId);
-		Test.stopTest();
-	}
-
 	static testMethod void convertCurrentTimeToGMTWithTimeZoneTest() {
 		Datetime dt = System.now();
 		String timeS = MercuryApiUtilities.convertCurrentTimeToGMTWithTimeZone(dt);

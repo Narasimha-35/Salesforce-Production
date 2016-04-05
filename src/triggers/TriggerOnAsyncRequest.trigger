@@ -1,8 +1,5 @@
 trigger TriggerOnAsyncRequest on AsyncRequest__c (after insert) {
    System.debug(LoggingLevel.INFO, '[TriggerOnAsyncRequest] Async Request Inserted: ' + Trigger.new);
-   // AsyncRequestSelector ars = new AsyncRequestSelector();
-   // List<AsyncRequest__c> pendingRequest = ars.getPendingRequests(AsyncRequestType.SF_TO_MERCURY);
-   // AsyncRequestService.deduplicateRequest(Trigger.new, pendingRequest);
 
    if(!ACFSwitch__c.getOrgDefaults().QueuedAsyncRequestSwitch__c) return;
    System.debug(LoggingLevel.INFO, '[TriggerOnAsyncRequest] QueuedAsyncRequestSwitch__c is on');
@@ -13,6 +10,7 @@ trigger TriggerOnAsyncRequest on AsyncRequest__c (after insert) {
 
    Boolean mercuryRequestBatchStartFlag = false;
    for(AsyncRequest__c ar : Trigger.new) {
+      if(ar.failed__c == true) continue;
       System.debug(LoggingLevel.INFO, '[TriggerOnAsyncRequest] Checking Request Type: ' + ar);
       if(ar.type__c == '' + AsyncRequestType.SF_TO_MERCURY || ar.type__c == '' + AsyncRequestType.MERCURY_TO_SF) {
          mercuryRequestBatchStartFlag = true;

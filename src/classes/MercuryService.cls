@@ -13,6 +13,10 @@
 *
 **/
 public class MercuryService {
+
+	public class MercurySyncException extends Exception {
+	}
+
 	public static final List<String> p1RequiredStatus;
 	static {
 		p1RequiredStatus = new List<String>{
@@ -56,7 +60,7 @@ public class MercuryService {
 	@future(callout=true)
 	public static void futureSyncWithMercury(String oppoId, String accountId) {
 		try {
-			MercuryApiUtilities.syncWithMercury(oppoId, accountId);
+			MercuryService.syncWithMercury(oppoId, accountId);
 		} catch (Exception e) {
 
 		}
@@ -68,7 +72,7 @@ public class MercuryService {
 		AsyncRequest__c req = ars.getById(new List<Id>{reqId})[0];
 		Map<String, Object> param = (Map<String, Object>) JSON.deserializeUntyped((String)(req.get('params__c')));
 		try {
-			MercuryApiUtilities.syncWithMercury((String) param.get('oppoId'), (String) param.get('accId'));
+			MercuryService.syncWithMercury((String) param.get('oppoId'), (String) param.get('accId'));
 			Delete req;
 		} catch (Exception e) {
 
@@ -86,6 +90,42 @@ public class MercuryService {
 		return lr;
 	}
 
+	public static void syncWithMercury(String oppoId, String accountId)  {
+		String branchId = MercuryApiUtilities.getBrokerBranch(oppoId);
+		Id oId = oppoId;
+		Id aId = accountId;
+		Boolean isError = false;
+		Opportunity oppo = null;
+		Contact contact = null;
+
+		//Create Oppo
+		System.debug(oppoId);
+		try {
+			oppo = MercuryApiUtilities.createOppoInMercury(oppoId, branchId);
+		} catch (MercuryApiUtilities.MercurySyncOpportunityException e) {
+			isError = true;
+		}
+
+		//Create People
+		System.debug(accountId);
+		try {
+			contact = MercuryApiUtilities.createPeopleInMercury(accountId, branchId);
+		} catch (MercuryApiUtilities.MercurySyncAccountException e) {
+			isError = true;
+		}
+
+		//Create Connection between Oppo and People
+		String oppoAndaccountId = oId + '-' + aId;
+		MercuryApiUtilities.createLoanPeopleInMercury(oppoAndaccountId, oId, aId);
+
+		if(oppo != null) update oppo;
+		if(contact != null) update contact;
+		if(isError) {
+			MercuryApiUtilities.sendEmail();
+			throw new MercurySyncException();
+		}
+	}
+
 	public static MercuryModel.Loan getLoan(String uniqueId) {
 		HttpResponse res = MercuryApiUtilities.sendGetRequest('Opportunity', uniqueId);
 		MercuryModel.LoanResponse lr = (MercuryModel.LoanResponse) JSON.deserialize(res.getBody(), MercuryModel.LoanResponse.class);
@@ -93,7 +133,7 @@ public class MercuryService {
 		return null;
 	}
 
-	public static void syncBackLoan(Integer method) {
+	public static Set<String> getSyncBackLoanId(Integer method) {
 		MercuryModel.LoanResponse res = null;
 		Set<String> ids = new Set<String>();
 		if(method == 1) {
@@ -108,7 +148,11 @@ public class MercuryService {
 			System.debug(LoggingLevel.INFO, '[MercuryService] loans to update: ' + res);
 			ids.addAll(res.idList);
 		}
-		AsyncRequestService.addSyncBackRequest('Opportunity', ids);
+		return ids;
+	}
+
+	public static void syncBackLoan(Integer method) {
+		AsyncRequestService.addSyncBackRequest('Opportunity', getSyncBackLoanId(method));
 	}
 
 }
