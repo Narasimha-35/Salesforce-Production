@@ -1,4 +1,4 @@
-global class WLBankInformationDetails 
+global without sharing class WLBankInformationDetails 
 {
     //public properties
     public integer intStepNumber{get;set;}
@@ -39,9 +39,12 @@ global class WLBankInformationDetails
         isOppExist = false;
         strNetworkId = Network.getNetworkId();
         objCommunitySetUp = new Click_Community_Setup__c ();
-        if(strNetworkId != null && strNetworkId != '')
+        system.debug('Hi Community2'+Network.getNetworkId());
+        system.debug('Hi Community1'+ClickCommon.getCommunitySetup(Network.getNetworkId()).id);
+        if(ClickCommon.getCommunitySetup(Network.getNetworkId()).id != null)
         {
-            objCommunitySetUp = ClickCommon.getCommunitySetup(strNetworkId);
+            system.debug('Hi Community'+ClickCommon.getCommunitySetup(Network.getNetworkId()).id);
+            objCommunitySetUp = ClickCommon.getCommunitySetup(Network.getNetworkId());
         }
         mapBankstepSequance = new Map <Integer,acfBank_Information__c>();
         lstUserCredentials = new list<string>();
@@ -227,6 +230,7 @@ global class WLBankInformationDetails
                     //obj.initiate(strBankSlugName, lstUserCredentials, lstUserQuearyType, false, strParentId, strSelectedAccounts);
                     system.debug('@@@@@@@test'+bnk_stmt_success_failure);
                     obj.statementRequest(bnk_stmt_success_failure,strParentId,false,strSelectedAccounts,strBankSlugName);
+                    system.debug('obj!@#$%^&'+obj);
                     intStepNumber = 4;
             }
 
@@ -281,13 +285,14 @@ global class WLBankInformationDetails
             update leadObj;
             list<Required_Document__c> lstRequiredDoc = [select id, acfStatus__c from Required_Document__c where acf_Bank_Statement_Doc__c = true
                                                           AND Lead__c=:leadObj.id];
+            system.debug('lstRequiredDoc------'+lstRequiredDoc);
             if(lstRequiredDoc != null && lstRequiredDoc.size() > 0)
             {
                      lstRequiredDoc[0].click_Is_Uploaded__c= true; 
                      update lstRequiredDoc[0];        
             }
                                         
-           
+            
             String retUrl = ClickCommon.sendReturnUrl(UserInfo.getuserId(),false,objCommunitySetUp.Click_Page_Prefix__c+'BankInfoDetails',strNetworkId);
             PageReference pageref = new PageReference(retUrl);
             return(pageref);
@@ -296,18 +301,32 @@ global class WLBankInformationDetails
         {
             if(loggedInOppId <> null)
             {
-                list<Required_Document__c> lstRequiredDoc = [select id, acfStatus__c from Required_Document__c where acf_Bank_Statement_Doc__c = true
-                                                              AND acfOpportunity__c =:strParentId];
+                list<Required_Document__c> lstRequiredDoc = new list<Required_Document__c>();
+                String ReqdocId = Apexpages.currentpage().getparameters().get('Docid');
+                if(ReqdocId <> null && ReqdocId <> '')
+                {
+                    lstRequiredDoc = [select id,Name, acfStatus__c from Required_Document__c where acf_Bank_Statement_Doc__c = true AND id =: ReqdocId
+                                                                  AND acfOpportunity__c =:strParentId];
+                }else{
+                        lstRequiredDoc = [select id,Name, acfStatus__c from Required_Document__c where acf_Bank_Statement_Doc__c = true
+                                                                  AND acfOpportunity__c =:strParentId];
+                    }
                 if(lstRequiredDoc != null && lstRequiredDoc.size() > 0)
                 {
+                     system.debug('!@#$lstRequiredDoc');
+                     string strTaskSubject = 'Upload '+lstRequiredDoc[0].name;
                      lstRequiredDoc[0].click_Is_Uploaded__c= true; 
-                     update lstRequiredDoc[0];    
-                     list<task> lstTask = [select id,subject,status,whatid from task where acf_Is_Upload_Bank_Stmt__c = true and whatid =:strParentId limit 1];
+                     update lstRequiredDoc[0]; 
+                      
+                     system.debug('!@#$strTaskSubject '+strTaskSubject );
+                     list<task> lstTask = [select id,subject,status,whatid from task where Subject =:strTaskSubject AND whatid =:strParentId limit 1];
                      if(lstTask != null && lstTask.size()>0)
                      {
+                        system.debug('!@#$lstTask'+lstTask);
                         lstTask[0].status = 'Completed';
                         if(!Test.isRunningTest()){
                             update lstTask[0];
+                            system.debug('!@#$lstTask'+lstTask[0]);
                         }
                      }    
                 } 

@@ -6,12 +6,25 @@ public class ClickAddDocumentController
     public string strerrMsg{get;set;}
     public boolean isDocAdded {get;set;}
     public string docMasterId {get;set;}
+    public string strCommunityName {get;set;}
+    public boolean strCommName {get;set;}
     public ClickAddDocumentController()
     {
         strerrMsg = ''; 
         isDocAdded = false;
         docMasterId = '';   
         strReqDocName = '';
+        
+        strCommunityName = ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c;
+        if(strCommunityName == 'ACF')
+        {
+        strCommName = false;
+        }
+        else if(strCommunityName == 'Click')
+        {
+        strCommName  = true;
+        }
+        
     }
     
     public Account getObjAccount()
@@ -107,8 +120,8 @@ public class ClickAddDocumentController
     }
     
     public List<SelectOption> getDocumentMasterNames()
-    {  
-        List<Document_Master__c> lstDocMaster = [select id,Name,acfActive__c from Document_Master__c where acfActive__c = true];
+    {         
+        List<Document_Master__c> lstDocMaster = [select id,Name,acfActive__c from Document_Master__c where acfActive__c = true AND Click_Community_Setup__r.Click_Network_ID__c=: Network.getNetworkId() order by Name ASC];
         List<SelectOption> options = new List<SelectOption>();
         if(lstDocMaster != null && lstDocMaster.size()>0)
         {
