@@ -45,9 +45,20 @@ public class WLJumioSuccess
             
             If(oppId != null && oppId <> '')
             {
+               String ReqdocId = Apexpages.currentpage().getparameters().get('Docid');
+               system.debug('karthik@@@'+ReqdocId+'===='+ApexPages.currentPage().getUrl());
                String strTaskSubject = '';
                List<Task> lstTask = new List<Task>();
-               List<Opportunity> lstOpportunity = [select id,acfIs_Identity_Document_Submitted__c,(select id,Name,acfStatus__c from Required_Documents__r where acf_Is_Identity_Verification_Doc__c = true limit 1) from Opportunity where id =: oppId];
+               List<Opportunity> lstOpportunity = new List<Opportunity>();
+               if(ReqdocId <> null && ReqdocId <> '')
+               {
+                   lstOpportunity = [select id,acfIs_Identity_Document_Submitted__c,(select id,Name,acfStatus__c from Required_Documents__r where acf_Is_Identity_Verification_Doc__c = true And id=:ReqdocId) from Opportunity where id =: oppId];
+               }
+               else
+               {
+                   lstOpportunity = [select id,acfIs_Identity_Document_Submitted__c,(select id,Name,acfStatus__c from Required_Documents__r where acf_Is_Identity_Verification_Doc__c = true limit 1) from Opportunity where id =: oppId];
+
+               }
                If(lstOpportunity != null && lstOpportunity.size()>0){
                    lstOpportunity[0].acfIs_Identity_Document_Submitted__c = true;
                    lstOpportunity[0].clickJumio_Status__c = 'Attempted';
@@ -66,8 +77,6 @@ public class WLJumioSuccess
                        objTask.status = 'Completed';
                        update objTask;
                    }
-                   
-                   
                }
                
             }

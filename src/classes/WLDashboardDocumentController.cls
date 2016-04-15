@@ -17,7 +17,7 @@ global class WLDashboardDocumentController
    
    public List<user>lstuser;
    public Id OpportunityId;
-   public Id RequiredDocumentId;
+   public Id RequiredDocumentId {get;set;}
    public Integer IndexNo{get;set;}
    public Integer IndexNo1{get;set;}
    public List<WrapperDocuments>lstWrapperDocumnets{get;set;}
@@ -88,6 +88,7 @@ global class WLDashboardDocumentController
      {
         lstWrapperDocumnets = new List<WrapperDocuments>();        
         system.debug('**OpportunityId'+OpportunityId);
+        String PrefixUrls = ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c;
         for(Required_Document__c objRequiredDoc:[select id,name,acfOpportunity__c,Click_Is_Note_Type__c,acfOpportunity__r.clickJumio_Status__c,
                                                 acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,
                                                 acf_Is_Identity_Verification_Doc__c,acfStatus__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c,
@@ -104,8 +105,8 @@ global class WLDashboardDocumentController
             
             list<Attachment> attList = objRequiredDoc.Attachments;
             if(attList.isempty() == false){
-                    objDocument.imageURL= label.site_URL+'/servlet/servlet.FileDownload?file='; 
-                    objDocument.imageURL= objDocument.imageURL + attList[0].id;
+                objDocument.imageURL= PrefixUrls+'/servlet/servlet.FileDownload?file='; 
+                objDocument.imageURL= objDocument.imageURL + attList[0].id;
             }
                            
             lstWrapperDocumnets.add(objDocument);
@@ -125,13 +126,14 @@ global class WLDashboardDocumentController
            list<Click_Uploaded_Documents__c> lstUploadedDocs = [select id,Click_Loans_Required_Document__c,click_Is_deleted__c,Name,
                                                                Click_Attachment_Id__c from Click_Uploaded_Documents__c where 
                                                                Click_Loans_Required_Document__c =: objWrapDoc.objRequiredDocumnets.id];
+            string PrefixUrl = ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c;                                                    
             for(Click_Uploaded_Documents__c objUploadDoc : lstUploadedDocs)
             {
                 wrapAttachDocs objWrapAttach = new wrapAttachDocs();
                 objWrapAttach.strDocName = objUploadDoc.Name;
                 objWrapAttach.isDeleted = objUploadDoc.click_Is_deleted__c;
                 objWrapAttach.attachId = objUploadDoc.Click_Attachment_Id__c;
-                objWrapAttach.imgUrl = label.acfSite_Url+'/servlet/servlet.FileDownload?file='+objUploadDoc.Click_Attachment_Id__c;
+                objWrapAttach.imgUrl = PrefixUrl+'/servlet/servlet.FileDownload?file='+objUploadDoc.Click_Attachment_Id__c;
                 lstWrapAttach.add(objWrapAttach);
             }
             system.debug('lstWrapAttach'+lstWrapAttach);
@@ -279,15 +281,17 @@ global class WLDashboardDocumentController
                 Name = fileName,
                 ContentType = contentType
             );
+            system.debug('###att'+att);
             insert att;
             uploadMultipleDoc(fileIndexNo);
             //Return the new attachment Id
             return att.Id;   
         }
         return attachmentId;
-    }    
-    
-    public static void uploadMultipleDoc(integer fileIndexNo)
+    } 
+       
+   @RemoteAction
+   global static void uploadMultipleDoc(integer fileIndexNo)
     {
         if(fileIndexNo <> null)
         {
@@ -463,7 +467,7 @@ global class WLDashboardDocumentController
    //white lable delete functionality
    public pagereference deleteFile_Acf()
    {
-   	   system.debug('indx ...'+IndexNo  );
+        system.debug('indx ...'+IndexNo  );
        if(IndexNo  <> null && IndexNo<lstWrapperDocumnets.size())
        {
             WrapperDocuments objWrapDoc = lstWrapperDocumnets[IndexNo];
@@ -493,13 +497,13 @@ global class WLDashboardDocumentController
             }
        }     
        BindWrapperDocument(OpportunityId);    
-       return (new Pagereference(ClickCommon.URLPrefix + ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c +'Dashboard'));   		
+       return (new Pagereference(ClickCommon.URLPrefix + ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c +'Dashboard'));       
    }
 
    public pagereference frameURL()
    {
-        strBankFrameURl = system.Label.acfSite_Url+'/ClickBankInfoDetails';
-        strJumioFrameUrl = system.Label.acfSite_Url+'/ClickJumioIntegration';
+        strBankFrameURl =ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c+'/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'BankInfoDetails?Docid='+RequiredDocumentId;
+        strJumioFrameUrl =ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c+'/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'JumioIntegration?Docid='+RequiredDocumentId;
         return null;
    }
    public class wrapAttachDocs

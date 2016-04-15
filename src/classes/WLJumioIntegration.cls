@@ -52,6 +52,7 @@ public class WLJumioIntegration
     */
     public void CallToJumio() 
     {
+        String ReqDocid = apexpages.currentpage().getparameters().get('Docid');
         JSONGenerator objJsonGen = JSON.createGenerator(true);
         objJsonGen.writeStartObject();
         
@@ -65,10 +66,18 @@ public class WLJumioIntegration
         String strRetUrl ='/Exception';
         if(objCommunity != null)
         {
-            strRetUrl =  objCommunity.Click_URL__c+ClickCommon.URLPrefix+'AcfJumioSuccess';  
-            system.debug('Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii:'+objCommunity.Click_URL__c+ClickCommon.URLPrefix+'AcfJumioSuccess');
+            if(ReqDocid <> null && ReqDocid <> '')
+            {
+                strRetUrl =  objCommunity.Click_URL__c+ClickCommon.URLPrefix+'AcfJumioSuccess?Docid='+ReqDocid;  
+                system.debug('Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii:'+objCommunity.Click_URL__c+ClickCommon.URLPrefix+'AcfJumioSuccess');
+            }
+            else
+            {
+                strRetUrl =  objCommunity.Click_URL__c+ClickCommon.URLPrefix+'AcfJumioSuccess';  
+                system.debug('Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii:'+objCommunity.Click_URL__c+ClickCommon.URLPrefix+'AcfJumioSuccess');
+            }
         }
-        //String strRetUrl = System.label.acfSite_Url+'/AcfJumioSuccess';  
+    //    strRetUrl = System.label.acfSite_Url+'/AcfJumioSuccess';  
         objJsonGen.writeStringField('successUrl',strRetUrl);
         objJsonGen.writeStringField('errorUrl',strRetUrl);
         objJsonGen.writeEndObject();
@@ -108,10 +117,16 @@ public class WLJumioIntegration
         {
             if(objRootObject.jumioIdScanReference <> null)
             {
-                   List<Required_Document__c>lstRequiredDoc = [select id,acfStatus__c,acf_Reference_No__c,acfDocument_Master__c from Required_Document__c 
-                                                               Where acfDocument_Master__c <> null AND ((Lead__c <> null AND Lead__c=:LoggedInLeadId) OR (acfOpportunity__c <> null AND acfOpportunity__c=:lstLead[0].convertedOpportunityId)) 
-                                                               AND acfDocument_Master__r.acf_Source__c =: 'Jumio' limit 1];
-                   system.debug('@@karthik'+lstRequiredDoc+'!@#'+objRootObject.jumioIdScanReference+'@@@'+LoggedInLeadId +'@@'+ lstLead[0].convertedOpportunityId);
+                   List<Required_Document__c> lstRequiredDoc = new List<Required_Document__c>();
+                   if(ReqDocid <> null && ReqDocid <> '')
+                   {
+                       lstRequiredDoc = [select id,acfStatus__c,acf_Reference_No__c,acfDocument_Master__c from Required_Document__c Where id=:ReqDocid];
+                   }else{
+                           lstRequiredDoc = [select id,acfStatus__c,acf_Reference_No__c,acfDocument_Master__c from Required_Document__c 
+                                                                       Where acfDocument_Master__c <> null AND ((Lead__c <> null AND Lead__c=:LoggedInLeadId) OR (acfOpportunity__c <> null AND acfOpportunity__c=:lstLead[0].convertedOpportunityId)) 
+                                                                       AND acfDocument_Master__r.acf_Source__c =: 'Jumio' limit 1];
+                           system.debug('@@karthik'+lstRequiredDoc+'!@#'+objRootObject.jumioIdScanReference+'@@@'+LoggedInLeadId +'@@'+ lstLead[0].convertedOpportunityId);
+                   }
                    if(lstRequiredDoc <> null && lstRequiredDoc.size()>0)
                    {
                       // lstRequiredDoc[0].acfStatus__c = 'Awaited';
