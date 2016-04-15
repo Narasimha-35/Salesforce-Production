@@ -21,6 +21,24 @@ public with sharing class TestMercuryService {
 		MercuryTestUtilities.setMock(oppo.id, acc.id, urlParam);
 	}
 
+	private static testMethod void testSyncWithMercury401() {
+		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+		mock.setStaticResource('MercuryLoginSuccessResponse');
+		mock.setStatusCode(401);
+		mock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, mock);
+
+		Test.startTest();
+		try{
+			MercuryService.syncWithMercury(oppo.id, acc.id);
+			System.assert(false);
+		} catch (MercuryService.MercurySyncException e) {
+			System.assert(true);
+		}
+
+		Test.stopTest();
+	}
+
 	private static testMethod void syncWithMercuryTest() {
 		Test.startTest();
 		String accountId = acc.Id;
@@ -50,7 +68,7 @@ public with sharing class TestMercuryService {
 	// 	Test.stopTest();
 	// }
 
-	// TODO: can't get rid of _dc 
+	// TODO: can't get rid of _dc
 	// private static testMethod void getLoansFromMercuryTest() {
 	// 	Test.startTest();
 	// 	MercuryService.getLoansFromMercury('Opportunity', 'P200019', 'businessStats', MercuryService.param2);

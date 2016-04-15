@@ -47,18 +47,18 @@ global without sharing class MercurySyncBackBatch implements Database.Batchable<
 					oppoListNeedUpdate.put(mercId, oppo);
 					System.debug(LoggingLevel.FINE, '[MercurySyncBackBatch] Opportunity have been put in map');
 				}
-			} catch (Exception e) {
-				System.debug(LoggingLevel.INFO, '[MercurySyncBackBatch] Enter Exception for Mercury id: ' + mercId);
-				System.debug(LoggingLevel.DEBUG, '[MercurySyncBackBatch] Exception: ' + e.getMessage());
-				System.debug(LoggingLevel.DEBUG, '[MercurySyncBackBatch] Exception: ' + e.getCause());
-				System.debug(LoggingLevel.DEBUG, '[MercurySyncBackBatch] Exception: ' + e.getLineNumber());
-				System.debug(LoggingLevel.DEBUG, '[MercurySyncBackBatch] Exception: ' + e.getStackTraceString());
+			} catch (Utilities.CalloutResponseException re) {
+				System.debug(LoggingLevel.INFO, '[MercurySyncBackBatch] Enter CalloutResponseException for Mercury id: ' + mercId);
+				System.debug(LoggingLevel.DEBUG, '[MercurySyncBackBatch] CalloutResponseException: ' + re.getMessage());
+				System.debug(LoggingLevel.DEBUG, '[MercurySyncBackBatch] CalloutResponseException: ' + re.getCause());
+				System.debug(LoggingLevel.DEBUG, '[MercurySyncBackBatch] CalloutResponseException: ' + re.getLineNumber());
+				System.debug(LoggingLevel.DEBUG, '[MercurySyncBackBatch] CalloutResponseException: ' + re.getStackTraceString());
 
 				AsyncRequest__c errorItem = new AsyncRequest__c();
 				errorItem.type__c = '' + AsyncRequestType.MERCURY_TO_SF;
 				errorItem.params__c = '{"uniqueId":"' + mercId + '", "objectName":"opportunity"}';
 				errorItem.failed__c = true;
-				errorItem.errorMessage__c = e.getMessage();
+				errorItem.errorMessage__c = '' + re.getStatusCode();
 				errorList.add(errorItem);
 				System.debug(LoggingLevel.INFO, '[MercurySyncBackBatch] The Error Item has been added in error list.');
 			}

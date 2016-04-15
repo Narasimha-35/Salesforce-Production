@@ -22,4 +22,10 @@ public abstract class Model {
 		// Return a Set of those fields present on our object
 		return obj.keyset().clone();
 	}
+
+	public Set<String> getNonNullAttributeSet() {
+		Set<String> ret = getAttributes();
+		for(String s : ret) if(get(s) == null) ret.remove(s);
+		return ret;
+	}
 }

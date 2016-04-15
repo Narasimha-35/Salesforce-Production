@@ -15,6 +15,15 @@
 public class MercuryService {
 
 	public class MercurySyncException extends Exception {
+		private List<Exception> exceptionList = null;
+
+		public MercurySyncException(List<Exception> exceptionList) {
+			this.exceptionList = exceptionList;
+		}
+
+		public List<Exception> getExceptions() {
+			return exceptionList;
+		}
 	}
 
 	public static final List<String> p1RequiredStatus;
@@ -94,35 +103,38 @@ public class MercuryService {
 		String branchId = MercuryApiUtilities.getBrokerBranch(oppoId);
 		Id oId = oppoId;
 		Id aId = accountId;
-		Boolean isError = false;
 		Opportunity oppo = null;
-		Contact contact = null;
+		Account account = null;
+		List<Utilities.CalloutResponseException> exceptions = new List<Utilities.CalloutResponseException>();
 
 		//Create Oppo
 		System.debug(oppoId);
+		System.debug(LoggingLevel.DEBUG, '[MercuryService] Check DML Limit: ' + Limits.getDMLRows());
 		try {
 			oppo = MercuryApiUtilities.createOppoInMercury(oppoId, branchId);
-		} catch (MercuryApiUtilities.MercurySyncOpportunityException e) {
-			isError = true;
+		} catch (Utilities.CalloutResponseException e) {
+			exceptions.add(e);
 		}
 
 		//Create People
 		System.debug(accountId);
+		System.debug(LoggingLevel.DEBUG, '[MercuryService] Check DML Limit: ' + Limits.getDMLRows());
 		try {
-			contact = MercuryApiUtilities.createPeopleInMercury(accountId, branchId);
-		} catch (MercuryApiUtilities.MercurySyncAccountException e) {
-			isError = true;
+			account = MercuryApiUtilities.createPeopleInMercury(accountId, branchId);
+		} catch (Utilities.CalloutResponseException e) {
+			exceptions.add(e);
 		}
 
 		//Create Connection between Oppo and People
 		String oppoAndaccountId = oId + '-' + aId;
+		System.debug(LoggingLevel.DEBUG, '[MercuryService] Check DML Limit: ' + Limits.getDMLRows());
 		MercuryApiUtilities.createLoanPeopleInMercury(oppoAndaccountId, oId, aId);
 
 		if(oppo != null) update oppo;
-		if(contact != null) update contact;
-		if(isError) {
+		if(account != null) update account;
+		if(exceptions.size() > 0) {
 			MercuryApiUtilities.sendEmail();
-			throw new MercurySyncException();
+			throw new MercurySyncException(exceptions);
 		}
 	}
 

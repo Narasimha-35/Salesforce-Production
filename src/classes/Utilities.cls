@@ -345,4 +345,28 @@ global class Utilities {
     return o;
   }
 
+  public class CalloutResponseException extends Exception {
+    private HttpRequest req;
+    private HttpResponse res;
+    private Integer statusCode;
+
+    public CalloutResponseException(HttpRequest req, HttpResponse res) {
+      this.req = req;
+      this.res = res;
+      this.statusCode = res.getStatusCode();
+    }
+
+    public HttpRequest getRequest() {
+      return this.req;
+    }
+
+    public HttpResponse getResponse() {
+      return this.res;
+    }
+
+    public Integer getStatusCode() {
+      return this.statusCode;
+    }
+  }
+
 }

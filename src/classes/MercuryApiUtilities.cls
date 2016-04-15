@@ -34,8 +34,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 			recipients                  = ((String) emaiSetting.get('Mercury_Email_Receiver__c')).split(',');
 			Document doc                = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
 			debugEmailTemplate          = doc.body.toString();
-			pendingEmails               = new List<Map<String, String>>();
 		}
+		pendingEmails = new List<Map<String, String>>();
 		system.debug(LoggingLevel.INFO, 'Email Switch: ' + emailSwh);
 		system.debug(LoggingLevel.INFO, 'Email Recipients: ' + recipients);
 	}
@@ -68,126 +68,53 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	public static Opportunity createOppoInMercury(Opportunity oppo, String branchId, Boolean testMode) {
 		String token = MercuryAuth.getInstance().getToken();
 		if(checkRecord('Opportunity', oppo.id) && !testMode) return oppo;
+		MercuryModel.Loan loan = new MercuryModel.Loan(oppo, branchId);
 
-		if (oppo != null) {
-			String createdTime = convertCurrentTimeToGMTWithTimeZone();
-			HttpRequest req = new HttpRequest();
-			HttpResponse res = new HttpResponse();
-			Http http = new Http();
-			String jsonChange = '["company","createdBy","createdOn","transactionType","personActing","status","lender","lenderNameShort","loanName","agent","personResponsible","partnerSharedWithName","leadSourceDisplay","campaignName","leadSourceId","partnerSharedWithId","campaignId","partnerReference","workspaceUsers","partnerName","sitRep","tranxType","lenderReference","nextGenId","metaData","notePadText","lenderComments","discountType"]';
-			req.setHeader('Content-Type', 'application/json');
-			req.setEndPoint('https://api.connective.com.au/api/mercury5/' + token + '/loan?changes=' + Encodingutil.urlEncode(jsonChange, 'UTF-8'));
-			Decimal loanValue = oppo.Current_Loan_Value__c != null ? oppo.Current_Loan_Value__c : 0;
-			String transactionType = oppo.Transaction_Type__c != null ? oppo.Transaction_Type__c : '';
-			String jsonToSendOver = '{"uniqueId":"' + oppo.id + '","isDeleted":false,"createdOn":"' + createdTime + '","deletedOn":null,"loanName":"' + oppo.Name + '","amount":' + loanValue + ',"lvr":0,"lender":"","lenderNameShort":"","status":"Lead","agent":"","personActing":"CA47482","financeDate":null,"expectedSettlementDate":null,"confirmedSettlementDate":null,"discount":0,"existingAmount":0,"lmi":0,"settlementDateConfirmed":false,"connectiveLodgeId":0,"peResidualAmount":0,"peRepaymentAmount":0,"peInterestRate":0,"peEffectiveRate":0,"peBrokerage":0,"loanTerm":0,"nextAction":null,"fixedRateExpiry":null,"depositDueDate":null,"vbo":false,"statusLastUpdated":null,"interestOnlyExpiry":null,"securityValue":0,"company":"' + branchId + '","createdBy":"CA47482","transactionType":"Loan","personResponsible":"CA42779","partnerSharedWithName":"","leadSourceDisplay":"ACF Client","campaignName":"","leadSourceId":"3f85d5db-5924-11e4-88e4-00155db85119","partnerSharedWithId":"","campaignId":"","partnerReference":"","workspaceUsers":"","partnerName":"","sitRep":"","tranxType":"' + transactionType + '","lenderReference":"","nextGenId":"","metaData":"","notePadText":"","lenderComments":"","discountType":null}';
-			req.setBody(jsonToSendOver);
-			req.setMethod(AbstractWebService.HTTP_METHOD_POST);
-			if (Test.isRunningTest()) {
-				res.setStatusCode(200);
-			} else {
-				res = http.send(req);
-			}
-			System.debug(jsonToSendOver);
-			System.debug(res.getBody());
+		MercuryUtility.HttpSet hs = insertToMercury(loan);
+		HttpRequest req = hs.req;
+		HttpResponse res = hs.res;
 
-			if(res.getStatusCode() == 200) {
-				//Mark sync with mercury checkbox ticked
-				oppo.Sync_With_Mercury__c = true;
-				//Mark sync with mercury success ticked
-				oppo.Sync_With_Mercury_Success__c = true;
-			} else {
-				//Mark sync with mercury checkbox ticked
-				oppo.Sync_With_Mercury__c = true;
-				pendingEmails.add(new Map<String, String>{'methodName' => 'createOppoInMercury', 'details' => generateDetailPart(req, res)});
-				throw new MercurySyncOpportunityException('StatusCode: ' + res);
-			}
-			return oppo;
+		oppo.Sync_With_Mercury__c = true;
+		if(res.getStatusCode() == 200) {
+			//Mark sync with mercury success ticked
+			oppo.Sync_With_Mercury_Success__c = true;
+		} else {
+			pendingEmails.add(new Map<String, String>{'methodName' => 'createOppoInMercury', 'details' => generateDetailPart(req, res)});
+			throw new Utilities.CalloutResponseException(req, res);
 		}
 		return oppo;
+
 	}
 
-	public static Contact createPeopleInMercury(String accountId, String branchId) {
+	public static Account createPeopleInMercury(String accountId, String branchId) {
 		return createPeopleInMercury(accountId, branchId, false);
 	}
 
-	public static Contact createPeopleInMercury(String accountId, String branchId, Boolean testMode) {
+	public static Account createPeopleInMercury(String accountId, String branchId, Boolean testMode) {
 		AccountSelector accSelector = new AccountSelector();
 		Account account = accSelector.getById(accountId);
-		// Account account = [Select id, name, FirstName, LastName, PersonContactId FROM Account where id =: accountId];
-		Contact contact = [Select id, name, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Job_Title__c, Gender__c, Title, Phone, FirstName, LastName, Birthday__c, Email, Annual_Income__c, MobilePhone, Marital_Status__c, Employer_Name__c, Current_Role__c, Number_of_Children__c, Employment_Status__c FROM Contact where id = :account.PersonContactId];
-		return createPeopleInMercury(account, contact, branchId, testMode);
+		return createPeopleInMercury(account, branchId, testMode);
 	}
 
-	public static Contact createPeopleInMercury(Account account, Contact contact, String branchId, Boolean testMode) {
-		String token = MercuryAuth.getInstance().getToken();
-		if(checkRecord('Account', account.id) && !testMode) return contact;
+	public static Account createPeopleInMercury(Account account, String branchId, Boolean testMode) {
+		if(checkRecord('Account', account.id) && !testMode) return account;
+		MercuryModel.People peop = new MercuryModel.People(account, branchId);
 
-		if (account != null && account.PersonContactId != null) {
-			String createdTime = convertCurrentTimeToGMTWithTimeZone();
-			String peopleFirstName = account.FirstName != null && account.FirstName != '' ? account.FirstName : 'defaultFirstName';
-			String peopleLastName = account.LastName != null && account.LastName != '' ? account.LastName : 'defaultLastName';
-			String email = contact.Email != null && contact.Email.trim() != '' ? contact.Email : '';
-			Decimal annualSalary = contact.Annual_Income__c != null && contact.Annual_Income__c > 0 ? contact.Annual_Income__c : 0 ;
-			String mobile = contact.MobilePhone != null && contact.MobilePhone.trim() != '' ? contact.MobilePhone : '';
-			String homePhone = contact.Phone != null && contact.Phone.trim() != '' ? contact.Phone : '';
-			String maritalStatus = contact.Marital_Status__c != null && contact.Marital_Status__c.trim() != '' ? contact.Marital_Status__c : '';
-			String employerName = contact.Employer_Name__c != null && contact.Employer_Name__c.trim() != '' ? contact.Employer_Name__c : '';
-			String currentRole = contact.Current_Role__c != null && contact.Current_Role__c.trim() != '' ? contact.Current_Role__c : '';
-			Integer childrenNum;
-			if(contact.Number_of_Children__c == '5+') {
-				childrenNum = 5;
-			} else {
-				childrenNum = contact.Number_of_Children__c != null && contact.Number_of_Children__c != '' ? Integer.valueOf(contact.Number_of_Children__c) : 0;
-			}
-
-
-			String employmentType = contact.Employment_Status__c != null && contact.Employment_Status__c.trim() != '' ? contact.Employment_Status__c : '';
-			String gender = contact.Gender__c != null && contact.Gender__c.trim() != '' ? contact.Gender__c : '';
-			String birthday = contact.Birthday__c != null ? '"' + convertCurrentTimeToGMTWithTimeZone(contact.Birthday__c) + '"' : null;
-			String title = contact.Title != null ? contact.Title : '';
-			if (gender == 'Male') {
-				gender = 'M';
-			} else if (gender == 'Female') {
-				gender = 'F';
-			}
-			String jobTitle = contact.Job_Title__c !=  null ? contact.Job_Title__c : '';
-			//String
-			HttpRequest req = new HttpRequest();
-			HttpResponse res = new HttpResponse();
-			Http http = new Http();
-			String jsonChange = '["driversLicenceState","company","createdBy","createdOn","mobile","businessPhone","title","firstName","lastName","middleName","salutation","gender","dateOfBirth","maritalStatus","numberOfDependents","lastNameCompany","firstNameCompany","abnCompany","acnCompany","trustNameCompany","relationshipManagerCompany","textfield-3451-inputEl","textfield-3466-inputEl","cbEmailType","emailValue","email","addressDisplay","textareafield-3483-inputEl","employer","occupation","jobTitle","employmentStatus","employmentCommenced","annualSalary","driversLicenceNumber","driversLicenceExpiry","textareafield-3503-inputEl","textareafield-3510-inputEl","relationshipManager","notes"]';
-			req.setHeader('Content-Type', 'application/json');
-			req.setEndPoint('https://api.connective.com.au/api/mercury5/' + token + '/person?changes=' + Encodingutil.urlEncode(jsonChange, 'UTF-8'));
-			String jsonToSendOver = '{"uniqueId":"' + account.id + '","isDeleted":false,"createdOn":"' + createdTime + '","deletedOn":null,"firstName":"' + peopleFirstName + '","lastName":"' + peopleLastName + '","driversLicenceExpiry":"","dateOfBirth":' + birthday + ',"employmentCommenced":"","phoneDisplayType1":"Home","phoneDisplayType2":"Mobile","phoneDisplayType3":"Business","phoneDisplayType4":"Business Fax","addressDisplay":"","numberOfDependents":' + childrenNum + ',"personDataType":"Full","contactType":null,"doNotMail":false,"markAsPrivate":false,"annualSalary":' + annualSalary + ',"emailBounced":false,"driversLicenceState":"NSW","company":"' + branchId + '","createdBy":"CA47482","homePhone":"' + homePhone + '","mobile":"' + mobile + '","businessPhone":"","title":"' + title + '","middleName":"","salutation":"","gender":"' + gender +'","maritalStatus":"' + maritalStatus + '","lastNameCompany":"","firstNameCompany":"","abnCompany":"","acnCompany":"","trustNameCompany":"","relationshipManagerCompany":"CA48099","textfield-3310-inputEl":"","cbEmailType":"Email 1","emailValue":"' + email + '","email":"' + email +'","textareafield-3327-inputEl":"","employer":"' + employerName + '","occupation":"' + currentRole + '","jobTitle":"' + jobTitle + '","employmentStatus":"' + employmentType + '","driversLicenceNumber":"","textareafield-3347-inputEl":"","textareafield-3354-inputEl":"","relationshipManager":"","notes":"","contactMethods":[{"uniqueId":"' + account.id + '-contactHome' + '","isDeleted":false,"createdOn":null,"deletedOn":null,"content":"' + homePhone.replace('+','') + '","contactMethod":"Home","personID":"' + account.id + '"},{"uniqueId":"' + account.id + '-contactMobile' + '","isDeleted":false,"createdOn":null,"deletedOn":null,"content":"' + mobile.replace('+','') + '","contactMethod":"Mobile","personID":"' + account.Id + '"},{"uniqueId":"' + account.id + '-contactBusiness' + '","isDeleted":false,"createdOn":null,"deletedOn":null,"content":"","contactMethod":"Business","personID":"' + account.id + '"},{"uniqueId":"' + account.id + '-contactBusinessFax' + '","isDeleted":false,"createdOn":null,"deletedOn":null,"content":"","contactMethod":"Business Fax","personID":"' + account.id + '"},{"uniqueId":"' + account.id + '-contactEmail' + '","isDeleted":false,"createdOn":null,"deletedOn":null,"content":"' + email +  '","contactMethod":"Email 1","personID":"' + account.id + '"}]}';
-			req.setBody(jsonToSendOver);
-			System.debug(jsonToSendOver);
-			req.setMethod(AbstractWebService.HTTP_METHOD_POST);
-			if (Test.isRunningTest()) {
-				res.setStatusCode(200);
-			} else {
-				res = http.send(req);
-			}
-
-			System.debug(res.getBody());
-			System.debug(res.getStatusCode());
-
-			if (res.getStatusCode() == 200) {
-				//Mark sync with mercury checkbox ticked
-				contact.Sync_With_Mercury__c = true;
-				//Mark sync with mercury success ticked
-				contact.Sync_With_Mercury_Success__c = true;
-				System.debug('People is created success');
-			} else {
-				//Mark sync with mercury checkbox ticked
-				contact.Sync_With_Mercury__c = true;
-				pendingEmails.add(new Map<String, String>{'methodName' => 'createPeopleInMercury', 'details' => generateDetailPart(req, res)});
-				throw new MercurySyncAccountException('StatusCode: ' + res);
-			}
-
-			//update opportunity
-			return contact;
+		MercuryUtility.HttpSet hs = insertToMercury(peop);
+		HttpRequest req = hs.req;
+		HttpResponse res = hs.res;
+		account.Sync_With_Mercury__pc = true;
+		if (res.getStatusCode() == 200) {
+			//Mark sync with mercury success ticked
+			account.Sync_With_Mercury_Success__pc = true;
+			System.debug(LoggingLevel.INFO, 'People is created success');
+		} else {
+			pendingEmails.add(new Map<String, String>{'methodName' => 'createPeopleInMercury', 'details' => generateDetailPart(req, res)});
+			throw new Utilities.CalloutResponseException(req, res);
 		}
-		return null;
+
+		//update opportunity
+		return account;
 	}
 
 	//Sync relationship between opportunity and account
@@ -530,47 +457,6 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		}
 	}
 
-	// 	public static void createSecondApplicationInMercury(String token, String accountId) {
-	// 		// check if there is a second applicant
-	// 		//sync it over and connect with the current opportunity.
-	// 		Account account = [Select id, name, FirstName, LastName, PersonContactId FROM Account where id =: accountId];
-	// 		if (account != null && account.PersonContactId != null) {
-	// 				Contact contact = [Select Id, Name, acfNumber_Of_Applicants__c, acfApplicant2_email__c, acfApplicant2_phone__c, acfApplicant2_Name__c, acfApplicant2_Monthly_Salary__c, acfApplicant2_Marital_Status__c, acfApplicant2_Employer_Name__c, acfApplicant2_Dependents__c, acfApplicant2_Employment_Type__c, acfApplicant2_DOB__c From Contact where id = :account.PersonContactId];
-	// 			if (contact.acfNumber_Of_Applicants__c != null && Integer.valueOf(contact.acfNumber_Of_Applicants__c) == 2) {
-	// 				String createdTime = convertCurrentTimeToGMTWithTimeZone();
-	// 				String peopleFirstName = contact.acfApplicant2_Name__c != null & contact.acfApplicant2_Name__c.trim() != '' ? contact.acfApplicant2_Name__c : '';
-	// 				String peopleLastName = contact.acfApplicant2_Name__c != null & contact.acfApplicant2_Name__c.trim() != '' ? contact.acfApplicant2_Name__c : '';
-	// 				String email = contact.acfApplicant2_email__c != null && contact.acfApplicant2_email__c.trim() != '' ? contact.acfApplicant2_email__c : '';
-	// 				String mobile = contact.acfApplicant2_phone__c != null && contact.acfApplicant2_phone__c.trim() != '' ? contact.acfApplicant2_phone__c : '';
-	// 				Decimal annualSalary = contact.acfApplicant2_Monthly_Salary__c != null && contact.acfApplicant2_Monthly_Salary__c > 0 ? contact.acfApplicant2_Monthly_Salary__c : 0;
-	// 				String maritalStatus = contact.acfApplicant2_Marital_Status__c != null && contact.acfApplicant2_Marital_Status__c.trim() != '' ? contact.acfApplicant2_Marital_Status__c : '';
-	// 				String employerName = contact.acfApplicant2_Employer_Name__c != null && contact.acfApplicant2_Employer_Name__c.trim() != '' ? contact.acfApplicant2_Employer_Name__c : '';
-	// 				String currentRole = '';
-	// 				Integer childrenNum = contact.acfApplicant2_Dependents__c != null && contact.acfApplicant2_Dependents__c != '' ? Integer.valueOf(contact.acfApplicant2_Dependents__c) : 0;
-	// 				String employmentType = contact.acfApplicant2_Employment_Type__c != null && contact.acfApplicant2_Employment_Type__c.trim() != '' ? contact.acfApplicant2_Employment_Type__c : '';
-	// 				String gender = '';
-	// 				String birthday = null;
-	// 				String birthdayNew = contact.acfApplicant2_DOB__c;
-	// 				if (birthdayNew != null && birthdayNew != '') {
-	// 					String[] dateValues = birthdayNew.split('/');
-	// 					if (dateValues.size() == 3) {
-	// 						Date birthdayDateNew = Date.newInstance(Integer.valueOf(dateValues[2]), Integer.valueOf(dateValues[1]), Integer.valueOf(dateValues[0]));
-	// 						birthday = '"' + convertCurrentTimeToGMTWithTimeZone(birthdayDateNew) + '"';
-	// 					}
-	// 				}
-	// 				String title = '';
-	// 				String jobTitle = '';
-
-	// 				HttpRequest req = new HttpRequest();
-	// 		        HttpResponse res = new HttpResponse();
-	// 		        Http http = new Http();
-	// 		        req.setHeader('Content-Type', 'application/json');
-
-
-	// 			}
-	// 		}
-	// 	}
-
 	public static void getAllPersonalBranches(String token) {
 		HttpRequest req = new HttpRequest();
 		HttpResponse res = new HttpResponse();
@@ -651,7 +537,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return token;
 	}
 
-	//Move to Utilities Class?
+	//Move to Utilities Class? @depricate
 	public static String convertCurrentTimeToGMTWithTimeZone(Datetime birthday) {
 		String gmtTimeValue = String.valueOfGmt(birthday);
 		gmtTimeValue = gmtTimeValue.replace(' ', 'T') + '+10:00';
@@ -659,7 +545,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return gmtTimeValue;
 	}
 
-	//Move to Utilities Class?
+	//Move to Utilities Class? @depricate
 	public static String convertCurrentTimeToGMTWithTimeZone() {
 		String gmtTimeValue = String.valueOfGmt(Datetime.now());
 		gmtTimeValue = gmtTimeValue.replace(' ', 'T') + '+10:00';
@@ -725,29 +611,13 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		Map<String, Object> ret = null;
 		try {
 			ret = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
-			System.Debug(LoggingLevel.INFO, ret);
+			System.Debug(LoggingLevel.DEBUG, ret);
 		} catch (Exception e) {
 			return null;
 		}
 
 		if(ret.get('success') != true) return null;
 		return ret;
-	}
-
-	public static HttpResponse sendGetRequest(String endPoint) {
-		HttpRequest req = new HttpRequest();
-		HttpResponse res = new HttpResponse();
-		Http http = new Http();
-		req.setHeader('Content-Type', 'application/json');
-		req.setEndPoint(endPoint);
-		system.debug(req.getEndpoint());
-		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
-		res = http.send(req);
-		if(res.getStatusCode() != 200) {
-			pendingEmails.add(new Map<String, String>{'methodName' => 'sendGetRequest', 'details' => generateDetailPart(req, res)});
-		}
-		system.debug(LoggingLevel.INFO, res);
-		return res;
 	}
 
 	public static HttpResponse sendGetRequest(String sfObjectName, MercuryModel.URLParams urlParams) {
@@ -814,10 +684,37 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
 	}
 
-	public class MercurySyncOpportunityException extends Exception {
+	public static MercuryUtility.HttpSet insertToMercury(Object mercModel) {
+		String token = MercuryAuth.getInstance().getToken();
+		String resourceName = null;
+		if(mercModel instanceOf MercuryModel.People) resourceName = 'person';
+		if(mercModel instanceOf MercuryModel.Loan) resourceName = 'loan';
+
+		HttpRequest req = new HttpRequest();
+		Http http = new Http();
+		req.setHeader('Content-Type', 'application/json');
+		req.setEndPoint('https://api.connective.com.au/api/mercury5/' + token + '/' + resourceName);
+		req.setMethod(AbstractWebService.HTTP_METHOD_POST);
+		req.setBody(JSON.serialize(mercModel));
+		return new MercuryUtility.HttpSet(req, http.send(req));
 	}
 
-	public class MercurySyncAccountException extends Exception {
+	public static HttpResponse sendGetRequest(String endPoint) {
+		HttpRequest req = new HttpRequest();
+		HttpResponse res = new HttpResponse();
+		Http http = new Http();
+		req.setHeader('Content-Type', 'application/json');
+		req.setEndPoint(endPoint);
+		system.debug(req.getEndpoint());
+		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
+		System.debug(LoggingLevel.DEBUG, '[MercuryApiUtilities] Check DML Limit: ' + Limits.getLimitDMLStatements());
+		res = http.send(req);
+		if(res.getStatusCode() != 200) {
+			pendingEmails.add(new Map<String, String>{'methodName' => 'sendGetRequest', 'details' => generateDetailPart(req, res)});
+			throw new Utilities.CalloutResponseException(req, res);
+		}
+		system.debug(LoggingLevel.DEBUG, res);
+		return res;
 	}
 
 }

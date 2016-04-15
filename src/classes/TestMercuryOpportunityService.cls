@@ -23,7 +23,7 @@ public with sharing class TestMercuryOpportunityService {
 
 		Mercury_Opportunity__c o = MercuryOpportunityService.castMercuryOpportunity(l);
 		System.assertEquals(null, o.id);
-		System.assertEquals('abc', o.get(MercuryModel.loanOpportunityMap.get('uniqueId')));
+		System.assertEquals('abc', o.get(MercuryUtility.loanOpportunityMap.get('uniqueId')));
 		System.assertEquals(l.loanName, o.merc_transaction_name__c);
 	}
 

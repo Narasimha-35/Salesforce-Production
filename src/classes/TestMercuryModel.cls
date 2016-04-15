@@ -1,9 +1,7 @@
 @isTest
 public with sharing class TestMercuryModel {
-	private static testMethod void test() {
-		MercuryModel.opportunityLoanMap.get('Name');
-		MercuryModel.loanOpportunityMap.get('uniqueId');
 
+	private static testMethod void test() {
 		MercuryModel.Partner p = new MercuryModel.Partner();
 		p = (MercuryModel.Partner) p.put('name', 'test', MercuryModel.Partner.class);
 		System.assertEquals('test', p.get('name'));

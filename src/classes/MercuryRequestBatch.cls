@@ -29,6 +29,7 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 		try {
 			if(request.type__c == '' + AsyncRequestType.SF_TO_MERCURY) {
 				System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] Sync to Mercury...' + param);
+				System.debug(LoggingLevel.DEBUG, '[MercuryRequestBatch] Check DML Limit: ' + Limits.getDMLRows());
 				MercuryService.syncWithMercury((String) param.get('oppoId'), (String) param.get('accId'));
 			}
 
@@ -38,12 +39,12 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 			Database.emptyRecycleBin(scope);
 			System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] Mercury Sync Request Executed Successfully: ' + scope[0].id);
 			counter++;
-		} catch (Exception e) {
+		} catch (MercuryService.MercurySyncException re) {
 			scope[0].Failed__c = true;
-			scope[0].ErrorMessage__c = e.getMessage();
+			// scope[0].ErrorMessage__c = '' + re.getStatusCode();
 			update scope;
 			System.debug(LoggingLevel.DEBUG, '[MercuryRequestBatch] Mercury Sync Request Not Executed Successfully: ' + scope[0].id);
-			System.debug(LoggingLevel.DEBUG, '[MercuryRequestBatch] Error Message: ' + e.getMessage());
+			System.debug(LoggingLevel.DEBUG, '[MercuryRequestBatch] Error Message: ' + re.getMessage());
 		}
 	}
 

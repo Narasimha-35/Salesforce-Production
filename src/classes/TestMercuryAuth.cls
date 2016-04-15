@@ -10,8 +10,7 @@ private class TestMercuryAuth {
 		Test.setMock(HttpCalloutMock.class, mock);
 
 		Test.startTest();
-		String token = MercuryAuth.getInstance().getToken();
-		MercuryAuth.getInstance().auth();
+		String token = MercuryAuth.getInstance(true).getToken();
 		System.assertEquals('aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18', token);
 		Test.stopTest();
 	}
