@@ -1,4 +1,4 @@
-public with sharing class MercuryOpportunityService {
+global with sharing class MercuryOpportunityService {
 	public static final Map<String, Schema.DisplayType> fieldTypeMap;
 	static {
 		fieldTypeMap = new Map<String, Schema.DisplayType>();
@@ -51,14 +51,15 @@ public with sharing class MercuryOpportunityService {
 	}
 
 	public static Mercury_Opportunity__c castMercuryOpportunity(MercuryModel.Loan loan) {
+		//TODO: not good design
 		Mercury_Opportunity__c ret = getRelatedMercuryOpportunity(loan);
 		Id rid = null;
 		Object tempObj = null;
 		String fieldName = null;
 
 		for(String field : syncList) {
-			if(!MercuryModel.loanOpportunityMap.containsKey(field)) continue;
-			fieldName = MercuryModel.loanOpportunityMap.get(field);
+			if(!MercuryUtility.loanOpportunityMap.containsKey(field)) continue;
+			fieldName = MercuryUtility.loanOpportunityMap.get(field);
 			tempObj = Utilities.parseValue(fieldTypeMap, fieldName, loan.get(field));
 			System.debug(LoggingLevel.INFO, '[MercuryOpportunityService.castMercuryOpportunity] field:' + fieldName + ' field Type: ' + fieldTypeMap.get(fieldName));
 			ret.put(fieldName, tempObj);
@@ -70,6 +71,7 @@ public with sharing class MercuryOpportunityService {
 	}
 
 	public static Opportunity getRelatedOpportunity(Mercury_Opportunity__c merc_oppo) {
+		//TODO: not good design
 		OpportunitySelector os = new OpportunitySelector();
 		Opportunity ret = null;
 		try {
@@ -90,7 +92,7 @@ public with sharing class MercuryOpportunityService {
 	public static Opportunity castOpportunity(Mercury_Opportunity__c merc_oppo) {
 		Opportunity ret = getRelatedOpportunity(merc_oppo);
 		for(String field : syncList) {
-			ret.put(MercuryModel.loanOpportunityMap.get(field), merc_oppo.get(MercuryModel.loanOpportunityMap.get(field)));
+			ret.put(MercuryUtility.loanOpportunityMap.get(field), merc_oppo.get(MercuryUtility.loanOpportunityMap.get(field)));
 		}
 		ret.merc_first_sync_time__c = merc_oppo.merc_first_sync_time__c;
 		ret.merc_last_sync_time__c = merc_oppo.merc_last_sync_time__c;

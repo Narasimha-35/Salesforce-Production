@@ -1,16 +1,4 @@
 @isTest
-private class TestTriggerOnAsyncRequest
-{
-	@isTest
-	static void itShould()
-	{
-		// Given
+private class TestTriggerOnAsyncRequest {
 
-
-		// When
-
-
-		// Then
-
-	}
 }

@@ -1,42 +1,9 @@
 public without sharing class MercuryModel {
-	public static final Map<String, String> opportunityLoanMap;
-	static {
-		opportunityLoanMap = new Map<String, String>();
-		opportunityLoanMap.put('merc_uniqueId__c', 'uniqueId');
-		opportunityLoanMap.put('merc_branch__c', 'company');
-		opportunityLoanMap.put('merc_transaction_name__c', 'loanName');
-		opportunityLoanMap.put('merc_loan_writer__c', 'agentName');
-		opportunityLoanMap.put('merc_admin__c', 'personActingName');
-		opportunityLoanMap.put('merc_supervisor__c', 'personResponsibleName');
-		opportunityLoanMap.put('merc_current_status__c', 'status');
-		opportunityLoanMap.put('merc_lead_source__c', 'leadSourceDisplay');
-		opportunityLoanMap.put('merc_campagin__c', 'campaignName');
-		opportunityLoanMap.put('merc_internal_reference__c', 'partnerReference');
-		opportunityLoanMap.put('merc_opportunity_type__c', 'tranxType');
-		opportunityLoanMap.put('merc_lender__c', 'lender');
-		opportunityLoanMap.put('merc_loan_amount__c', 'amount');
-		opportunityLoanMap.put('merc_existing_amount__c', 'existingAmount');
-		opportunityLoanMap.put('merc_security_value__c', 'securityValue');
-		opportunityLoanMap.put('merc_lmi__c', 'lmi');
-		opportunityLoanMap.put('merc_status_notes__c', 'sitRep');
-		opportunityLoanMap.put('merc_transaction_type__c', 'tranxType');
-		opportunityLoanMap.put('merc_lender_reference__c', 'lenderReference');
-		opportunityLoanMap.put('merc_apply_online_id__c', 'nextGenId');
-		opportunityLoanMap.put('merc_finance_date__c', 'financeDate');
-		opportunityLoanMap.put('merc_deposit_due_date__c', 'depositDueDate');
-		opportunityLoanMap.put('merc_settlement_date__c', 'confirmedSettlementDate');
-		opportunityLoanMap.put('merc_fixed_rate_expiry__c', 'fixedRateExpiry');
-		opportunityLoanMap.put('merc_interest_only_expiry__c', 'interestOnlyExpiry');
-		opportunityLoanMap.put('merc_categories__c', 'metaData');
-	}
 
-	public static final Map<String, String> loanOpportunityMap;
-	static {
-		loanOpportunityMap = new Map<String, String>();
-		for(String k : opportunityLoanMap.keySet()) {
-			loanOpportunityMap.put(opportunityLoanMap.get(k), k);
-		}
-	}
+	private static final Set<String> AVALIABLE_TITLE = new Set<String>{'Dr', 'Miss', 'Ms', 'Mr', 'Mrs', 'Prof', 'Rev'};
+	private static final String API_USER_ID = 'CA51708';
+	private static final String ENCODING_SCHEME = 'UTF-8';
+	private static final String ACF_BRANCH_ID = 'P200019';
 
 	public class Partner extends Model {
 		public String uniqueId {get; set;}
@@ -85,7 +52,7 @@ public without sharing class MercuryModel {
 		public String personDataType {get; set;}
 		public String notes {get; set;}
 		public String relationshipManager {get; set;}
-		public Long annualSalary {get; set;}
+		public Decimal annualSalary {get; set;}
 		public String contactType {get; set;}
 		public String abn {get; set;}
 		public String acn {get; set;}
@@ -103,6 +70,65 @@ public without sharing class MercuryModel {
 		public String relationshipManagerName {get; set;}
 		public String fullName {get; set;}
 		public String salutationOrFirstName {get; set;}
+		public List<ContactMethod> contactMethods;
+
+		public People() {
+		}
+
+		public People(Account acc, String branchId) {
+			init();
+			uniqueId = acc.id;
+			//Currently no effect, so comment it out
+			//createdOn = acc.createdDate.format('yyyy-MM-dd\'T\'HH:mm:ssXXX');
+			createdBy = API_USER_ID;
+			firstName = acc.firstName;
+			lastName = acc.lastName;
+			dateOfBirth = acc.personBirthdate != null ? ((Datetime) acc.personBirthdate).format('yyyy-MM-dd\'T\'HH:mm:ssXXX') : null;
+			numberOfDependents = acc.number_of_Children__pc != null && acc.number_of_Children__pc != '' ? Integer.valueOf(acc.number_of_Children__pc.left(1)) : 0;
+			company = branchId;
+			annualSalary = acc.acfAnnual_Salary__pc;
+			title = acc.personTitle;
+			gender = acc.gender__pc;
+			maritalStatus = acc.marital_Status__pc;
+			employmentStatus = acc.employment_Status__pc;
+			employer = acc.employer_Name__pc;
+			occupation = acc.current_Role__pc;
+			jobTitle = acc.job_Title__pc;
+
+			contactMethods = new List<ContactMethod>();
+			contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.HOME, acc.personHomePhone));
+			contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.MOBILE, acc.personMobilePhone));
+			contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.BUSINESS, acc.phone));
+			contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.EMAIL1, acc.personEmail));
+			contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.EMAIL2, acc.account_Email__c));
+
+			validateAndClean();
+		}
+
+		//clean raw data
+		@testVisible
+		private void validateAndClean() {
+			firstName = firstName != null && firstName != '' ? firstName : 'defaultFirstName';
+			annualSalary = annualSalary != null ? annualSalary : 0;
+			title = title != null && AVALIABLE_TITLE.contains(title.toLowerCase().capitalize()) ? title.toLowerCase().capitalize() : null;
+			gender = gender != null ? gender.left(1) : null;
+			company = company != null ? company : ACF_BRANCH_ID;
+		}
+
+		@testVisible
+		private void init() {
+			isDeleted = false;
+			annualSalary = 0;
+			numberOfDependents = 0;
+			doNotMail = false;
+			markAsPrivate = false;
+			emailBounced = false;
+			webAccess = false;
+		}
+
+		public String getChangeList() {
+			return EncodingUtil.urlEncode(JSON.serialize(getNonNullAttributeSet()), ENCODING_SCHEME);
+		}
 	}
 
 	public class PersonResponse extends Model {
@@ -176,6 +202,49 @@ public without sharing class MercuryModel {
 		public String aliApplicationId {get; set;}
 		public String metlifeApplicationId {get; set;}
 		public String interestOnlyExpiry {get; set;}
+
+		public Loan() {
+		}
+
+		public Loan(Opportunity oppo, String branchId) {
+			init();
+			uniqueId = oppo.id;
+			loanName = oppo.name;
+			amount = oppo.current_Loan_Value__c;
+			company = branchId;
+			tranxType = oppo.transaction_Type__c;
+			validateAndClean();
+		}
+
+		@testVisible
+		private void init() {
+			isDeleted = false;
+			amount = 0;
+			discount = 0;
+			existingAmount = 0;
+			lmi = 0;
+			settlementDateConfirmed = false;
+			connectiveLodgeId = 0;
+			peResidualAmount = 0;
+			peRepaymentAmount = 0;
+			peEffectiveRate = 0;
+			peInterestRate = 0;
+			peBrokerage = 0;
+			loanTerm = 0;
+			vbo = false;
+			statusLastUpdated = 0;
+			securityValue = 0;
+		}
+
+		@testVisible
+		private void validateAndClean() {
+			amount = amount != null ? amount : 0;
+			company = company != null ? company : ACF_BRANCH_ID;
+		}
+
+		public String getChangeList() {
+			return EncodingUtil.urlEncode(JSON.serialize(getNonNullAttributeSet()), ENCODING_SCHEME);
+		}
 	}
 
 	public class LoanResponse extends Model {
@@ -224,7 +293,7 @@ public without sharing class MercuryModel {
 			ret += '&currentPartnerId=' + currentPartnerId;
 			ret += '&currentGroupId=' + currentGroupId;
 			ret += '&searchType=' + searchType;
-			ret += '&params={' + EncodingUtil.urlEncode(paramString, 'UTF-8') + '}';
+			ret += '&params={' + EncodingUtil.urlEncode(paramString, ENCODING_SCHEME) + '}';
 			ret += '&page=' + page;
 			ret += '&start=' + start;
 			ret += '&limit=' + lmt;
@@ -265,6 +334,36 @@ public without sharing class MercuryModel {
 			loanCategory       = '';
 			dateSearchType     = '';
 			reportDescription  = '';
+		}
+	}
+
+	public enum ContactMethodType {
+		HOME, MOBILE, BUSINESS, BUSINESS_FAX, EMAIL1, EMAIL2, EMAIL3
+	}
+
+	public class ContactMethod extends Model {
+		public String personID;
+		public String contactMethod;
+		public String content;
+
+		public ContactMethod(String personId, contactMethodType cmt, String content) {
+			this.personID = personId;
+			this.content = content;
+			if(cmt == ContactMethodType.HOME) {
+				contactMethod = 'Home';
+			} else if(cmt == ContactMethodType.MOBILE) {
+				contactMethod = 'Mobile';
+			} else if(cmt == ContactMethodType.BUSINESS) {
+				contactMethod = 'Business';
+			} else if(cmt == ContactMethodType.BUSINESS_FAX) {
+				contactMethod = 'Business Fax';
+			} else if(cmt == ContactMethodType.EMAIL1) {
+				contactMethod = 'Email 1';
+			} else if(cmt == ContactMethodType.EMAIL2) {
+				contactMethod = 'Email 2';
+			} else if(cmt == ContactMethodType.EMAIL3) {
+				contactMethod = 'Email 3';
+			}
 		}
 	}
 

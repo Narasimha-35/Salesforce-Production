@@ -14,6 +14,45 @@ private class TestMercuryApiUtilities {
 		MercuryTestUtilities.setMock(oppo.id, account.id);
 	}
 
+	private static testMethod void testCreateOppo401() {
+		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+		mock.setStaticResource('MercuryLoginSuccessResponse');
+		mock.setStatusCode(401);
+		mock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, mock);
+		Test.startTest();
+		try{
+			MercuryApiUtilities.createOppoInMercury(oppo.id, 'P200019', true);
+			System.assert(false);
+		} catch (Utilities.CalloutResponseException e) {
+			System.assert(true);
+		}
+
+		Test.stopTest();
+		System.debug([SELECT id, params__c, failed__c FROM AsyncRequest__c]);
+	}
+
+	private static testMethod void testCreatePeople401() {
+		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+		mock.setStaticResource('MercuryLoginSuccessResponse');
+		mock.setStatusCode(401);
+		mock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, mock);
+		Test.startTest();
+		try{
+			MercuryApiUtilities.createPeopleInMercury(account.id, 'P200019', true);
+			System.assert(false);
+		} catch (Utilities.CalloutResponseException e) {
+			System.assert(true);
+		}
+
+		Test.stopTest();
+		System.debug([SELECT id, params__c, failed__c FROM AsyncRequest__c]);
+	}
+	//TODO:Test sync one success one fail
+	//TODO:Test sync one success one fail reversed
+	//TODO:Test sync link fail
+
 	static testMethod void testCreateOppoInMercuryWithDuplicate() {
 		Test.startTest();
 		MercuryApiUtilities.createOppoInMercury(oppo.id, 'P200019');
@@ -22,6 +61,12 @@ private class TestMercuryApiUtilities {
 	}
 
 	static testMethod void testCreateOppoInMercuryWithoutDuplicate() {
+		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+		mock.setStaticResource('MercuryLoginSuccessResponse');
+		mock.setStatusCode(200);
+		mock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, mock);
+
 		Test.startTest();
 		MercuryApiUtilities.createOppoInMercury(oppo.id, 'P200019', true);
 		// Opportunity oppo2 = [select Id, Sync_With_Mercury__c, Sync_With_Mercury_Success__c From Opportunity where Id = :oppo.id];
@@ -35,6 +80,12 @@ private class TestMercuryApiUtilities {
 	}
 
 	static testMethod void testCreatePeopleInMercuryWithoutDuplicate() {
+		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+		mock.setStaticResource('MercuryLoginSuccessResponse');
+		mock.setStatusCode(200);
+		mock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, mock);
+
 		Test.startTest();
 		MercuryApiUtilities.createPeopleInMercury(account.id, 'P200019', true);
 		Test.stopTest();
@@ -47,11 +98,6 @@ private class TestMercuryApiUtilities {
 		Test.startTest();
 		MercuryApiUtilities.createLoanPeopleInMercury(accountAndOppo, oppoId, accountId);
 		Test.stopTest();
-	}
-
-	static testMethod void convertCurrentTimeToGMTWithTimeZoneTest() {
-		Datetime dt = System.now();
-		String timeS = MercuryApiUtilities.convertCurrentTimeToGMTWithTimeZone(dt);
 	}
 
 	static testMethod void updatePeopleUpdate() {
