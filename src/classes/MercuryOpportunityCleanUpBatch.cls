@@ -21,6 +21,7 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 		Opportunity oppo = null;
 
 		for(Mercury_Opportunity__c merc_oppo : scope) {
+			if(merc_oppo.merc_people__c == null || merc_oppo.merc_loanPeople__c == null) continue;
 			System.debug(LoggingLevel.INFO, '[MercuryOpportunityCleanUpBatch] Start cleaning on: ' + merc_oppo);
 			applicant = MercuryUtility.getApplicantWithValidEmailFromLoan(merc_oppo);
 			System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityCleanUpBatch] The applicant is: ' + applicant);
