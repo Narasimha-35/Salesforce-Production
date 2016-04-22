@@ -24,6 +24,7 @@ public without sharing class  Saasfocus_ClickLoanPartnerController {
     public string ttype{set;get;}
     public integer detail{set;get;}
     public List<Account> accpostloginques{set;get;}
+    public List<click_Applicant__c > lstapplicant{set;get;}
     public List<Lead>lstLeadpreques{set;get;}
     public List<SelectOption> getselectlist(){
     List<SelectOption> lstso = new List<SelectOption>();  
@@ -319,6 +320,11 @@ public without sharing class  Saasfocus_ClickLoanPartnerController {
                 clead=true;
                 ttype=lstLead[0].Transaction_Type__c;
             }
+            
+            lstapplicant=new List<click_Applicant__c >();
+            lstapplicant=[Select clickOpportunity__r.name,Id, OwnerId, IsDeleted, Name, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastActivityDate, LastViewedDate, LastReferencedDate, ACF1_Previous_Em_Start_Date0__c, ACF1_Previous_Em_Start_Date12__c, ACF1_Previous_Em_Start_Date24__c, ACF1_Previous_Employer_Name0__c, ACF1_Previous_Employer_Name12__c, ACF1_Previous_Employer_Name24__c, ACf1_Current_employer_Start_Date__c, Current_Role__c, acfAnnual_profit_income__c, acfBusiness_Name_or_ABN_autofill__c, acfDependant1_Age__c, acfDependant2_Age__c, acfDependant3_Age__c, acfDependant4_Age__c, acfDependant5_Age__c, acfEconsent_App2__c, acfEconsent__c, acfEmployment_Type__c, acfLast_2_years_Tax_Return_or_ATO_NOA__c, acf_ACf1_Current_employer_Start_Da__c, acf_Applicant_Name__c, acf_How_Long__c, acf_How_Long_have_you_been_employed__c, acf_appl_ACf2_Current_employer_Start_Da__c, acf_applicant_Annual_profit_income__c, acf_applicant_App_1_Monthly_Expenses__c, acf_applicant_DOB__c, acf_applicant_Dependants__c, acf_applicant_Employer_Name__c, acf_applicant_Marital_Status__c, acf_applicant_Monthlly_Salary__c, acf_applicant_Residency_status__c, clickApp_1_Monthly_Expenses__c, clickMarried_To__r.name,click_Account__r.name, click_Account__c, click_Applicant_Number__c, Applicant_Email__c, Applicant_Phone__c FROM click_Applicant__c  where click_Account__c =: aid2 limit 1000];
+            system.debug('accountid==>'+aid2);
+            system.debug('applicant==>'+lstapplicant);
             if(copp==true&&clead==true && detail==1)
             {
                     accpostloginques=new List<Account>();
