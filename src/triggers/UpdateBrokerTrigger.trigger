@@ -12,7 +12,7 @@ trigger UpdateBrokerTrigger on Appointment__c (after update) {
                 if(isQueuedMethod) {
                     System.debug(LoggingLevel.INFO, '[UpdateBrokerTrigger] Sync to queued batch method');
                     System.debug(LoggingLevel.DEBUG, '[UpdateBrokerTrigger] accId, oppoId: ' + app.Account_Id__c + ' ' + app.Opportunity__c);
-                    //requestList.add(AsyncRequestService.createSyncToRequst(app.Account_Id__c, app.Opportunity__c));
+                    requestList.add(AsyncRequestService.createSyncToRequst(app.Account_Id__c, app.Opportunity__c));
                 } else {
                     System.debug(LoggingLevel.INFO, '[UpdateBrokerTrigger] Sync to future method');
                     if(!Test.isRunningTest()) MercuryService.futureSyncWithMercury(app.Opportunity__c, app.Account_Id__c);

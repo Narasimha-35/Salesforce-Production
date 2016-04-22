@@ -47,4 +47,66 @@ public without sharing class MercuryUtility {
 			this.res = res;
 		}
 	}
+
+	public static MercuryModel.People getApplicantWithValidEmailFromLoan(Mercury_Opportunity__c mercOppo) {
+		List<MercuryModel.LoanPeople> loanPeopleList = (List<MercuryModel.LoanPeople>) JSON.deserialize(mercOppo.merc_loanPeople__c, List<MercuryModel.LoanPeople>.class);
+		List<MercuryModel.People> peopleList = (List<MercuryModel.People>) JSON.deserialize(mercOppo.merc_people__c, List<MercuryModel.People>.class);
+		String primaryApplicantId = null;
+
+		for(MercuryModel.LoanPeople lp : loanPeopleList) {
+			System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Working on LoanPeople: ' + lp.uniqueId);
+			if(lp.relationship == 'Primary Applicant') {
+				System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Found primary applicant uniqueId: ' + lp.personID);
+				primaryApplicantId = lp.personID;
+			}
+		}
+		for(MercuryModel.People p : peopleList) {
+			System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Working on People: ' + p.uniqueId);
+			if(p.uniqueId.toLowerCase() == primaryApplicantId.toLowerCase()) {
+				System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Found primary applicant: ' + p);
+				return p;
+			}
+		}
+
+		for(MercuryModel.People p : peopleList) {
+			System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Working on People: ' + p.uniqueId);
+			if(p.email != null) {
+				System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Found valid applicant: ' + p);
+				return p;
+			}
+		}
+
+		return null;
+	}
+
+	public static String getEmailOfPrimaryApplicantFromMercuryOpportunity(Mercury_Opportunity__c mercOppo) {
+		return getEmailListFromMercuryOpportunity(mercOppo)[0];
+	}
+
+	public static List<String> getEmailListFromMercuryOpportunity(Mercury_Opportunity__c mercOppo) {
+		List<String> ret = new List<String>();
+		List<String> temp = new List<String>();
+		List<MercuryModel.LoanPeople> loanPeopleList = (List<MercuryModel.LoanPeople>) JSON.deserialize(mercOppo.merc_loanPeople__c, List<MercuryModel.LoanPeople>.class);
+		for(MercuryModel.LoanPeople lp : loanPeopleList) {
+			System.debug(LoggingLevel.DEBUG, '[MercuryUtility.getEmailListFromMercuryOpportunity] Processing Loan People: ' + lp);
+			if(lp.relationship == 'Primary Applicant') {
+				ret.add(lp.email);
+			} else {
+				temp.add(lp.email);
+			}
+		}
+		ret.addAll(temp);
+		return ret;
+	}
+
+	public static Account getMostRecentAppointmentAccountWithouSynced(List<Account> scope) {
+		Map<Id, Account> accMap = new Map<Id, Account>(scope);
+		Set<Id> scopeIds = accMap.keySet();
+		List<Opportunity> ol = [SELECT id, accountId FROM Opportunity WHERE accountId IN :scopeIds AND merc_current_status__c = null AND current_Appointment_Date_Time__c != null ORDER BY current_Appointment_Date_TIme__c DESC];
+		if(ol.size() == 0) return scope[0];
+		return accMap.get(ol[0].accountId);
+	}
+
+	public class MercuryMismatchException extends Exception {
+	}
 }

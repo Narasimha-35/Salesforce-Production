@@ -1,9 +1,15 @@
 public without sharing class MercuryModel {
-
 	private static final Set<String> AVALIABLE_TITLE = new Set<String>{'Dr', 'Miss', 'Ms', 'Mr', 'Mrs', 'Prof', 'Rev'};
 	private static final String API_USER_ID = 'CA51708';
 	private static final String ENCODING_SCHEME = 'UTF-8';
 	private static final String ACF_BRANCH_ID = 'P200019';
+	private static final Map<String, String> GENDER_MAP = new Map<String, String> {
+		'M'      => 'Male',
+		'Male'   => 'Male',
+		'F'      => 'Female',
+		'Female' => 'Female',
+		''       => null
+	};
 
 	public class Partner extends Model {
 		public String uniqueId {get; set;}
@@ -58,7 +64,7 @@ public without sharing class MercuryModel {
 		public String acn {get; set;}
 		public String trustName {get; set;}
 		public String homeSuburb {get; set;}
-		public Long numberOfDependents {get; set;}
+		public Integer numberOfDependents {get; set;}
 		public Boolean doNotMail {get; set;}
 		public String funambolUsers {get; set;}
 		public Boolean markAsPrivate {get; set;}
@@ -105,6 +111,54 @@ public without sharing class MercuryModel {
 			validateAndClean();
 		}
 
+		public ContactMethod getContactMethod(ContactMethodType method) {
+			return null;
+		}
+
+		public Account convertToAccount() {
+			return convertToAccount(false);
+		}
+
+		public Account convertToAccount(Boolean isFromMercury) {
+			Account ret = new Account();
+			if(isFromMercury) ret.personLeadSource = 'Mercury';
+			ret.mercury_People_ID__c = uniqueId;
+			ret.firstName = firstName;
+			ret.lastName = lastName;
+			ret.gender__pc = gender != null ? GENDER_MAP.get(gender) : null;
+			ret.marital_Status__pc = maritalStatus;
+			ret.job_Title__pc = jobTitle;
+			ret.employment_Status__pc = employmentStatus;
+			if(numberOfDependents != null) {
+				ret.number_of_Children__pc = numberOfDependents == 5 ? '5+' : '' + numberOfDependents;
+			} else {
+				ret.number_of_Children__pc = null;
+			}
+			ret.personEmail = email;
+			ret.personMobilePhone = mobile;
+			ret.personHomePhone = homePhone;
+			ret.employer_Name__pc = employer;
+			ret.annual_Income__pc = annualSalary;
+			ret.drivers_Lic_No__pc = driversLicenceNumber;
+			ret.drivers_Lic_Exp__pc = driversLicenceExpiry != null && driversLicenceExpiry != '' ? Date.valueOf(driversLicenceExpiry) : null;
+			ret.birthday__pc = dateOfBirth != null && dateOfBirth != '' ? Datetime.newInstance(Long.valueOf(dateOfBirth)).date() : null;
+
+			//TODO: Address (home)
+			return ret;
+		}
+
+		public Account mergeToAccount(Account acc) {
+			return mergeToAccount(acc, false);
+		}
+
+		public Account mergeToAccount(Account acc, Boolean isFromMercury) {
+			Account people = this.convertToAccount(isFromMercury);
+			String text = 'Account is Merged With Mercury on ' + Datetime.now().format('yyyy-MM-dd\'T\'HH:mm:ss.SSXXX');
+			acc.mercury_People_ID__c = people.mercury_People_ID__c;
+			acc.description = acc.description != null ? acc.description + '\n' + text : text;
+			return acc;
+		}
+
 		//clean raw data
 		@testVisible
 		private void validateAndClean() {
@@ -133,7 +187,7 @@ public without sharing class MercuryModel {
 
 	public class PersonResponse extends Model {
 		public Boolean success {get; set;}
-		public List<MercuryModel.People> People {get; set;}
+		public MercuryModel.People people {get; set;}
 	}
 
 	public class Loan extends Model {
@@ -156,7 +210,7 @@ public without sharing class MercuryModel {
 		public String lenderReference {get; set;}
 		public String financeDate {get; set;}
 		public String expectedSettlementDate {get; set;}
-		public String confirmedSettlementDate {get; set;}
+		public Long confirmedSettlementDate {get; set;}
 		public String leadSourceId {get; set;}
 		public String leadSourceDisplay {get; set;}
 		public Double discount {get; set;}
@@ -193,7 +247,7 @@ public without sharing class MercuryModel {
 		public String partnerName {get; set;}
 		public String partnerSharedWithId {get; set;}
 		public String partnerSharedWithName {get; set;}
-		public Long statusLastUpdated {get; set;}
+		public String statusLastUpdated {get; set;}
 		public String lenderComments {get; set;}
 		public String sitRep {get; set;}
 		public String campaignId {get; set;}
@@ -216,6 +270,41 @@ public without sharing class MercuryModel {
 			validateAndClean();
 		}
 
+		public Loan(Mercury_Opportunity__c merc_oppo) {
+			init();
+			uniqueId = merc_oppo.merc_uniqueId__c;
+			loanName = merc_oppo.merc_transaction_name__c;
+			agentName = merc_oppo.merc_loan_writer__c;
+			company = merc_oppo.merc_branch__c;
+			personActingName = merc_oppo.merc_admin__c;
+			personResponsibleName = merc_oppo.merc_supervisor__c;
+			status = merc_oppo.merc_current_status__c;
+			leadSourceDisplay = merc_oppo.merc_lead_source__c;
+			campaignName = merc_oppo.merc_campagin__c;
+			partnerReference = merc_oppo.merc_internal_reference__c;
+			tranxType = merc_oppo.merc_opportunity_type__c;
+			lender = merc_oppo.merc_lender__c;
+			amount = merc_oppo.merc_loan_amount__c;
+			existingAmount = merc_oppo.merc_existing_amount__c;
+			securityValue = merc_oppo.merc_security_value__c;
+			lmi = merc_oppo.merc_lmi__c;
+			sitRep = merc_oppo.merc_status_notes__c;
+			tranxType = merc_oppo.merc_transaction_type__c;
+			lenderReference = merc_oppo.merc_lender_reference__c;
+			nextGenId = merc_oppo.merc_apply_online_id__c;
+			financeDate = ((Datetime)merc_oppo.merc_finance_date__c).format('yyyy-MM-dd');
+			depositDueDate = ((Datetime)merc_oppo.merc_deposit_due_date__c).format('yyyy-MM-dd');
+			confirmedSettlementDate = ((Datetime)merc_oppo.merc_settlement_date__c).getTime();
+			// fixedRateExpiry = ((Datetime)merc_oppo.merc_fixed_rate_expiry__c).format('yyyy-MM-dd');
+			// interestOnlyExpiry = ((Datetime)merc_oppo.merc_interest_only_expiry__c).format('yyyy-MM-dd');
+			metaData = merc_oppo.merc_categories__c;
+			validateAndClean();
+		}
+
+		public Opportunity convertToOpportunity() {
+			return null;
+		}
+
 		@testVisible
 		private void init() {
 			isDeleted = false;
@@ -232,7 +321,6 @@ public without sharing class MercuryModel {
 			peBrokerage = 0;
 			loanTerm = 0;
 			vbo = false;
-			statusLastUpdated = 0;
 			securityValue = 0;
 		}
 
@@ -245,6 +333,14 @@ public without sharing class MercuryModel {
 		public String getChangeList() {
 			return EncodingUtil.urlEncode(JSON.serialize(getNonNullAttributeSet()), ENCODING_SCHEME);
 		}
+	}
+
+	public class LoanPeople extends Model {
+		public String uniqueId;
+		public String loanID;
+		public String personID;
+		public String relationship;
+		public String email;
 	}
 
 	public class LoanResponse extends Model {
@@ -273,6 +369,8 @@ public without sharing class MercuryModel {
 		public Integer page {get; set;}
 		public Integer start {get; set;}
 		public Integer lmt {get; set;}
+		public String loanId;
+		public String method;
 
 		public MercuryModel.URLParams() {
 			dc               = DateTime.now().getTime();
@@ -297,6 +395,8 @@ public without sharing class MercuryModel {
 			ret += '&page=' + page;
 			ret += '&start=' + start;
 			ret += '&limit=' + lmt;
+			ret += '&loanId=' + loanId;
+			ret += '&method=' + method;
 			return ret;
 		}
 	}
@@ -365,6 +465,12 @@ public without sharing class MercuryModel {
 				contactMethod = 'Email 3';
 			}
 		}
+	}
+
+	public class LoanPeopleResponse {
+		public Boolean success;
+		public Integer total;
+		public List<MercuryModel.LoanPeople> loanPeople;
 	}
 
 }

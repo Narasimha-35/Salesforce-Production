@@ -112,7 +112,9 @@ public class MercuryService {
 		System.debug(LoggingLevel.DEBUG, '[MercuryService] Check DML Limit: ' + Limits.getDMLRows());
 		try {
 			oppo = MercuryApiUtilities.createOppoInMercury(oppoId, branchId);
+			System.debug(LoggingLevel.INFO, '[MercuryService.syncWithMercury] Sync Opportunity Success...');
 		} catch (Utilities.CalloutResponseException e) {
+			System.debug(LoggingLevel.INFO, '[MercuryService.syncWithMercury] Sync Opportunity Error: ' + e.getMessage());
 			exceptions.add(e);
 		}
 
@@ -121,7 +123,9 @@ public class MercuryService {
 		System.debug(LoggingLevel.DEBUG, '[MercuryService] Check DML Limit: ' + Limits.getDMLRows());
 		try {
 			account = MercuryApiUtilities.createPeopleInMercury(accountId, branchId);
+			System.debug(LoggingLevel.INFO, '[MercuryService.syncWithMercury] Sync Account Success...');
 		} catch (Utilities.CalloutResponseException e) {
+			System.debug(LoggingLevel.INFO, '[MercuryService.syncWithMercury] Sync Account Error: ' + e.getMessage());
 			exceptions.add(e);
 		}
 
@@ -136,13 +140,6 @@ public class MercuryService {
 			MercuryApiUtilities.sendEmail();
 			throw new MercurySyncException(exceptions);
 		}
-	}
-
-	public static MercuryModel.Loan getLoan(String uniqueId) {
-		HttpResponse res = MercuryApiUtilities.sendGetRequest('Opportunity', uniqueId);
-		MercuryModel.LoanResponse lr = (MercuryModel.LoanResponse) JSON.deserialize(res.getBody(), MercuryModel.LoanResponse.class);
-		if(lr.success) return lr.loans[0];
-		return null;
 	}
 
 	public static Set<String> getSyncBackLoanId(Integer method) {
@@ -165,6 +162,30 @@ public class MercuryService {
 
 	public static void syncBackLoan(Integer method) {
 		AsyncRequestService.addSyncBackRequest('Opportunity', getSyncBackLoanId(method));
+	}
+
+	public static MercuryModel.Loan getLoan(String loanId) {
+		HttpResponse res = MercuryApiUtilities.sendGetRequest('Opportunity', loanId);
+		MercuryModel.LoanResponse lr = (MercuryModel.LoanResponse) JSON.deserialize(res.getBody(), MercuryModel.LoanResponse.class);
+		if(lr.success) return lr.loans[0];
+		return null;
+	}
+
+	public static List<MercuryModel.LoanPeople> getLoanPeole(String loanId) {
+		MercuryModel.URLParams params = new MercuryModel.URLParams();
+		params.loanId = loanId;
+		params.method = 'getLoanPeople';
+		HttpResponse res = MercuryApiUtilities.sendGetRequest('LoanPeople', params);
+		MercuryModel.LoanPeopleResponse lr = (MercuryModel.LoanPeopleResponse) JSON.deserialize(res.getBody(), MercuryModel.LoanPeopleResponse.class);
+		if(lr.success) return lr.loanPeople;
+		return null;
+	}
+
+	public static MercuryModel.People getPeople(String peopleId) {
+		HttpResponse res = MercuryApiUtilities.sendGetRequest('Account', peopleId);
+		MercuryModel.PersonResponse pr = (MercuryModel.PersonResponse) JSON.deserialize(res.getBody(), MercuryModel.PersonResponse.class);
+		if(pr.success) return pr.people;
+		return null;
 	}
 
 }

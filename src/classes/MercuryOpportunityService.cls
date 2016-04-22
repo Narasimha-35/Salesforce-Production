@@ -90,7 +90,11 @@ global with sharing class MercuryOpportunityService {
 	}
 
 	public static Opportunity castOpportunity(Mercury_Opportunity__c merc_oppo) {
-		Opportunity ret = getRelatedOpportunity(merc_oppo);
+		return castOpportunity(merc_oppo, false);
+	}
+
+	public static Opportunity castOpportunity(Mercury_Opportunity__c merc_oppo, Boolean isNew) {
+		Opportunity ret = isNew ? new Opportunity() : getRelatedOpportunity(merc_oppo);
 		for(String field : syncList) {
 			ret.put(MercuryUtility.loanOpportunityMap.get(field), merc_oppo.get(MercuryUtility.loanOpportunityMap.get(field)));
 		}
