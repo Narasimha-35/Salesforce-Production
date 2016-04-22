@@ -59,7 +59,7 @@ global without sharing class MercuryUtility {
 	}
 
 	public static MercuryModel.People getAnyApplicantHaveEmail(List<MercuryModel.People> peopleList) {
-		for(MercuryModel.People p : peopleList) if(p.email != null) return p;
+		for(MercuryModel.People p : peopleList) if(p.email != null && p.email != '') return p;
 		return null;
 	}
 
@@ -77,7 +77,9 @@ global without sharing class MercuryUtility {
 		String primaryApplicantId = getPrimaryApplicantId(loanPeopleList);
 
 		MercuryModel.People ret = getApplicantById(peopleList, primaryApplicantId);
-		if(ret == null || ret.email == null) ret = getAnyApplicantHaveEmail(peopleList);
+		System.debug(LoggingLevel.DEBUG, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Primary Applicant' + ret);
+		if(ret == null || ret.email == null || ret.email == '') ret = getAnyApplicantHaveEmail(peopleList);
+		System.debug(LoggingLevel.DEBUG, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Applicant with valid Email Address' + ret);
 		return ret;
 	}
 

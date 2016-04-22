@@ -26,7 +26,8 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 			applicant = MercuryUtility.getApplicantWithValidEmailFromLoan(merc_oppo);
 			System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityCleanUpBatch] The applicant is: ' + applicant);
 			if(applicant == null) {
-				throw new MercuryUtility.MercuryMismatchException('Fatal: There is no valid Email address in all contacts.');
+				System.debug(LoggingLevel.ERROR, '[MercuryOpportunityCleanUpBatch] There is no valid Email address in all contacts.');
+				continue;
 			}
 			System.debug(LoggingLevel.INFO, '[MercuryOpportunityCleanUpBatch] Complete Cast People');
 
@@ -43,7 +44,8 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 			System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityCleanUpBatch] matchingAccs is: ' + matchingAccs);
 
 			if(matchingAccs == null) {
-				throw new MercuryUtility.MercuryMismatchException('Fatal: empty matching condition. throw Exception.');
+				System.debug(LoggingLevel.ERROR, '[MercuryOpportunityCleanUpBatch] Empty matching condition.');
+				continue;
 			} else if(matchingAccs.size() == 0) {
 				//no match create.
 				applicantAcc = applicant.convertToAccount(true);
