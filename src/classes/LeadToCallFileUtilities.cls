@@ -92,7 +92,9 @@ public class LeadToCallFileUtilities {
                             Date recordDate = null;
                             if (objectFieldType == 'DATETIME') {
                                 Datetime dT = (Datetime) lead.get(fieldName);
-                                recordDate = date.newinstance(dT.year(), dT.month(), dT.day());
+                                if (dT != null) {
+                                    recordDate = date.newinstance(dT.year(), dT.month(), dT.day());
+                                }
                             } else {
                                 recordDate = (Date) lead.get(fieldName);
                             }

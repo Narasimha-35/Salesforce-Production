@@ -1,4 +1,4 @@
-public without sharing class MercuryUtility {
+global without sharing class MercuryUtility {
 	public static final Map<String, String> M2SF_OPPORTUNITY_LOAN_MAP;
 	// public static final Map<String, String> opportunityLoanMap;
 	public static final Map<String, String> loanOpportunityMap;
@@ -48,54 +48,36 @@ public without sharing class MercuryUtility {
 		}
 	}
 
-	public static MercuryModel.People getApplicantWithValidEmailFromLoan(Mercury_Opportunity__c mercOppo) {
-		List<MercuryModel.LoanPeople> loanPeopleList = (List<MercuryModel.LoanPeople>) JSON.deserialize(mercOppo.merc_loanPeople__c, List<MercuryModel.LoanPeople>.class);
-		List<MercuryModel.People> peopleList = (List<MercuryModel.People>) JSON.deserialize(mercOppo.merc_people__c, List<MercuryModel.People>.class);
-		String primaryApplicantId = null;
-
-		for(MercuryModel.LoanPeople lp : loanPeopleList) {
-			System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Working on LoanPeople: ' + lp.uniqueId);
-			if(lp.relationship == 'Primary Applicant') {
-				System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Found primary applicant uniqueId: ' + lp.personID);
-				primaryApplicantId = lp.personID;
-			}
-		}
-		for(MercuryModel.People p : peopleList) {
-			System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Working on People: ' + p.uniqueId);
-			if(p.uniqueId.toLowerCase() == primaryApplicantId.toLowerCase()) {
-				System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Found primary applicant: ' + p);
-				return p;
-			}
-		}
-
-		for(MercuryModel.People p : peopleList) {
-			System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Working on People: ' + p.uniqueId);
-			if(p.email != null) {
-				System.debug(LoggingLevel.FINEST, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Found valid applicant: ' + p);
-				return p;
-			}
-		}
-
+	public static String getPrimaryApplicantId(List<MercuryModel.LoanPeople> loanPeopleList) {
+		for(MercuryModel.LoanPeople lp : loanPeopleList) if(lp.relationship == 'Primary Applicant') return lp.personID;
 		return null;
 	}
 
-	public static String getEmailOfPrimaryApplicantFromMercuryOpportunity(Mercury_Opportunity__c mercOppo) {
-		return getEmailListFromMercuryOpportunity(mercOppo)[0];
+	public static MercuryModel.People getApplicantById(List<MercuryModel.People> peopleList, String primaryApplicantId) {
+		for(MercuryModel.People p : peopleList) if(p.uniqueId.toLowerCase() == primaryApplicantId.toLowerCase()) return p;
+		return null;
 	}
 
-	public static List<String> getEmailListFromMercuryOpportunity(Mercury_Opportunity__c mercOppo) {
-		List<String> ret = new List<String>();
-		List<String> temp = new List<String>();
-		List<MercuryModel.LoanPeople> loanPeopleList = (List<MercuryModel.LoanPeople>) JSON.deserialize(mercOppo.merc_loanPeople__c, List<MercuryModel.LoanPeople>.class);
-		for(MercuryModel.LoanPeople lp : loanPeopleList) {
-			System.debug(LoggingLevel.DEBUG, '[MercuryUtility.getEmailListFromMercuryOpportunity] Processing Loan People: ' + lp);
-			if(lp.relationship == 'Primary Applicant') {
-				ret.add(lp.email);
-			} else {
-				temp.add(lp.email);
-			}
-		}
-		ret.addAll(temp);
+	public static MercuryModel.People getAnyApplicantHaveEmail(List<MercuryModel.People> peopleList) {
+		for(MercuryModel.People p : peopleList) if(p.email != null) return p;
+		return null;
+	}
+
+	public static List<MercuryModel.LoanPeople> getLoanPeople(Mercury_Opportunity__c mercOppo) {
+		return (List<MercuryModel.LoanPeople>) JSON.deserialize(mercOppo.merc_loanPeople__c, List<MercuryModel.LoanPeople>.class);
+	}
+
+	public static List<MercuryModel.People> getPeople(Mercury_Opportunity__c mercOppo) {
+		return (List<MercuryModel.People>) JSON.deserialize(mercOppo.merc_people__c, List<MercuryModel.People>.class);
+	}
+
+	public static MercuryModel.People getApplicantWithValidEmailFromLoan(Mercury_Opportunity__c mercOppo) {
+		List<MercuryModel.LoanPeople> loanPeopleList = getLoanPeople(mercOppo);
+		List<MercuryModel.People> peopleList = getPeople(mercOppo);
+		String primaryApplicantId = getPrimaryApplicantId(loanPeopleList);
+
+		MercuryModel.People ret = getApplicantById(peopleList, primaryApplicantId);
+		if(ret == null || ret.email == null) ret = getAnyApplicantHaveEmail(peopleList);
 		return ret;
 	}
 
@@ -105,6 +87,12 @@ public without sharing class MercuryUtility {
 		List<Opportunity> ol = [SELECT id, accountId FROM Opportunity WHERE accountId IN :scopeIds AND merc_current_status__c = null AND current_Appointment_Date_Time__c != null ORDER BY current_Appointment_Date_TIme__c DESC];
 		if(ol.size() == 0) return scope[0];
 		return accMap.get(ol[0].accountId);
+	}
+
+
+	webservice static void cleanMercuryOpportunity(String input) {
+		MercuryOpportunityCleanUpBatch b = new MercuryOpportunityCleanUpBatch();
+		Database.executeBatch(b, 5);
 	}
 
 	public class MercuryMismatchException extends Exception {

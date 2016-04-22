@@ -1,4 +1,4 @@
-global without sharing class MercuryOpportunityCleanUpBatch implements Database.Batchable<SObject>, Database.AllowsCallouts, Database.stateful {
+global without sharing class MercuryOpportunityCleanUpBatch implements Database.Batchable<Mercury_Opportunity__c>, Database.AllowsCallouts, Database.stateful {
 	Integer newAccountCounter;
 	Integer newOpportunityCounter;
 	Integer updateAccountCounter;
@@ -9,9 +9,9 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 	public MercuryOpportunityCleanUpBatch() {
 	}
 
-	global Database.QueryLocator start(Database.BatchableContext info){
-		String query = 'SELECT id, merc_people__c, merc_loanPeople__c FROM Mercury_Opportunity__c';
-		return Database.getQueryLocator(query);
+	global List<Mercury_Opportunity__c> start(Database.BatchableContext info){
+		MercuryOpportunitySelector mos = new MercuryOpportunitySelector();
+		return mos.getAll(0);
 	}
 
 	global void execute(Database.BatchableContext info, List<Mercury_Opportunity__c> scope){
@@ -66,8 +66,8 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 			System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityCleanUpBatch] Upserting Opportunity: ' + oppo);
 			Database.SaveResult oppoRes = Database.insert(oppo, false);
 			Database.DeleteResult delMercOppoRes = Database.delete(merc_oppo, false);
-			if(!accRes.isSuccess() || !oppoRes.isSuccess() || delMercOppoRes.isSuccess()) {
-				System.debug(LoggingLevel.ERROR, 'Error Acc, Opp ' + accRes.isSuccess() + ' ' + oppoRes.isSuccess());
+
+			if(!accRes.isSuccess() || !oppoRes.isSuccess() || !delMercOppoRes.isSuccess()) {
 				System.debug(LoggingLevel.ERROR, 'Error Message' + accRes.getErrors());
 				System.debug(LoggingLevel.ERROR, 'Error Message' + oppoRes.getErrors());
 				System.debug(LoggingLevel.ERROR, 'Error Message' + delMercOppoRes.getErrors());
