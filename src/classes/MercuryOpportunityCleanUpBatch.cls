@@ -1,10 +1,6 @@
 global without sharing class MercuryOpportunityCleanUpBatch implements Database.Batchable<Mercury_Opportunity__c>, Database.AllowsCallouts, Database.stateful {
-	Integer newAccountCounter;
-	Integer newOpportunityCounter;
-	Integer updateAccountCounter;
-	Integer updateOpportunityCounter;
-	Integer totalSuccessCounter;
-	Integer totalRequestHandled;
+	Integer totalSuccessCounter = 0;
+	Integer totalRequestHandled = 0;
 
 	public MercuryOpportunityCleanUpBatch() {
 	}
@@ -15,12 +11,13 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 	}
 
 	global void execute(Database.BatchableContext info, List<Mercury_Opportunity__c> scope){
-		AccountSelector accSelector = new AccountSelector();
 		MercuryModel.People applicant = null;
-		Account applicantAcc = null;
 		Opportunity oppo = null;
+		Account applicantAcc = null;
 
 		for(Mercury_Opportunity__c merc_oppo : scope) {
+			totalRequestHandled++;
+
 			if(merc_oppo.merc_people__c == null || merc_oppo.merc_loanPeople__c == null) continue;
 			System.debug(LoggingLevel.INFO, '[MercuryOpportunityCleanUpBatch] Start cleaning on: ' + merc_oppo);
 			applicant = MercuryUtility.getApplicantWithValidEmailFromLoan(merc_oppo);
@@ -32,54 +29,22 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 			System.debug(LoggingLevel.INFO, '[MercuryOpportunityCleanUpBatch] Complete Cast People');
 
 			System.debug(LoggingLevel.INFO, '[MercuryOpportunityCleanUpBatch] Start Cast Loan');
-			oppo = MercuryOpportunityService.castOpportunity(merc_oppo, true);
-			oppo.name = oppo.merc_transaction_name__c;
-			oppo.stageName = 'Closed Won - Signed';
-			oppo.closeDate = oppo.merc_settlement_date__c != null ? oppo.merc_settlement_date__c.date() : Date.today();
-			oppo.leadSource = 'Mercury';
-			oppo.mercury_Loan_Id__c = oppo.merc_uniqueId__c;
-			System.debug(LoggingLevel.INFO, '[MercuryOpportunityCleanUpBatch] Complete Cast Loan');
+			oppo = MercuryUtility.constructOpportunityFromMercuryOpp(merc_oppo);
+			System.debug(LoggingLevel.INFO, '[MercuryOpportunityCleanUpBatch] Complete Cast Loan: ' + oppo);
 
-			List<Account> matchingAccs = accSelector.getByMercuryPeople(applicant);
-			System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityCleanUpBatch] matchingAccs is: ' + matchingAccs);
+			applicantAcc = MercuryUtility.getApplicantAccount(applicant);
+			System.debug(LoggingLevel.INFO, '[MercuryOpportunityCleanUpBatch] The applicant Account is: ' + applicantAcc);
+			if(applicantAcc == null) continue;
 
-			if(matchingAccs == null) {
-				System.debug(LoggingLevel.ERROR, '[MercuryOpportunityCleanUpBatch] Empty matching condition.');
-				continue;
-			} else if(matchingAccs.size() == 0) {
-				//no match create.
-				applicantAcc = applicant.convertToAccount(true);
-				System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityCleanUpBatch] The applicant\'s Account from Direct Conversion: ' + applicantAcc);
-			} else if(matchingAccs.size() == 1) {
-				//Email match but not sure is match or not.
-				applicantAcc = applicant.mergeToAccount(matchingAccs.get(0), true);
-				System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityCleanUpBatch] The applicant\'s Account from Merge Single Account: ' + applicantAcc);
-			} else {
-				//TODO: multiple Account Matches.
-				applicantAcc = MercuryUtility.getMostRecentAppointmentAccountWithouSynced(matchingAccs);
-				applicantAcc = applicant.mergeToAccount(applicantAcc, true);
-				System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityCleanUpBatch] The applicant\'s Account from Merge Multiple Account: ' + applicantAcc);
-			}
-
-			//TODO: should use unit of work
-			SavePoint sp = Database.setSavepoint();
-			System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityCleanUpBatch] Upserting Account: ' + applicantAcc);
-			Database.UpsertResult accRes = Database.upsert(applicantAcc, Account.Fields.Id, false);
-			oppo.accountId = applicantAcc.id;
-			System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityCleanUpBatch] Upserting Opportunity: ' + oppo);
-			Database.SaveResult oppoRes = Database.insert(oppo, false);
-			Database.DeleteResult delMercOppoRes = Database.delete(merc_oppo, false);
-
-			if(!accRes.isSuccess() || !oppoRes.isSuccess() || !delMercOppoRes.isSuccess()) {
-				System.debug(LoggingLevel.ERROR, 'Error Message' + accRes.getErrors());
-				System.debug(LoggingLevel.ERROR, 'Error Message' + oppoRes.getErrors());
-				System.debug(LoggingLevel.ERROR, 'Error Message' + delMercOppoRes.getErrors());
-				Database.rollback(sp);
-			}
+			if(MercuryUtility.removeMercuryOpportunityAndCreateOpportunity(applicantAcc, oppo, merc_oppo)) totalSuccessCounter++;
 		}
 	}
 
 	global void finish(Database.BatchableContext info){
+		List<String> recipients = ((String) ACFEmailList__c.getOrgDefaults().get('Mercury_Email_Receiver__c')).split(',');
+		String emailBody = 'total number of request handled: ' + totalRequestHandled;
+		emailBody += '<br/> success counter: ' + totalSuccessCounter;
+		Utilities.sendEmail(recipients, '[MercuryOpportunityCleanUpBatch] report', emailBody);
 	}
 
 }

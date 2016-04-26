@@ -121,7 +121,7 @@ public without sharing class MercuryModel {
 
 		public Account convertToAccount(Boolean isFromMercury) {
 			Account ret = new Account();
-			if(isFromMercury) ret.personLeadSource = 'Mercury';
+			if(isFromMercury) ret.personLeadSource = MercuryUtility.LEAD_SOURCE;
 			ret.mercury_People_ID__c = uniqueId;
 			ret.firstName = firstName;
 			ret.lastName = lastName;
