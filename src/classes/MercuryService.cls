@@ -12,7 +12,9 @@
 *   https://developer.salesforce.com/page/Apex_Enterprise_Patterns_-_Service_Layer
 *
 **/
-public class MercuryService {
+global class MercuryService {
+	private static final Integer MERC_CLEAN_BATCH_SIZE = 5;
+	public static MercurySettings__c mercSettings = MercurySettings__c.getOrgDefaults();
 
 	public class MercurySyncException extends Exception {
 		private List<Exception> exceptionList = null;
@@ -186,6 +188,15 @@ public class MercuryService {
 		MercuryModel.PersonResponse pr = (MercuryModel.PersonResponse) JSON.deserialize(res.getBody(), MercuryModel.PersonResponse.class);
 		if(pr.success) return pr.people;
 		return null;
+	}
+
+	public static void startCleanMercuryOpportunityBatch() {
+		MercuryOpportunityCleanUpBatch b = new MercuryOpportunityCleanUpBatch();
+		Database.executeBatch(b, MERC_CLEAN_BATCH_SIZE);
+	}
+
+	webservice static void cleanMercuryOpportunity(String input) {
+		MercuryService.startCleanMercuryOpportunityBatch();
 	}
 
 }

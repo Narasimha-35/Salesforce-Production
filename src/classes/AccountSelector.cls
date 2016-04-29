@@ -25,6 +25,11 @@ public with sharing class AccountSelector extends SObjectSelector {
 	}
 
 	public List<Account> getByMercuryPeople(MercuryModel.People peop) {
+		List<Account> ret = null;
+		Id temp = Utilities.castId(peop.uniqueId);
+		if(temp != null) ret = getById(new List<Id>{temp});
+		if(ret.size() == 1) return ret;
+
 		String condition = 'WHERE ';
 		for(String s : matchList) {
 			if(peop.get(s) != null && peop.get(s) != ''){
@@ -34,7 +39,8 @@ public with sharing class AccountSelector extends SObjectSelector {
 			}
 		}
 		condition = condition.replaceFirst(' AND ', '');
-		return (List<Account>) super.selectByOpenCondition(condition);
+		ret = (List<Account>) super.selectByOpenCondition(condition);
+		return ret;
 	}
 
 }

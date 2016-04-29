@@ -103,4 +103,31 @@ global with sharing class MercuryOpportunityService {
 		return ret;
 	}
 
+	public static Boolean cleanMercuryOpportunity(Mercury_Opportunity__c merc_oppo) {
+		MercuryModel.People applicant = null;
+		Opportunity oppo = null;
+		Account applicantAcc = null;
+
+		if(merc_oppo.merc_people__c == null || merc_oppo.merc_loanPeople__c == null) return false;
+		System.debug(LoggingLevel.INFO, '[MercuryOpportunityService] Start cleaning on: ' + merc_oppo);
+		applicant = MercuryUtility.getApplicantWithValidEmailFromLoan(merc_oppo);
+		System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityService] The applicant is: ' + applicant);
+		if(applicant == null) {
+			System.debug(LoggingLevel.ERROR, '[MercuryOpportunityService] There is no valid Email address in all contacts.');
+			return false;
+		}
+		System.debug(LoggingLevel.INFO, '[MercuryOpportunityService] Complete Cast People');
+
+		System.debug(LoggingLevel.INFO, '[MercuryOpportunityService] Start Cast Loan');
+		oppo = MercuryUtility.constructOpportunityFromMercuryOpp(merc_oppo);
+		System.debug(LoggingLevel.INFO, '[MercuryOpportunityService] Complete Cast Loan: ' + oppo);
+
+		applicantAcc = MercuryUtility.getApplicantAccount(applicant);
+		System.debug(LoggingLevel.INFO, '[MercuryOpportunityService] The applicant Account is: ' + applicantAcc);
+		if(applicantAcc == null) return false;
+
+		if(MercuryUtility.removeMercuryOpportunityAndCreateOpportunity(applicantAcc, oppo, merc_oppo)) return true;
+		return false;
+	}
+
 }

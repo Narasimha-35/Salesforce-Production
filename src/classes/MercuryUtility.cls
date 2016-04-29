@@ -94,12 +94,6 @@ global without sharing class MercuryUtility {
 		return accMap.get(ol[0].accountId);
 	}
 
-
-	webservice static void cleanMercuryOpportunity(String input) {
-		MercuryOpportunityCleanUpBatch b = new MercuryOpportunityCleanUpBatch();
-		Database.executeBatch(b, 5);
-	}
-
 	public static Boolean removeMercuryOpportunityAndCreateOpportunity(Account applicantAcc, Opportunity oppo, Mercury_Opportunity__c merc_oppo) {
 		//TODO: should use unit of work
 		SavePoint sp = Database.setSavepoint();

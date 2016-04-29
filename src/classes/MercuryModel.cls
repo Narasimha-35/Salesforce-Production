@@ -3,6 +3,9 @@ public without sharing class MercuryModel {
 	private static final String API_USER_ID = 'CA51708';
 	private static final String ENCODING_SCHEME = 'UTF-8';
 	private static final String ACF_BRANCH_ID = 'P200019';
+	private static final String ACF_LEAD_SOURCE_ID = '3f85d5db-5924-11e4-88e4-00155db85119';
+	private static final String ACF_LEAD_SOURCE_NAME = 'ACF Client';
+	private static final String DEFAULT_TRANSACTION_TYPE = 'Loan';
 	private static final Map<String, String> GENDER_MAP = new Map<String, String> {
 		'M'      => 'Male',
 		'Male'   => 'Male',
@@ -298,6 +301,8 @@ public without sharing class MercuryModel {
 			// fixedRateExpiry = ((Datetime)merc_oppo.merc_fixed_rate_expiry__c).format('yyyy-MM-dd');
 			// interestOnlyExpiry = ((Datetime)merc_oppo.merc_interest_only_expiry__c).format('yyyy-MM-dd');
 			metaData = merc_oppo.merc_categories__c;
+			leadSourceDisplay = ACF_LEAD_SOURCE_ID;
+			leadSourceId = ACF_LEAD_SOURCE_ID;
 			validateAndClean();
 		}
 
@@ -328,6 +333,9 @@ public without sharing class MercuryModel {
 		private void validateAndClean() {
 			amount = amount != null ? amount : 0;
 			company = company != null ? company : ACF_BRANCH_ID;
+			transactionType = transactionType != null ? transactionType : DEFAULT_TRANSACTION_TYPE;
+			leadSourceDisplay = leadSourceDisplay != null ? leadSourceDisplay : ACF_LEAD_SOURCE_ID;
+			leadSourceId = leadSourceId != null ? leadSourceId : ACF_LEAD_SOURCE_ID;
 		}
 
 		public String getChangeList() {
