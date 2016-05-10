@@ -1,0 +1,8 @@
+public with sharing class VisualForceUtilities {
+
+	public pagereference cancel(Id currentAppointmentId) {
+      PageReference pageRef = new PageReference('/'+currentAppointmentId );
+      return pageRef;
+   }
+
+}
