@@ -24,6 +24,25 @@ public class ChangeAppointment_Class {
       save2completed = false;
    }
 
+   public List<SelectOption> getBroker() {
+      List<Broker__c> BrokerList =new list<Broker__c >();
+      Appointment__c Appobjtemp = [Select Name,Broker__r.name,Broker__c,Appointment_Type__c,Broker_Email__c,Broker_Mobile__c from Appointment__c where id=:currentAppointmentId];
+      if(Appobjtemp.Appointment_Type__c == 'Phone Appointment') {
+         BrokerList = [Select name from Broker__c where Active_Broker__c = true AND name != 'Unallocated Broker' AND Channel__c='Phone Broker'];
+      } else {
+         BrokerList = [Select name from Broker__c where Active_Broker__c = true AND name != 'Unallocated Broker' AND (Channel__c='Partner' OR Channel__c='Employee')];
+      }
+
+      List<SelectOption> options = new List<SelectOption>();
+      options.add(new SelectOption('','--Please select a Broker--'));
+
+      for (Broker__c br: BrokerList ) {
+         if(br.id != Appobjtemp.Broker__c )
+         options.add(new SelectOption(br.id ,br.name));
+      }
+      return options;
+   }
+
    public void save() {
       newAppointment = new Appointment__c();
 
@@ -79,5 +98,9 @@ public class ChangeAppointment_Class {
       acfCommon.sendSMS(currentAppointment.Broker__r.name,currentAppointment.Broker_Mobile__c,OldSMSTemplate ,true);
       System.debug('MobileOld' + currentAppointment.broker_Mobile__c);
       return new pagereference('/' + currentAppointmentId);
+   }
+
+   public pagereference cancel() {
+      return VisualForceUtilities.cancel(currentAppointmentId);
    }
 }
