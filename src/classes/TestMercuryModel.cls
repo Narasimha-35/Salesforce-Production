@@ -82,7 +82,7 @@ public with sharing class TestMercuryModel {
 	private static testMethod void testPersonResponse() {
 		MercuryModel.PersonResponse p = new MercuryModel.PersonResponse();
 		p.success = true;
-		p.People = new List<MercuryModel.People>{new MercuryModel.People()};
+		p.people = new MercuryModel.people();
 	}
 
 	private static testMethod void testLoan() {

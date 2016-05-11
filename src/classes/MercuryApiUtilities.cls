@@ -20,11 +20,13 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	static {
 		sfToMercuryObjectMap = new Map<String, String>{
 			'account'     => 'person',
-			'opportunity' => 'loan'
+			'opportunity' => 'loan',
+			'loanpeople'  => 'loanPeople'
 		};
 		sfToMercuryItemMap = new Map<String, String>{
 			'account'     => 'people',
-			'opportunity' => 'loans'
+			'opportunity' => 'loans',
+			'loanpeople'  => 'loanPeople'
 		};
 
 		ACFSwitch__c acfswh         = ACFSwitch__c.getOrgDefaults();
@@ -107,8 +109,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		if (res.getStatusCode() == 200) {
 			//Mark sync with mercury success ticked
 			account.Sync_With_Mercury_Success__pc = true;
-			System.debug(LoggingLevel.INFO, 'People is created success');
 		} else {
+			System.debug(LoggingLevel.DEBUG, 'Create People fail: ' + res);
 			pendingEmails.add(new Map<String, String>{'methodName' => 'createPeopleInMercury', 'details' => generateDetailPart(req, res)});
 			throw new Utilities.CalloutResponseException(req, res);
 		}
@@ -620,18 +622,6 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return ret;
 	}
 
-	public static HttpResponse sendGetRequest(String sfObjectName, MercuryModel.URLParams urlParams) {
-		String token = MercuryAuth.getInstance().getToken();
-		String endPoint = DOMAIN + '/' + API_VERSION + '/' + APPLICATION + '/' + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '?';
-		return sendGetRequest(endPoint + urlParams.toString());
-	}
-
-	public static HttpResponse sendGetRequest(String sfObjectName, String rid) {
-		String token = MercuryAuth.getInstance().getToken();
-		String endPoint = DOMAIN + '/' + API_VERSION + '/' + APPLICATION + '/' + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '/' + rid;
-		return sendGetRequest(endPoint);
-	}
-
 	public static Boolean checkRecord(String sfObjectName, String rid) {
 		Id tempId = null;
 		String tempIdString = '';
@@ -710,11 +700,24 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		System.debug(LoggingLevel.DEBUG, '[MercuryApiUtilities] Check DML Limit: ' + Limits.getLimitDMLStatements());
 		res = http.send(req);
 		if(res.getStatusCode() != 200) {
+			system.debug(LoggingLevel.INFO, '[MercuryApiUtilities.sendGetRequest] Error: ' + res);
 			pendingEmails.add(new Map<String, String>{'methodName' => 'sendGetRequest', 'details' => generateDetailPart(req, res)});
 			throw new Utilities.CalloutResponseException(req, res);
 		}
 		system.debug(LoggingLevel.DEBUG, res);
 		return res;
+	}
+
+	public static HttpResponse sendGetRequest(String sfObjectName, MercuryModel.URLParams urlParams) {
+		String token = MercuryAuth.getInstance().getToken();
+		String endPoint = DOMAIN + '/' + API_VERSION + '/' + APPLICATION + '/' + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '?';
+		return sendGetRequest(endPoint + urlParams.toString());
+	}
+
+	public static HttpResponse sendGetRequest(String sfObjectName, String rid) {
+		String token = MercuryAuth.getInstance().getToken();
+		String endPoint = DOMAIN + '/' + API_VERSION + '/' + APPLICATION + '/' + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '/' + rid;
+		return sendGetRequest(endPoint);
 	}
 
 }

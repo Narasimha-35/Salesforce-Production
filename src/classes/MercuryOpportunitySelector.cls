@@ -18,4 +18,8 @@ public with sharing class MercuryOpportunitySelector extends SObjectSelector {
 	public Mercury_Opportunity__c getByMercuryUniqueId(String rid) {
 		return (Mercury_Opportunity__c) super.selectByOpenCondition('WHERE merc_uniqueId__c = \'' + rid + '\'')[0];
 	}
+
+	public List<Mercury_Opportunity__c> getAll(Integer lmt) {
+		return (List<Mercury_Opportunity__c>) super.selectByOpenCondition('', null, lmt);
+	}
 }

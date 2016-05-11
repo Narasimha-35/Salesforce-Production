@@ -12,10 +12,17 @@ global without sharing class MercurySyncBackBatch implements Database.Batchable<
 		successCounter = 0;
 		Set<String> ids;
 
-		if(method == 0) {
+		if(method == -1) {
+			System.debug(LoggingLevel.INFO, '[MercurySyncBackBatch] Sync Mercury Opportunity by Mismatches...');
+			ids = new Set<String>();
+			List<Mercury_Opportunity__c> mismatchList = [SELECT id, merc_uniqueId__c FROM Mercury_Opportunity__c];
+			for(Mercury_Opportunity__c mo : mismatchList) ids.add(mo.merc_uniqueId__c);
+		} else if(method == 0) {
+			System.debug(LoggingLevel.INFO, '[MercurySyncBackBatch] Sync Mercury Opportunity for all methods...');
 			ids = MercuryService.getSyncBackLoanId(1);
 			ids.addAll(MercuryService.getSyncBackLoanId(2));
 		} else {
+			System.debug(LoggingLevel.INFO, '[MercurySyncBackBatch] Sync Mercury Opportunity for specified method...');
 			ids = MercuryService.getSyncBackLoanId(method);
 		}
 
@@ -41,6 +48,18 @@ global without sharing class MercurySyncBackBatch implements Database.Batchable<
 				Opportunity oppo = MercuryOpportunityService.castOpportunity(merc_oppo);
 				System.debug(LoggingLevel.FINE, '[MercurySyncBackBatch] casted Opportunity: ' + oppo);
 				if(oppo.id == null) {
+					List<MercuryModel.LoanPeople> mismatchLoanPeople = MercuryService.getLoanPeole(mercId);
+					List<MercuryModel.People> mismatchPeople = new List<MercuryModel.People>();
+					for(MercuryModel.LoanPeople lp : mismatchLoanPeople) {
+						mismatchPeople.add(MercuryService.getPeople(lp.personID));
+					}
+
+					merc_oppo.merc_loanPeople__c = JSON.serialize(mismatchLoanPeople);
+					System.debug(LoggingLevel.DEBUG, '[MercurySyncBackBatch] Set Loan People: ' + merc_oppo.merc_loanPeople__c);
+
+					merc_oppo.merc_people__c = JSON.serialize(mismatchPeople);
+					System.debug(LoggingLevel.DEBUG, '[MercurySyncBackBatch] Set People: ' + merc_oppo.merc_people__c);
+
 					merc_oppoNeedUpdate.put(mercId, merc_oppo);
 					System.debug(LoggingLevel.FINE, '[MercurySyncBackBatch] Mercury Opportunity have been put in map');
 				} else {
@@ -96,6 +115,11 @@ global without sharing class MercurySyncBackBatch implements Database.Batchable<
 		String emailBody = 'total number of Loan: ' + totalLoanNum;
 		emailBody += '<br/> success counter: ' + successCounter;
 		Utilities.sendEmail(recipients, '[MercurySyncBackBatch] report', emailBody);
+
+		//Start clean up Batch
+		if(MercuryService.mercSettings.cleanMismatchAfterSyncBack__c) {
+			MercuryService.startCleanMercuryOpportunityBatch();
+		}
 	}
 
 }

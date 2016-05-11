@@ -47,12 +47,14 @@ public abstract class SObjectSelector {
 
 	//NOTE: the condition have to be cleaned before using this function, otherwise Vulnerable to SOQL Injection
 	public List<SObject> selectByOpenCondition(String condition) {
-		return selectByOpenCondition(condition, null);
+		return selectByOpenCondition(condition, null, 0);
 	}
 
-	public List<SObject> selectByOpenCondition(String condition, List<String> ids) {
+	public List<SObject> selectByOpenCondition(String condition, List<String> ids, Integer lmt) {
 		List<SObject> ret = new List<SObject>();
-		String queryString = getQueryPartOne() + condition + ' LIMIT ' + RECORD_PER_SOQL;
+		String queryString = getQueryPartOne() + condition + ' LIMIT ';
+ 		if(lmt == 0) queryString += RECORD_PER_SOQL;
+		else queryString += lmt;
 		System.debug(LoggingLevel.INFO, 'Select By Open Condition: ' + queryString);
 		return Database.query(queryString);
 	}

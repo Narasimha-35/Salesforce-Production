@@ -19,6 +19,7 @@ public class LeadToCallFileUtilities {
                 boolean fitRule = checkIfLeadFitTheRule(lead, rule);
                 if (fitRule) {
                     System.debug('This is the rule fit ' + rule.Id);
+                    // last time call file is different from the new call file
                     if (lead.vhc__CallFile__c != null && lead.vhc__CallFile__c != rule.Call_File__c) {
                         if (rule.Delay_To_Call_File_Days__c != null && rule.Delay_To_Call_File_Days__c > 0) {
                             lead.AddToCallFileDate__c = Date.today().addDays((Integer) rule.Delay_To_Call_File_Days__c);
@@ -27,6 +28,7 @@ public class LeadToCallFileUtilities {
                             lead.vhc__CallFile__c = rule.Call_File__c;
                             lead.Is_Updated__c = true;
                         }
+                        // first time call file update
                     } else if (lead.vhc__CallFile__c == null || String.valueOf(lead.vhc__CallFile__c) == '') {
                         if (rule.Delay_To_Call_File_Days__c != null && rule.Delay_To_Call_File_Days__c > 0) {
                             lead.AddToCallFileDate__c = Date.today().addDays((Integer) rule.Delay_To_Call_File_Days__c);
@@ -78,10 +80,25 @@ public class LeadToCallFileUtilities {
                         //if the lead already has call file and it is same with the call file we gonna assign, then do not do anything
                         //otherwise assign the call file to this lead
                         //update the field
-                        if (objectFieldType == 'DATE') {
+                        if (objectFieldType == 'DATE' || (objectFieldType == 'DATETIME' && ruleSet.Field_Value__c == 'TODAY')) {
                             //translate dateString to Date
-                            Date currentDate = convertStringToDate(ruleSet.Field_Value__c);
-                            Date recordDate = (Date) lead.get(fieldName);
+                            /* Check TODAY keyword */
+                            Date currentDate = null;
+                            if (ruleSet.Field_Value__c == 'TODAY') {
+                                currentDate = System.today();
+                            } else {
+                                currentDate = convertStringToDate(ruleSet.Field_Value__c);
+                            }
+                            Date recordDate = null;
+                            if (objectFieldType == 'DATETIME') {
+                                Datetime dT = (Datetime) lead.get(fieldName);
+                                if (dT != null) {
+                                    recordDate = date.newinstance(dT.year(), dT.month(), dT.day());
+                                }
+                            } else {
+                                recordDate = (Date) lead.get(fieldName);
+                            }
+
                             System.debug(currentDate + ' '  +  ruleSet.Operator__c + ' ' + recordDate);
                             if (ruleSet.Operator__c == IS_EQUAL_TO) {
                                 if (currentDate != recordDate) {
@@ -101,6 +118,7 @@ public class LeadToCallFileUtilities {
                                 }
                             }
                         } else if (objectFieldType == 'DATETIME') {
+                            /*Add Today Key Word*/
                             Datetime currentDatetime = convertStringToDateTime(ruleSet.Field_Value__c);
                             Datetime recordDatetime = (Datetime) lead.get(fieldName);
                             if (ruleSet.Operator__c == IS_EQUAL_TO) {
@@ -199,7 +217,7 @@ public class LeadToCallFileUtilities {
             String fieldType = Utilities.getObjectInfo(ruleSet.Field_Name_Dyna__c, Utilities.SOBJECT_TYPE);
             if (fieldType.contains('DATE')) {
                 // Date type
-                if (checkDateFormat(ruleSet.Field_Value__c)) {
+                if (checkDateFormat(ruleSet.Field_Value__c) || ruleSet.Field_Value__c == 'Today') {
                     return true;
                 } else {
                     return false;
