@@ -225,14 +225,14 @@ public with sharing class TestMercuryUtility {
         System.assertEquals('D6326846-939D-F4C9-4B1D-14710291DE49', paid);
     }
 
-    private static testMethod void testGetAnyApplicantHaveEmail() {
+    private static testMethod void testGetAnyApplicantHaveValue() {
         List<MercuryModel.People> testPeopleList = peopleList.clone();
         testPeopleList[0].email = null;
-        String paid = MercuryUtility.getAnyApplicantHaveEmail(testPeopleList).uniqueId;
+        String paid = MercuryUtility.getAnyApplicantHaveValue(testPeopleList, new Set<String>{'email'}).uniqueId;
         System.assertEquals('36E8562C-2310-0AF5-FDD9-147811ABEAE7', paid);
     }
 
-    private static testMethod void testGetApplicantWithValidEmailFromLoan() {
+    private static testMethod void testGetApplicant() {
 
     }
 
@@ -345,6 +345,33 @@ public with sharing class TestMercuryUtility {
         Account a = MercuryUtility.getApplicantAccount(peopleList[0]);
         System.assertEquals(a2.id, a.id); //a2 wins
         System.assertNotEquals(null, a.description);
+    }
+
+    private static testMethod void testGetStandardMobileFormat() {
+        String case1 = '0401 234 567';
+        String expect1 = '+61401234567';
+
+        String case2 = '0401234567';
+        String expect2 = '+61401234567';
+
+        String case3 = '0401 2 3 4 5 6 7';
+        String expect3 = '+61401234567';
+
+        String case4 = '0401 234 567 890';
+        String expect4 = null;
+
+        String case5 = '401 234 567';
+        String expect5 = '+61401234567';
+
+        String case6 = '501 000 000';
+        String expect6 = null;
+
+        System.assertEquals(expect1, MercuryUtility.getStandardMobileFormat(case1));
+        System.assertEquals(expect2, MercuryUtility.getStandardMobileFormat(case2));
+        System.assertEquals(expect3, MercuryUtility.getStandardMobileFormat(case3));
+        System.assertEquals(expect4, MercuryUtility.getStandardMobileFormat(case4));
+        System.assertEquals(expect5, MercuryUtility.getStandardMobileFormat(case5));
+        System.assertEquals(expect6, MercuryUtility.getStandardMobileFormat(case6));
     }
 
 }

@@ -110,7 +110,7 @@ global with sharing class MercuryOpportunityService {
 
 		if(merc_oppo.merc_people__c == null || merc_oppo.merc_loanPeople__c == null) return false;
 		System.debug(LoggingLevel.INFO, '[MercuryOpportunityService] Start cleaning on: ' + merc_oppo);
-		applicant = MercuryUtility.getApplicantWithValidEmailFromLoan(merc_oppo);
+		applicant = MercuryUtility.getApplicant(merc_oppo);
 		System.debug(LoggingLevel.DEBUG, '[MercuryOpportunityService] The applicant is: ' + applicant);
 		if(applicant == null) {
 			System.debug(LoggingLevel.ERROR, '[MercuryOpportunityService] There is no valid Email address in all contacts.');
