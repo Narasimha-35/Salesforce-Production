@@ -1,18 +1,36 @@
 public without sharing class MercuryModel {
-	private static final Set<String> AVALIABLE_TITLE = new Set<String>{'Dr', 'Miss', 'Ms', 'Mr', 'Mrs', 'Prof', 'Rev'};
-	private static final String API_USER_ID = 'CA51708';
-	private static final String ENCODING_SCHEME = 'UTF-8';
-	private static final String ACF_BRANCH_ID = 'P200019';
-	private static final String ACF_LEAD_SOURCE_ID = '3f85d5db-5924-11e4-88e4-00155db85119';
-	private static final String ACF_LEAD_SOURCE_NAME = 'ACF Client';
-	private static final String DEFAULT_TRANSACTION_TYPE = 'Loan';
-	private static final Map<String, String> GENDER_MAP = new Map<String, String> {
+	public static final String API_USER_ID = 'CA51708';
+	public static final String ENCODING_SCHEME = 'UTF-8';
+	public static final String ACF_BRANCH_ID = 'P200019';
+	public static final String ACF_LEAD_SOURCE_ID = '3f85d5db-5924-11e4-88e4-00155db85119';
+	public static final String ACF_LEAD_SOURCE_NAME = 'ACF Client';
+	public static final String DEFAULT_TRANSACTION_TYPE = 'Loan';
+	public static final Map<String, String> GENDER_MAP = new Map<String, String> {
 		'M'      => 'Male',
 		'Male'   => 'Male',
 		'F'      => 'Female',
 		'Female' => 'Female',
 		''       => null
 	};
+	public static final Set<String> AVALIABLE_TITLE = new Set<String>{
+		'Dr',
+		'Miss',
+		'Ms',
+		'Mr',
+		'Mrs',
+		'Prof',
+		'Rev'
+	};
+
+	public static String getResourceName(Object mercModel) {
+		if(mercModel instanceOf MercuryModel.People) return 'person';
+		if(mercModel instanceOf MercuryModel.Loan) return 'loan';
+		if(mercModel instanceOf MercuryModel.Income) return 'income';
+		if(mercModel instanceOf MercuryModel.Expense) return 'expense';
+		if(mercModel instanceOf MercuryModel.LoanPeople) return 'loanPeople';
+		if(mercModel instanceOf MercuryModel.Address) return 'address';
+		return null;
+	}
 
 	public class Partner extends Model {
 		public String uniqueId {get; set;}
@@ -116,9 +134,22 @@ public without sharing class MercuryModel {
 
 		public People(Click_Applicant__c apct, String branchId) {
 			init();
+			uniqueId = apct.id;
+			String[] names = apct.acf_Applicant_Name__c.split(' ');
+			if(names.size() > 1) {
+				firstName = names[0];
+				lastName = names.get(names.size() - 1);
+			}
 			dateOfBirth = ApplicantUtilities.getDateFieldInGMT(apct.acf_applicant_DOB__c);
 			maritalStatus = apct.acf_applicant_Marital_Status__c;
 			numberOfDependents = ApplicantUtilities.cleanInteger(apct.acf_applicant_Dependants__c);
+			employer = apct.acf_applicant_Employer_Name__c;
+			occupation = apct.current_Role__c;
+			employmentStatus = apct.acfEmployment_Type__c;
+			employmentCommenced = ApplicantUtilities.getDateFieldInGMT(apct.aCf1_Current_employer_Start_Date__c);
+			contactMethods = new List<ContactMethod>();
+			contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.MOBILE, apct.applicant_Phone__c));
+			contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.EMAIL1, apct.applicant_Email__c));
 
 			validateAndClean();
 		}
@@ -190,11 +221,9 @@ public without sharing class MercuryModel {
 			markAsPrivate = false;
 			emailBounced = false;
 			webAccess = false;
+			personDataType = 'Full';
 		}
 
-		public String getChangeList() {
-			return EncodingUtil.urlEncode(JSON.serialize(getNonNullAttributeSet()), ENCODING_SCHEME);
-		}
 	}
 
 	public class PersonResponse extends Model {
@@ -347,17 +376,33 @@ public without sharing class MercuryModel {
 			leadSourceId = leadSourceId != null ? leadSourceId : ACF_LEAD_SOURCE_ID;
 		}
 
-		public String getChangeList() {
-			return EncodingUtil.urlEncode(JSON.serialize(getNonNullAttributeSet()), ENCODING_SCHEME);
-		}
 	}
 
 	public class LoanPeople extends Model {
 		public String uniqueId;
+		public Boolean isDeleted;
 		public String loanID;
 		public String personID;
 		public String relationship;
 		public String email;
+		public String createdBy;
+		public String company;
+		public String fullName;
+
+		public LoanPeople(Account acc, Opportunity oppo) {
+			init();
+			uniqueId = oppo.id + '-' + acc.id;
+			loanID = oppo.id;
+			personID = acc.id;
+			relationship = 'Primary Applicant';
+			fullName = oppo.id + '-' + acc.id;
+		}
+
+		public void init() {
+			isDeleted = false;
+			company = ACF_BRANCH_ID;
+			createdBy = API_USER_ID;
+		}
 	}
 
 	public class LoanResponse extends Model {
@@ -488,6 +533,131 @@ public without sharing class MercuryModel {
 		public Boolean success;
 		public Integer total;
 		public List<MercuryModel.LoanPeople> loanPeople;
+	}
+
+	public class Income extends Model {
+		public String uniqueId;
+		public Boolean isDeleted;
+		public Decimal amount;
+		public String comment;
+		public String company;
+		public String createdBy;
+		public String personId;
+		public String type;
+		public String frequency;
+		public Integer sortKey;
+
+		public Income(Income_And_Expense__c iae, Account acc) {
+			init();
+			uniqueId = iae.id;
+			amount = iae.amount__c;
+			personId = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
+			type = iae.category__c;
+			frequency = iae.frequency__c == 'Yearly' ? 'Annual' : iae.frequency__c;
+		}
+
+		public void init() {
+			isDeleted = false;
+			company = ACF_BRANCH_ID;
+			createdBy = API_USER_ID;
+			sortKey = 0;
+		}
+	}
+
+	public class Expense extends Model {
+		public String uniqueId;
+		public Boolean isDeleted;
+		public Decimal amount;
+		public String comment;
+		public String company;
+		public String createdBy;
+		public String personId;
+		public String type;
+		public String frequency;
+		public Integer sortKey;
+		public Decimal balance;
+		public Decimal creditLimit;
+
+		public Expense(Income_And_Expense__c iae, Account acc) {
+			init();
+			uniqueId = iae.id;
+			amount = iae.amount__c;
+			personId = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
+			type = iae.category__c;
+			frequency = iae.frequency__c == 'Yearly' ? 'Annual' : iae.frequency__c;
+			creditLimit = iae.credit_Limit__c;
+			balance = iae.balance__c;
+		}
+
+		public void init() {
+			isDeleted = false;
+			company = ACF_BRANCH_ID;
+			createdBy = API_USER_ID;
+			sortKey = 0;
+		}
+	}
+
+	public class Address extends Model {
+		public String uniqueId;
+		public Boolean isDeleted;
+		public String type;
+		public String streetName;
+		public String streetNumber;
+		public String streetType;
+		public String city;
+		public String state;
+		public String postcode;
+		public String country;
+		public String unitNumber;
+		public String buildingName;
+		public String floorNumber;
+		public Boolean isCorrespondenceAddress;
+		//public String fromDate;
+		//public String toDate;
+		public String addressBlock;
+		public String housingSituation;
+		public String format;
+		public String personName;
+		public String company;
+		public String createdBy;
+		public String parentID;
+		public String parentType;
+		public String streetSearch;
+		public String addrGeoLatitude;
+		public String addrGeoLongitude;
+
+		public Address(Account acc) {
+			init();
+			parentType = 'person';
+			// System.Address addr = acc.PersonMailingAddress;
+			//
+			// city = addr.getCity();
+			// country = addr.getCountry();
+			// postcode = addr.getPostalCode();
+			// state = addr.getState();
+			// streetName = addr.getStreet();
+			// addrGeoLongitude = String.valueof(addr.getLongitude());
+			// addrGeoLatitude = String.valueof(addr.getLatitude());
+
+			parentID = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
+			addressBlock = acc.acfWhat_is_your_postcode__pc;
+			streetSearch = acc.acfWhat_is_your_postcode__pc;
+			streetName = acc.acfWhat_is_your_postcode__pc;
+
+			validateAndClean();
+		}
+
+		public void init() {
+			isDeleted = false;
+			company = ACF_BRANCH_ID;
+			createdBy = API_USER_ID;
+			isCorrespondenceAddress = false;
+		}
+
+		public void validateAndClean() {
+			addrGeoLatitude = addrGeoLatitude != null ? addrGeoLatitude : '0.0';
+			addrGeoLongitude = addrGeoLongitude != null ? addrGeoLongitude : '0.0';
+		}
 	}
 
 }
