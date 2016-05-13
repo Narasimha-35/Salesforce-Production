@@ -3,6 +3,10 @@ global without sharing class MercuryUtility {
 	// public static final Map<String, String> opportunityLoanMap;
 	public static final String OPPORTUNITY_STAGE = 'Closed Won - Signed';
 	public static final String LEAD_SOURCE = 'Mercury';
+	public static final String ACCOUNT_EMAIL_FIELD_USED = 'PersonEmail';
+	public static final String ACCOUNT_PHONE_FIELD_USED = 'personHomePhone';
+	public static final String ACCOUNT_MOBILE_FIELD_USED = 'personMobilePhone';
+	public static final String ACCOUNT_MERCURY_ID_USED = 'mercury_People_ID__c';
 	public static final Map<String, String> loanOpportunityMap;
 	static {
 		M2SF_OPPORTUNITY_LOAN_MAP = new Map<String, String> {
@@ -60,8 +64,14 @@ global without sharing class MercuryUtility {
 		return null;
 	}
 
-	public static MercuryModel.People getAnyApplicantHaveEmail(List<MercuryModel.People> peopleList) {
-		for(MercuryModel.People p : peopleList) if(p.email != null && p.email != '') return p;
+	public static MercuryModel.People getAnyApplicantHaveValue(List<MercuryModel.People> peopleList, Set<String> fieldNameSet) {
+		String temp;
+		for(MercuryModel.People p : peopleList) {
+			for(String field : fieldNameSet) {
+				temp = (String) p.get(field);
+				if(temp != null && temp != '') return p;
+			}
+		}
 		return null;
 	}
 
@@ -73,15 +83,15 @@ global without sharing class MercuryUtility {
 		return (List<MercuryModel.People>) JSON.deserialize(mercOppo.merc_people__c, List<MercuryModel.People>.class);
 	}
 
-	public static MercuryModel.People getApplicantWithValidEmailFromLoan(Mercury_Opportunity__c mercOppo) {
+	public static MercuryModel.People getApplicant(Mercury_Opportunity__c mercOppo) {
 		List<MercuryModel.LoanPeople> loanPeopleList = getLoanPeopleFromMercuryOpportunity(mercOppo);
 		List<MercuryModel.People> peopleList = getPeopleFromMercuryOpportunity(mercOppo);
 		String primaryApplicantId = getPrimaryApplicantId(loanPeopleList);
 
 		MercuryModel.People ret = getApplicantById(peopleList, primaryApplicantId);
-		System.debug(LoggingLevel.DEBUG, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Primary Applicant' + ret);
-		if(ret == null || ret.email == null || ret.email == '') ret = getAnyApplicantHaveEmail(peopleList);
-		System.debug(LoggingLevel.DEBUG, '[MercuryUtility.getApplicantWithValidEmailFromLoan] Applicant with valid Email Address' + ret);
+		if(ret == null || ((ret.email == null || ret.email == '') && (ret.mobile == null || ret.mobile == '') && (ret.homePhone == null || ret.homePhone == ''))) {
+			ret = getAnyApplicantHaveValue(peopleList, new Set<String>{'email', 'mobile', 'homePhone'});
+		}
 		return ret;
 	}
 
@@ -116,10 +126,31 @@ global without sharing class MercuryUtility {
 		return true;
 	}
 
+	public static String getStandardMobileFormat(String mobile) {
+		if(mobile == null) return null;
+		mobile = mobile.replace(' ', '');
+		Pattern mobilePattern1 = Pattern.compile('04[0-9]{8}');
+		Pattern mobilePattern2 = Pattern.compile('4[0-9]{8}');
+
+		if(mobilePattern1.matcher(mobile).matches()) {
+			return '+61' + mobile.subString(1);
+		}
+
+		if(mobilePattern2.matcher(mobile).matches()) {
+			return '+61' + mobile;
+		}
+
+		return null;
+	}
+
 	public static Account getApplicantAccount(MercuryModel.People applicant) {
 		AccountSelector accSelector = new AccountSelector();
-		Account applicantAcc = null;
-		List<Account> matchingAccs = accSelector.getByMercuryPeople(applicant);
+		Account applicantAcc = applicant.convertToAccount(true);
+
+		applicantAcc.put(ACCOUNT_PHONE_FIELD_USED, getStandardMobileFormat((String) applicantAcc.get(ACCOUNT_PHONE_FIELD_USED)));
+		applicantAcc.put(ACCOUNT_MOBILE_FIELD_USED, getStandardMobileFormat((String) applicantAcc.get(ACCOUNT_MOBILE_FIELD_USED)));
+
+		List<Account> matchingAccs = accSelector.getSimilarAccountsByAccount(applicantAcc, new Set<String>{ACCOUNT_EMAIL_FIELD_USED, ACCOUNT_PHONE_FIELD_USED, ACCOUNT_MOBILE_FIELD_USED}, ACCOUNT_MERCURY_ID_USED);
 		System.debug(LoggingLevel.DEBUG, '[MercuryUtility.getApplicantAccount] matchingAccs is: ' + matchingAccs);
 
 		if(matchingAccs == null) {
@@ -127,7 +158,6 @@ global without sharing class MercuryUtility {
 			return null;
 		} else if(matchingAccs.size() == 0) {
 			//no match create.
-			applicantAcc = applicant.convertToAccount(true);
 			System.debug(LoggingLevel.DEBUG, '[MercuryUtility.getApplicantAccount] The applicant\'s Account from Direct Conversion: ' + applicantAcc);
 		} else if(matchingAccs.size() == 1) {
 			//Email match but not sure is match or not.
