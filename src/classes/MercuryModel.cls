@@ -119,6 +119,11 @@ public without sharing class MercuryModel {
 			dateOfBirth = ApplicantUtilities.getDateFieldInGMT(apct.acf_applicant_DOB__c);
 			maritalStatus = apct.acf_applicant_Marital_Status__c;
 			numberOfDependents = ApplicantUtilities.cleanInteger(apct.acf_applicant_Dependants__c);
+			employer = apct.acf_applicant_Employer_Name__c;
+			occupation = apct.current_Role__c;
+			// jobTitle = apct.
+			employmentStatus = apct.acfEmployment_Type__c;
+			employmentCommenced = apct.aCf1_Current_employer_Start_Date__c;
 
 			validateAndClean();
 		}
