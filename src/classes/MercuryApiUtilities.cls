@@ -720,4 +720,19 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return sendGetRequest(endPoint);
 	}
 
+	public static void createIncome() {
+		String url = 'https://m5.connective.com.au/api/mercury5/8f9711cd-1802-41ce-b921-0eb4ddeee235/income/26dc56cf-f90d-43a2-a10a-895ff979af7a?_dc=1463113114568';
+		String payload = '{"uniqueId":"26dc56cf-f90d-43a2-a10a-895ff979af7a","isDeleted":false,"createdOn":"2016-05-13T14:18:06+10:00","deletedOn":null,"amount":100,"dateCommenced":"2016-05-13T00:00:00+10:00","sortKey":0,"comment":"","company":"P200019","createdBy":"CA950739","personId":"0016F00001dzprJQAQ","type":"Salary","frequency":"Annual"}';
+	}
+
+	public static void createExpense() {
+		String url = 'https://m5.connective.com.au/api/mercury5/8f9711cd-1802-41ce-b921-0eb4ddeee235/income/26dc56cf-f90d-43a2-a10a-895ff979af7a?_dc=1463113114568';
+		String payload = '{"uniqueId":"26dc56cf-f90d-43a2-a10a-895ff979af7a","isDeleted":false,"createdOn":"2016-05-13T14:18:06+10:00","deletedOn":null,"amount":100,"dateCommenced":"2016-05-13T00:00:00+10:00","sortKey":0,"comment":"","company":"P200019","createdBy":"CA950739","personId":"0016F00001dzprJQAQ","type":"Salary","frequency":"Annual"}';
+	}
+
+	public static void createAddress() {
+		String url = 'https://m5.connective.com.au/api/mercury5/8f9711cd-1802-41ce-b921-0eb4ddeee235/income/26dc56cf-f90d-43a2-a10a-895ff979af7a?_dc=1463113114568';
+		String payload = '{"uniqueId":"26dc56cf-f90d-43a2-a10a-895ff979af7a","isDeleted":false,"createdOn":"2016-05-13T14:18:06+10:00","deletedOn":null,"amount":100,"dateCommenced":"2016-05-13T00:00:00+10:00","sortKey":0,"comment":"","company":"P200019","createdBy":"CA950739","personId":"0016F00001dzprJQAQ","type":"Salary","frequency":"Annual"}';
+	}
+
 }

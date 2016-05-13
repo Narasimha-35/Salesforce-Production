@@ -114,6 +114,15 @@ public without sharing class MercuryModel {
 			validateAndClean();
 		}
 
+		public People(Click_Applicant__c apct, String branchId) {
+			init();
+			dateOfBirth = ApplicantUtilities.getDateFieldInGMT(apct.acf_applicant_DOB__c);
+			maritalStatus = apct.acf_applicant_Marital_Status__c;
+			numberOfDependents = ApplicantUtilities.cleanInteger(apct.acf_applicant_Dependants__c);
+
+			validateAndClean();
+		}
+
 		public ContactMethod getContactMethod(ContactMethodType method) {
 			return null;
 		}
