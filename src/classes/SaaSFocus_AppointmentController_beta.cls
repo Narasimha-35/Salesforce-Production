@@ -370,7 +370,7 @@ public class SaaSFocus_AppointmentController_beta {
         system.debug('Eventtime===>'+EveStartTime+'EndTime===>'+EveEndTime+'ID of broker===>'+IdBroker);
         CalenderEvents  = ob.getEventslist(EveStartTime,EveEndTime ,IdBroker);
 
-        if(CalenderEvents.size() > 0) {
+        if(Utilities.isBussy(eveStartTime, eveEndTime, calenderEvents)) {
             pagereference pg= new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId +'&err=1');
             pg.setRedirect(true);
             return pg;

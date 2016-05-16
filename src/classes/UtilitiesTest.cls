@@ -211,4 +211,34 @@ private class UtilitiesTest {
         System.assertEquals(a.id, Utilities.castId(a.id));
         System.assertEquals(null, Utilities.castId('abc'));
     }
+
+    private static testMethod void testIsBussy() {
+        Datetime now = Datetime.now();
+
+        Saasfocus_EventClass e = new Saasfocus_EventClass();
+        e.StartDateTime = String.valueOf(now);
+        e.EndDateTime = String.valueOf(now.addDays(1));
+
+        Datetime st = now.addMinutes(1);
+        Datetime ed = st.addDays(1);
+        System.assertEquals(true, Utilities.isBussy(st, ed, e));
+
+        st = now.addMinutes(-2);
+        System.assertEquals(true, Utilities.isBussy(st, ed, e));
+
+        ed = ed.addMinutes(-2);
+        System.assertEquals(true, Utilities.isBussy(st, ed, e));
+
+        st = now.addMinutes(-10);
+        ed = now.addMinutes(-9);
+        System.debug(String.valueofGmt(st));
+        System.debug(String.valueofGmt(ed));
+        System.debug(e.startdatetime);
+        System.debug(e.enddatetime);
+        System.assertEquals(false, Utilities.isBussy(st, ed, e));
+
+        st = now.addDays(1).addMinutes(8);
+        ed = now.addDays(1).addMinutes(10);
+        System.assertEquals(false, Utilities.isBussy(st, ed, e));
+    }
 }
