@@ -201,11 +201,30 @@ global class MercuryService {
 
 	//Only update the loan in Mercury
 	public static void updateLoan(Opportunity oppo) {
-		Account acc = oppo.account;
-		// List<Applicant>
+		String branchId = MercuryUtility.getBrokerBranch(oppo.id);
+		AccountSelector accSelector = new AccountSelector();
+		Account acc = accSelector.getById(oppo.accountId);
+		ApplicantSelector apts = new ApplicantSelector();
+		List<Click_Applicant__c> applicants = apts.getByAccount(acc);
+		IncomeAndExpenseSelector iaeSelector = new IncomeAndExpenseSelector();
+		List<Income_And_Expense__c> iaeList = iaeSelector.getByAccount(acc);
 
 		//TODO: update loan details
-		//TODO: upsert applicant details
+		//upsert applicant details
+		for(Click_Applicant__c applicant : applicants) {
+			MercuryModel.People people;
+			if('1' == applicant.click_Applicant_Number__c) {
+				people = new MercuryModel.People(acc, branchId);
+				MercuryApiUtilities.updateMercuryRecord(people);
+			} else {
+				people = new MercuryModel.People(applicant, branchId);
+				MercuryApiUtilities.insertMercuryRecord(people);
+			}
+		}
+		for(Income_And_Expense__c iae : iaeList) {
+			MercuryApiUtilities.createIncomeAndExpense(iae, acc, branchId);
+		}
+		MercuryApiUtilities.createAddress(acc, branchId);
 		//TODO: upsert loan people
 	}
 

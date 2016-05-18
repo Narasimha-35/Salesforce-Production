@@ -72,13 +72,6 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 	}
 
-	public static void updatePeopleInMercury(Object peop, String branchId) {
-		MercuryModel.People pe;
-		if(peop instanceOf Account) pe = new MercuryModel.People((Account)peop, branchId);
-		else if(peop instanceOf Click_Applicant__c) pe = new MercuryModel.People((Click_Applicant__c)peop, branchId);
-
-	}
-
 	public static Account createPeopleInMercury(String accountId, String branchId) {
 		return createPeopleInMercury(accountId, branchId, false);
 	}
@@ -257,18 +250,18 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return new MercuryUtility.HttpSet(req, http.send(req));
 	}
 
-	public static void createIncomeAndExpense(Income_And_Expense__c iae, Account acc) {
+	public static void createIncomeAndExpense(Income_And_Expense__c iae, Account acc, String branchId) {
 		Model mercModel;
 		if(iae.recordTypeId == IncomeRecordType.getInstance().id) {
-			mercModel = new MercuryModel.Income(iae, acc);
+			mercModel = new MercuryModel.Income(iae, acc, branchId);
 		} else if(iae.recordTypeId == ExpenseRecordType.getInstance().id) {
-			mercModel = new MercuryModel.Expense(iae, acc);
+			mercModel = new MercuryModel.Expense(iae, acc, branchId);
 		}
 		insertMercuryRecord(mercModel);
 	}
 
-	public static void createAddress(Account acc) {
-		MercuryModel.Address addr = new MercuryModel.Address(acc);
+	public static void createAddress(Account acc, String branchId) {
+		MercuryModel.Address addr = new MercuryModel.Address(acc, branchId);
 		insertMercuryRecord(addr);
 	}
 

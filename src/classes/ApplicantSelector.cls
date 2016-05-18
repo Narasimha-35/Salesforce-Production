@@ -14,4 +14,8 @@ public with sharing class ApplicantSelector extends SObjectSelector {
 	public Click_Applicant__c getById(Id rid) {
 		return (Click_Applicant__c) super.selectByIds(new List<Id>{rid})[0];
 	}
+
+	public List<Click_Applicant__c> getByAccount(Account acc) {
+		return (List<Click_Applicant__c>) super.selectByOpenCondition('WHERE click_Account__c = \'' + acc.id + '\'');
+	}
 }

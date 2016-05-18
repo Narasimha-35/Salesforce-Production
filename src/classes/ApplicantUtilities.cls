@@ -13,8 +13,8 @@ public with sharing class ApplicantUtilities {
 
 	public static Integer cleanInteger(String intString) {
 		Integer ret = null;
-		intString = intString.replace('+', '');
 		try {
+			intString = intString.replace('+', '');
 			ret = Integer.valueOf(intString);
 		} catch (Exception e) {
 			return null;

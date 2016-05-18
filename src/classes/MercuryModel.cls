@@ -547,13 +547,14 @@ public without sharing class MercuryModel {
 		public String frequency;
 		public Integer sortKey;
 
-		public Income(Income_And_Expense__c iae, Account acc) {
+		public Income(Income_And_Expense__c iae, Account acc, String branchId) {
 			init();
 			uniqueId = iae.id;
 			amount = iae.amount__c;
 			personId = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
 			type = iae.category__c;
 			frequency = iae.frequency__c == 'Yearly' ? 'Annual' : iae.frequency__c;
+			company = branchId;
 		}
 
 		public void init() {
@@ -578,7 +579,7 @@ public without sharing class MercuryModel {
 		public Decimal balance;
 		public Decimal creditLimit;
 
-		public Expense(Income_And_Expense__c iae, Account acc) {
+		public Expense(Income_And_Expense__c iae, Account acc, String branchId) {
 			init();
 			uniqueId = iae.id;
 			amount = iae.amount__c;
@@ -587,6 +588,7 @@ public without sharing class MercuryModel {
 			frequency = iae.frequency__c == 'Yearly' ? 'Annual' : iae.frequency__c;
 			creditLimit = iae.credit_Limit__c;
 			balance = iae.balance__c;
+			company = branchId;
 		}
 
 		public void init() {
@@ -626,7 +628,7 @@ public without sharing class MercuryModel {
 		public String addrGeoLatitude;
 		public String addrGeoLongitude;
 
-		public Address(Account acc) {
+		public Address(Account acc, String branchId) {
 			init();
 			parentType = 'person';
 			// System.Address addr = acc.PersonMailingAddress;
@@ -643,6 +645,7 @@ public without sharing class MercuryModel {
 			addressBlock = acc.acfWhat_is_your_postcode__pc;
 			streetSearch = acc.acfWhat_is_your_postcode__pc;
 			streetName = acc.acfWhat_is_your_postcode__pc;
+			company = branchId;
 
 			validateAndClean();
 		}
