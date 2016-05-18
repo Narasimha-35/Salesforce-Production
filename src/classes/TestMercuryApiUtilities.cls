@@ -165,7 +165,7 @@ private class TestMercuryApiUtilities {
 		iae.recordTypeId = IncomeRecordType.getInstance().id;
 		insert iae;
 
-		MercuryApiUtilities.createIncomeAndExpense(iae, acc);
+		MercuryApiUtilities.createIncomeAndExpense(iae, acc, 'P200019');
 	}
 
 }

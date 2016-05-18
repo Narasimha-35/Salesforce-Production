@@ -171,4 +171,18 @@ public with sharing class TestMercuryModel {
 		MercuryModel.Params p = new MercuryModel.Params();
 	}
 
+	private static testMethod void testConstructPeopleFromAcc() {
+		Account acc = TestUtilities.createAccount();
+		insert acc;
+		MercuryModel.People p = new MercuryModel.People(acc, '');
+		System.assertEquals(acc.id, p.uniqueId);
+		System.assertEquals(MercuryModel.ACF_BRANCH_ID, p.company);
+	}
+
+	private static testMethod void testConstructPeopleFromApp() {
+		Account acc = TestUtilities.createAccount();
+		insert acc;
+		Click_Applicant__c app = TestUtilities.createApplicant(acc);
+	}
+
 }

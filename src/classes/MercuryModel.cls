@@ -104,7 +104,7 @@ public without sharing class MercuryModel {
 
 		public People(Account acc, String branchId) {
 			init();
-			uniqueId = acc.id;
+			uniqueId = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
 			//Currently no effect, so comment it out
 			//createdOn = acc.createdDate.format('yyyy-MM-dd\'T\'HH:mm:ssXXX');
 			createdBy = API_USER_ID;
@@ -370,7 +370,7 @@ public without sharing class MercuryModel {
 		@testVisible
 		private void validateAndClean() {
 			amount = amount != null ? amount : 0;
-			company = company != null ? company : ACF_BRANCH_ID;
+			company = company != null && company != '' ? company : ACF_BRANCH_ID;
 			transactionType = transactionType != null ? transactionType : DEFAULT_TRANSACTION_TYPE;
 			leadSourceDisplay = leadSourceDisplay != null ? leadSourceDisplay : ACF_LEAD_SOURCE_ID;
 			leadSourceId = leadSourceId != null ? leadSourceId : ACF_LEAD_SOURCE_ID;
@@ -549,19 +549,28 @@ public without sharing class MercuryModel {
 
 		public Income(Income_And_Expense__c iae, Account acc, String branchId) {
 			init();
+
 			uniqueId = iae.id;
 			amount = iae.amount__c;
 			personId = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
 			type = iae.category__c;
 			frequency = iae.frequency__c == 'Yearly' ? 'Annual' : iae.frequency__c;
 			company = branchId;
+
+			validateAndClean();
 		}
 
-		public void init() {
+		@testVisible
+		private void init() {
 			isDeleted = false;
 			company = ACF_BRANCH_ID;
 			createdBy = API_USER_ID;
 			sortKey = 0;
+		}
+
+		@testVisible
+		private void validateAndClean() {
+			company = company != null && company != '' ? company : ACF_BRANCH_ID;
 		}
 	}
 
@@ -581,6 +590,7 @@ public without sharing class MercuryModel {
 
 		public Expense(Income_And_Expense__c iae, Account acc, String branchId) {
 			init();
+
 			uniqueId = iae.id;
 			amount = iae.amount__c;
 			personId = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
@@ -589,13 +599,21 @@ public without sharing class MercuryModel {
 			creditLimit = iae.credit_Limit__c;
 			balance = iae.balance__c;
 			company = branchId;
+
+			validateAndClean();
 		}
 
-		public void init() {
+		@testVisible
+		private void init() {
 			isDeleted = false;
 			company = ACF_BRANCH_ID;
 			createdBy = API_USER_ID;
 			sortKey = 0;
+		}
+
+		@testVisible
+		private void validateAndClean() {
+			company = company != null && company != '' ? company : ACF_BRANCH_ID;
 		}
 	}
 
@@ -650,14 +668,17 @@ public without sharing class MercuryModel {
 			validateAndClean();
 		}
 
-		public void init() {
+		@testVisible
+		private void init() {
 			isDeleted = false;
 			company = ACF_BRANCH_ID;
 			createdBy = API_USER_ID;
 			isCorrespondenceAddress = false;
 		}
 
-		public void validateAndClean() {
+		@testVisible
+		private void validateAndClean() {
+			company = company != null && company != '' ? company : ACF_BRANCH_ID;
 			addrGeoLatitude = addrGeoLatitude != null ? addrGeoLatitude : '0.0';
 			addrGeoLongitude = addrGeoLongitude != null ? addrGeoLongitude : '0.0';
 		}

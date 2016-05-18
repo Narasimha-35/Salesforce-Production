@@ -211,4 +211,11 @@ public class TestUtilities {
       return iae;
    }
 
+   public static Click_Applicant__c createApplicant(Account acc) {
+      Click_Applicant__c app = new Click_Applicant__c();
+      app.click_Account__c = acc.id;
+      app.acf_Applicant_Name__c = 'test acc';
+      return app;
+   }
+
 }
