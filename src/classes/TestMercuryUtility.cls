@@ -374,4 +374,28 @@ public with sharing class TestMercuryUtility {
         System.assertEquals(expect6, MercuryUtility.getStandardMobileFormat(case6));
     }
 
+    private static testMethod void testGenerateDetailPart() {
+        HttpRequest req = new HttpRequest();
+        HttpResponse res = new HttpResponse();
+
+        system.assertNotEquals(null, MercuryUtility.generateDetailPart(req, res));
+    }
+
+    private static testMethod void testGenerateHTMLEmailBody() {
+        MercuryUtility.generateHTMLEmailBody('a', 'b', 'c', 'd');
+        system.assert(true);
+    }
+
+    private static testMethod void testCheckRecordFromResMap() {
+        Map<String, Object> resMap = new Map<String, Object>();
+        Map<String, String> item = new Map<String, String>();
+        item.put('uniqueId', 'abc');
+        resMap.put('people', item);
+
+        System.assertEquals(true, MercuryUtility.checkRecordFromResMap(resMap, 'Account', 'abc'));
+        System.assertEquals(false, MercuryUtility.checkRecordFromResMap(null, 'account', 'abc'));
+        System.assertEquals(false, MercuryUtility.checkRecordFromResMap(resMap, 'account', 'abCd'));
+        System.assertEquals(false, MercuryUtility.checkRecordFromResMap(resMap, 'account', 'abc'.toUpperCase()));
+    }
+
 }

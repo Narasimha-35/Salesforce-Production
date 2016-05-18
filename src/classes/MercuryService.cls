@@ -102,7 +102,7 @@ global class MercuryService {
 	}
 
 	public static void syncWithMercury(String oppoId, String accountId)  {
-		String branchId = MercuryApiUtilities.getBrokerBranch(oppoId);
+		String branchId = MercuryUtility.getBrokerBranch(oppoId);
 		Id oId = oppoId;
 		Id aId = accountId;
 		Opportunity oppo = null;
@@ -139,7 +139,7 @@ global class MercuryService {
 		if(oppo != null) update oppo;
 		if(account != null) update account;
 		if(exceptions.size() > 0) {
-			MercuryApiUtilities.sendEmail();
+			MercuryUtility.sendEmail();
 			throw new MercurySyncException(exceptions);
 		}
 	}
@@ -197,6 +197,16 @@ global class MercuryService {
 
 	webservice static void cleanMercuryOpportunity(String input) {
 		MercuryService.startCleanMercuryOpportunityBatch();
+	}
+
+	//Only update the loan in Mercury
+	public static void updateLoan(Opportunity oppo) {
+		Account acc = oppo.account;
+		// List<Applicant>
+
+		//TODO: update loan details
+		//TODO: upsert applicant details
+		//TODO: upsert loan people
 	}
 
 }

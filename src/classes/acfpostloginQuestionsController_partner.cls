@@ -3,14 +3,14 @@ Click Loans
 ========================================================*/
 public without sharing class acfpostloginQuestionsController_partner
 {
-    
+
     public String strNRAC { get; set; }
     public integer intQuoteWidth {get;set;}
     public PageReference assetaddMethodNRAC() {
         strNRAC = 'Hi NRAC';
         return null;
     }
-    
+
     public string strmsg{get;set;}
     public String IsSlideToNextQues { get; set; }
     public map<id,Question__c>mapQuestionIdToQuestion;
@@ -38,9 +38,9 @@ public without sharing class acfpostloginQuestionsController_partner
     Public String IsSkipDependent {get;set;}
     Public Map<String,String> mapDependentQuestoValue;
     Public String strleadQues;
-    Public String strAccQues; 
+    Public String strAccQues;
     Public String strCurrentLoggedInAccount;
-    Public Set<String> setQuesAccountAPInames; 
+    Public Set<String> setQuesAccountAPInames;
     Public Set<String> setQuesLeadAPInames;
     Public boolean isRelatedQuesDisplay;
     Public List<user> lstuserMobile{get;set;}
@@ -60,16 +60,16 @@ public without sharing class acfpostloginQuestionsController_partner
     public string app2Phone{get;set;}
     public boolean issApplicant2Check{get;set;}
     public boolean skipConsentQuestion{get;set;}
-    
-    
-    
-    
-    
+
+
+
+
+
     public acfpostloginQuestionsController_partner()
     {
-        
+
         try
-        {   
+        {
             app2Phone='+61';
             Waitingcount=0;
             IsSlide = 'false';
@@ -101,33 +101,33 @@ public without sharing class acfpostloginQuestionsController_partner
             ScriptQuestionNo = 0;
             string firstappconsent='';
             string secondappconsent='';
-            
+
             noaccountError='';
-            UserAccountId=  ApexPages.currentPage().getParameters().get('cid'); 
-            
+            UserAccountId=  ApexPages.currentPage().getParameters().get('cid');
+
             if(UserAccountId==null || UserAccountId=='' ){
-                noaccountError='no account found'+userinfo.getUserId();            
+                noaccountError='no account found'+userinfo.getUserId();
             }else{
                 lstuserMobile = [select id,MobilePhone,account.acfEconsent__pc,account.acfEconsent_App2__pc,account.acfNumber_Of_Applicants__pc,
                                  account.acfApplicant2_Name__pc,
                                  accountId,firstname,lastname,account.Account_Email__c,
-                                 account.name,account.Phone,account.acfApplicant2_email__pc,account.acfApplicant2_phone__pc,account.acf_Lead__pc from 
+                                 account.name,account.Phone,account.acfApplicant2_email__pc,account.acfApplicant2_phone__pc,account.acf_Lead__pc from
                                  user where AccountId=:UserAccountId limit 1
                                 ];
-                
-                
+
+
                 consentCheck=lstuserMobile[0].account.acfEconsent__pc;
                 firstappconsent=lstuserMobile[0].account.acfEconsent__pc;
                 secondappconsent=lstuserMobile[0].account.acfApplicant2_Name__pc;
                 noaccountError=lstuserMobile[0].id;
                 accountEmail=lstuserMobile[0].account.Account_Email__c;
                 accountname=lstuserMobile[0].account.name;
-                accountPhone=lstuserMobile[0].account.Phone;                                      
+                accountPhone=lstuserMobile[0].account.Phone;
                 if(lstuserMobile[0].account.acfNumber_Of_Applicants__pc=='2'){
                     //issSecondApplicantQuestionSet=true;
                 }
                 //checkFlag();
-                
+
                 if(lstuserMobile[0].account.acfEconsent_App2__pc=='I Consent')
                     skipConsentQuestion=true;
                 userId=lstuserMobile[0].Id;
@@ -139,36 +139,36 @@ public without sharing class acfpostloginQuestionsController_partner
                     strMobileNumber = lstuserMobile[0].MobilePhone;
                 }
                 LoggedInContact = acfCommon.getCurrentLoggedInContactId(userId);
-                LoggedInLeadId  = acfCommon.getCurrentLoggedInLeadId(userId); 
-                
+                LoggedInLeadId  = acfCommon.getCurrentLoggedInLeadId(userId);
+
                 system.debug('____@@@@____'+LoggedInContact);
                 //LoggedInContact = '003O000000lOBRfIAO';
                 list<Click_Community_Setup__c> commSetupObj=new list<Click_Community_Setup__c>();
                 commSetupObj=[Select id from Click_Community_Setup__c where name ='ClickLoans' limit 1];
                 string setupID='';
                 if(commSetupObj.size()>0){
-                    setupID =commSetupObj[0].id;                   
+                    setupID =commSetupObj[0].id;
                 }else{
-                    setupID ='a2SO0000001PtV9';  
+                    setupID ='a2SO0000001PtV9';
                 }
-                
+
                 for(Script__c objScript : [select id,acf_Sequence_no__c,acf_Type__c,acf_Stage_Name__c,acf_Question_Type__c  from Script__c where acf_Type__c=:'Post-Login' AND Click_Community_Setup__c =:setupID   order by acf_Sequence_no__c asc])
                 {
                     setScriptId.add(objScript.id);
                     lstScript.add(objScript);
-                }                
-                system.debug('@@@'+setScriptId);                
+                }
+                system.debug('@@@'+setScriptId);
                 if(setScriptId.size()>0)
                 {
                     lstScriptQuestionsLadder  = [select id,acf_Sequence_no__c,acf_Type__c,acf_Stage_Name__c from Script__c where acf_Type__c=:'Post-Login' AND Click_Community_Setup__c =:setupID   order by acf_Sequence_no__c desc];
                     //intTotalQuestions = lstScriptQuestionsLadder.size();
-                    
+
                     intTotalQuestions = 0;
                     for(Question__c objQuestion:[select id,acf_ApiName__c,acfDependent_Field_Name__c,acfDependent_Object_Name__c,acfDependent_Value__c,acf_Description__c,acfReplace_Mobile_No__c,Date__c,acfApplicant_2_Api_Name__c,acf_Master_Question__c,acfAppEmployment_Type__c,acfIs_Applicant_Question__c,acf_Question__c,acf_Script__c,acfEmployment_Type__c,acf_Dependents__c,acf_Postal_Code__c,acf_Type__c,acf_Stage_Name__c,acf_Sequence_No__c ,acfBubble_Text__c,acfWatermark_Text__c,
                                                  acfComponent_Type__c,(select id,acf_Answer__c,acf_Question__c,acf_Related_Question__c,acfSequence_No__c from Answer__r order by acfSequence_No__c) from Question__c
-                                                 where ((acf_Master_Question__r.acf_Script__c in: setScriptId or acf_Script__c in:setScriptId) and acf_Active__c = true) and Click_Is_Broker_Question__c=false order by acf_Sequence_No__c asc ])  
-                    {                
-                        
+                                                 where ((acf_Master_Question__r.acf_Script__c in: setScriptId or acf_Script__c in:setScriptId) and acf_Active__c = true) and Click_Is_Broker_Question__c=false order by acf_Sequence_No__c asc ])
+                    {
+
                         mapQuestionIdToQuestion.put(objQuestion.id,objQuestion);
                         if(objQuestion.acf_ApiName__c <> null)
                             lstContactAPINames.add(objQuestion.acf_ApiName__c);
@@ -176,14 +176,14 @@ public without sharing class acfpostloginQuestionsController_partner
                         {
                             if(mapScriptIdToListOfQuestions.get(objQuestion.acf_Script__c) == null)
                                 mapScriptIdToListOfQuestions.put(objQuestion.acf_Script__c,new List<Question__c>());
-                            mapScriptIdToListOfQuestions.get(objQuestion.acf_Script__c).add(objQuestion);   
+                            mapScriptIdToListOfQuestions.get(objQuestion.acf_Script__c).add(objQuestion);
                             If(objQuestion.acfDependent_Field_Name__c <> null && objQuestion.acfDependent_Object_Name__c <> null)
                             {
                                 If(objQuestion.acfDependent_Object_Name__c == 'Contact')
                                 {
                                     setQuesAccountAPInames.add(objQuestion.acfDependent_Field_Name__c);
                                     //strAccQues = strAccQues+objQuestion.acfDependent_Field_Name__c+',';
-                                } 
+                                }
                                 if(objQuestion.acfDependent_Object_Name__c == 'Lead')
                                 {
                                     setQuesLeadAPInames.add(objQuestion.acfDependent_Field_Name__c);
@@ -207,11 +207,11 @@ public without sharing class acfpostloginQuestionsController_partner
                         {
                             strAccQues = strAccQues+strApiname+',';
                         }
-                    }  
+                    }
                     If(strleadQues != null && strleadQues <> '' && LoggedInLeadId != null)
-                    {                      
+                    {
                         String strQueryOnDependentObj = 'select '+strleadQues+'id from Lead where id = \'' + LoggedInLeadId + '\'';
-                        SObject[] lstDependentObj = Database.query(strQueryOnDependentObj); 
+                        SObject[] lstDependentObj = Database.query(strQueryOnDependentObj);
                         If(lstDependentObj != null && lstDependentObj.size()>0)
                         {
                             for(SObject objDependentObj  : lstDependentObj)
@@ -220,10 +220,10 @@ public without sharing class acfpostloginQuestionsController_partner
                                 for(String strApiName : setQuesLeadAPInames)
                                 {
                                     If(strApiName <> '' && objDependentObj.get(strApiName) <> null)
-                                    {  
-                                        mapDependentQuestoValue.put(strApiName,string.valueof(objDependentObj.get(strApiName))); 
+                                    {
+                                        mapDependentQuestoValue.put(strApiName,string.valueof(objDependentObj.get(strApiName)));
                                     }
-                                }   
+                                }
                             }
                         }
                     }
@@ -241,13 +241,13 @@ public without sharing class acfpostloginQuestionsController_partner
                                 for(String strApiName : setQuesAccountAPInames)
                                 {
                                     If(strApiName <> '' && objDependentObj.get(strApiName) <> null)
-                                    {  
-                                        mapDependentQuestoValue.put(strApiName,string.valueof(objDependentObj.get(strApiName))); 
+                                    {
+                                        mapDependentQuestoValue.put(strApiName,string.valueof(objDependentObj.get(strApiName)));
                                     }
-                                }   
+                                }
                             }
                         }
-                    } 
+                    }
                     system.debug('@@@@@karthik_map'+mapDependentQuestoValue);
                     system.debug('Map:::_____----'+mapScriptIdToListOfQuestions);
                     if(mapScriptIdToListOfQuestions.size()>0)
@@ -273,11 +273,11 @@ public without sharing class acfpostloginQuestionsController_partner
                                     objMasterQuestion.IsApplicant2Question = false;
                                     objMasterQuestion.lstRelatedQuestion    = new List<WrapperQuestions>();
                                     objMasterQuestion.customQuestions='false';
-                                    if(objQuestion.acf_ApiName__c=='acfEconsent__c' || objQuestion.acf_ApiName__c=='acfEconsent_App2__c'){                                  
+                                    if(objQuestion.acf_ApiName__c=='acfEconsent__c' || objQuestion.acf_ApiName__c=='acfEconsent_App2__c'){
                                         if(objQuestion.acf_ApiName__c=='acfEconsent_App2__c'){
                                             objMasterQuestion.IsApplicant2Question=true;
                                         }
-                                        objMasterQuestion.isConcent=true;                                                
+                                        objMasterQuestion.isConcent=true;
                                     }else{
                                         objMasterQuestion.isConcent=false;
                                     }
@@ -293,9 +293,9 @@ public without sharing class acfpostloginQuestionsController_partner
                                     {
                                         if(objMasterQuestion.objWrapQuestion.acf_Question__c.contains('04xxxxxxx') && strMobileNumber <> null && strMobileNumber <> '')
                                         {
-                                            objMasterQuestion.objWrapQuestion.acf_Question__c = objMasterQuestion.objWrapQuestion.acf_Question__c.replace('04xxxxxxx',strMobileNumber);  
-                                            objMasterQuestion.objWrapQuestion.acf_Description__c  = objMasterQuestion.objWrapQuestion.acf_Description__c.replace('04xxxxxxx',strMobileNumber); 
-                                            
+                                            objMasterQuestion.objWrapQuestion.acf_Question__c = objMasterQuestion.objWrapQuestion.acf_Question__c.replace('04xxxxxxx',strMobileNumber);
+                                            objMasterQuestion.objWrapQuestion.acf_Description__c  = objMasterQuestion.objWrapQuestion.acf_Description__c.replace('04xxxxxxx',strMobileNumber);
+
                                         }
                                     }
                                     if(objQuestion.Answer__r.size()>0)
@@ -307,23 +307,23 @@ public without sharing class acfpostloginQuestionsController_partner
                                             objMasterQuestion.lstSelectOptions.add(objAnswer);
                                         }
                                     }
-                                    lstMasterWrapperQuestion.add(objMasterQuestion);                            
+                                    lstMasterWrapperQuestion.add(objMasterQuestion);
                                     objWrapScript.lstScriptMasterQuestions.add(objMasterQuestion);
                                 }
                                 // For Applicant Detail script.
                                 if(objWrapScript.objScript.acf_Question_Type__c == 'Applicant Details')
                                 {
-                                    
+
                                     for(Question__c objQuestion: mapScriptIdToListOfQuestions.get(objScript.id))
                                     {
                                         if(objQuestion.acfIs_Applicant_Question__c <> true)
                                         {
-                                            
+
                                             WrapperQuestions objMasterQuestion   = new WrapperQuestions();
                                             system.debug('++++'+objQuestion.acf_ApiName__c);
                                             if(objQuestion.acf_ApiName__c=='acfEconsent__c' || objQuestion.acf_ApiName__c=='acfEconsent_App2__c'){
                                                 objMasterQuestion.isConcent=true;
-                                                
+
                                             }else{
                                                 objMasterQuestion.isConcent=false;
                                             }
@@ -339,14 +339,14 @@ public without sharing class acfpostloginQuestionsController_partner
                                             //List To be added Applicant 2 Api Field
                                             lstContactAPINames.add(objQuestion.acfApplicant_2_Api_Name__c);
                                             if(objQuestion.acfApplicant_2_Api_Name__c <> null)
-                                                
-                                                
-                                                
+
+
+
                                                 if(objMasterQuestion.objWrapQuestion.acf_Type__c == 'Text' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Phone' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Number'|| objMasterQuestion.objWrapQuestion.acf_Type__c == 'Checkbox' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Currency' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                                             {
                                                 objMasterQuestion.IsContinueDisplay = true;
-                                            }   
-                                            
+                                            }
+
                                             if(objQuestion.Answer__r.size()>0)
                                             {
                                                 for(Answer__c objAnswer:objMasterQuestion.objWrapQuestion.Answer__r)
@@ -356,12 +356,12 @@ public without sharing class acfpostloginQuestionsController_partner
                                                     objMasterQuestion.lstSelectOptions.add(objAnswer);
                                                 }
                                             }
-                                            lstMasterWrapperQuestion.add(objMasterQuestion);                            
+                                            lstMasterWrapperQuestion.add(objMasterQuestion);
                                             objWrapScript.lstScriptMasterQuestions.add(objMasterQuestion);
-                                        }   
+                                        }
                                     }
                                 }
-                            }    
+                            }
                             lstWrapperScript.add(objWrapScript);
                             IndexCount++;
                         }
@@ -372,22 +372,22 @@ public without sharing class acfpostloginQuestionsController_partner
                                                  acf_Dependents__c,acfEmployment_Type__c,acf_Script__c,acfBubble_Text__c,
                                                  acfWatermark_Text__c,acfDependent_Field_Name__c,acfDependent_Object_Name__c,acfDependent_Value__c,
                                                  acfAppEmployment_Type__c,acfIs_Applicant_Question__c,acf_Question__c,Date__c
-                                                 
-                                                 from  Question__c where 
+
+                                                 from  Question__c where
                                                  acf_Script__c = null and (acfEmployment_Type__c = true or acf_Dependents__c = true) and acf_Active__c = true])
                     {
                         if(objQuestion.acfApplicant_2_Api_Name__c <> null)
                             lstContactAPINames.add(objQuestion.acfApplicant_2_Api_Name__c);
-                        if(objQuestion.acf_ApiName__c <> null) 
+                        if(objQuestion.acf_ApiName__c <> null)
                             lstContactAPINames.add(objQuestion.acf_ApiName__c);
-                        
+
                     }
                     //For Reloading(Refreshing) all Filled Questions
-                    
+
                     system.debug('###111'+lstContactAPINames);
                     if(LoggedInContact <> null && lstContactAPINames <> null && lstContactAPINames.size()>0)
                     {
-                        
+
                         list<user> lsttempuser=new list<user>();
                         lsttempuser=[select account.acfEconsent__pc,account.acfEconsent_App2__pc from user where AccountId=:UserAccountId limit 1];
                         Id RelatedQuesId ;
@@ -398,16 +398,16 @@ public without sharing class acfpostloginQuestionsController_partner
                         MasterQuesNo = 0;
                         intTotalQuestions = lstMasterWrapperQuestion.size();
                         //ashu
-                        
+
                         if(lsttempuser[0].account.acfEconsent__pc=='I Consent' && lsttempuser[0].account.acfEconsent_App2__pc=='I Consent' ){
-                            
+
                             TotalNoQuestionSlide++;
                             MasterQuesNo++;
                             ScriptQuestionNo++;
-                            
+
                         }
-                        
-                        
+
+
                         system.debug('====___'+lstContactAPINames);
                         mapContactAPINameToSelectedAnswer = getContactApiToAnswer(lstContactAPINames);
                         system.debug('@#$#$###'+mapContactAPINameToSelectedAnswer.size());
@@ -417,22 +417,22 @@ public without sharing class acfpostloginQuestionsController_partner
                         {
                             if(objQuestions.IsApplicant2Question)
                             {
-                                
+
                                 if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c)) <> null)
                                     objQuestions.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c));
                                 else
-                                    objQuestions.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c);                                                                        
-                                
-                            }       
+                                    objQuestions.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c);
+
+                            }
                             else
                             {
                                 if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)) <> null)
                                     objQuestions.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c));
                                 else
-                                    objQuestions.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c);                           
+                                    objQuestions.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c);
                             }
                         }
-                        
+
                         for(WrapperQuestions objQuestions : lstMasterWrapperQuestion)
                         {
                             system.debug('@#$Lokesh::__'+objQuestions.ScriptSequence);
@@ -440,7 +440,7 @@ public without sharing class acfpostloginQuestionsController_partner
                             system.debug('@@@2'+TotalNoQuestionSlide);
                             system.debug('@@@3'+ScriptIndexNo);
                             system.debug('@@@4'+ScriptQuestionNo);
-                            system.debug('@@@@5'+objQuestions);   
+                            system.debug('@@@@5'+objQuestions);
                             system.debug('====___'+objQuestions.objWrapQuestion);
                             if(objQuestions.ScriptSequence <> null)
                             {
@@ -450,14 +450,14 @@ public without sharing class acfpostloginQuestionsController_partner
                                 system.debug('@##$$$#'+objPrepopulatingScript);
                                 if(objPrepopulatingScript <> null)
                                 {
-                                    system.debug('@@@##$'+objPrepopulatingScript.IsSkipApp2); 
+                                    system.debug('@@@##$'+objPrepopulatingScript.IsSkipApp2);
                                     if(objPrepopulatingScript.IsSkipApp2)
                                     {
                                         system.debug('-----APP2SKIP-------');
                                         continue;
                                     }
                                     system.debug('___###LOkesh___###'+objQuestions.objWrapQuestion.acfDependent_Value__c+'@#$%^%'+mapDependentQuestoValue.get(objQuestions.objWrapQuestion.acfDependent_Field_Name__c));
-                                    //For Skipping dependent questions from lead or contact on page load if any 
+                                    //For Skipping dependent questions from lead or contact on page load if any
                                     if(objQuestions.objWrapQuestion.acfDependent_Value__c <> null && objQuestions.objWrapQuestion.acfDependent_Field_Name__c <> null && (objQuestions.objWrapQuestion.acfDependent_Value__c <> mapDependentQuestoValue.get(objQuestions.objWrapQuestion.acfDependent_Field_Name__c)))
                                     {
                                         /*TotalNoQuestionSlide++;
@@ -468,7 +468,7 @@ ScriptQuestionNo++;*/
                                             if(objPrepopulatingScript.IsSkipQuestions == true && ScriptQuestionNo == (objPrepopulatingScript.NoOfQuesSkipped))
                                             {
                                                 TotalNoQuestionSlide += objPrepopulatingScript.NoOfQuesSkipped;
-                                                MasterQuesNo += objPrepopulatingScript.NoOfQuesSkipped; 
+                                                MasterQuesNo += objPrepopulatingScript.NoOfQuesSkipped;
                                                 TotalNoQuestionSlide++;
                                                 MasterQuesNo++;
                                                 ScriptIndexNo++;
@@ -477,13 +477,13 @@ ScriptQuestionNo++;*/
                                                 continue;
                                             }
                                             else
-                                            {                               
+                                            {
                                                 ScriptQuestionNo = 0;
                                                 MasterQuesNo++;
                                                 TotalNoQuestionSlide++;
                                                 ScriptIndexNo++;
                                                 continue;
-                                            }   
+                                            }
                                         }
                                         else
                                         {
@@ -493,13 +493,13 @@ ScriptQuestionNo++;*/
                                             continue;
                                             /* if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null && mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c){
 //IsSkipDependent = 'true';
-++MasterQuesNo; 
-ScriptQuestionNo++; 
-TotalNoQuestionSlide++;   
+++MasterQuesNo;
+ScriptQuestionNo++;
+TotalNoQuestionSlide++;
 }*/
                                         }
-                                        
-                                        
+
+
                                     }
                                     //If Assets and liabilities not filled and question type is component.
                                     if(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)==null || ((mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)=='false') && (objQuestions.objWrapQuestion.acf_Type__c == 'Component')))
@@ -514,19 +514,19 @@ TotalNoQuestionSlide++;
                                     }
                                     if(objQuestions.IsApplicant2Question)
                                     {
-                                        
+
                                         if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c)) <> null)
                                             objQuestions.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c));
                                         else
-                                            objQuestions.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c);                                                                        
-                                        
-                                    }       
+                                            objQuestions.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c);
+
+                                    }
                                     else
                                     {
                                         if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)) <> null)
                                             objQuestions.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c));
                                         else
-                                            objQuestions.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c);                           
+                                            objQuestions.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c);
                                     }
                                     system.debug('@@#$LOkesh:::'+objQuestions.strWrapAnswer);
                                     for(Answer__c objAnswer:objQuestions.objWrapQuestion.Answer__r)
@@ -543,17 +543,17 @@ TotalNoQuestionSlide++;
                                                         RelatedQuesId = objAnswer.acf_Related_Question__c;
                                                     }
                                                     else
-                                                    { 
+                                                    {
                                                         RelatedQuesId = null;
                                                     }
                                                 }
-                                            }   
-                                        }                    
+                                            }
+                                        }
                                     }
                                     // For Applicant Question Script
                                     if(objPrepopulatingScript.objScript.acf_Question_Type__c == 'Applicant Details' && objQuestions.objWrapQuestion.acfIs_Applicant_Question__c)
                                     {
-                                        
+
                                         string strNoOfApp = '';
                                         strNoOfApp = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c);
                                         system.debug('@@@@'+strNoOfApp);
@@ -566,7 +566,7 @@ TotalNoQuestionSlide++;
                                         else
                                         {
                                             objPrepopulatingScript.IsSkipQuestions = false;
-                                            objPrepopulatingScript.NoOfQuesSkipped = 0; 
+                                            objPrepopulatingScript.NoOfQuesSkipped = 0;
                                         }
                                     }
                                     system.debug('@#$%'+objPrepopulatingScript.IsSkipQuestions+'@#$%%^'+objPrepopulatingScript.NoOfQuesSkipped);
@@ -581,7 +581,7 @@ TotalNoQuestionSlide++;
                                                 objQuestions.lstCheckBoxAnswer.add(mapAnswerNameToAnswerId.get(objChkboxAns));
                                             }
                                             objQuestions.strWrapAnswer = '';
-                                        }    
+                                        }
                                     }
                                     // for related question
                                     if(RelatedQuesId <> null)
@@ -621,30 +621,30 @@ TotalNoQuestionSlide++;
                                                                 RelatedQuesId = null;
                                                             }
                                                         }
-                                                    }   
+                                                    }
                                                     objRelatedQuestion.lstSelectOptions.add(objAnswer);
-                                                    objRelatedQuestion.lstSelectOpt.add(new SelectOption((objAnswer.id),objAnswer.acf_Answer__c));       
+                                                    objRelatedQuestion.lstSelectOpt.add(new SelectOption((objAnswer.id),objAnswer.acf_Answer__c));
                                                 }
                                                 if(objQuestions.IsApplicant2Question)
                                                 {
                                                     if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c)) <> null)
                                                         objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c));
                                                     else
-                                                        objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c);                           
-                                                    
-                                                    
+                                                        objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c);
+
+
                                                     if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c)) <> null)
                                                         objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c));
                                                     else
-                                                        objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c);                            
-                                                    
-                                                }       
+                                                        objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c);
+
+                                                }
                                                 else
                                                 {
                                                     if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c)) <> null)
                                                         objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c));
                                                     else
-                                                        objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c);                           
+                                                        objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c);
                                                 }
                                                 if(objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Checkbox')
                                                 {
@@ -655,32 +655,32 @@ TotalNoQuestionSlide++;
                                                         {
                                                             objRelatedQuestion.lstCheckBoxAnswer.add(mapAnswerNameToAnswerId.get(objChkboxAns));
                                                         }
-                                                    }    
+                                                    }
                                                 }
-                                                objQuestions.lstRelatedQuestion.add(objRelatedQuestion);  
+                                                objQuestions.lstRelatedQuestion.add(objRelatedQuestion);
                                             }
                                             else{
                                                 RelatedQuesId = null;
-                                            }  
-                                        }   
+                                            }
+                                        }
                                     }
                                     else if(RelatedQuesId == null && objPrepopulatingScript.objScript.acf_Question_Type__c == 'Applicant Details'  && objQuestions.objWrapQuestion.acf_Dependents__c && (mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)<>null || mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c) <>null))
                                     {
                                         system.debug('____LOkesh_____');
                                         Integer NoOFDependent;
-                                        if(objQuestions.IsApplicant2Question)                       
+                                        if(objQuestions.IsApplicant2Question)
                                             NoOFDependent = Integer.valueof(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c));
                                         else
-                                            NoOFDependent = Integer.valueof(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c));   
+                                            NoOFDependent = Integer.valueof(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c));
                                         for(Question__c objDependentQuestion : [select id,acf_ApiName__c,acf_Description__c,acf_Master_Question__c,
                                                                                 acfApplicant_2_Api_Name__c,acfIs_Applicant_Question__c,acf_Question__c,
                                                                                 acf_Script__c,acf_Dependents__c, acf_Postal_Code__c,acf_Type__c,
                                                                                 acf_Stage_Name__c,acf_Sequence_No__c ,acfBubble_Text__c,acfWatermark_Text__c,
                                                                                 acfDependent_Field_Name__c,acfDependent_Object_Name__c,acfDependent_Value__c,Date__c,
-                                                                                
+
                                                                                 (select id,acf_Answer__c,acf_Question__c,acf_Related_Question__c,acfSequence_No__c from Answer__r order by acfSequence_No__c) from Question__c
                                                                                 where  acfIs_Applicant_Question__c = true and acf_Active__c = true and acf_Dependents__c = true and acf_Script__c = null order by acf_Sequence_No__c limit:NoOFDependent])
-                                        {                   
+                                        {
                                             objQuestions.IsContinueDisplay = false;
                                             WrapperQuestions objRelatedQuestion = new WrapperQuestions();
                                             objRelatedQuestion.objWrapQuestion = objDependentQuestion ;
@@ -699,18 +699,18 @@ TotalNoQuestionSlide++;
                                             }
                                             if(objQuestions.IsApplicant2Question)
                                             {
-                                                
+
                                                 if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c)) <> null)
                                                     objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c));
                                                 else
-                                                    objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c);                            
-                                            }       
+                                                    objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c);
+                                            }
                                             else
                                             {
                                                 if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c)) <> null)
                                                     objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c));
                                                 else
-                                                    objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c);                           
+                                                    objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c);
                                             }
                                             if(objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Checkbox')
                                             {
@@ -721,26 +721,26 @@ TotalNoQuestionSlide++;
                                                     {
                                                         objRelatedQuestion.lstCheckBoxAnswer.add(mapAnswerNameToAnswerId.get(objChkboxAns));
                                                     }
-                                                }    
-                                            }             
+                                                }
+                                            }
                                             objQuestions.lstRelatedQuestion.add(objRelatedQuestion);
-                                            IsSlide = 'false';     
-                                        }                           
+                                            IsSlide = 'false';
+                                        }
                                     }
                                     else if(RelatedQuesId == null && objPrepopulatingScript.objScript.acf_Question_Type__c == 'Applicant Details'  && objQuestions.objWrapQuestion.acfEmployment_Type__c && (mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)<>null || mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c) <>null))
                                     {
                                         system.debug('____LOkesh_____');
                                         string strType;
-                                        if(objQuestions.IsApplicant2Question)                       
+                                        if(objQuestions.IsApplicant2Question)
                                             strType = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c);
                                         else
-                                            strType = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c);   
+                                            strType = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c);
                                         for(Question__c objDependentQuestion : [select id,acf_ApiName__c,acf_Description__c,acfApplicant_2_Api_Name__c,acf_Master_Question__c,
                                                                                 acfIs_Applicant_Question__c,acfAppEmployment_Type__c,acf_Question__c,acf_Script__c,
                                                                                 acf_Dependents__c,acf_Postal_Code__c,acf_Type__c,acf_Stage_Name__c,acf_Sequence_No__c ,acfWatermark_Text__c,Date__c,
                                                                                 (select id,acf_Answer__c,acf_Question__c,acf_Related_Question__c,acfSequence_No__c from Answer__r order by acfSequence_No__c) from Question__c
                                                                                 where acfIs_Applicant_Question__c = true and acf_Active__c = true and acfEmployment_Type__c = true and acfAppEmployment_Type__c =:strType and acf_Script__c = null order by acf_Sequence_No__c  ])
-                                        {                   
+                                        {
                                             objQuestions.IsContinueDisplay = false;
                                             WrapperQuestions objRelatedQuestion = new WrapperQuestions();
                                             objRelatedQuestion.objWrapQuestion = objDependentQuestion ;
@@ -762,14 +762,14 @@ TotalNoQuestionSlide++;
                                                 if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c)) <> null)
                                                     objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c));
                                                 else
-                                                    objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c);                            
-                                            }    
+                                                    objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c);
+                                            }
                                             else
                                             {
                                                 if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c)) <> null)
                                                     objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c));
                                                 else
-                                                    objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c);                           
+                                                    objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c);
                                             }
                                             if(objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Checkbox')
                                             {
@@ -780,11 +780,11 @@ TotalNoQuestionSlide++;
                                                     {
                                                         objRelatedQuestion.lstCheckBoxAnswer.add(mapAnswerNameToAnswerId.get(objChkboxAns));
                                                     }
-                                                }    
+                                                }
                                             }
                                             objQuestions.lstRelatedQuestion.add(objRelatedQuestion);
-                                            IsSlide = 'false';     
-                                        }                           
+                                            IsSlide = 'false';
+                                        }
                                     }
                                     system.debug('@#$$ScriptQuestionNo--'+ScriptQuestionNo);
                                     //lstMasterWrapperQuestion.set(MasterQuesNo,objQuestions);
@@ -794,7 +794,7 @@ TotalNoQuestionSlide++;
                                         if(objPrepopulatingScript.IsSkipQuestions == true && ScriptQuestionNo == (objPrepopulatingScript.NoOfQuesSkipped))
                                         {
                                             TotalNoQuestionSlide += objPrepopulatingScript.NoOfQuesSkipped;
-                                            MasterQuesNo += objPrepopulatingScript.NoOfQuesSkipped; 
+                                            MasterQuesNo += objPrepopulatingScript.NoOfQuesSkipped;
                                             TotalNoQuestionSlide++;
                                             MasterQuesNo++;
                                             ScriptIndexNo++;
@@ -803,13 +803,13 @@ TotalNoQuestionSlide++;
                                             continue;
                                         }
                                         else
-                                        {                               
+                                        {
                                             ScriptQuestionNo = 0;
                                             MasterQuesNo++;
                                             TotalNoQuestionSlide++;
                                             ScriptIndexNo++;
                                             continue;
-                                        }   
+                                        }
                                     }
                                     else
                                     {
@@ -818,70 +818,70 @@ TotalNoQuestionSlide++;
                                         TotalNoQuestionSlide++;
                                         /* if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null && mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c){
 //IsSkipDependent = 'true';
-++MasterQuesNo; 
-ScriptQuestionNo++; 
-TotalNoQuestionSlide++;   
+++MasterQuesNo;
+ScriptQuestionNo++;
+TotalNoQuestionSlide++;
 }*/
                                     }
-                                    
+
                                 }
                             }
-                            
-                        }        
+
+                        }
                     }
-                } 
+                }
                 //intQuoteWidth = (MasterQuesNo+1*100)/intTotalQuestions;
                 //ClickQuoteDetail.intWidth = (MasterQuesNo+1*100)/intTotalQuestions;
                 system.debug('@@@progressbar=>'+MasterQuesNo+' totalquestion=>'+intTotalQuestions);
                 ClickQuoteDetail_partner.setProgressBarWidth(MasterQuesNo,intTotalQuestions,'BrokerClickPostloginQuestionnaires');
             }
-            
-            
-            
+
+
+
             integer counterCheck=0;
             system.debug('questionlist@@@=>'+lstMasterWrapperQuestion);
-            
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
+
             for(WrapperQuestions checkobj: lstMasterWrapperQuestion){
-                
+
                 if(checkobj.isConcent==true){
-                    
-                    consentSequence=counterCheck;                   
+
+                    consentSequence=counterCheck;
                     break;
-                    
+
                 }
-                
+
                 counterCheck++;
             }
         }
         catch(Exception ex)
         {
             system.debug('NRAC::ERROR::'+ex.getMessage());
-        }  
+        }
     }
-    
+
     public pagereference checkQuestionStaus()
     {
-        checkFlag(); 
-        
+        checkFlag();
+
         if((lstuserMobile[0].account.acfNumber_Of_Applicants__pc=='1' && lstuserMobile[0].account.acfEconsent__pc=='I Consent')|| (lstuserMobile[0].account.acfNumber_Of_Applicants__pc=='2' && lstuserMobile[0].account.acfEconsent__pc=='I Consent' &&  lstuserMobile[0].account.acfEconsent_App2__pc=='I Consent')){
-            
+
             lead leadobj=new lead(id=LoggedInLeadId);
             leadobj.acfIs_Post_Login_Ques_Attempted__c=true;
-            
+
             update leadobj;
             system.debug('calling mercury');
-            MercuryApiUtilities.updateAccountF(UserAccountId, LoggedInLeadId);
-            
+            MercuryApiUtilitiesChen.updateAccountF(UserAccountId, LoggedInLeadId);
+
         }
-        
-        list<lead> leadDetails=new list<lead>();         
+
+        list<lead> leadDetails=new list<lead>();
         leadDetails=[select acfIs_Post_Login_Ques_Attempted__c from lead where  id=:LoggedInLeadId];
         if(leadDetails != null && leadDetails.size()>0)
         {
@@ -892,14 +892,14 @@ TotalNoQuestionSlide++;
                  Pagereference pageref = new Pagereference('/apex/Broker'+returnURL+'?cid='+UserAccountId);
                  pageref.setredirect(true);
                  return pageref;
-                 
+
                 }
             }
         }
         return null;
     }
-    
-    
+
+
     Public pagereference redirect(){
         checkFlag();
         string returnURL = acfcommon.redirect(userId,'clickpostloginquestionnaires');
@@ -908,11 +908,11 @@ TotalNoQuestionSlide++;
          Pagereference pageref = new Pagereference('/apex/Broker'+returnURL+'?cid='+UserAccountId);
          pageref.setredirect(true);
          return pageref;
-         
+
         }else{
             return null;
         }
-        //String oppId = acfCommon.getCurrentLoggedInOpportunityId(userId); 
+        //String oppId = acfCommon.getCurrentLoggedInOpportunityId(userId);
         /* If(LoggedInLeadId != null){
 List<Lead> lstLead = [select id,acfIs_Post_Login_Ques_Attempted__c,isConverted from Lead where id=:LoggedInLeadId];
 If(lstLead != null && lstLead.size()>0){
@@ -920,7 +920,7 @@ If(lstLead[0].isConverted == true) {
 system.debug('Ashutosh@@returnur4=>');
 return new Pagereference('/ClickDashboard');
 }else If(lstLead[0].acfIs_Post_Login_Ques_Attempted__c == true){
-string retPgName = acfCommon.sendReturnUrl(userId,false,'acfpostloginQuestions'); 
+string retPgName = acfCommon.sendReturnUrl(userId,false,'acfpostloginQuestions');
 system.debug('Ashutosh@@returnur5=>'+retPgName );
 Pagereference pageref = new pageReference('/'+retPgName);
 pageref.setredirect(true);
@@ -936,14 +936,14 @@ return null;
 }
 return null;*/
     }
-    
+
     public map<string,string> getContactApiToAnswer(List<string>lstContactAPIFields)
     {
         map<string,string>mapApiNameToAnswer = new map<string,string>();
         List<Contact>lstContacts = new List<Contact>();
         string Query = ' select id,';
         for(string objContactFields:lstContactAPIFields)
-        { 
+        {
             Query += objContactFields+',';
         }
         Query = Query.removeEnd(',');
@@ -955,16 +955,16 @@ return null;*/
             for(string objContactFields:lstContactAPIFields)
             {
                 mapApiNameToAnswer.put(objContactFields,string.valueof(objContact.get(objContactFields)));
-            } 
+            }
         }
         if(mapApiNameToAnswer <> null)
         {
             return mapApiNameToAnswer;
-        }   
+        }
         return null;
     }
-    
-    public PageReference RelatedQuestions() 
+
+    public PageReference RelatedQuestions()
     {
         checkFlag();
         Id RelatedQuesId ;
@@ -975,7 +975,7 @@ return null;*/
         NoOfLeftSlide = 0;
         NoOfRightSlide = 0;
         system.debug('@#@##$#%%^'+ScriptIndexNo);
-        
+
         if(MasterQuesNo<lstMasterWrapperQuestion.size())
         {
             WrapperQuestions objQuestion =  lstMasterWrapperQuestion[MasterQuesNo];
@@ -998,13 +998,13 @@ return null;*/
                                     RelatedQuesId = objAnswer.acf_Related_Question__c;
                                     break;
                                 }
-                            } 
-                        }            
+                            }
+                        }
                     }
                     /*  If(RelatedQuesId <> null && mapQuestionIdToQuestion.get(RelatedQuesId) <> null && mapQuestionIdToQuestion.get(RelatedQuesId).acfDependent_Field_Name__c != null && mapQuestionIdToQuestion.get(RelatedQuesId).acfDependent_Object_Name__c != null && mapQuestionIdToQuestion.get(RelatedQuesId).acfDependent_Object_Name__c == 'Account'){
 String strApiName = mapQuestionIdToQuestion.get(RelatedQuesId).acfDependent_Field_Name__c;
 String strQueryOnDependentObj = 'select '+strApiName+',id from Account where id = \'' + strCurrentLoggedInAccount + '\'';
-SObject[] lstDependentObj = Database.query(strQueryOnDependentObj); 
+SObject[] lstDependentObj = Database.query(strQueryOnDependentObj);
 If(lstDependentObj!= null && lstDependentObj.size()>0){
 mapDependentQuestoValue.put(strApiName,string.valueof(lstDependentObj[0].get(strApiName)));
 }
@@ -1013,7 +1013,7 @@ system.debug('karthik==Related'+mapDependentQuestoValue);
                     system.debug('@@@@'+RelatedQuesId+'@#$%'+objScript.objScript.acf_Question_Type__c+'@#$%'+objQuestion.objWrapQuestion.acf_Dependents__c+'#$@@@'+strAnswers);
                     //if(RelatedQuesId <> null)
                     //system.debug('@@@@karthik__'+mapDependentQuestoValue.get(mapQuestionIdToQuestion.get(RelatedQuesId).acfDependent_Field_Name__c));
-                    
+
                     if(RelatedQuesId <> null && mapQuestionIdToQuestion.get(RelatedQuesId) <> null && mapQuestionIdToQuestion.get(RelatedQuesId).acfDependent_Field_Name__c == null && mapQuestionIdToQuestion.get(RelatedQuesId).acfDependent_Object_Name__c == null)
                     {
                         objQuestion.IsContinueDisplay = false;
@@ -1039,9 +1039,9 @@ system.debug('karthik==Related'+mapDependentQuestoValue);
                         Integer NoOFDependent = Integer.valueof(strAnswers);
                         system.debug('!@#$%^test'+NoOFDependent);
                         if(NoOFDependent == 0)
-                        { 
+                        {
                             system.debug('!@#$%^test1'+NoOFDependent);
-                            objQuestion.IsContinueDisplay = true;                           
+                            objQuestion.IsContinueDisplay = true;
                             IsSlide = 'true';
                             NextQuestion();
                         }
@@ -1073,11 +1073,11 @@ system.debug('karthik==Related'+mapDependentQuestoValue);
                                 IsSlide = 'false';
                                 /* If(isZeroDependent == true){
 objQuestion.IsContinueDisplay = true;
-IsSlide = 'true';  
-break; 
+IsSlide = 'true';
+break;
 }*/
                             }
-                        }   
+                        }
                     }
                     else if(RelatedQuesId == null && objScript.objScript.acf_Question_Type__c == 'Applicant Details'  && objQuestion.objWrapQuestion.acfEmployment_Type__c  && strAnswers <> null && strAnswers <> '')
                     {
@@ -1106,21 +1106,21 @@ break;
                             objQuestion.lstRelatedQuestion.add(objRelatedQuestion);
                             IsSlide = 'false';
                         }
-                        
+
                     }
                     else
                     {
                         objQuestion.IsContinueDisplay = true;
                         IsSlide = 'true';
                         NextQuestion();
-                    }  
+                    }
                     system.debug('@@#$%^'+objQuestion);
                 }
             }
-        } 
+        }
         return null;
     }
-    public PageReference AddingRelatedQuestion() 
+    public PageReference AddingRelatedQuestion()
     {
         checkFlag();
         strmsg  = '';
@@ -1147,10 +1147,10 @@ break;
                 if((objScript <> null))
                 {
                     Integer tempQuesNo = QuesNo+1;
-                    Integer RelatedQustionWrapperSize = objQuestion.lstRelatedQuestion.size();          
+                    Integer RelatedQustionWrapperSize = objQuestion.lstRelatedQuestion.size();
                     while(tempQuesno < RelatedQustionWrapperSize)
                     {
-                        setIndexToRemove.add(tempQuesno); 
+                        setIndexToRemove.add(tempQuesno);
                         tempQuesno++;
                     }
                     system.debug('@@@@::'+setIndexToRemove);
@@ -1166,9 +1166,9 @@ break;
                             }
                             if(objQuestion.lstRelatedQuestion.size()>index)
                                 objQuestion.lstRelatedQuestion.remove(index);
-                            IsFirstIndex = false; 
+                            IsFirstIndex = false;
                         }
-                    }               
+                    }
                     if(objQuestion.lstRelatedQuestion.size()>QuesNo && objQuestion.lstRelatedQuestion[QuesNo] <> null)
                     {
                         WrapperQuestions objRelatedQuestion = objQuestion.lstRelatedQuestion[QuesNo];
@@ -1176,7 +1176,7 @@ break;
                         for(Answer__c objAnswer:objRelatedQuestion.objWrapQuestion.Answer__r)
                         {
                             if(objRelatedQuestion.strWrapAnswer <> null && objRelatedQuestion.strWrapAnswer <> 'NONE')
-                            {  
+                            {
                                 if(objAnswer.id==objRelatedQuestion.strWrapAnswer)
                                 {
                                     strAnswers = objAnswer.acf_Answer__c;
@@ -1186,7 +1186,7 @@ break;
                                         break;
                                     }
                                 }
-                            }           
+                            }
                         }
                         if(RelatedQuesId <> null && mapQuestionIdToQuestion.get(RelatedQuesId) <> null)
                         {
@@ -1213,11 +1213,11 @@ break;
                             objQuestion.IsContinueDisplay = true;
                             //IsSlide = 'true';
                             NextQuestion();
-                        } 
+                        }
                     }
                 }
             }
-        }          
+        }
         return null;
     }
     public void checkFlag(){
@@ -1225,23 +1225,23 @@ break;
         //if(issSecondApplicantQuestionSet==false){
         list<user> userobj=[select account.acfApplicant2_email__pc,account.acfApplicant2_Name__pc,account.acfNumber_Of_Applicants__pc from user where AccountId=:UserAccountId limit 1];
         if(userobj.size()>0){
-            if(userobj[0].account.acfNumber_Of_Applicants__pc=='2' && (userobj[0].account.acfApplicant2_email__pc=='' || userobj[0].account.acfApplicant2_email__pc==null)){                
+            if(userobj[0].account.acfNumber_Of_Applicants__pc=='2' && (userobj[0].account.acfApplicant2_email__pc=='' || userobj[0].account.acfApplicant2_email__pc==null)){
                 issSecondApplicantQuestionSet=true;
             }
         }
         //}
-        
-        
-        
+
+
+
     }
-    
+
     // Call on the click of Continue button
-    // 
-    // 
+    //
+    //
     public pageReference NextQuestion()
     {
-        
-        
+
+
         checkFlag();
         system.debug('!@#$%^&*'+MasterQuesNo);
         IsSlide = 'false';
@@ -1253,22 +1253,22 @@ break;
         system.debug('@@@@@test'+lstMasterWrapperQuestion);
         map<string,string>mapAnswerIdToAnswer = new map<string,string>();
         map<Question__c,string>mapQuesToSelectedAnswer = new map<Question__c,string>();
-        
+
         Contact objPortalContact = new Contact(id = LoggedInContact);
         System.debug('***objPortalContact ***' +objPortalContact);
-        
+
         if(MasterQuesNo<lstMasterWrapperQuestion.size()){
-            if(lstMasterWrapperQuestion[MasterQuesNo+1].isConcent==true && lstMasterWrapperQuestion[MasterQuesNo+1].IsApplicant2Question==false )                        
-                sendApplicantConsentMailandSms();  
+            if(lstMasterWrapperQuestion[MasterQuesNo+1].isConcent==true && lstMasterWrapperQuestion[MasterQuesNo+1].IsApplicant2Question==false )
+                sendApplicantConsentMailandSms();
         }//for sending mail and sms to first applicant
-        
+
         if(MasterQuesNo < lstMasterWrapperQuestion.size())
         {
             system.debug('MasterQuesNo -->>>'+MasterQuesNo);
             system.debug('MasterQuesNo -->>>'+lstMasterWrapperQuestion[MasterQuesNo]);
             system.debug('+1MasterQuesNo -->>>'+lstMasterWrapperQuestion[MasterQuesNo+1]);
             WrapperQuestions objQuestion =  lstMasterWrapperQuestion[MasterQuesNo];
-            // if(MasterQuesNo+1 < lstMasterWrapperQuestion.size()){strBubbleText = lstMasterWrapperQuestion[MasterQuesNo+1].objWrapQuestion.acfBubble_Text__c;} 
+            // if(MasterQuesNo+1 < lstMasterWrapperQuestion.size()){strBubbleText = lstMasterWrapperQuestion[MasterQuesNo+1].objWrapQuestion.acfBubble_Text__c;}
             system.debug('@#@##$#%%^'+objQuestion);
             system.debug('objQuestion.ScriptSequence-->'+objQuestion.ScriptSequence);
             if(objQuestion <> null && objQuestion.ScriptSequence <> null)
@@ -1278,8 +1278,8 @@ break;
                 system.debug('objWrapScript-->'+objWrapScript);
                 if(objWrapScript <> null)
                 {
-                    
-                    
+
+
                     for(Answer__c objAnswer:objQuestion.objWrapQuestion.Answer__r)
                     {
                         mapAnswerIdToAnswer.put(objAnswer.id,objAnswer.acf_Answer__c);
@@ -1294,35 +1294,35 @@ break;
                             {
                                 if(objQuestion.IsApplicant2Question)
                                     objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
-                                else  
+                                else
                                     objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
-                            }  
+                            }
                             else
                             {
                                 if(objQuestion.IsApplicant2Question)
                                     objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));
                                 else
                                     objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));
-                            }  
+                            }
                         }
                         else
                         {
                             if(objQuestion.objWrapQuestion.acf_Type__c == 'Number' || objQuestion.objWrapQuestion.acf_Type__c == 'Currency' || objQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                             {
-                                if(objQuestion.IsApplicant2Question) 
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(objQuestion.strWrapAnswer)); 
+                                if(objQuestion.IsApplicant2Question)
+                                    objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(objQuestion.strWrapAnswer));
                                 else
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));                                    
-                            }    
+                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));
+                            }
                             else
                             {
                                 system.debug('objQuestion.IsApplicant2Question--'+objQuestion.IsApplicant2Question);
-                                if(objQuestion.IsApplicant2Question)                                    
+                                if(objQuestion.IsApplicant2Question)
                                     objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,objQuestion.strWrapAnswer);
-                                else     
+                                else
                                     objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,objQuestion.strWrapAnswer);
-                                
-                            }   
+
+                            }
                         }
                         system.debug('objPortalContact-->'+objPortalContact);
                         system.debug('$$$$');
@@ -1333,7 +1333,7 @@ break;
                             {
                                 mapAnswerIdToAnswer.put(objAnswer.id,objAnswer.acf_Answer__c);
                             }
-                            if((objRelatedQues.strWrapAnswer == null || objRelatedQues.strWrapAnswer == '' || objRelatedQues.strWrapAnswer == 'NONE') && objRelatedQues.lstCheckBoxAnswer.size()==0) 
+                            if((objRelatedQues.strWrapAnswer == null || objRelatedQues.strWrapAnswer == '' || objRelatedQues.strWrapAnswer == 'NONE') && objRelatedQues.lstCheckBoxAnswer.size()==0)
                             {
                                 IsSlide = 'false';
                                 strmsg = 'Please fill the answer';
@@ -1342,7 +1342,7 @@ break;
                                 return null;
                             }
                             else if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Checkbox' && objRelatedQues.lstCheckBoxAnswer.size()>0)
-                            {    
+                            {
                                 for(string strAns:objRelatedQues.lstCheckBoxAnswer)
                                 {
                                     if(mapAnswerIdToAnswer <> null && mapAnswerIdToAnswer.get(strAns)<> null)
@@ -1351,27 +1351,27 @@ break;
                                             objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(strAns));
                                         else
                                             objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(strAns));
-                                    }    
-                                }   
+                                    }
+                                }
                             }
                             system.debug('-->'+mapAnswerIdToAnswer );
                             if(mapAnswerIdToAnswer <> null && mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)<>null)
                             {
-                                //mapQuesToSelectedAnswer.put(objRelatedQues.objWrapQuestion,mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)); 
+                                //mapQuesToSelectedAnswer.put(objRelatedQues.objWrapQuestion,mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer));
                                 if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Number' || objRelatedQues.objWrapQuestion.acf_Type__c == 'Currency' || objRelatedQues.objWrapQuestion.acf_Type__c == 'Percent')
                                 {
                                     if(objQuestion.IsApplicant2Question)
                                         objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));
                                     else
-                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));                                                                                    
+                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));
                                 }
                                 else
                                 {
                                     if(objQuestion.IsApplicant2Question)
-                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer));                                     
+                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer));
                                     else
-                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer));                                                                               
-                                }  
+                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer));
+                                }
                             }
                             else
                             {
@@ -1381,15 +1381,15 @@ break;
                                     if(objQuestion.IsApplicant2Question)
                                         objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(objRelatedQues.strWrapAnswer));
                                     else
-                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(objRelatedQues.strWrapAnswer));                                      
-                                }  
+                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(objRelatedQues.strWrapAnswer));
+                                }
                                 else
                                 {
                                     if(objQuestion.IsApplicant2Question)
                                         objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,objRelatedQues.strWrapAnswer);
                                     else
-                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,objRelatedQues.strWrapAnswer);                                       
-                                }    
+                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,objRelatedQues.strWrapAnswer);
+                                }
                             }
                             //mapQuestionIdToSelectedAnswers.put(objRelatedQues.objWrapQuestion.id,objRelatedQues.strWrapAnswer);
                         }
@@ -1410,7 +1410,7 @@ break;
                         }
                         else if(objQuestion.objWrapQuestion.acf_Type__c == 'Text' && objQuestion.objWrapQuestion.Date__c  == true)
                         {
-                            if( CreateDateFromString(objQuestion.strWrapAnswer) <> null) 
+                            if( CreateDateFromString(objQuestion.strWrapAnswer) <> null)
                             {
                                 Date DOB = CreateDateFromString(objQuestion.strWrapAnswer);
                                 if(DOB > system.today())
@@ -1430,7 +1430,7 @@ break;
                             }
                         }
                         else if(objQuestion.objWrapQuestion.acf_Type__c == 'Checkbox' && objQuestion.lstCheckBoxAnswer.size()>0)
-                        {    
+                        {
                             for(string strAns:objQuestion.lstCheckBoxAnswer)
                             {
                                 if(mapAnswerIdToAnswer <> null && mapAnswerIdToAnswer.get(strAns)<> null)
@@ -1440,35 +1440,35 @@ break;
                                         objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(strAns));
                                     else
                                         objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(strAns));
-                                }   
-                            }   
+                                }
+                            }
                         }
                         if(mapAnswerIdToAnswer <> null && mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)<>null)
                         {
-                            //mapQuesToSelectedAnswer.put(objQuestion.objWrapQuestion,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)); 
+                            //mapQuesToSelectedAnswer.put(objQuestion.objWrapQuestion,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));
                             if(objQuestion.objWrapQuestion.acf_Type__c == 'Number' || objQuestion.objWrapQuestion.acf_Type__c == 'Currency' || objQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                             {
                                 if(objQuestion.IsApplicant2Question)
                                     objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
                                 else
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));                            
-                            } 
+                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
+                            }
                             else
                             {
                                 if(objQuestion.IsApplicant2Question){
-                                    
+
                                     system.debug('ashu!!!=>'+objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c+'=>'+objQuestion.strWrapAnswer+'=>');
                                     //ashu
-                                    
+
                                     if(!objQuestion.isConcent){
                                         objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));
                                     }
-                                    
-                                }   
-                                else 
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));                               
-                                
-                            }  
+
+                                }
+                                else
+                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));
+
+                            }
                         }
                         else
                         {
@@ -1478,15 +1478,15 @@ break;
                                 if(objQuestion.IsApplicant2Question)
                                     objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(objQuestion.strWrapAnswer));
                                 else
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));                    
-                            }   
+                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));
+                            }
                             else
                             {
                                 if(objQuestion.IsApplicant2Question)
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,objQuestion.strWrapAnswer); 
-                                else    
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,objQuestion.strWrapAnswer); 
-                            }   
+                                    objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,objQuestion.strWrapAnswer);
+                                else
+                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,objQuestion.strWrapAnswer);
+                            }
                         }
                     }
                     // For Applicant Question Script
@@ -1503,7 +1503,7 @@ break;
                         else
                         {
                             objWrapScript.IsSkipQuestions = false;
-                            objWrapScript.NoOfQuesSkipped = 0; 
+                            objWrapScript.NoOfQuesSkipped = 0;
                         }
                     }
                     if(objPortalContact <> null)
@@ -1521,13 +1521,13 @@ break;
                                     objAccount.firstname = '';
                                     If(lstName != null && lstName.size()>1)
                                     {
-                                        
-                                        
-                                        
+
+
+
                                         If(lstName.size()>2)
                                         {
                                             string firstnametemp='';
-                                            
+
                                             for(integer i=0;i<=(lstName.size()-2);i++)
                                             {
                                                 if(firstnametemp=='')
@@ -1535,21 +1535,21 @@ break;
                                                 else
                                                     firstnametemp=firstnametemp+' '+lstName[i];
                                             }
-                                            
+
                                             objUser.firstname = firstnametemp;
                                             objAccount.firstname = firstnametemp;
                                             objUser.lastname = lstName[lstName.size()-1];
                                             objAccount.lastname =lstName[lstName.size()-1];
-                                            
-                                            
+
+
                                         }else{
                                             objUser.firstname = lstName[0];
                                             objAccount.firstname = lstName[0];
                                             objUser.lastname = lstName[1];
                                             objAccount.lastname =lstName[1];
-                                            
+
                                         }
-                                        
+
                                     }else if(lstName != null && lstName.size() == 1){
                                         objUser.lastname = lstName[0];
                                         objAccount.lastname =lstName[0];
@@ -1561,40 +1561,40 @@ break;
                         }
                     }
                     System.debug('test'+objWrapScript.IsSkipQuestions+'#$$%#'+objWrapScript.NoOfQuesSkipped);
-                    
+
                     //if last question
                     if(ScriptIndexNo == lstWrapperScript.size()-1 && ScriptQuestionNo == objWrapScript.lstScriptMasterQuestions.size()-1)
                     {
-                        
+
                         //List<lead>lstLeadToUpdate = [select id,acfIs_Post_Login_Ques_Attempted__c from lead where acf_Contact__c =:objPortalContact.id limit 1];
                         if(LoggedInLeadId <> null)
                         {
                             Lead objLead = new Lead(id = LoggedInLeadId);
                             InsertRequiredDocuments(LoggedInLeadId,lstMasterWrapperQuestion);
                             // MercuryApiUtilities.updateAccountF(UserAccountId, LoggedInLeadId);
-                            
-                            
+
+
                             system.debug('@@111=>');
                             objLead.acfIs_Post_Login_Ques_Attempted__c = true;
                             update objLead;
-                        } 
-                        string retPgName = acfCommon.sendReturnUrl(userId,false,'acfpostloginQuestions'); 
-                        
+                        }
+                        string retPgName = acfCommon.sendReturnUrl(userId,false,'acfpostloginQuestions');
+
                         retPgName=retPgName+'?cid='+UserAccountId;
                         system.debug('Ashutosh@@returnurl13=>'+retPgName );
-                        
+
                         Pagereference pageref = new pageReference('/apex/Broker'+retPgName+'?cid='+UserAccountId);
                         pageref.setredirect(true);
                         return pageref;
-                        
-                        
-                    } 
+
+
+                    }
                     system.debug('karthik test@@@123'+ScriptQuestionNo+'===='+objWrapScript.NoOfQuesSkipped+'==='+MasterQuesNo+'==='+ScriptIndexNo+'===='+lstScriptQuestionsLadder.size());
                     system.debug('!@#$%^&*'+MasterQuesNo);
                     if((ScriptQuestionNo == objWrapScript.lstScriptMasterQuestions.size()-1)||(objWrapScript.IsSkipQuestions == true && ScriptQuestionNo == (objWrapScript.NoOfQuesSkipped)))
                     {
                         System.debug('test');
-                        ScriptIndexNo++; 
+                        ScriptIndexNo++;
                         IsSlide = 'true';
                         NoOfRightSlide = objWrapScript.NoOfQuesSkipped;
                         MasterQuesNo += NoOfRightSlide;
@@ -1607,15 +1607,15 @@ break;
                         if(ScriptIndexNo == lstScriptQuestionsLadder.size())
                             IsSlide = 'false';
                         else
-                            IsSlide = 'true';  
-                        system.debug('@@@@2kar'+lstMasterWrapperQuestion[MasterQuesNo]);   
-                        system.debug('karthik test@@@123'+ScriptQuestionNo+'===='+objWrapScript.NoOfQuesSkipped+'==='+MasterQuesNo+'==='+ScriptIndexNo+'===='+lstScriptQuestionsLadder.size());                   
+                            IsSlide = 'true';
+                        system.debug('@@@@2kar'+lstMasterWrapperQuestion[MasterQuesNo]);
+                        system.debug('karthik test@@@123'+ScriptQuestionNo+'===='+objWrapScript.NoOfQuesSkipped+'==='+MasterQuesNo+'==='+ScriptIndexNo+'===='+lstScriptQuestionsLadder.size());
                         ClickQuoteDetail_partner.setProgressBarWidth(MasterQuesNo,intTotalQuestions,'BrokerClickPostloginQuestionnaires');
                         return null;
                     }
                     else
                     {
-                        ++MasterQuesNo; 
+                        ++MasterQuesNo;
                         ScriptQuestionNo++;
                         IsSlide = 'true';
                         system.debug('karthik==Continue'+mapDependentQuestoValue);
@@ -1626,14 +1626,14 @@ break;
                                 for(SObject objDependentObj  : lstDependentObj){
                                     system.debug('@@@@@karthik'+setQuesAccountAPInames);
                                     for(String strApiName : setQuesAccountAPInames){
-                                        If(strApiName <> '' && objDependentObj.get(strApiName) <> null){  
-                                            mapDependentQuestoValue.put(strApiName,string.valueof(objDependentObj.get(strApiName))); 
+                                        If(strApiName <> '' && objDependentObj.get(strApiName) <> null){
+                                            mapDependentQuestoValue.put(strApiName,string.valueof(objDependentObj.get(strApiName)));
                                         }
-                                    }   
+                                    }
                                 }
                             }
                         }
-                        system.debug('!@#$%^&*'+lstMasterWrapperQuestion[MasterQuesNo]); 
+                        system.debug('!@#$%^&*'+lstMasterWrapperQuestion[MasterQuesNo]);
                         system.debug('karthik_map@@@@'+mapDependentQuestoValue+'====='+lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c);
                         if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null && mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c)
                         {
@@ -1643,16 +1643,16 @@ break;
                                 while((mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c) && (MasterQuesNo < lstMasterWrapperQuestion.size()))
                                 {
                                     IsSkipDependent = 'true';
-                                    NoOfPrePostdependent++; 
-                                    ++MasterQuesNo; 
+                                    NoOfPrePostdependent++;
+                                    ++MasterQuesNo;
                                     ScriptQuestionNo++;
                                     if(mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) == null)
-                                        break;  
-                                    
+                                        break;
+
                                 }
-                            }   
+                            }
                             system.debug('!@#$%^&*'+MasterQuesNo);
-                        } 
+                        }
                         system.debug('test karthik@@@'+ScriptQuestionNo + '==='+objWrapScript.lstScriptMasterQuestions.size());
                         if(ScriptQuestionNo == objWrapScript.lstScriptMasterQuestions.size())
                         {
@@ -1664,15 +1664,15 @@ break;
                     {
                         strBubbleText = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfBubble_Text__c;
                         system.debug('!@#$%^&*@@'+strBubbleText+'======'+lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion);
-                    } 
-                }      
-                //IsConcentQuestion=objQuestion.objWrapQuestion.acf_Question__c;                 
+                    }
+                }
+                //IsConcentQuestion=objQuestion.objWrapQuestion.acf_Question__c;
             }
             system.debug('!@#$%^&*'+MasterQuesNo);
             ClickQuoteDetail_partner.setProgressBarWidth(MasterQuesNo,intTotalQuestions,'BrokerClickPostloginQuestionnaires');
             system.debug('!@#$%^&*'+MasterQuesNo);
-        }   
-        
+        }
+
         return null;
     }
     //Inserting Required Documents and Suggested Documents
@@ -1701,9 +1701,9 @@ break;
             acfCommon.getRequiredDocumentsFromAnswers(LeadID,setSelectedAnswer);
             //Method used to getSuggestedProducts Based on Answers.
             acfCommon.getSuggestedProductsFromAnswers(LeadID,setSelectedAnswer);
-        } 
+        }
     }
-    
+
     public pageReference PreviousQuestion()
     {
         checkFlag();
@@ -1756,8 +1756,8 @@ break;
                                         --MasterQuesNo;
                                         NoOfPrePostdependent++;
                                     }
-                                    
-                                }  
+
+                                }
                                 IsSlide = 'true';
                             }
                         }
@@ -1767,7 +1767,7 @@ break;
                     {
                         --ScriptQuestionNo;
                         --MasterQuesNo;
-                        
+
                         if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null && mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c)
                         {
                             while(MasterQuesNo>0 && MasterQuesNo<lstMasterWrapperQuestion.size() && (mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c) && (MasterQuesNo < lstMasterWrapperQuestion.size()))
@@ -1777,21 +1777,21 @@ break;
                                 --MasterQuesNo;
                                 NoOfPrePostdependent++;
                             }
-                            
-                        }  
-                        strBubbleText = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfBubble_Text__c; 
+
+                        }
+                        strBubbleText = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfBubble_Text__c;
                         IsSlide = 'true';
                     }
-                }   
-            } 
+                }
+            }
             system.debug('Quote@@'+MasterQuesNo);
-            ClickQuoteDetail_partner.setProgressBarWidth(MasterQuesNo,intTotalQuestions,'BrokerClickPostloginQuestionnaires');          
+            ClickQuoteDetail_partner.setProgressBarWidth(MasterQuesNo,intTotalQuestions,'BrokerClickPostloginQuestionnaires');
         }
         return null;
     }
     //For Asset And Liablity Component.
     public pageReference AssetLiablity()
-    {        
+    {
         checkFlag();
         system.debug('@@@@@Lokesh'+MasterQuesNo+'-----ScriptQuestionNo______'+ScriptQuestionNo);
         //ScriptQuestionNo = 0;
@@ -1799,7 +1799,7 @@ break;
         {
             WrapperQuestions objQuestion =  lstMasterWrapperQuestion[MasterQuesNo];
             system.debug('@#@##$#%%^'+objQuestion);
-            
+
             Contact objContact = new Contact(id=LoggedInContact);
             objContact.acfAssetsAndLiablities__c = true;
             update objContact;
@@ -1809,7 +1809,7 @@ break;
                 WrapperScript objScript = lstWrapperScript[objQuestion.ScriptSequence];
                 if((objScript <> null) && LoggedInContact <> null)
                 {
-                    system.debug('@@@kart'+ScriptIndexNo+'===='+lstWrapperScript.size()+'==='+ScriptQuestionNo+'===='+objScript.lstScriptMasterQuestions.size()); 
+                    system.debug('@@@kart'+ScriptIndexNo+'===='+lstWrapperScript.size()+'==='+ScriptQuestionNo+'===='+objScript.lstScriptMasterQuestions.size());
                     List<Contact>lstContact = [select id,acfAssetsAndLiablities__c from Contact where id =:LoggedInContact and acfAssetsAndLiablities__c = true];
                     if(lstContact <> null && lstContact.size()>0)
                     {
@@ -1821,34 +1821,34 @@ break;
                             IsSlide = 'slide';
                         }else if(ScriptIndexNo == lstWrapperScript.size()-1 && ScriptQuestionNo == objScript.lstScriptMasterQuestions.size()-1)
                         {
-                            
+
                             //List<lead>lstLeadToUpdate = [select id,acfIs_Post_Login_Ques_Attempted__c from lead where acf_Contact__c =:objPortalContact.id limit 1];
                             if(LoggedInLeadId <> null)
-                            {      
-                                
+                            {
+
                                 Lead objLead = new Lead(id = LoggedInLeadId);
                                 InsertRequiredDocuments(LoggedInLeadId,lstMasterWrapperQuestion);
                                 objLead.acfIs_Post_Login_Ques_Attempted__c = true;
                                 update objLead;
-                            } 
+                            }
                             list<Opportunity> oppList=[select id from Opportunity where Recordtype.name!='Click Refi' and accountId=:UserAccountId limit 1];
                             system.debug('opplist@@@=>'+oppList);
-                            if(oppList.size()>0){                                
+                            if(oppList.size()>0){
                                 //system.debug('calling mercury');
                                 //MercuryApiUtilities.updateAccountF(UserAccountId, oppList[0].id);
-                                
+
                             }
-                            
-                            string retPgName = acfCommon.sendReturnUrl(userId,false,'acfpostloginQuestions'); 
-                            system.debug('Ashutosh@@returnurl12=>'+retPgName ); 
+
+                            string retPgName = acfCommon.sendReturnUrl(userId,false,'acfpostloginQuestions');
+                            system.debug('Ashutosh@@returnurl12=>'+retPgName );
                             string oppoid= acfCommon.getCurrentLoggedInOpportunityId(userId);
-                            
-                            
+
+
                             Pagereference pageref =new pageReference('/apex/Broker'+retPgName+'?cid='+UserAccountId);
                             pageref.setredirect(true);
                             return pageref;
-                            
-                        }      
+
+                        }
                         else
                         {
                             MasterQuesNo++;
@@ -1858,13 +1858,13 @@ break;
                         if(MasterQuesNo < lstMasterWrapperQuestion.size())
                         {
                             strBubbleText = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfBubble_Text__c;
-                        } 
+                        }
                     }
                     else
                     {
                         IsSlide = 'Stop';
-                    } 
-                    // system.debug('@@@kart'+ScriptIndexNo+'===='+lstWrapperScript.size()+'==='+ScriptQuestionNo+'===='+objScript.lstScriptMasterQuestions.size());  
+                    }
+                    // system.debug('@@@kart'+ScriptIndexNo+'===='+lstWrapperScript.size()+'==='+ScriptQuestionNo+'===='+objScript.lstScriptMasterQuestions.size());
                 }
             }
         }
@@ -1895,33 +1895,33 @@ break;
         }
         return null;
     }
-    
+
     public pagereference checkUserResponse(){
-        
-        account useraccount= [select id,acfEconsent__pc from account where   id=:UserAccountId];  
-        
+
+        account useraccount= [select id,acfEconsent__pc from account where   id=:UserAccountId];
+
         PageReference pg = new PageReference('/apex/BrokerClickPostloginQuestionnaires?cid='+UserAccountId);
         pg.setRedirect(true);
         return pg;
-        
+
         //return null;
-        
+
     }
     public void sendApplicantConsentMailandSms(){
         string applicantName='';
         string applicantEmail='';
         string applicantPhone='';
-        string encodedDate=string.valueOf(System.currentTimeMillis()); 
+        string encodedDate=string.valueOf(System.currentTimeMillis());
         string econsentId='';
         boolean isValidFields=true;
         Pattern p = Pattern.compile( '([a-zA-Z0-9_\\-\\.]+)@(((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3}))');
-        
-        
+
+
         if(issApplicant2Check==true){
             system.debug('###second applicant mail');
-            list<user> userObj=[select account.acfApplicant2_Name__pc,account.acfApplicant2_email__pc,account.acfApplicant2_phone__pc from user where accountid=:UserAccountId];                        
+            list<user> userObj=[select account.acfApplicant2_Name__pc,account.acfApplicant2_email__pc,account.acfApplicant2_phone__pc from user where accountid=:UserAccountId];
             account accountobj1=new account(id=UserAccountId);
-            
+
             Matcher m = p.matcher(app2Email);
             if(!m.matches()){
                 isValidFields=false;
@@ -1929,7 +1929,7 @@ break;
             }else if(app2Phone=='+61'){
                 isValidFields=false;
                 strmsg='Please enter valid phone';
-                
+
             }else if(app2Phone.length()>13){
                 isValidFields=false;
                 strmsg='Please enter valid phone';
@@ -1937,7 +1937,7 @@ break;
             else{
                 strmsg='';
                 accountobj1.acfApplicant2_email__pc=app2Email;
-                accountobj1.acfApplicant2_phone__pc=app2Phone;            
+                accountobj1.acfApplicant2_phone__pc=app2Phone;
                 update accountobj1;
                 applicantName=userObj[0].account.acfApplicant2_Name__pc;
                 applicantEmail=app2Email;
@@ -1945,33 +1945,33 @@ break;
                 econsentId=encodedDate+'-'+UserAccountId+'-2';
                 issSecondApplicantQuestionSet=false;
             }
-            
+
         }
         else{
             system.debug('###first applicant mail');
-            applicantName=accountname; 
+            applicantName=accountname;
             applicantEmail=accountEmail;
             applicantPhone=accountPhone;
             econsentId=encodedDate+'-'+UserAccountId+'-1';
-            
+
         }
         if(isValidFields){
             system.debug('applicantEmail=>'+applicantEmail);
-            Blob cryptoKey = Blob.valueOf('380db410e8b11fa9');                    
+            Blob cryptoKey = Blob.valueOf('380db410e8b11fa9');
             Blob data1 = Blob.valueOf(econsentId);
             Blob encryptedValue  =Crypto.encryptWithManagedIV('AES128', cryptoKey, data1);
             string Encryptdata=EncodingUtil.base64encode(encryptedValue );
             string finalData= EncodingUtil.urlEncode(Encryptdata, 'UTF-8');
             string body='';
-            
-            EmailTemplate templateId =new EmailTemplate();                
-            templateId = [select id,subject,body, name,HtmlValue from EmailTemplate where DeveloperName = 'EConsent' AND isActive=true];               
+
+            EmailTemplate templateId =new EmailTemplate();
+            templateId = [select id,subject,body, name,HtmlValue from EmailTemplate where DeveloperName = 'EConsent' AND isActive=true];
             body=templateId.HtmlValue;
-            body=body.replace('{!econsentid}',finalData);                                        
+            body=body.replace('{!econsentid}',finalData);
             body=body.replace('{!Account.Name}',applicantName);
             Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
             String[] toaddress=new List<String>();
-            toaddress.add(applicantEmail);                    
+            toaddress.add(applicantEmail);
             mail.setToAddresses(toaddress);
             mail.setSubject(templateId.Subject);
             mail.setHtmlBody(body);
@@ -1981,18 +1981,18 @@ break;
             mobileMessage=mobileMessage.replace('{!Account.Name}',applicantName);
             acfCommon.SendSMSUsingFuture(applicantName,applicantPhone,mobileMessage,true);
             system.debug('mail Sent');
-            
-            
+
+
         }
-        
+
     }
-    
+
     public PageReference resendEconsent(){
-        
-        
-        
-        
-        list<account> accountObj=[select acfNumber_Of_Applicants__pc,name,PersonEmail,Phone,acfApplicant2_email__pc,acfApplicant2_phone__pc,acfEconsent__pc,acfEconsent_App2__pc  from account where id=:UserAccountId];                        
+
+
+
+
+        list<account> accountObj=[select acfNumber_Of_Applicants__pc,name,PersonEmail,Phone,acfApplicant2_email__pc,acfApplicant2_phone__pc,acfEconsent__pc,acfEconsent_App2__pc  from account where id=:UserAccountId];
         	accountname=accountObj[0].name;
             accountEmail=accountObj[0].PersonEmail;
             accountPhone=accountObj[0].Phone;
@@ -2002,41 +2002,41 @@ break;
         if(accountObj[0].acfNumber_Of_Applicants__pc=='2' && accountObj[0].acfEconsent__pc==null && accountObj[0].acfEconsent_App2__pc==null){
             system.debug('!!!check 1'+accountObj);
             issApplicant2Check=false;
-            sendApplicantConsentMailandSms();            
+            sendApplicantConsentMailandSms();
             issApplicant2Check=true;
             sendApplicantConsentMailandSms();
         }else if(accountObj[0].acfNumber_Of_Applicants__pc=='2' && accountObj[0].acfEconsent__pc!=null && accountObj[0].acfEconsent_App2__pc==null){
             system.debug('!!!check 2'+accountObj);
             issApplicant2Check=true;
             sendApplicantConsentMailandSms();
-            
+
         }else if(accountObj[0].acfNumber_Of_Applicants__pc=='2' && accountObj[0].acfEconsent__pc==null && accountObj[0].acfEconsent_App2__pc!=null){
             system.debug('!!!check 3'+accountObj);
             issApplicant2Check=false;
-            sendApplicantConsentMailandSms();     
+            sendApplicantConsentMailandSms();
         }else if(accountObj[0].acfNumber_Of_Applicants__pc=='1' && accountObj[0].acfEconsent__pc==null){
             system.debug('!!!check 4'+accountObj);
             issApplicant2Check=false;
-            sendApplicantConsentMailandSms();     
+            sendApplicantConsentMailandSms();
         }
-        
-        
+
+
         PageReference pg = new PageReference('/apex/BrokerClickPostloginQuestionnaires?cid='+UserAccountId);
         pg.setRedirect(true);
         return pg;
-        
-       
-        
+
+
+
     }
-    
-    
-    
-    public PageReference  applicant2consent(){    
+
+
+
+    public PageReference  applicant2consent(){
         account useraccount= [select id,acfEconsent__pc from account where   id=:UserAccountId];
         useraccount.acfEconsent_App2__pc='I Consent';
         update useraccount;
-        //return RelatedQuestions();    
-        
+        //return RelatedQuestions();
+
         PageReference pg = new PageReference('/apex/BrokerClickPostloginQuestionnaires?cid='+UserAccountId);
         pg.setRedirect(true);
         return pg;
@@ -2052,7 +2052,7 @@ break;
         public List<WrapperQuestions>lstScriptMasterQuestions{get;set;}
     }
     //Master Question Wrapper
-    public class WrapperQuestions 
+    public class WrapperQuestions
     {
         public Question__c objWrapQuestion {get;set;}
         public string strApplicantNo{get;set;}
@@ -2066,7 +2066,7 @@ break;
         public Integer ScriptSequence{get;set;}
         public boolean isConcent{get;set;}
         public string customQuestions{get;set;}
-        
+
     }
-    
+
 }

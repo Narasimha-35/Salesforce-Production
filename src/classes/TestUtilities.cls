@@ -206,4 +206,9 @@ public class TestUtilities {
       return ret;
    }
 
+   public static Income_And_Expense__c createIncomeAndExpense() {
+      Income_And_Expense__c iae = new Income_And_Expense__c();
+      return iae;
+   }
+
 }
