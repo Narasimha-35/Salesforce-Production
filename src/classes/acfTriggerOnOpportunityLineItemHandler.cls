@@ -15,15 +15,35 @@ public  class acfTriggerOnOpportunityLineItemHandler
     
     UpdateFeeInOpportunity(triggerNew);
     updateRequiredDocumentOnOpportunity(triggerNew);
+    updateFundingPosition(triggerNew,'insert');
   }
   public void OnAfterUpdate(List<Opportunitylineitem>triggerNew)
   {
     UpdateFeeInOpportunity(triggerNew);
     updateRequiredDocumentOnOpportunity(triggerNew);
+    updateFundingPosition(triggerNew,'update');
   }
   public void OnAfterDelete(List<Opportunitylineitem>triggerOld)
   {
       UpdateFeeInOpportunity(triggerOld);
+  }
+  
+  public void updateFundingPosition(List<opportunitylineitem> triggernew,string event){
+    Set<id> oppIdSet = new Set<Id>();
+    for(OpportunityLineItem tNew:triggernew){
+        oppIdSet.add(tNew.OpportunityId);
+    }
+    Funding_Position__c fPosition = new Funding_Position__c();
+    if(oppIdSet.size() > 0){
+         List<OpportunityLineItem> oppLineList = [SELECT acfLegal_Fees__c,clickEstablishment_Fee__c,clickMortgage_Risk_Fee__c FROM OpportunityLineItem where OpportunityId =:oppIdSet ORDER BY CreatedDate ASC LIMIT 1];
+         fPosition = [SELECT Id,Lender_Set_Up_Fees__c FROM Funding_Position__c where Opportunity__c =:oppIdSet];
+         if((fPosition !=null && fPosition.Lender_Set_Up_Fees__c == null && event == 'insert') ||(fPosition !=null && event == 'update')){
+            if(oppLineList[0].acfLegal_Fees__c !=null && oppLineList[0].clickEstablishment_Fee__c !=null && oppLineList[0].clickMortgage_Risk_Fee__c !=null){
+                fPosition.Lender_Set_Up_Fees__c = Integer.valueOf(oppLineList[0].acfLegal_Fees__c) + Integer.valueOf(oppLineList[0].clickEstablishment_Fee__c) + Integer.valueOf(oppLineList[0].clickMortgage_Risk_Fee__c);
+            }
+            update fPosition;
+         }
+     }
   }
   public void UpdateFeeInOpportunity(List<Opportunitylineitem>triggerNew)
   {
