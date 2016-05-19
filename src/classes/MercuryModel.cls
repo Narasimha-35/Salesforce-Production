@@ -209,7 +209,7 @@ public without sharing class MercuryModel {
 			annualSalary = annualSalary != null ? annualSalary : 0;
 			title = title != null && AVALIABLE_TITLE.contains(title.toLowerCase().capitalize()) ? title.toLowerCase().capitalize() : null;
 			gender = gender != null ? gender.left(1) : null;
-			company = company != null ? company : ACF_BRANCH_ID;
+			company = company != null && company != '' ? company : ACF_BRANCH_ID;
 		}
 
 		@testVisible
@@ -396,12 +396,20 @@ public without sharing class MercuryModel {
 			personID = acc.id;
 			relationship = 'Primary Applicant';
 			fullName = oppo.id + '-' + acc.id;
+
+			validateAndClean();
 		}
 
-		public void init() {
+		@testVisible
+		private void init() {
 			isDeleted = false;
 			company = ACF_BRANCH_ID;
 			createdBy = API_USER_ID;
+		}
+
+		@testVisible
+		private void validateAndClean() {
+			company = company != null && company != '' ? company : ACF_BRANCH_ID;
 		}
 	}
 

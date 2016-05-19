@@ -165,7 +165,14 @@ private class TestMercuryApiUtilities {
 		iae.recordTypeId = IncomeRecordType.getInstance().id;
 		insert iae;
 
+		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+		mock.setStaticResource('MercuryLoginSuccessResponse');
+		mock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, mock);
+
+		Test.startTest();
 		MercuryApiUtilities.createIncomeAndExpense(iae, acc, 'P200019');
+		Test.stopTest();
 	}
 
 }

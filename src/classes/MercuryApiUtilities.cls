@@ -42,6 +42,32 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		system.debug(LoggingLevel.INFO, 'Email Recipients: ' + recipients);
 	}
 
+	//@dep
+	public static void getDataBack(String oppoId, Boolean isSalesforceOppoId, String accountId, Boolean isSalesforceAccountId) {
+		MercuryApiUtilitiesChen.getDataBack(oppoId, isSalesforceOppoId, accountId, isSalesforceAccountId);
+	}
+
+	//@dep
+	public static void updateAccountF(String accountId, String oppoId) {
+		MercuryApiUtilitiesChen.updateAccountF(accountId, oppoId);
+	}
+
+	//@dep
+	public static void updatePeopleInMercury(String accountId, String token, String branchId) {
+		MercuryApiUtilitiesChen.updatePeopleInMercury(accountId, token, branchId);
+	}
+
+	//@dep
+	public static void getOpportunityAndSaveOnOppo(String oppoId, Boolean isSalesforceId) {
+		MercuryApiUtilitiesChen.getOpportunityAndSaveOnOppo(oppoId, isSalesforceId);
+	}
+
+	//@dep
+	public static void getPeopleAndSaveOnAccount(String accountId, Boolean isSalesforceId) {
+		MercuryApiUtilitiesChen.getPeopleAndSaveOnAccount(accountId, isSalesforceId);
+	}
+
+
 	public static Opportunity createOppoInMercury(String oppoId, String branchId) {
 		return createOppoInMercury(oppoId, branchId, false);
 	}
