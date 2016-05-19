@@ -102,7 +102,7 @@ global class MercuryService {
 	}
 
 	public static void syncWithMercury(String oppoId, String accountId)  {
-		String branchId = MercuryApiUtilities.getBrokerBranch(oppoId);
+		String branchId = MercuryUtility.getBrokerBranch(oppoId);
 		Id oId = oppoId;
 		Id aId = accountId;
 		Opportunity oppo = null;
@@ -139,7 +139,7 @@ global class MercuryService {
 		if(oppo != null) update oppo;
 		if(account != null) update account;
 		if(exceptions.size() > 0) {
-			MercuryApiUtilities.sendEmail();
+			MercuryUtility.sendEmail();
 			throw new MercurySyncException(exceptions);
 		}
 	}
@@ -197,6 +197,35 @@ global class MercuryService {
 
 	webservice static void cleanMercuryOpportunity(String input) {
 		MercuryService.startCleanMercuryOpportunityBatch();
+	}
+
+	//Only update the loan in Mercury
+	public static void updateLoan(Opportunity oppo) {
+		String branchId = MercuryUtility.getBrokerBranch(oppo.id);
+		AccountSelector accSelector = new AccountSelector();
+		Account acc = accSelector.getById(oppo.accountId);
+		ApplicantSelector apts = new ApplicantSelector();
+		List<Click_Applicant__c> applicants = apts.getByAccount(acc);
+		IncomeAndExpenseSelector iaeSelector = new IncomeAndExpenseSelector();
+		List<Income_And_Expense__c> iaeList = iaeSelector.getByAccount(acc);
+
+		//TODO: update loan details
+		//upsert applicant details
+		for(Click_Applicant__c applicant : applicants) {
+			MercuryModel.People people;
+			if('1' == applicant.click_Applicant_Number__c) {
+				people = new MercuryModel.People(acc, branchId);
+				MercuryApiUtilities.updateMercuryRecord(people);
+			} else {
+				people = new MercuryModel.People(applicant, branchId);
+				MercuryApiUtilities.insertMercuryRecord(people);
+			}
+		}
+		for(Income_And_Expense__c iae : iaeList) {
+			MercuryApiUtilities.createIncomeAndExpense(iae, acc, branchId);
+		}
+		MercuryApiUtilities.createAddress(acc, branchId);
+		//TODO: upsert loan people
 	}
 
 }

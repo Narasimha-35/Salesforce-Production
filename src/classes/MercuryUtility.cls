@@ -184,6 +184,152 @@ global without sharing class MercuryUtility {
 		return oppo;
 	}
 
+	public static Boolean checkRecordFromResMap(Map<String, Object> resMap, String sfObjectName, String rid) {
+		if(resMap == null) return false;
+		if(rid.length() == 18) return true;
+
+		Object temp = resMap.get(MercuryApiUtilities.sfToMercuryItemMap.get(sfObjectName.toLowerCase()));
+		Map<String, Object> m = null;
+		if(temp instanceOf Map<String, Object>) {
+			m = (Map<String, Object>) temp;
+		} else {
+			List<Object> ml = (List<Object>) temp;
+			m = (Map<String, Object>) ml[0];
+		}
+
+		System.Debug(LoggingLevel.DEBUG, '[MercuryUtility] result map: ' + m);
+		System.Debug(LoggingLevel.DEBUG, '[MercuryUtility] uniqueId: ' + m.get('uniqueId'));
+		System.Debug(LoggingLevel.DEBUG, '[MercuryUtility] rid: ' + rid);
+		if(String.valueOf(m.get('uniqueId')).equals(rid)) return true;
+		return false;
+	}
+
+	//Move to Utilities Class? @depricate
+	public static String convertCurrentTimeToGMTWithTimeZone(Datetime birthday) {
+		String gmtTimeValue = String.valueOfGmt(birthday);
+		gmtTimeValue = gmtTimeValue.replace(' ', 'T') + '+10:00';
+		System.debug(gmtTimeValue);
+		return gmtTimeValue;
+	}
+
+	//Move to Utilities Class? @depricate
+	public static String convertCurrentTimeToGMTWithTimeZone() {
+		String gmtTimeValue = String.valueOfGmt(Datetime.now());
+		gmtTimeValue = gmtTimeValue.replace(' ', 'T') + '+10:00';
+		System.debug(gmtTimeValue);
+
+	return gmtTimeValue;
+	}
+
+	public static String getBrokerBranch(String oppoId) {
+		String acfBranch = getBrokerBranchRaw(oppoId);
+		if(acfBranch == null || acfBranch == '') {
+			return MercuryApiUtilities.ACF_BRANCH_ID;
+		}
+		return acfBranch;
+	}
+
+	public static String getBrokerBranchRaw(String oppoId) {
+		//default ACF Branch
+		String acfBranch = MercuryApiUtilities.ACF_BRANCH_ID;
+		List<Opportunity> oppos = [Select Id, Current_Assigned_Broker__c From Opportunity Where Id = :oppoId];
+		if (oppos.size() == 1) {
+			if (oppos.get(0).Current_Assigned_Broker__c != null) {
+				List<Broker__c> brokers = [Select Id, Mercury_Branch__c, Channel__c From Broker__c where Name = :oppos.get(0).Current_Assigned_Broker__c];
+				if (brokers.size() == 1) {
+					if (brokers.get(0).Channel__c == 'Phone Broker') {
+						return acfBranch;
+					} else {
+						if(brokers.get(0).Mercury_Branch__c == null || brokers.get(0).Mercury_Branch__c == '') return acfBranch;
+						return brokers.get(0).Mercury_Branch__c;
+					}
+				}
+			}
+		}
+		return acfBranch;
+	}
+
+	public static String generateDetailPart(HttpRequest req, HttpResponse res) {
+		String ret = '';
+
+		ret += '<span>Header</span>';
+		ret += '<p>' + 'Content-Type: ' + req.getHeader('Content-Type') + '</p>';
+		ret += '<span>End Point</span>';
+		ret += '<p>' + req.getEndpoint() + '</p>';
+		ret += '<span>Http Method</span>';
+		ret += '<p>' + req.getMethod() + '</p>';
+		ret += '<span>Request Body<span>';
+		ret += '<p>' + req.getBody() + '</p>';
+		ret += '<span>========================================</span><br/>';
+		ret += '<span>Status Code</span>';
+		ret += '<p>' + res.getStatusCode() + '</p>';
+		ret += '<span>Response Body</span>';
+		ret += '<p>\"'+ res.getBody() + '\"</p>';
+
+		return ret;
+	}
+
+	public static void sendEmail() {
+		if(MercuryApiUtilities.emailSwh) {
+			system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
+			for(Map<String, String> pe : MercuryApiUtilities.pendingEmails) {
+				String body = generateHTMLEmailBody(MercuryApiUtilities.APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details'));
+				Utilities.sendEmail(MercuryApiUtilities.recipients, 'Salesforce Debug', body);
+			}
+		}
+	}
+
+	public static String generateHTMLEmailBody(String projectName, String className, String methodName, String detail) {
+		if(MercuryApiUtilities.debugEmailTemplate == null) {
+			Document doc = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
+			MercuryApiUtilities.debugEmailTemplate = doc.body.toString();
+		}
+		return MercuryApiUtilities.debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
+	}
+
+	public static String getTokenFromXml(Dom.Document doc) {
+		String token = null;
+		if (doc != null) {
+			Dom.Xmlnode node = doc.getRootElement();
+			if (node != null && node.getNodeType() == DOM.XMLNodeType.ELEMENT) {
+				if (node.getName() == 'login') {
+					for (Dom.XMLNode child: node.getChildElements()) {
+						if (child.getName() == 'token') {
+							token = child.getText();
+						}
+					}
+				}
+			}
+		}
+		return token;
+	}
+
+	public static Boolean getApproveFromXml(Dom.Document doc) {
+		Boolean ret = false;
+
+		if(doc != null) {
+			Dom.Xmlnode node = doc.getRootElement();
+			if (node != null && node.getNodeType() == DOM.XMLNodeType.ELEMENT) {
+				if (node.getName() == 'login') {
+					for (Dom.XMLNode child: node.getChildElements()) {
+						if (child.getName() == 'approved') {
+							ret = Boolean.valueOf(child.getText());
+						}
+					}
+				}
+			}
+		}
+
+		return ret;
+	}
+
+	public static String getEncodedChangeList(Model mod) {
+		Set<String> notNullFields = mod.getNonNullAttributeSet();
+		notNullFields.remove('webAccess');
+		notNullFields.remove('uniqueId');
+		return EncodingUtil.urlEncode(JSON.serialize(notNullFields), MercuryModel.ENCODING_SCHEME);
+	}
+
 	public class MercuryMismatchException extends Exception {
 	}
 }

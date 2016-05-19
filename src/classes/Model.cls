@@ -7,6 +7,7 @@ public abstract class Model {
 		return oMap.get(f);
 	}
 
+	//Usage: m = (MyModel) m.put('attribute1', 'Some String', MyModel.class);
 	public Object put(String f, Object v, System.Type t) {
 		Map<String, Object> oMap;
 		String s = JSON.serialize(this);

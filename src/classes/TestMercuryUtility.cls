@@ -278,29 +278,39 @@ public with sharing class TestMercuryUtility {
     }
 
     private static testMethod void testRemoveMercuryOpportunityAndCreateOpportunitySuccess() {
+        MercuryTestUtilities.setCustomSettings(true);
         Account applicantAcc = TestUtilities.createAccount();
         Opportunity oppo = TestUtilities.createOpportunity();
         Mercury_Opportunity__c merc_oppo = new Mercury_Opportunity__c();
         insert merc_oppo;
 
+        Integer prevAccSize = [SELECT id FROM Account].size();
+        Integer prevOppoSize = [SELECT id FROM Opportunity].size();
+        Integer prevMercOppoSize = [SELECT id FROM Mercury_Opportunity__c].size();
+
         Boolean res = MercuryUtility.removeMercuryOpportunityAndCreateOpportunity(applicantAcc, oppo, merc_oppo);
         System.assertEquals(true, res);
-        System.assertEquals(1, [SELECT id FROM Account].size());
-        System.assertEquals(1, [SELECT id FROM Opportunity].size());
-        System.assertEquals(0, [SELECT id FROM Mercury_Opportunity__c].size());
+        System.assertEquals(prevAccSize + 1, [SELECT id FROM Account].size());
+        System.assertEquals(prevOppoSize + 1, [SELECT id FROM Opportunity].size());
+        System.assertEquals(prevMercOppoSize - 1, [SELECT id FROM Mercury_Opportunity__c].size());
     }
 
     private static testMethod void testRemoveMercuryOpportunityAndCreateOpportunityFail() {
+        MercuryTestUtilities.setCustomSettings(true);
         Account applicantAcc = TestUtilities.createAccount();
         Opportunity oppo = new Opportunity();
         Mercury_Opportunity__c merc_oppo = new Mercury_Opportunity__c();
         insert merc_oppo;
 
+        Integer prevAccSize = [SELECT id FROM Account].size();
+        Integer prevOppoSize = [SELECT id FROM Opportunity].size();
+        Integer prevMercOppoSize = [SELECT id FROM Mercury_Opportunity__c].size();
+
         Boolean res = MercuryUtility.removeMercuryOpportunityAndCreateOpportunity(applicantAcc, oppo, merc_oppo);
         System.assertEquals(false, res);
-        System.assertEquals(0, [SELECT id FROM Account].size());
-        System.assertEquals(0, [SELECT id FROM Opportunity].size());
-        System.assertEquals(1, [SELECT id FROM Mercury_Opportunity__c].size());
+        System.assertEquals(prevAccSize, [SELECT id FROM Account].size());
+        System.assertEquals(prevOppoSize, [SELECT id FROM Opportunity].size());
+        System.assertEquals(prevMercOppoSize, [SELECT id FROM Mercury_Opportunity__c].size());
     }
 
     private static testMethod void testConstructOpportunityFromMercuryOpp() {
@@ -372,6 +382,31 @@ public with sharing class TestMercuryUtility {
         System.assertEquals(expect4, MercuryUtility.getStandardMobileFormat(case4));
         System.assertEquals(expect5, MercuryUtility.getStandardMobileFormat(case5));
         System.assertEquals(expect6, MercuryUtility.getStandardMobileFormat(case6));
+    }
+
+    private static testMethod void testGenerateDetailPart() {
+        HttpRequest req = new HttpRequest();
+        HttpResponse res = new HttpResponse();
+
+        system.assertNotEquals(null, MercuryUtility.generateDetailPart(req, res));
+    }
+
+    private static testMethod void testGenerateHTMLEmailBody() {
+        // MercuryUtility.generateHTMLEmailBody('a', 'b', 'c', 'd');
+        system.assert(true);
+    }
+
+    private static testMethod void testCheckRecordFromResMap() {
+        MercuryTestUtilities.setCustomSettings(true);
+        Map<String, Object> resMap = new Map<String, Object>();
+        Map<String, String> item = new Map<String, String>();
+        item.put('uniqueId', 'abc');
+        resMap.put('people', item);
+
+        System.assertEquals(true, MercuryUtility.checkRecordFromResMap(resMap, 'Account', 'abc'));
+        System.assertEquals(false, MercuryUtility.checkRecordFromResMap(null, 'account', 'abc'));
+        System.assertEquals(false, MercuryUtility.checkRecordFromResMap(resMap, 'account', 'abCd'));
+        System.assertEquals(false, MercuryUtility.checkRecordFromResMap(resMap, 'account', 'abc'.toUpperCase()));
     }
 
 }

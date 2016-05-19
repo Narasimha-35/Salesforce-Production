@@ -100,66 +100,6 @@ private class TestMercuryApiUtilities {
 		Test.stopTest();
 	}
 
-	static testMethod void updatePeopleUpdate() {
-		String accountId = account.Id;
-		String token = 'f92699d9-42cd-4d0a-8a98-2487dac5f9b7';
-		String branchId = 'P200019';
-		MercuryApiUtilities.updatePeopleInMercury(accountId, token, branchId);
-	}
-
-	static testMethod void getOpportunityAndSaveOnOppoTest() {
-		String oppoId = '006O0000006a5MZ';
-		MercuryApiUtilities.getOpportunityAndSaveOnOppo(oppoId, false);
-	}
-
-	static testMethod void getPeopleAndSaveOnAccount() {
-		MercuryApiUtilities.getPeopleAndSaveOnAccount(account.id, false);
-	}
-
-	static testMethod void getDataBackTest() {
-		String accountId = account.Id;
-		String oppoId = oppo.Id;
-		Test.startTest();
-		MercuryApiUtilities.getDataBack(oppoId, true, accountId, true);
-		Test.stopTest();
-	}
-
-	static testMethod void updatePeopleUpdateFTest() {
-		Test.startTest();
-		MercuryApiUtilities.updateAccountF(account.id, oppo.id);
-
-		Test.stopTest();
-	}
-
-	private static testMethod void testGenerateDetailPart() {
-		HttpRequest req = new HttpRequest();
-		HttpResponse res = new HttpResponse();
-
-		system.assertNotEquals(null, MercuryApiUtilities.generateDetailPart(req, res));
-	}
-
-	private static testMethod void testGenerateHTMLEmailBody() {
-		MercuryApiUtilities.generateHTMLEmailBody('a', 'b', 'c', 'd');
-		system.assert(true);
-	}
-
-	private static testMethod void testGetAllPersonalBranches(){
-		MercuryApiUtilities.getAllPersonalBranches('token');
-		system.assert(true);
-	}
-
-	private static testMethod void testCheckRecordFromResMap() {
-		Map<String, Object> resMap = new Map<String, Object>();
-		Map<String, String> item = new Map<String, String>();
-		item.put('uniqueId', 'abc');
-		resMap.put('people', item);
-
-		System.assertEquals(true, MercuryApiUtilities.checkRecordFromResMap(resMap, 'Account', 'abc'));
-		System.assertEquals(false, MercuryApiUtilities.checkRecordFromResMap(null, 'account', 'abc'));
-		System.assertEquals(false, MercuryApiUtilities.checkRecordFromResMap(resMap, 'account', 'abCd'));
-		System.assertEquals(false, MercuryApiUtilities.checkRecordFromResMap(resMap, 'account', 'abc'.toUpperCase()));
-	}
-
 	private static testMethod void testHandleGetResponse() {
 		HTTPResponse res = new HTTPResponse();
 		res.setStatusCode(400);
@@ -209,5 +149,30 @@ private class TestMercuryApiUtilities {
 	// 		MercuryApiUtilities.createSecondApplicationInMercury('token', account.id);
 	// 		system.assert(true);
 	// 	}
+
+	private static testMethod void testCreateIncomeAndExpense() {
+		Account acc = TestUtilities.createAccount();
+		acc.mercury_People_ID__c = '9c6f5809-08b1-464a-9cc7-71b31903e0aa';
+		insert acc;
+
+		Income_And_Expense__c iae = TestUtilities.createIncomeAndExpense();
+		iae.account__c = acc.id;
+		iae.amount__c = 1;
+		iae.balance__c = 2;
+		iae.credit_Limit__c = 3;
+		iae.category__c = 'Salary';
+		iae.frequency__c = 'Yearly';
+		iae.recordTypeId = IncomeRecordType.getInstance().id;
+		insert iae;
+
+		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+		mock.setStaticResource('MercuryLoginSuccessResponse');
+		mock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, mock);
+
+		Test.startTest();
+		MercuryApiUtilities.createIncomeAndExpense(iae, acc, 'P200019');
+		Test.stopTest();
+	}
 
 }
