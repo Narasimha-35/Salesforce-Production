@@ -4,9 +4,9 @@
            <div class="row">
             <div class="row-fluid active april_foter_left">
                 <a>
-                   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="logo"/>
+                 <apex:outputpanel rendered="{!pge_name !='acfjumiointegration'}">    <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="logo"/></apex:outputpanel>
                 </a>
-                
+                <apex:outputpanel rendered="{!pge_name =='acfjumiointegration'}">   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/Whitelabel_footerlogo.png')}" alt="click Refi"/> </apex:outputpanel>
                 <p class="mgtop10 col-md-12 col-xs-12 col-sm-12" style="margin-left: -15px;max-width:235px;">
                      Click loans is the easiest way to refinance your home loan online
                 </p>

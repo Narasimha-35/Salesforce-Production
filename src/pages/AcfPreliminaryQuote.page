@@ -2,7 +2,7 @@
 <!-- action="{!redirect}" -->
 <head>
  <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
-<c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
+<!-- <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>  -->
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
@@ -189,7 +189,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                       </script>
                       <div class="form-group">        
                           <div class="col-md-12">
-                            <apex:commandButton action="{!Registration}" styleClass="btn btn-default center-block cstm_btn_input cstm_btn_w180" value="Create Account" status="RegLoadstatus" reRender="mob_verify,mob_email_verify" onComplete="SendSms();"/> 
+                            <apex:commandButton action="{!Registration}" styleClass="btn btn-default center-block cstm_btn_input cstm_btn_w180 gtm-account" value="Create Account" status="RegLoadstatus" reRender="mob_verify,mob_email_verify" onComplete="SendSms();"/> 
                             <apex:actionstatus id="RegLoadstatus" starttext="verifying...">
                                 <apex:facet name="start">
                                     Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      

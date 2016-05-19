@@ -1,0 +1,447 @@
+<apex:page standardStylesheets="false" showHeader="false" applyHTMLTag="false" cache="false" docType="html-5.0" id="pg" sidebar="false"  controller="WLDashboardController" action="{!redirect}">
+<!--  action="{!redirect}"  -->
+<apex:pageMessages />
+  <html>
+<head> 
+<link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<c:ClickMetaHeader ></c:ClickMetaHeader>
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<title>Dashboard</title>
+
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.min.css')}" rel="stylesheet" type="text/css"/> 
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
+
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+
+<apex:includeScript value="{!URLFOR($Resource.acfNewResources,'acfNewResources/js/bootstrap-datepicker.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.acfNewResources,'acfNewResources/js/bootstrap-datepicker.min.js')}"/>  
+
+<script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+
+<!--
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+<style>
+.plcholder_61:before {
+          left:28px;
+          top: 14px;
+          color: #999;
+     }         
+   
+
+body{background-color: #f5f5f5;}
+/*.header{
+z-index:100;
+position:relative;
+} */
+span.sprite_2.accordian_icon, span.sprite_2.cross_icon{top: 135px;right: 15px;}
+.dash_show_more{ cursor:pointer; }
+.messageCell .messageText span{ display:none; }
+.messageCell .messageText{ color: #cc0000; }
+.peple_profile{
+    background-color: #353535;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.peple_profile img{margin-left:-30px;}
+@media(max-width:800px){
+.task_asign_sec ul{
+padding:0px;
+}
+/*.task_asign_sec ul li{
+display:none;
+} 
+.task_asign_sec ul li.text-center{
+display:block!important;
+}*/
+.footer{
+display:none;
+}
+.blog_box,.cstm.panel-default
+{
+    margin-left:15px; 
+    margin-right:15px;
+}
+.cont_cstm_right{
+    padding: 0px!important;
+}
+.peple_profile{
+    background-color: #353535;
+    display: inline-block;
+    width: 100%;
+}
+.graybg{
+    background-color:#424242;
+    display:inline-block;
+    margin:-20px 0px 0px 0px;
+    padding:0px 0px 15px 0px;
+    
+}
+.grayBgColor
+{
+   background-color:#424242;
+}
+.displaynone
+{
+  display:none;
+}
+.displayBlock
+{
+  display:block;
+}
+.responsiveMenuFirst
+{
+}
+.SendresponsiveMenu
+{
+}
+.btn_dash_bookReposive
+{
+}
+.width100
+{
+  width:100%;
+}
+.task_asign_secResponsive{}
+.peple_profile img{margin-left:0px;}
+.peo_prof_caption h4 p, .peo_prof_caption h3{
+     margin:0px;
+}
+.task_asign_sec ul li,
+    .btn_dash_book,
+    .btn_snd_msg{
+    padding:15px 0px;
+}
+}
+
+.modal-content
+{
+    min-height: 0px!important;
+}
+ul.cstm_nav_tabs_orange li.active a,
+ul.cstm_nav_tabs_orange li.active a:hover,
+ul.cstm_nav_tabs_orange li.active a:focus{color:#ffa516!important;}
+
+ul.cstm_nav_tabs_orange li a{
+color:#777777!important;
+text-decoration:none;
+}
+.ask_ques_cstm,
+.ask_ques_cstm_orange{
+text-align:center;
+margin-top:10px;
+color:#888888;
+font-size:14px;
+}
+.ask_ques_cstm_orange a {
+background-color: #f98b02;
+padding: 5px 25px 6px 25px;
+font-weight: bold;
+font-size: 15px;
+border:none;
+}
+
+
+
+.nopdding-top{padding-top:0px;}
+.ask_ques_cstm_orange a:hover,
+.ask_ques_cstm_orange a:focus,
+.ask_ques_cstm_orange a:active{color:#fff!important;}
+.row_mng{margin-left:-10px; margin-right:-10px;}
+
+.btn{background-color: #f98b02;}
+
+.btn:focus,.btn:active,.btn:hover,.btn:visited{background-color:#f98b02;}
+
+</style>
+<c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>  
+</head>
+<c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
+<body id="bd">
+<script>
+$("link.user").each(function(){
+    $(this).attr("disabled", "disabled");
+});
+$( document ).ready(function() {
+    $('.actorentitylink').click(function(ev)
+     {
+       $(this).attr('href','#');
+     });
+     $('.feeditemtimestamp').click(function(ev)
+     {
+       $(this).attr('href','#');
+     });
+     
+     $('.trackedChangeRollover a').click(function(ev)
+     {
+       $(this).attr('href','#');
+     });
+     
+     $('.feeditemtext a').click(function(ev)
+     {
+       $(this).attr('href','#');
+     });
+     
+     $('.chatter-photo').click(function(ev)
+     {
+         $(this).parent().parent().attr('href','#');
+     });
+     $('.feeditemcommentphoto').click(function(ev)
+     {
+         $(this).attr('href','#');
+     });
+      $(".menu_left").click(function()
+      {
+        
+        if($(".dash_right_panel").hasClass("responsiveMenuFirst") == false)
+        {
+          $(".dash_right_panel").addClass("graybg"); 
+          $(".dash_right_panel").addClass("responsiveMenuFirst");
+          $(".dash_right_panel").addClass("displayBlock");
+          $(".dash_right_panel").removeClass("displaynone");
+          $("#left_panel").addClass("displaynone"); 
+          $("#left_panel").removeClass("displayBlock"); 
+          $("#menu_section").addClass("displaynone"); 
+          $("#askQue").addClass("displaynone");
+          $(".uncompleteTask").addClass("displaynone");
+          $(".completeTask").addClass("displaynone");
+          $("#bd").addClass("grayBgColor");  
+        }
+        else 
+        {
+           $(".dash_right_panel").addClass("displaynone");
+           $(".dash_right_panel").removeClass("displayBlock");
+           $("#left_panel").addClass("displayBlock"); 
+           $("#left_panel").removeClass("displaynone");
+           $(".dash_right_panel").removeClass("responsiveMenuFirst");
+           $("#menu_section").addClass("displaynone"); 
+           $("#askQue").removeClass("displaynone");
+           $(".uncompleteTask").removeClass("displaynone");
+           $(".completeTask").removeClass("displaynone");
+           $("#bd").removeClass("grayBgColor");
+           
+           if($(".dash_right_panel").hasClass("SendresponsiveMenu"))
+            { 
+               $('#mortBtnMId').css('display','block');
+               $("#inptMsgboxId").css("display","none");
+               $(".dash_right_panel").removeClass("SendresponsiveMenu");
+               $(".pnlmsg").addClass("displaynone"); 
+               $(".btn_dash_book").addClass("displayBlock"); 
+               $(".btn_dash_book").removeClass("displaynone"); 
+               $(".task_asign_sec").addClass("displayBlock"); 
+               $(".task_asign_sec").removeClass("displaynone");
+            }
+            if($(".dash_right_panel").hasClass("btn_dash_bookReposive"))
+            {
+               $(".dash_right_panel").removeClass("btn_dash_bookReposive");
+               $(".calenderBg").css("display","none");
+               $(".btn_snd_msg").addClass("displayBlock"); 
+               $(".btn_snd_msg").removeClass("displaynone"); 
+               $(".task_asign_sec").addClass("displayBlock"); 
+               $(".task_asign_sec").removeClass("displaynone");
+               $("#mortBtnId").addClass("displayBlock");
+               $("#bkNAPt").addClass("col-xs-offset-1");
+               $("#bkNAPt").addClass("col-xs-10");
+            }
+            if($(".dash_right_panel").hasClass("task_asign_secResponsive"))
+            {
+               $(".dash_right_panel").removeClass("task_asign_secResponsive");
+               $(".pnlmsg").addClass("displaynone"); 
+               $(".btn_dash_book").addClass("displayBlock"); 
+               $(".btn_dash_book").removeClass("displaynone"); 
+               $(".btn_snd_msg").addClass("displayBlock"); 
+               $(".btn_snd_msg").removeClass("displaynone");
+               $("#mortBtnId").addClass("displayBlock");
+               $(".uncompleteTask").addClass("displaynone");
+               $(".uncompleteTask").removeClass("displayBlock");
+               $("#taskdsply").addClass("col-xs-offset-1");
+               $("#taskdsply").addClass("col-xs-10");
+            }           
+             
+        }
+         
+     });
+     $(".btn_snd_msg").click(function()
+     {
+       if($(".dash_right_panel").hasClass("responsiveMenuFirst"))
+       {
+          $(".dash_right_panel").addClass("SendresponsiveMenu"); 
+          $(".btn_dash_book").addClass("displaynone"); 
+          $(".task_asign_sec").addClass("displaynone");   
+       }   
+     }); 
+     $(".btn_dash_book").click(function()
+     {
+       if($(".dash_right_panel").hasClass("responsiveMenuFirst"))
+       {
+           $(".dash_right_panel").addClass("btn_dash_bookReposive"); 
+          $(".btn_snd_msg").addClass("displaynone"); 
+          $(".task_asign_sec").addClass("displaynone"); 
+          $("#bkNAPt").removeClass("col-xs-offset-1");
+          $("#bkNAPt").removeClass("col-xs-10"); 
+          $(".calenderBg").addClass("width100");    
+       }   
+     });
+     $(".task_asign_sec").click(function()
+     {
+       if($(".dash_right_panel").hasClass("responsiveMenuFirst"))
+       {
+          $(".dash_right_panel").addClass("task_asign_secResponsive");     
+          $(".btn_snd_msg").addClass("displaynone"); 
+          $(".btn_dash_book").addClass("displaynone");  
+          $(".uncompleteTask").addClass("displayBlock");
+          $(".uncompleteTask").removeClass("displaynone"); 
+          $(".completeTask").addClass("displayBlock");
+          $(".completeTask").removeClass("displaynone");
+          $("#taskdsply").removeClass("col-xs-offset-1");
+          $("#taskdsply").removeClass("col-xs-10");
+       }   
+     });
+});
+
+</script>
+<apex:form >
+    <!-- Code END for set current tab to maintain after referesh also  -->
+    <apex:actionFunction name="SetAsDefaultTab" action="{!SetCurrentTab}" rerender="pnlDefaultTabIgnore,pnlFeedComponent">
+        <apex:param name="currenttab" value=""/>
+    </apex:actionFunction>
+    <apex:outputPanel id="pnlDefaultTabIgnore"/>
+    <!-- Code END for set current tab to maintain after referesh also  -->
+</apex:form>
+
+<main class="container-fluid" id="mn">
+<div class="header row">
+<c:WLHeader ></c:WLHeader>
+
+</div>
+<div class="clearfix"></div>
+
+<section class="row dashboard">
+<apex:form >
+ <!--Code for reset password popup -->
+    <apex:outputPanel id="chngePasswordPnlId">
+      <div class="modal in" id="regPopId" style="{!if(isPasswordReset == true,'display:none;','display: block;')}" aria-hidden="false">
+        <div class="modal-dialog">
+          <div class="modal-content popup_modalcontent">
+            
+             <c:WLChangePassword />
+           </div>
+         </div> 
+      </div>
+       <div class="modal-backdrop  in" style="{!if(isPasswordReset == true,'display:none;','')}"></div>
+    </apex:outputPanel>
+    <!--Code for reset password popup ends here -->
+ </apex:form>   
+    <div class="container container_cstm cont_cstm_right">
+        <article class="col-md-8 col-xs-12" id="left_panel">
+            <c:WLWelcomeDashboard />
+        <section class="row">
+            <div class="panel with-nav-tabs panel-default cstm panel-default">
+                <div class="panel-heading cstm_panel-heading">
+                
+                  <ul class="nav nav-tabs cstm_nav_tabs_orange custom-file-input_orange">
+                    <li class="{!IF(strActiveTab == 'Loan', 'active', '')}"><a id="aLoanTab" href="#tab1default" data-toggle="tab" onclick="SetAsDefaultTab('Loan');" >Loans</a></li>
+                    <li class="{!IF(strActiveTab == 'Feed', 'active', '')}"><a id="aFeedTab" href="#tab2default" data-toggle="tab" onclick="SetAsDefaultTab('Feed');" >Feed</a></li>
+                    <li class="{!IF(strActiveTab == 'Document', 'active', '')}"><a id="aDocumentTab" href="#tab3default" data-toggle="tab" onclick="SetAsDefaultTab('Document');">Documents</a></li>                  
+                    </ul>
+                </div>
+                
+                <div class="panel-body cstm_panel_body nopdding-top">
+                    <div class="tab-content row_mng">
+                       
+                        <div class="tab-pane fade {!IF(strActiveTab == 'Loan', 'active in', '')}" id="tab1default">
+                            <c:WLLoanDashaboard />
+                        </div><!--first div section close-->                        
+                       
+                        <div class="tab-pane fade {!IF(strActiveTab == 'Feed', 'active in', '')}" id="tab2default">
+                            <apex:outputPanel id="pnlFeedComponent">
+                               <script>
+                                   $( document ).ready(function() {
+                                        $('.actorentitylink').click(function(ev)
+                                         {
+                                           $(this).attr('href','#');
+                                         });
+                                         $('.feeditemtimestamp').click(function(ev)
+                                         {
+                                           $(this).attr('href','#');
+                                         });
+                                         $('.chatter-photo').click(function(ev)
+                                         {
+                                             $(this).parent().parent().attr('href','#');
+                                         });
+                                         $('.feeditemcommentphoto').click(function(ev)
+                                         {
+                                             $(this).attr('href','#');
+                                         });
+                                         
+                                    });
+                                </script>  
+                                <c:ClickFeedDashboard />
+                            </apex:outputPanel>
+                        </div> 
+                      
+                        <div class="tab-pane fade {!IF(strActiveTab == 'Document', 'active in', '')}" id="tab3default">
+                            <c:WLDocumentsDashboardBeta id="CDD"/>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+        </section>                     
+     </article><!--article left close-->
+        <aside class="dash_right_panel col-md-4 col-xs-12">  
+                 <c:WLSendMessageDashboard />
+             <!--    <c:WLBookAppointmentDashboard id="CBook" />  -->
+              <apex:outputPanel id="reqDocPopupId">
+                       <div class="clearfix"></div>
+                       <section class="col-md-12 col-md-offset-0 col-xs-10 col-xs-offset-1">
+                        <div class="row" style="display:block;" >
+                            <a href="#" class=" col-md-12 col-xs-12 btn btn-default btn_dash_book" onclick="ResetReqDocPopup();">Add New Document</a>
+                        </div>
+                       </section>
+                       <c:ClickAddDocument cmpAccId="{!accntid}"/>   
+                 </apex:outputPanel>
+             
+                <apex:outputPanel id="IdTskPannel"> 
+                 <c:WLTaskDashboard />
+               </apex:outputPanel> 
+               <div class="clearfix"></div>
+     <div class="col-md-12 col-xs-12" id="askQue">
+         <div class="row">
+             <p class="ask_ques_cstm">If you have any questions, you can always talk with your mortgage expert</p>
+             <div class=" ask_ques_cstm_orange">
+              <a href="#myModal9" class="btn btn-default" data-toggle="modal" id="usrfeed" onclick="PopupReset();">
+              Ask a Question</a>
+              </div>
+          </div>
+     </div>
+         
+        </aside>
+     <div class="clearfix"></div>
+     <c:ClickPostQuestion ></c:ClickPostQuestion>
+     </div><!--container close-->
+     
+  </section><!--row fluid close-->
+
+<!---Feature section start here-------->
+<footer class="footer row">
+    <c:WLFooter ></c:WLFooter>
+</footer>
+<!---Footer ends here--------------->
+</main><!--main div close-->
+
+</body>
+</html>
+</apex:page>

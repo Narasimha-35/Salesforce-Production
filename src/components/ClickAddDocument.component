@@ -35,10 +35,18 @@ span.lookupInput
  }
  .reqDocBtn {
     font-family: "OpenSans";
-    background-color: #f98b02!important;
+    background-color: #f98b02;
     color: #fff;
     text-decoration: none;
 }
+
+  .reqDocBtnClick {
+    font-family: "OpenSans";
+    background-color: #2a8ecc;
+    color: #fff;
+    text-decoration: none; 
+  }
+  
  .displaynone
  {
      display:none;
@@ -106,8 +114,11 @@ function opnDoc()
                         <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute;margin-left: -34px;"/>                      
                     </apex:facet>
                 </apex:actionStatus>   
-                <apex:commandButton action="{!insertReqDocument}" value="Add Document" styleClass="btn col-md-4 cst_btn_save_2 reqDocBtn" style="width:auto;" reRender="reqFrmId" rendered="{!isDocAdded == false}" status="ReqDocstatusId"/>
-                <apex:commandButton action="{!reqDocCancel}" value="{!if(isDocAdded == false,'Cancel','Close')}" styleClass="btn col-md-5 col-md-offset-1 cst_btn_save_2 reqDocBtn"/>
+                <apex:commandButton action="{!insertReqDocument}" value="Add Document" styleClass="btn col-md-4 cst_btn_save_2 reqDocBtn" style="width:auto;" reRender="reqFrmId" rendered="{!AND(isDocAdded == false,strCommName=false)}" status="ReqDocstatusId"/>
+                <apex:commandButton action="{!insertReqDocument}" value="Add Document" styleClass="btn col-md-4 cst_btn_save_2 reqDocBtnClick" style="width:auto;" reRender="reqFrmId" rendered="{!AND(isDocAdded == false,strCommName=true)}" status="ReqDocstatusId"/>
+               
+                <apex:commandButton action="{!reqDocCancel}" value="{!if(isDocAdded == false,'Cancel','Close')}" styleClass="btn col-md-5 col-md-offset-1 cst_btn_save_2 reqDocBtn" rendered="{!strCommName = false}"/>
+                <apex:commandButton action="{!reqDocCancel}" value="{!if(isDocAdded == false,'Cancel','Close')}" styleClass="btn col-md-5 col-md-offset-1 cst_btn_save_2 reqDocBtnClick" rendered="{!strCommName = true}"/>
             </div> 
         </div> 
        </div>

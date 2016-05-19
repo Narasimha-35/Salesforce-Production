@@ -58,7 +58,7 @@
             <div id="loadingImg" style="visibility: hidden">
                <apex:image url="{!$Resource.LoadingImg}" width="28" height="28"/>
             </div>
-
+            
             <div id="afterPrioritiseMsg" style="visibility: hidden">
                 <p>Batch is runing, system will generate an success email after batch finish, please do not repeat.</p>
             </div>

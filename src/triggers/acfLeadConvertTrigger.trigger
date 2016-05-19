@@ -31,12 +31,15 @@ trigger acfLeadConvertTrigger on Lead (before insert,before update,after update)
         clickLeadNumber = lstLeadInfo[0].click_Recent_Lead_Number__c;
         clickLeadNoCheck = clickLeadNumber;
      }
+     
+     Id ClickLeadRefiRecordTypeId = acfCommon.GetRecordTypeId('Lead','Click Refi');
+     Id ClickLeadNewLoanRecordTypeId = acfCommon.GetRecordTypeId('Lead','Click New Loans');
      for (Lead leadObj: Trigger.new)
      {
          //round robin assignment
          if(trigger.isbefore&&trigger.isinsert)
          {
-           if(leadObj.acfIsCreatedViaRequestCall__c == true || leadObj.acfIs_User_Registered__c == true)
+           if((leadObj.RecordTypeId == ClickLeadRefiRecordTypeId || leadObj.RecordTypeId == ClickLeadNewLoanRecordTypeId)&&(leadObj.acfIsCreatedViaRequestCall__c == true || leadObj.acfIs_User_Registered__c == true))
            {
             leadObj.Click_Lead_Number__c = clickLeadNumber + 1;
             clickLeadNumber = clickLeadNumber+1;

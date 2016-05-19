@@ -2,24 +2,27 @@
     <html>
         <head>
             <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
-            <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
+          <!--  <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>  -->
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1"/>
             <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
             <title>Question Stage1</title>
             <link href="{!URLFOR($Resource.acfResources, 'acfResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
             <link href="{!URLFOR($Resource.datepick)}" rel="stylesheet" />
-            <link href="{!URLFOR($Resource.acfResources, 'acfResources/css/style2.css')}" rel="stylesheet" type="text/css"/>   
+            <link href="{!URLFOR($Resource.acfResources, 'acfResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
+            <link href="{!URLFOR($Resource.bootstrapSlider)}" rel="stylesheet" />
+               
             <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/nav.js')}"></script>
             <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/html5.js')}"></script>
-            <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/jquery.glide.min.js')}"></script>
-            <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/slide.js')}"></script>
-            <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>
+       <!--     <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/jquery.glide.min.js')}"></script> -->
+       <!--     <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/slide.js')}"></script>  -->
+           <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>
             <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
             <apex:includeScript value="{!URLFOR($Resource.DatePickerJS,'JqueryDatePick/jquery.plugin.js')}"/>
             <apex:includeScript value="{!URLFOR($Resource.DatePickerJS,'JqueryDatePick/jquery.datepick.js')}"/>
+            <script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
             <script>
- 
+   
 
   $(function() { 
    $('.popupDatepicker').datepick({
@@ -37,6 +40,7 @@
   function slide()
   {
     //alert($('[id$=ipthdn]').val());
+    displayActiveMasterQues();
     if($('[id$=ipthdn]').val() === 'true')
     {
        $('.slider-arrow--right').trigger('click');
@@ -63,6 +67,7 @@
   function Backslide()
   {
     //alert('TEST'+$('[id$=ipthdndependent]').val());
+    displayActiveMasterQues();
     if($('[id$=ipthdn]').val() === 'true')
     {
         //alert('single');
@@ -142,6 +147,7 @@
   $(document).ready(function ()
   {
     //alert('hello'+($('[id$=iptotalQuesSlide]').val()));
+    $('#item'+$('[id$=idhdnMasterQues]').val()).addClass('active'); 
     for(var i=0;i<($('[id$=iptotalQuesSlide]').val());i++)
     {
        $('.slider-arrow--right').trigger('click');
@@ -215,7 +221,26 @@ function showNewQuesPnl(shwPnlid,HidePnlId)
 
             </script>
             <style>
-.plcholder_61:before {
+        <!-- .slider-form{ display: none; }  -->
+  <!--       
+     .slider .slide-heading{
+    color: #1f8acb;
+    font-size: 1.8em;    
+     }    
+     
+    .slide-heading-econsent{
+    color: #1f8acb;
+    font-size: 27px;
+    font-family: 'open_sanslight';
+}
+
+    .slide-peregraph-econsent{
+        color: #666666;
+    font-size: 17px;
+    line-height: 30px;
+    }
+ -->    
+.plcholder_61:before 
           left:28px;
           top: 14px;
           color: #999;
@@ -723,15 +748,7 @@ top:22px;
 </style>
         </head>
         <body>
-        <!-- Google Tag Manager -->
-<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-N5NLKF"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-N5NLKF');</script>
-<!-- End Google Tag Manager -->
+    
             <c:ClickMobileHeaderMenu ></c:ClickMobileHeaderMenu>
             <main class="container-fluid add-body">
                 <header class="row-fluid">
@@ -915,7 +932,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                               // to geographical location types.
                               autocomplete = new google.maps.places.Autocomplete(
                                   /** @type {HTMLInputElement} */(document.getElementById($('.addresspicker_map').attr('id'))),
-                                  { types: ['geocode'] });
+                                  { types: ['geocode'],  componentRestrictions: {country: "aus"} });
                               // When the user selects an address from the dropdown,
                               // populate the address fields in the form.
                               google.maps.event.addListener(autocomplete, 'place_changed', function() {
@@ -997,22 +1014,35 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                                                             </apex:outputPanel>
                                                             <apex:outputPanel id="optBackbtn">
                                                                 <script>
-                            function test()
-                            {
-                            //alert($('[id$=ipthdn]').val());
-                                if(($('[id$=ipthdn]').val()) == 'slide')
-                                       $('.slider-arrow--right').trigger('click');
-                          
-                            }
+                                                                function displayActiveMasterQues()
+                                                                {
+                                                                  $("#myCarousel").carousel({!MasterQuesNo});
+                                                                                                                                    
+                                                                     for(i=2;i<=$('[id$=ipthdnAppIndex]').val();i++)
+                                                                     {
+                                                                          $('[id$=email'+i+']').css('display','block');
+                                                                          $('[id$=mobile'+i+']').css('display','block');
+                                                                          $('[id$=heading'+i+']').css('display','block');                                                                                                                                            
+                                                                     }
+                                                                }
+                                                                function test()
+                                                                {
+                                                                displayActiveMasterQues();
+                                                                //alert($('[id$=ipthdn]').val());
+                                                                   if(($('[id$=ipthdn]').val()) == 'slide')
+                                                                           $('.slider-arrow--right').trigger('click');
+                                                              
+                                                                }
                           </script>
                                                             </apex:outputPanel>
                                                             <div class="dateInlineClass"></div>
                                                             <div class="dateClass"></div>
-                                                            <div class="slider-form">
-                                                                <ul class="slides-form">
+                                                            <div class="carousel slide" id="myCarousel" data-ride="carousel">
+                                                                <ul class="carousel-inner">
                                                                     <!-- Master Repeat -->
+                                                                    <apex:variable value="{!0}" var="abc" />
                                                                     <apex:repeat value="{!lstMasterWrapperQuestion}" var="ques">
-                                                                        <li class="slide-form">
+                                                                        <li class="item" id="item{!abc}">
                                                                             <apex:outputPanel id="pnlNewNrac">
                                                                                 <h1 class="slide-heading relQues-margin text-center">{!ques.strApplicantNo}</h1>
                                                                                 <h2 class="slide-heading relQues-margin text-center">
@@ -1590,7 +1620,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                                                                                             <h2 class="slide-heading relQues-margin text-center">
                                                                                                 <apex:outputtext value="{!objRelatedQues.objWrapQuestion.acf_Question__c}" escape="false"/>
                                                                                             </h2>
-                                                                                            <p class="slide-peregraph relQues-margin text-center">{!objRelatedQues.objWrapQuestion.acf_Description__c}</p>
+                                                                                            <p class="slide-peregraph-econsent relQues-margin text-center">{!objRelatedQues.objWrapQuestion.acf_Description__c}</p>
                                                                                             <apex:outputPanel id="preloginPicklist" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Picklist',true,false)}">
                                                                                                 <apex:selectList value="{!objRelatedQues.strWrapAnswer}" multiselect="false" size="1" style="font-weight:normal; color: #9e9d9d" styleClass="inputf relQues-margin">
                                                                                                     <apex:selectOption itemValue="NONE" itemLabel="--NONE--"></apex:selectOption>
@@ -1683,6 +1713,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                                                                                 </apex:outputPanel>
                                                                             </apex:outputPanel>
                                                                         </li>
+                                                                        <apex:variable value="{!abc+1}" var="abc"/>
                                                                     </apex:repeat>
                                                                 </ul>
                                                             </div>
@@ -1714,6 +1745,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <!--footer close-->
             </main>
             <!--main div close-->
+            <script>
+            $("#myCarousel").carousel({
+                     interval : false
+                  });
+                  </script>
         </body>
     </html>
 </apex:page>

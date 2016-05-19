@@ -7,55 +7,74 @@
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
 <title>Question Stage1</title>
 <link href="{!URLFOR($Resource.acfResources, 'acfResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
-
+ <link href="{!URLFOR($Resource.bootstrapSlider)}" rel="stylesheet" />
+ 
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/nav.js')}"></script>
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/html5.js')}"></script>
-<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/jquery.glide.min.js')}"></script>
-<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/slide.js')}"></script>
+<!--   <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/jquery.glide.min.js')}"></script>   -->
+<!--   <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/slide.js')}"></script>  -->
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>    
 <script type="text/javascript" src="{!$Resource.TypeheadAutocomplete}" /> 
+<script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
 
 <script>
   function slide()
   {
+//  alert($('[id$=ipthdnIndex]').val());
+     displayActiveMasterQues();
+      console.log('$([id$=ipthdnIndex]).val() ' + $('[id$=ipthdnIndex]').val());
+    if($('[id$=ipthdnIndex]').val() == 0){
+                     //  $('#goBackLinkId').addClass('displaynone');  
+                      $('[id$=goBackLinkId]').css('display','none');
+                  }else{
+                          $('[id$=goBackLinkId]').css('display','inline-block');
+                       }
 
-    if($('[id$=ipthdn]').val() === 'true')
-    {
-             
-       $('.slider-arrow--right').trigger('click');
-      setTimeout(function(){
-      abc();
-      }, 500);
-    }
   }
   
   function Backslide()
-  {
+   {
+     displayActiveMasterQues();
+     console.log('$([id$=ipthdnIndex]).val() ' + $('[id$=ipthdnIndex]').val());
+    if($('[id$=ipthdnIndex]').val() == 0){
+                     //  $('#goBackLinkId').addClass('displaynone');  
+                      $('[id$=goBackLinkId]').css('display','none');
+                  }
+     else {
+         $('[id$=goBackLinkId]').css('display','inline-block');
+     }
 
-    if($('[id$=ipthdn]').val() === 'true')
-    {
-       
-       $('.slider-arrow--left').trigger('click');
-       setTimeout(function(){
-      abc();
-      }, 500);
-
-    }
   }
-
+    function dependentQuesdatepick()
+        {
+            $('.popupDepeDatepicker').datepick({
+           dateFormat: 'dd/mm/yyyy',
+          changeMonth: true,
+          yearRange : '1930:2025',
+          changeYear: true});
+         $('.popupDepeDatepicker').click(function ()
+          {
+            var txtoffset = $('.dateClass').offset(); 
+              //alert('top'+txtoffset.top);
+              //alert('left'+txtoffset.left);
+              //alert('hi');
+              $('.datepick').offset({ top: txtoffset.top+538});
+              $('.datepick').offset({ left: txtoffset.left+110});
+          }); 
+        }
+    
   $(document).ready(function ()
   {
   
 
-    for(var i=0;i<($('[id$=ipthdnIndex]').val());i++)
-    {
-       $('.slider-arrow--right').trigger('click');return false;
-    }   
-    if('{!IsSlideToNextQues}' === 'true')
-    {
-        $('.slider-arrow--right').trigger('click');return false;
-    }
+    $('#item'+$('[id$=ipthdnIndex]').val()).addClass('active'); 
+   
+    $("#myCarousel").carousel({
+                     interval : false
+                  });
+      
+                  
     $('.clsOnlynumeric').keypress(function(e) 
     {
         var keyCode;
@@ -149,7 +168,7 @@
       // to geographical location types.
       autocomplete = new google.maps.places.Autocomplete(
           /** @type {HTMLInputElement} */(document.getElementById($('.addresspicker_map').attr('id'))),
-          { types: ['geocode'] });
+          { types: ['geocode'], componentRestrictions: {country: "aus"} });
       // When the user selects an address from the dropdown,
       // populate the address fields in the form.
       google.maps.event.addListener(autocomplete, 'place_changed', function() {
@@ -615,6 +634,7 @@ left: 73%;
 <div class="col-sm-12 col-sm-offset-0 col-md-8 col-md-offset-2 question-slider" id="IdFakeDiv">
 <apex:outputPanel id="optErrormsg">
 
+<!--
 <script>
     
     window.onload = function(){
@@ -664,20 +684,37 @@ left: 73%;
           }                             
     }
 </script>
-    
 
+    -->
+    
    <!-- <script>setFocusNextQues();</script>-->
    <apex:inputhidden value="{!IsSlide}" id="ipthdn"/>
     <apex:inputhidden value="{!indexNo}" id="ipthdnIndex"/>
     <apex:inputHidden value="{!IsRedirect}" id="ipthdnRedirect"/>
+    
+    <script>
+    function displayActiveMasterQues()
+    {
+      $("#myCarousel").carousel({!indexNo});  
+    }
+    function test()
+    {
+        displayActiveMasterQues();
+    }
+</script>
+    
+
    <apex:outputPanel rendered="{!if(strmsg != null && strmsg != '', true,false)}" style="color:red;margin-top:20px;text-align:center;"><p>{!strmsg}</p></apex:outputPanel>
 </apex:outputPanel>  
  
-     <div class="slider-form">
-        <ul class="slides-form">
+     <div class="carousel slide" id="myCarousel" data-ride="carousel">
+        <ul class="carousel-inner">
           <!-- Master Repeat -->
-             <apex:repeat value="{!lstWrapperQuestion}" var="ques" id="rptId">      
-                 <li class="slide-form">                                                   
+             <apex:variable value="{!0}" var="abc" />
+             <apex:repeat value="{!lstWrapperQuestion}" var="ques">      
+             
+                 <li class="item" style="text-align:center;" id="item{!abc}">               
+                 
                      <h2 class="slide-heading relQues-margin" style="text-align:center;"><apex:outputtext value="{!ques.objWrapQuestion.acf_Question__c}" escape="false"/></h2>
                      <p class="slide-peregraph relQues-margin" style="text-align:center;margin-bottom: 15px;">{!ques.objWrapQuestion.acf_Description__c}</p>
                      <!--<apex:param name="bubble" value="{!ques.objWrapQuestion.acfBubble_Text__c}" assignTo="{!strBubbleText}"/>-->
@@ -858,7 +895,7 @@ left: 73%;
                            
                            <apex:outputPanel rendered="{!if(ques.objWrapQuestion.acf_Current_lender__c == false,true,false)}">        
                               <div class="col-md-12 col-xs-12 text-center post_log_goback"> 
-                                <apex:commandLink action="{!previousQuestion}" value="Go back" reRender="optStages,optErrormsg,optStagesText" status="counterStatusimg" oncomplete="Backslide();"/>
+                                <apex:commandLink action="{!previousQuestion}" value="Go back" reRender="optStages,optErrormsg,optStagesText" status="counterStatusimg" oncomplete="Backslide();" id="goBackLinkId"/>
                                 <apex:actionstatus id="counterStatusimg" starttext="verifying">
                                      <apex:facet name="start">
                                          <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>                      
@@ -874,6 +911,7 @@ left: 73%;
                        </div>
                     </apex:outputPanel> 
                  </li>
+               <apex:variable value="{!abc+1}" var="abc"/> 
              </apex:repeat>
             <!-- <apex:actionFunction name="btnGoBackQues" action="{!previousQuestion}" reRender="optStages,optErrormsg,optStagesText" status="counterStatus" oncomplete="Backslide();">               
             </apex:actionFunction>-->

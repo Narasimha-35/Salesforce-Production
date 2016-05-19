@@ -1,7 +1,6 @@
 <apex:page controller="WLId_VerifyController" docType="html-5.0" cache="false"  sidebar="false" showHeader="false" applyHtmlTag="false" id="pgId" action="{!redirect}" standardStylesheets="false" >
   <head>
    <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
-  <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
@@ -12,6 +11,7 @@
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
 
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
 
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
@@ -62,19 +62,20 @@ line-height:30px;
 color:#999999;
 } 
 
+.top-tab ul li a.sign_in {
+    border-radius: 5px;
+    border: 1px #f98b02 solid;
+    display: inline-block!important;
+    padding: 5px 15px 5px 20px;
+    line-height: normal;
+  }  
+ .progress-bar {background-color: #f98b02;}
+
 </style>
 </head>
 <c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
 <body id="bd">
-<!-- Google Tag Manager -->
-<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-N5NLKF"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-N5NLKF');</script>
-<!-- End Google Tag Manager -->
+
 <main class="container-fluid" id="mn">
 <div class="header row">
  <c:WLHeader ></c:WLHeader>
@@ -99,10 +100,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                             <div class="clearfix"></div>
                             <apex:form >
                                 <div class="col-md-6 col-xs-12 col-sm-12">
-                                    <apex:commandButton action="{!redirectToNextPage}" value="Skip" styleClass="btn-virifie btn-light_blue"/> 
+                                    <apex:commandButton action="{!redirectToNextPage}" value="Skip" styleClass="btn-virifie btn-light_blue btn-virifie_orange"/> 
                                 </div>
                                 <div class="col-md-6 col-xs-12 col-sm-12">
-                                    <apex:commandButton action="{!redirectToJumio}" value="Continue" styleClass="btn-virifie"/> 
+                                    <apex:commandButton action="{!redirectToJumio}" value="Continue" styleClass="btn-virifie btn-virifie_orange"/> 
                                 </div> 
                             </apex:form>          
                         </div><!--colxs-8 close-->        

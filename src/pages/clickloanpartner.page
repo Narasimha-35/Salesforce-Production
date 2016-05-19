@@ -613,7 +613,7 @@ float:left;
   <apex:form >
     
     <div class="modal fade" id="Modalquestion" role="dialog">
-    <div class="modal-dialog modal-lg" style="height:550px;overflow-y:scroll">
+    <div class="modal-dialog modal-lg" style="height:550px;overflow-y:auto">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -650,39 +650,39 @@ float:left;
                       </th><td><apex:outputField value="{!lstLeadpreques[0].acfLast_2_years_Tax_Return_or_ATO_NOA__c}"/></td></tr>
                   </apex:outputPanel>
                   
+                  <apex:outputPanel layout="none" rendered="{!if(lstapplicant!=null,true,false)}">
                   <tr><td><b><u>Postlogin Questions and Answer</u></b></td></tr>
                   <tr><td height="15" colsan="2"></td></tr>
-                  <tr><td><b><u>First applicant</u></b></td></tr>
+                  
+                  <apex:repeat value="{!lstapplicant}" var="applst" rendered="{!if(lstapplicant!=null,true,false)}">
+                  <apex:variable var="counting" value="{!1}"/> 
+                  <tr><td><b><u>Applicant&nbsp;{!applst.click_Applicant_Number__c} Details</u></b></td></tr>
                   <tr><td height="15" colsan="2"></td></tr>
-                  <tr><th>Applicant1 name</th><td><apex:outputField value="{!accpostloginques[0].name}"/></td><th>Email</th><td><apex:outputField value="{!accpostloginques[0].PersonEmail}"/></td></tr>
-                  <tr><th>Phone number</th><td><apex:outputField value="{!accpostloginques[0].Phone}"/></td><th>Mobile number</th><td><apex:outputField value="{!accpostloginques[0].PersonMobilePhone}"/></td></tr>
-                  <tr><th>Are there any more properties?</th><td><apex:outputField value="{!accpostloginques[0].Acf_Are_there_any_more_properties__pc}"/></td><th>What is the address?</th><td><apex:outputField value="{!accpostloginques[0].acfWhat_is_your_postcode__pc}"/></td></tr>
-                  <tr><th>Number Of Applicants</th><td><apex:outputField value="{!accpostloginques[0].acfNumber_Of_Applicants__pc}"/></td><th>App 1 Monthly Expenses</th><td><apex:outputField value="{!accpostloginques[0].clickApp_1_Monthly_Expenses__pc}"/></td></tr>
-                  <tr><th>DOB</th><td><apex:outputField value="{!accpostloginques[0].acf_applicant_DOB__pc}"/></td><th>Marital Status</th><td><apex:outputField value="{!accpostloginques[0].acf_applicant_Marital_Status__pc}"/></td></tr>
-                  <tr><th>Dependants</th><td><apex:outputField value="{!accpostloginques[0].acf_Applicant_Dependants__pc}"/></td><th>Dependant1 Age</th><td><apex:outputField value="{!accpostloginques[0].acfDependant1_Age__pc}"/></td></tr>
-                  <tr><th>Dependant2 Age</th><td><apex:outputField value="{!accpostloginques[0].acfDependant2_Age__pc}"/></td><th>Dependant3 Age</th><td><apex:outputField value="{!accpostloginques[0].acfDependant3_Age__pc}"/></td></tr>
-                  <tr><th>Dependant4 Age</th><td><apex:outputField value="{!accpostloginques[0].acfDependant4_Age__pc}"/></td><th>Dependant5 Age</th><td><apex:outputField value="{!accpostloginques[0].acfDependant5_Age__pc}"/></td></tr>
-                  <tr><th>Residency status</th><td><apex:outputField value="{!accpostloginques[0].acf_applicant_Residency_status__pc}"/></td><th>Annual Salary</th><td><apex:outputField value="{!accpostloginques[0].acf_applicant_Monthlly_Salary__pc}"/></td></tr>
-                  <tr><th>Employer Name</th><td><apex:outputField value="{!accpostloginques[0].acf_applicant_Employer_Name__pc}"/></td><th>Current Role</th><td><apex:outputField value="{!accpostloginques[0].Current_Role__pc}"/></td></tr>
-                  <tr><th>How Long have you been employed</th><td><apex:outputField value="{!accpostloginques[0].acf_How_Long_have_you_been_employed__pc}"/></td><th>Business Name</th><td><apex:outputField value="{!accpostloginques[0].acfBusiness_Name_or_ABN_autofill__pc}"/></td></tr>
-                  <tr><th>How Long</th><td><apex:outputField value="{!accpostloginques[0].acf_How_Long__pc}"/></td><th>Annual profit / income</th><td><apex:outputField value="{!accpostloginques[0].acfAnnual_profit_income__pc}"/></td></tr>
-                  <tr><th>acfEconsent</th><td><apex:outputField value="{!accpostloginques[0].acfEconsent__pc}"/></td></tr>
+                  <tr><th>Account Name</th><td><apex:outputField value="{!applst.click_Account__r.name}"/></td><th>Applicant Name</th><td><apex:outputField value="{!applst.acf_Applicant_Name__c}"/></td></tr>
+                  <tr><th>Applicant Number</th><td><apex:outputField value="{!applst.click_Applicant_Number__c}"/></td><th>DOB</th><td><apex:outputField value="{!applst.acf_applicant_DOB__c}"/></td></tr>
+                  <tr><th>Employment Type </th><td><apex:outputField value="{!applst.acfEmployment_Type__c}"/></td><th>Marital Status</th><td><apex:outputField value="{!applst.acf_applicant_Marital_Status__c}"/></td></tr>
+                  <tr><th>Last 2 years Tax Return or ATO NOA</th><td><apex:outputField value="{!applst.acfLast_2_years_Tax_Return_or_ATO_NOA__c}"/></td><th>Monthly Expenses</th><td><apex:outputField value="{!applst.clickApp_1_Monthly_Expenses__c}"/></td></tr>
+                  <tr><th>Married To</th><td><apex:outputField value="{!applst.clickMarried_To__r.name}"/></td><th>Previous Employer Start Date12</th><td><apex:outputField value="{!applst.ACF1_Previous_Em_Start_Date12__c}"/></td></tr>
+                  <tr><th>Dependants</th><td><apex:outputField value="{!applst.acf_applicant_Dependants__c}"/></td><th>Dependant1 Age</th><td><apex:outputField value="{!applst.acfDependant1_Age__c}"/></td></tr>
+                  <tr><th>Dependant2 Age</th><td><apex:outputField value="{!applst.acfDependant2_Age__c}"/></td><th>Dependant3 Age</th><td><apex:outputField value="{!applst.acfDependant3_Age__c}"/></td></tr>
+                  <tr><th>Dependant4 Age</th><td><apex:outputField value="{!applst.acfDependant4_Age__c}"/></td><th>Dependant5 Age</th><td><apex:outputField value="{!applst.acfDependant5_Age__c}"/></td></tr>
+                  <tr><th>Opportunity name</th><td><apex:outputField value="{!applst.clickOpportunity__r.name}"/></td><th>Econsent</th><td><apex:outputField value="{!applst.acfEconsent__c}"/></td></tr>
+                  <tr><th>Applicant Email</th><td><apex:outputField value="{!applst.Applicant_Email__c}"/></td><th>Applicant Phone</th><td><apex:outputField value="{!applst.Applicant_Phone__c}"/></td></tr>
+                  <tr><th>Residency status</th><td><apex:outputField value="{!applst.acf_applicant_Residency_status__c}"/></td><th>Annual Salary</th><td><apex:outputField value="{!applst.acf_applicant_Monthlly_Salary__c}"/></td></tr>
+                  <tr><th>Employer Name</th><td><apex:outputField value="{!applst.acf_applicant_Employer_Name__c}"/></td><th>Current Role</th><td><apex:outputField value="{!applst.Current_Role__c}"/></td></tr>
+                  <tr><th>How Long have you been employe</th><td><apex:outputField value="{!applst.acf_How_Long_have_you_been_employed__c}"/></td><th>Applicant ACf1 Current employer Start Date</th><td><apex:outputField value="{!applst.acf_ACf1_Current_employer_Start_Da__c}"/></td></tr>
+                  <tr><th>Business Name</th><td><apex:outputField value="{!applst.acfBusiness_Name_or_ABN_autofill__c}"/></td><th>How Long</th><td><apex:outputField value="{!applst.acf_How_Long__c}"/></td></tr>
+                  <tr><th>Annual profit / income</th><td><apex:outputField value="{!applst.acf_applicant_Annual_profit_income__c}"/></td><th>App 1 Monthly Expenses</th><td><apex:outputField value="{!applst.acf_applicant_App_1_Monthly_Expenses__c}"/></td></tr>
+                  <tr><th>Previous Employer</th><td><apex:outputField value="{!applst.ACF1_Previous_Employer_Name12__c}"/></td><th>Current Employer start date</th><td><apex:outputField value="{!applst.ACf1_Current_employer_Start_Date__c}"/></td></tr>
+                  
+                  <tr><th>Previous Employer Start Date24</th><td><apex:outputField value="{!applst.ACF1_Previous_Em_Start_Date24__c}"/></td><th>Who was your previous employer?</th><td><apex:outputField value="{!applst.ACF1_Previous_Employer_Name0__c}"/></td></tr>
+                  <tr><th>Who was your previous employer?</th><td><apex:outputField value="{!applst.ACF1_Previous_Employer_Name24__c}"/></td><th>Annual Profit Income</th><td><apex:outputField value="{!applst.acfAnnual_profit_income__c}"/></td></tr>
+                  <tr><th>Previous Employer Start Date0</th><td><apex:outputField value="{!applst.ACF1_Previous_Em_Start_Date0__c}"/></td></tr> 
+                  <tr></tr>
                   <tr><td height="15" colsan="2"></td></tr>
-                  <apex:outputPanel layout="none" rendered="{!if(accpostloginques[0].acfNumber_Of_Applicants__pc=='2',true,false)}">
-                  <tr><td><b><u>Second applicant</u></b></td></tr>
-                  <tr><td height="15" colsan="2"></td></tr>
-                  <tr><th>Applicant2 Name</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Name__pc}"/></td><th>DOB</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_DOB__pc}"/></td></tr>
-                  <tr><th>Applicant2 Email</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_email__pc}"/></td><th>Applicant2 Phone number</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_phone__pc}"/></td></tr>
-                  <tr><th>Applicant2 Marital Status</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Marital_Status__pc}"/></td><th>App 1 Monthly Expenses</th><td><apex:outputField value="{!accpostloginques[0].clickApp_2_Monthly_Expenses__pc}"/></td></tr>
-                  <tr><th>Applicant2 Dependents</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Dependents__pc}"/></td><th>Applicant2 dependent1 Age</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_dependent1_Age__pc}"/></td></tr>
-                  <tr><th>Applicant2 Dependant2 Age</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_dependent2_Age__pc}"/></td><th>Applicant2 Dependant3 Age</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_dependent3_Age__pc}"/></td></tr>
-                  <tr><th>Applicant2 Dependant4 Age</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_dependent4_Age__pc}"/></td><th>Applicant2 Dependant5 Age</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_dependent5_Age__pc}"/></td></tr>
-                  <tr><th>Applicant2 Residency status</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Residency_status__pc}"/></td><th>Applicant2 Annual Salary</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Monthly_Salary__pc}"/></td></tr>
-                  <tr><th>Applicant2 Employer Name</th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Employer_Name__pc}"/></td><th>Current Role App 2</th><td><apex:outputField value="{!accpostloginques[0].clickCurrent_Role_App_2__pc}"/></td></tr>
-                  <tr><th>App2 How Long have you been employed </th><td><apex:outputField value="{!accpostloginques[0].acfApp2_How_Long_have_you_been_employed__pc}"/></td><th>App2 Business Name</th><td><apex:outputField value="{!accpostloginques[0].acfApp2_Business_Name_or_ABN_autofill__pc}"/></td></tr>
-                  <tr><th>Applicant2 Annual profit / income </th><td><apex:outputField value="{!accpostloginques[0].acfApplicant2_Annual_profit_income__pc}"/></td><th>acfEconsent_App2</th><td><apex:outputField value="{!accpostloginques[0].acfEconsent_App2__pc}"/></td></tr>
+                  <apex:variable value="{!counting+1}" var="counting"/>
+                  </apex:repeat>
                   </apex:outputPanel>
- 
                   
                   </table> 
                   </div>

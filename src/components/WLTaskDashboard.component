@@ -9,6 +9,15 @@
         {
             cursor:pointer;
         }
+
+   
+.task_asign_sec ul li a span.task_check_orange:before{
+    background-image:url(../images/sprite_client_orange.png);
+}
+.task_asign_sec ul li a span.task_uncheck:before{
+background-position:-180px -64px;   
+}
+              
     </style>
     
     <div class="clearfix"></div>
@@ -18,7 +27,7 @@
                <apex:repeat value="{!tsk_obj}" var="tsk">
                     
                     <apex:outputPanel rendered="{!tsk.Status == 'Completed'}">
-                       <li class="completeTask"><a><span class="task_check"></span>{!tsk.subject}</a></li>
+                       <li class="completeTask"><a><span class="task_check_orange "></span>{!tsk.subject}</a></li>
                     </apex:outputPanel>
                     
                     <apex:outputPanel rendered="{!tsk.Status != 'Completed'}">

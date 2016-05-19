@@ -3,10 +3,17 @@
 .frequently-ask{
 display:none;
 }
+
+.quote_footer_orange {
+    background-color: #f98b02!important;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 20px 0px 15px 0px;
+}
 </style>
   <aside class="col-md-4 col-sm-12">
                <div class="mg_move15">
-                <section class="postlog_quote">
+                <section class="postlog_quote ">
                     <header class="quote_headaer col-md-12">
                         <h3 class="h3">Quote Details</h3>
                     </header>
@@ -14,7 +21,7 @@ display:none;
                     <article class="col-md-12 quote_cont">
                         <section class="progress cst_progress">
                           <apex:outputPanel id="progressBarPnlId">
-                            <div class="progress-bar" style="width: {!intWidth}%;" id="QuoteBarId">
+                            <div class="progress-bar progress-bar_orange" style="width: {!intWidth}%;" id="QuoteBarId">
                             </div>
                           </apex:outputPanel>
                         </section>
@@ -70,7 +77,7 @@ display:none;
                  </article>                    
              </section>
             
-             <footer class="quote_footer col-md-12">
+             <footer class="quote_footer col-md-12 quote_footer_orange ">
                <h4 class="h4">
                
                <apex:outputPanel rendered="{!pge_name != 'acfpostloginquestionnaires'}">

@@ -6,8 +6,8 @@
 .modal-content      
       {
         min-height: 300px;
-        padding-right: 20px;
-      }
+     //   padding-right: 20px;
+      } 
       .modal-content.modal-content2{
       padding-right:0px;
       }

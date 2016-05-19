@@ -1,4 +1,4 @@
-<apex:component controller="acfContactUsController" allowDML="true">
+<apex:component controller="WLContactUsController" allowDML="true">
 <style>
 .plcholder_61 input {
    padding-left: 40px!important;

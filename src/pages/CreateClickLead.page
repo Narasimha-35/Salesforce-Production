@@ -60,7 +60,7 @@
             <apex:outputtext value="{!ques.objWrapQuestion.acf_Question__c}"/>  
            <apex:outputPanel id="preloginPicklist" rendered="{!if(OR(ques.objWrapQuestion.acf_Type__c == 'Picklist',ques.objWrapQuestion.acf_Type__c == 'RadioButton',ques.objWrapQuestion.acf_Type__c == 'Checkbox',ques.objWrapQuestion.acf_Type__c == 'Button'),true,false)}">                               
                       <apex:selectList value="{!ques.strWrapAnswer}" multiselect="false" size="1"> 
-                            <apex:selectOption itemValue="NONE" itemLabel="--NONE--"></apex:selectOption>                                             
+                            <apex:selectOption itemValue="None" itemLabel="--None--"></apex:selectOption>                                             
                             <apex:selectOptions value="{!ques.lstSelectOpt}"></apex:selectOptions>
                       </apex:selectList>          
            </apex:outputPanel> 

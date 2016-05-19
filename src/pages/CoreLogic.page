@@ -1,0 +1,33 @@
+<apex:page controller="CallCoreApi">
+<apex:form >
+<apex:pageBlock id="pg" title="Please Enter Address" >
+<apex:pageBlockSection columns="1" >
+    <apex:inputText value="{!tempAddress }" />
+</apex:pageBlockSection>
+<apex:commandButton value="Get Property ID"  action="{!getPropertyId}" reRender="pg" />
+<apex:outputText id="ot" >{!Propertid }</apex:outputText>
+</apex:pageBlock> 
+
+<apex:pageBlock id="pg2" title="Enter Property ID ">
+   <apex:inputText value="{!propertyval}"/>
+    
+    <apex:commandButton action="{!getPropertyAVM}"  value="AVM" reRender="pg2"/>
+
+
+        <apex:outputPanel rendered="{!showavm}">
+          <br/>
+       <h1> faresFSDScore---</h1><apex:outputText >{!temp.faresFSDScore}</apex:outputText>
+        <br/>
+       <h1> faresScore--- </h1><apex:outputText >{!temp.faresScore}</apex:outputText>
+        <br/>
+       <h1> faresFSDScore---</h1><apex:outputText >{!temp.faresFSDScore}</apex:outputText>
+        <br/>
+        <h1>faresValueEstimate---</h1><apex:outputText >{!temp.faresValueEstimate}</apex:outputText>
+        <br/>
+        <h1>faresValueHigh---</h1><apex:outputText >{!temp.faresValueHigh}</apex:outputText>
+        <br/>
+         faresValueLow--- <apex:outputText >{!temp.faresValueLow}</apex:outputText>
+        </apex:outputPanel>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

@@ -1,6 +1,6 @@
 <apex:page controller="WLJumioIntegration" docType="html-5.0" cache="false"  sidebar="false" showHeader="false" action="{!CallToJumio}" standardStylesheets="false" >
   <head>
-  <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
+  <c:ClickWebsiteOptimizer rendered="{!if(isOppExist == false,true,false)}"></c:ClickWebsiteOptimizer>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <c:ClickMetaHeader ></c:ClickMetaHeader>
@@ -179,48 +179,66 @@ ul.bank-list_2 li:hover{
 background-color:#eee;
 }
 .mg_move15{margin-left:5px;}
+#JUMIOIFRAME-iframe
+{
+    width:100%!important;
+}
 </style>
 
 </head>
 <c:ClickMobileHeaderMenu ></c:ClickMobileHeaderMenu>
 <body id="bd">
 <main class="container-fluid" id="mn">
-<div class="header row">
- <c:ClickHeader ></c:ClickHeader>
-</div>
+    <apex:outputPanel rendered="{!if(isOppExist == false,true,false)}">
+        <div class="header row">
+         <c:ClickHeader ></c:ClickHeader>
+        </div>
+    </apex:outputPanel>
 <div class="clearfix"></div>
 
 <section class="row">
     <div class="container container_cstm">
         
-        <section class="post_login">
+        <section class="{!if(isOppExist == false,'post_login','')}">
         
-          <article class="col-md-8 post_log_back" style="height:572px;">
+          <article class="col-md-8 post_log_back" style="height:572px;{!if(isOppExist == true,'display:block!important','')}">
                       <section class="row-fluid slider id-slider">
-                                            
+                       <script type="text/javascript" src="https://netverify.com/widget/jumio-verify/2.0/iframe-script.js"> 
+                       </script>   
+                        <script type="text/javascript">
+                            /*<![CDATA[*/
+                            JumioClient.setVars({
+                            authorizationToken: "{!strIframeURL}"
+                            }).initVerify("JUMIOIFRAME");
+                            /*]]>*/
+                        </script>               
                                    <apex:form id="Frm"> 
-                                    <div style="float: right;margin-right: 25px;"><u><apex:commandLink action="{!redirectToNextPage}" value="Skip" style="color: #1f8bcc;"/></u></div>
-                                    <div style="float: right;margin-right: 25px;"><u><a href="/clickjumiointegration" style="color: #1f8bcc;">Reset</a></u></div>
-                                        <apex:iframe src="{!strIframeURL}"/>
+                                    <apex:outputPanel rendered="{!if(isOppExist == false,true,false)}">
+                                        <div style="float: right;margin-right: 25px;"><u><apex:commandLink action="{!redirectToNextPage}" value="Skip" style="color: #1f8bcc;"/></u></div>
+                                        <div style="float: right;margin-right: 25px;"><u><a href="/clickjumiointegration" style="color: #1f8bcc;">Reset</a></u></div>
+                                     </apex:outputPanel>   
+                                       <!--<apex:iframe src="{!strIframeURL}"/>-->
+                                         <div id="JUMIOIFRAME"></div> 
                                     </apex:form>    
                                 <!--colxs-8 close-->        
                           
                      </section>
                 
                   </article> <!--left panel close here-->
-                  
-                  <c:ClickQuoteDetail > </c:ClickQuoteDetail>
-            
+                  <apex:outputPanel rendered="{!if(isOppExist == false,true,false)}">
+                      <c:ClickQuoteDetail > </c:ClickQuoteDetail>
+                  </apex:outputPanel>
         </section>
         
   </div><!--container close-->
 </section><!--row fluid close-->
 
-
+<apex:outputPanel rendered="{!if(isOppExist == false,true,false)}">
 <!---Feature section start here-------->
 <footer class="footer april_footer row">
     <c:acfFooter ></c:acfFooter>
 </footer>
+</apex:outputPanel>
 <!---Footer ends here--------------->
 </main>
 </body>

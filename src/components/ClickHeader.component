@@ -284,7 +284,7 @@
                         </div>
                        <div class="form-group n_mgn"  style="margin:0px;">        
                           <div class="col-md-12 col-xs-12">
-                             <a href="https://www.access-online.com.au/clickloans-home" class="btn btn-default center-block cusstmBtn100p cstm_btn_input" target="_blank">Login with 8 Digit Access Code</a>
+                            <a href="https://www.access-online.com.au/clickloans-online" class="btn btn-default center-block cusstmBtn100p cstm_btn_input" target="_blank">Login with 8 Digit Access Code</a>
                              <!--<apex:commandButton action="{!memberLogin}" styleClass="btn btn-default center-block cusstmBtn100p cstm_btn_input" value="Login with 8 Digit Access Code" reRender="optErrors" status="Loadstatus" onclick="setTimeZoneId();"/>  
                              <apex:actionstatus starttext="verifying">
                               <apex:facet name="start">
@@ -321,7 +321,8 @@
                    <apex:outputpanel rendered="{!isLoggedIn == true}"> 
                     <a href="/clickdashboard">
                      <apex:outputpanel rendered="{!pge_name == 'clickhome'}">  <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/logo_landing.png')}" alt="click Refi"/></apex:outputpanel>
-                     <apex:outputpanel rendered="{!pge_name != 'clickhome'}">   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="click Refi"/> </apex:outputpanel>
+                     <apex:outputpanel rendered="{!pge_name != 'clickhome' && pge_name !='acfjumiointegration'}">   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="click Refi"/> </apex:outputpanel>
+                      <apex:outputpanel rendered="{!pge_name =='acfjumiointegration'}">   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/Whitelabel_headerlogo.png')}" alt="click Refi"/> </apex:outputpanel>
                     </a>
                    </apex:outputpanel>
                 </div>

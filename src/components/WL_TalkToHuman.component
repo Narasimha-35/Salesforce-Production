@@ -88,7 +88,7 @@
              <section class="col-md-8 col-md-offset-3 col-sm-12 col-sm-offset-0 col-sm-custom" id="secTalkToHuman">
                  <article class="row-fluid talk_sapce">
                      <div class="col-md-5 talk_humn_list">Call Us</div>
-                        <div class="col-md-6 talk_humn_img"><a href="#" style="text-decoration:none;">{!$Label.acfCustomer_Support_Contact_No}</a></div>
+                        <div class="col-md-6 talk_humn_img"><a href="#" style="text-decoration:none;">{!$Label.Customer_Support_Contact_Number_ACF}</a></div>
                     </article>
                  <article class="row-fluid talk_sapce">
                      <div class="col-md-5 talk_humn_list">Request a call</div>

@@ -2,21 +2,30 @@
 <html>
 <head>
  <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
-<c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
+<!--<c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer> -->
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
 <title>Question Stage1</title>
 <link href="{!URLFOR($Resource.acfResources, 'acfResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
-<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/> 
+<link href="{!URLFOR($Resource.bootstrapSlider)}" rel="stylesheet" />
+
+<script type="text/javascript" src="{!$Resource.TypeheadAutocomplete}" /> 
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/nav.js')}"></script>
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/html5.js')}"></script>
-<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/jquery.glide.min.js')}"></script>
-<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/slide.js')}"></script>
-<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
-<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>    
-<script type="text/javascript" src="{!$Resource.TypeheadAutocomplete}" /> 
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/jquery.glide.min.js')}"></script> 
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/slide.js')}"></script> 
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
+ <script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+
 <script>
+$(document).ready(function () {
+  setTimeout(function () {
+    $('.slider-form').show();
+  }, 0);
+});
   function slide()
   {
     if($('[id$=ipthdn]').val() === 'true') 
@@ -85,6 +94,19 @@
               {escape: true}
         );
 
+    }
+    
+    function isNumberKey(evt, obj) {
+ 
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            var value = obj.value;
+            var dotcontains = value.indexOf(".") != -1;
+            if (dotcontains)
+                if (charCode == 46) return false;
+            if (charCode == 46) return true;
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
     } 
     
     function BindBankList(arrBankList)
@@ -110,9 +132,10 @@
         });
     }     
 </script>
-
+<script data-cfasync="false" src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
 <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"/>
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+  
+
 
 <script type="text/javascript">
     // This example displays an address form, using the autocomplete feature
@@ -133,7 +156,7 @@
       // to geographical location types.
       autocomplete = new google.maps.places.Autocomplete(
           /** @type {HTMLInputElement} */(document.getElementById($('.addresspicker_map').attr('id'))),
-          { types: ['geocode'] });
+          { types: ['geocode'], componentRestrictions: {country: "aus"} });
       // When the user selects an address from the dropdown,
       // populate the address fields in the form.
       google.maps.event.addListener(autocomplete, 'place_changed', function() {
@@ -193,6 +216,8 @@
 </script>
 
 <style>
+.slider-form { display: none; }
+.header .logo img { max-width: 220px; width: 100% !important; height: 100% !important; min-width: 130px; }
 img.mfes-trustmark-hover{display:inline-block; margin-top:20px;}
 .plcholder_61:before {
           left:28px;
@@ -263,7 +288,8 @@ margin-bottom:100px!important;
         position: absolute;
         color: #1F8BCC;
     }
-    .input-box.inputf + ul.bank-list li:before{
+    
+     li:before{
         background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
     }
     .input-box.inputf + ul.bank-list{
@@ -570,7 +596,7 @@ and (orientation : portrait)
 }
 
 @media only screen and (min-width :1024px)and (orientation : landscape)  {
-  .input-box.inputf + ul.bank-list { margin-left:123px;}
+  .input-box.inputf + ul.bank-list { margin-left:135px;}
 
 }
 
@@ -579,6 +605,7 @@ and (orientation : portrait)
 </head>
 
 <body>
+{!strMessages}
 <!-- Google Tag Manager -->
 <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-N5NLKF"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -587,8 +614,7 @@ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-N5NLKF');</script>
-<!-- End Google Tag Manager -->
-{!strMessages}
+<!-- End Google Tag Manager --> 
 <c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
 <main class="container-fluid add-body">
 
@@ -662,7 +688,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                        <apex:outputPanel id="preloginpercent" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Percent',ques.objWrapQuestion.acf_Current_lender__c == false),true,false)}">          
                            <div class="preloginpercent">
                                <i class="percent_icon"></i>
-                               <apex:inputtext styleclass="clsOnlynumeric inputf input_w100 percent_input input_wpercent input-marginleft_w50 drop_input_custom_30" value="{!ques.strWrapAnswer}"  onBlur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}"/>
+                               <apex:input id="textId2" type="{!if(ques.objWrapQuestion.acf_Type__c == 'Percent','tel','text')}"  styleclass="inputf input_w100 percent_input input_wpercent input-marginleft_w50 drop_input_custom_30" value="{!ques.strWrapAnswer}"  onBlur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}" onkeypress="return isNumberKey(event,this)"/>
+                               <!--<apex:inputtext styleclass="clsOnlynumeric inputf input_w100 percent_input input_wpercent input-marginleft_w50 drop_input_custom_30" value="{!ques.strWrapAnswer}"  onBlur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}"/>-->
                            </div>                                   
                        </apex:outputPanel>
                        <apex:outputPanel id="preloginTextCurrnetLender" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Current_lender__c == true),true,false)}">                                       
@@ -756,7 +783,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                                <apex:outputPanel id="preloginpercent" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Percent',true,false)}">
                                   <div class="preloginpercent">
                                    <i class="percent_icon"></i>
-                                   <apex:inputtext styleclass="clsOnlynumeric inputf input_w100 percent_input input_wpercent relQues-margin drop_input_custom_30" value="{!objRelatedQues.strWrapAnswer}"  onBlur="if (this.placeholder == '') {this.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>
+                                   <apex:input id="textId1" type="{!if(ques.objWrapQuestion.acf_Type__c == 'Percent','tel','text')}"  styleclass="inputf input_w100 percent_input input_wpercent input-marginleft_w50 drop_input_custom_30" value="{!ques.strWrapAnswer}"  onBlur="if (this.placeholder == '') {this.placeholder = '{!ques.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!ques.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!ques.objWrapQuestion.acfWatermark_Text__c}" onkeypress="return isNumberKey(event,this)"/>
+                                   <!--<apex:inputtext styleclass="clsOnlynumeric inputf input_w100 percent_input input_wpercent relQues-margin drop_input_custom_30" value="{!objRelatedQues.strWrapAnswer}"  onBlur="if (this.placeholder == '') {this.placeholder = '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}';}" onFocus="if (this.placeholder == '{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}') {this.placeholder = '';}" html-placeholder="{!objRelatedQues.objWrapQuestion.acfWatermark_Text__c}"/>-->
                                   </div>  
                                </apex:outputPanel>
                                <apex:outputPanel id="preloginRadioButton" rendered="{!if(objRelatedQues.objWrapQuestion.acf_Type__c == 'RadioButton',true,false)}">

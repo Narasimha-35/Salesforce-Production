@@ -14,7 +14,7 @@ display:none;
                     <article class="col-md-12 quote_cont">
                         <section class="progress cst_progress">
                           <apex:outputPanel id="progressBarPnlId">
-                            <div class="progress-bar" style="width: {!intWidth}%;" id="QuoteBarId">
+                            <div class="progress-bar progress-bar_orange" style="width: {!intWidth}%;" id="QuoteBarId">
                             </div>
                           </apex:outputPanel>
                         </section>
@@ -44,27 +44,30 @@ display:none;
                         <hgroup class="pst_quote_grp col-md-6">
                             <h3>Best Rate</h3>
                             <h4>
-                                <apex:outputText value="{0, number, ###,##0.00}%">
+                                <apex:outputText value="{0, number, ###,##0.00}%" rendered="{!If(decBestRate == 0,false,true)}">
                                     <apex:param value="{!decBestRate}"/>
                                 </apex:outputText>
+                                <apex:outputText value="-" rendered="{!If(decBestRate == 0,true,false)}"></apex:outputText>
                             </h4>
                         </hgroup>  
                         
                         <hgroup class="pst_quote_grp col-md-6">
                             <h3>Comparison</h3>
                             <h4>
-                                <apex:outputText value="{0, number, ###,##0.00}%">
+                                <apex:outputText value="{0, number, ###,##0.00}%" rendered="{!If(decComparison == 0,false,true)}">
                                     <apex:param value="{!decComparison}"/>
                                 </apex:outputText>
+                                <apex:outputText value="-" rendered="{!If(decComparison == 0,true,false)}"></apex:outputText>
                             </h4>
                         </hgroup>
                         
                         <hgroup class="pst_quote_grp">
                             <h3>Est. Monthly Payment</h3>
                             <h4>
-                                <apex:outputText value="${0, number, ###,##0}">
+                                <apex:outputText value="${0, number, ###,##0}" rendered="{!If(OR(decMonthlyPayment == 0,decMonthlyPayment == null),false,true)}">
                                     <apex:param value="{!decMonthlyPayment}"/>
                                 </apex:outputText>
+                                <apex:outputText value="-" rendered="{!If(OR(decMonthlyPayment == 0,decMonthlyPayment == null),true,false)}"></apex:outputText>
                             </h4>
                         </hgroup>                                                                      
                  </article>                    

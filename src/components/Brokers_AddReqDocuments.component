@@ -1,7 +1,7 @@
 <apex:component controller="Brokers_AddReqDocumentsController" allowDML="true" id="comId">
 <style>
 
-.lookupInput a 
+.lookupInput a
 {
     display:block;
     position:absolute;

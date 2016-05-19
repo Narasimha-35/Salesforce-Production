@@ -421,7 +421,7 @@ background-color:#fff!important;
                     //Use js remoting to send the base64 encoded chunk for uploading
              
                      
-                    WLDashboardDocumentController.attachBlob(parentId,attachmentId,currentFile.name,currentFile.type,base64value,fileindex,function(result,event){                        
+                    WLDashboardDocumentControllerClone.attachBlob(parentId,attachmentId,currentFile.name,currentFile.type,base64value,fileindex,function(result,event){                        
                         //Proceed if there were no errors with the remoting call
                         if(event.status == true){
                         

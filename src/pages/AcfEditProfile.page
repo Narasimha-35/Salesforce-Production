@@ -1,8 +1,7 @@
-<apex:page showHeader="false" applyHtmlTag="false" docType="html-5.0" cache="false" controller="WLEditprofileController" standardStylesheets="false" id="pgId" action="{!redirect}">
+<apex:page showHeader="false" docType="html-5.0" cache="false" controller="WLEditprofileController" standardStylesheets="false" applyHtmlTag="false" id="pgId" action="{!redirect}">
 <html>
-<head>
+<head> 
  <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
-<c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
@@ -15,11 +14,12 @@
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/js.js')}"></script>
 <script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
 <script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
 
-<style type="text/css">
+<style type="text/css"> 
     .plcholder_61:before {
           left:28px;
           top: 14px;
@@ -114,7 +114,7 @@
      font-size: 0.95em;
     
      text-decoration: none;
-     color: #1f8acb;
+     color: #fbc97f;
      padding: 0px 10px;
      font-weight: bold;
      margin-left: 0px;
@@ -136,7 +136,10 @@
     .email-upload p{display:none;}
      }
      
-     .cst_btn_save_2{  padding: 5px 10px; width: auto;}
+     .cst_btn_save_2{  padding: 5px 10px; background-color:#f98b02; width: auto;}
+     .cst_btn_save_2:hover{background-color:#f98b02;}
+     .cst_btn_save_2:focus{border: 2px solid #f98b02;}
+     .cst_btn_save_2:active{background-color:#f98b02; border: 2px solid #f98b02;}
 </style>
 
 <script>
@@ -203,7 +206,6 @@
 <c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
 <body>
 
-<!--Popup start here-->
 <div class="modal" id="myModal7">
     <apex:form id="frmDocument" styleClass="form-horizontal">
            <apex:actionFunction action="{!UploadDragableFile}" name="UploadDraggableFile" status="ProcessStatus"/>
@@ -265,7 +267,7 @@
            <article class="col-md-12 col-sm-12">
              <div class="row"> 
              <hgroup class="book-appoint">
-                    <h3 style="color:#BEE5FD;"><B>Edit your Profile</B></h3>
+                    <h3 style="color:#fbc97f;"><B>Edit your Profile</B></h3>
              </hgroup><Br/>
              </div>
              </article>

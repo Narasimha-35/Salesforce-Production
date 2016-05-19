@@ -6,8 +6,12 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<c:ClickMetaHeader ></c:ClickMetaHeader>
 <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
 <title>Dashboard</title>
+
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.min.css')}" rel="stylesheet" type="text/css"/>
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
 
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
@@ -17,7 +21,10 @@
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
 
 <script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
-<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script> 
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+
+<apex:includeScript value="{!URLFOR($Resource.acfNewResources,'acfNewResources/js/bootstrap-datepicker.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.acfNewResources,'acfNewResources/js/bootstrap-datepicker.min.js')}"/>  
 
 <script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
 
@@ -115,13 +122,9 @@ display:none;
 }
 }
 
-#JUMIOIFRAME-iframe
+.modal-content 
 {
-    width:100%!important;
-}
-#artcleId
-{
-    width:100%!important;
+min-height: 0px!important;
 }
 </style>
 <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
@@ -353,7 +356,7 @@ $( document ).ready(function() {
                         </div> 
                       
                         <div class="tab-pane fade {!IF(strActiveTab == 'Document', 'active in', '')}" id="tab3default">
-                          <c:ClickDocumentsDashboard id="CDD"/>
+                            <c:ClickDocumentsDashboard id="CDD"/>
                         </div>
                         
                     </div>
@@ -364,7 +367,7 @@ $( document ).ready(function() {
      </article><!--article left close-->
         <aside class="dash_right_panel col-md-4 col-xs-12">  
                  <c:ClickSendMessageDashboard />
-         <!--        <c:ClickBookAppointmentDashboard id="CBook" />   -->
+      <!--       <c:ClickBookAppointmentDashboard id="CBook" /> -->
                  <apex:outputPanel id="reqDocPopupId">
                        <div class="clearfix"></div>
                        <section class="col-md-12 col-md-offset-0 col-xs-10 col-xs-offset-1">
@@ -373,13 +376,13 @@ $( document ).ready(function() {
                         </div>
                        </section>
                        <c:ClickAddDocument cmpAccId="{!accntid}"/>   
-                  </apex:outputPanel>
+                 </apex:outputPanel>
                 <apex:outputPanel id="IdTskPannel"> 
                  <c:ClickTaskDashboard />
                </apex:outputPanel>  
         </aside>
      <div class="clearfix"></div>
-    <c:ClickPostQuestion ></c:ClickPostQuestion>
+     <c:ClickPostQuestion ></c:ClickPostQuestion>
      <div class="col-md-12 col-xs-12" id="askQue">
          <div class="row" >
          <div class="col-md-8 col-xs-12">
