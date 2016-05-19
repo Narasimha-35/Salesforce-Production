@@ -65,6 +65,5 @@ global class createIncomeandExpenseForExistingRecord implements Database.Batchab
     }
 
     global void finish(Database.BatchableContext BC) {
-
     }
 }
