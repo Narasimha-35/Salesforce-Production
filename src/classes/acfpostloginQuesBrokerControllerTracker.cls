@@ -1,4 +1,4 @@
-@isTest(SeeAllData = false)
+@isTest(SeeAllData = true)
 private class acfpostloginQuesBrokerControllerTracker
 {
 
@@ -16,11 +16,19 @@ private class acfpostloginQuesBrokerControllerTracker
     public static Question__c objQuestion;
     public static User objUser;
     public static acfBank_Detail__c objBankDetail;
-
-
+    public static click_Applicant__c objApplicant;
+    public static string strapplicantName;
+    public static string strAppSeqNo;
+    public static string strapplicantEmail;
+    public static string strPhone;
+    public static integer QuesNo;
     static testMethod void M1(){
 
         loadData();
+
+        QuesNo = 1;
+        Integer intTempQues;
+        intTempQues = QuesNo +1;
         PageReference pageRef = new PageReference('http://www.google.com');
         Test.setCurrentPage(pageRef);
         ApexPages.currentPage().getParameters().put('cid',objAccount.id);
@@ -28,12 +36,12 @@ private class acfpostloginQuesBrokerControllerTracker
 
         obj.MasterQuesNo = 0;
         obj.RelatedQuestions();
-        obj.AddingRelatedQuestion();
+     //   obj.AddingRelatedQuestion();
         obj.checkQuestionStaus();
         obj.redirect();
         obj.MasterQuesNo = 0;
         obj.NextQuestion();
-        obj.PreviousQuestion();
+  //      obj.PreviousQuestion();
         obj.AssetLiablity();
         obj.IsValidDate('2015-10-12');
         obj.CreateDateFromString('2015-10-12');
@@ -41,12 +49,15 @@ private class acfpostloginQuesBrokerControllerTracker
         obj.app2Email = 'test@gmail.com';
         obj.accountname = 'ttt';
         obj.issApplicant2Check = true;
+     
+        
+      
         obj.sendApplicantConsentMailandSms();
-        //obj.applicant2consent();
+        obj.applicant2consent();
 
     }
 
-    static testMethod void validateClickpostloginQuestionsController()
+    /*static testMethod void validateClickpostloginQuestionsController()
     {
         CreateData();
 
@@ -74,7 +85,7 @@ private class acfpostloginQuesBrokerControllerTracker
         objacfpostloginQuestionsController.RelatedQuestions();
         objacfpostloginQuestionsController.AddingRelatedQuestion();
         objacfpostloginQuestionsController.NextQuestion();
-        objacfpostloginQuestionsController.PreviousQuestion();
+  //      objacfpostloginQuestionsController.PreviousQuestion();
         objacfpostloginQuestionsController.AssetLiablity();
         objacfpostloginQuestionsController.assetaddMethodNRAC();
         objacfpostloginQuestionsController.IsValidDate(string.valueof(system.today()));
@@ -148,7 +159,7 @@ private class acfpostloginQuesBrokerControllerTracker
             objacfpostloginQuestionsController.RelatedQuestions();
             objacfpostloginQuestionsController.AddingRelatedQuestion();
             //objacfpostloginQuestionsController.NextQuestion();
-            objacfpostloginQuestionsController.PreviousQuestion();
+     //       objacfpostloginQuestionsController.PreviousQuestion();
             objacfpostloginQuestionsController.AssetLiablity();
             objacfpostloginQuestionsController.assetaddMethodNRAC();
             objacfpostloginQuestionsController.InsertRequiredDocuments(objLead.id,objacfpostloginQuestionsController.lstMasterWrapperQuestion);
@@ -164,7 +175,7 @@ private class acfpostloginQuesBrokerControllerTracker
         objLead=acfpreloginQuesBrokerControllerTracker.objLead;
         objUser=acfpreloginQuesBrokerControllerTracker.objUser;
         //system.AssertNotEquals(objUser.id,null);
-    }
+    }*/
     public static void loadData(){
 
         UserRole portalRole = [Select Id From UserRole Where PortalType = 'None' Limit 1];
@@ -237,6 +248,19 @@ private class acfpostloginQuesBrokerControllerTracker
         //objQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Contact',true,'acfApplicant2_Name__c',true);
         //objRelatedQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,null,'acfApplicant2_Marital_Status__c','lead',true,'acfApplicant2_Monthly_Salary__c',true);
 
+              strapplicantName = '';
+        strAppSeqNo = '';
+        strapplicantEmail  ='';
+        strPhone ='';
+        strapplicantName ='MB test';
+        strAppSeqNo = '2';
+        strapplicantEmail = 'abc@gmail.com';
+         strPhone ='9855421202';
+        objApplicant = new click_Applicant__c();
+        objApplicant.acf_Applicant_Name__c = strapplicantName;
+        objApplicant.Applicant_Email__c = strapplicantEmail;     
+        objApplicant.Applicant_Phone__c = strPhone;
+        insert objApplicant;
 
         objQuestion = new Question__c ();
         objQuestion.acf_Question__c = 'Who is your current lender?04xxxxxxx';
@@ -298,7 +322,7 @@ private class acfpostloginQuesBrokerControllerTracker
         objQuestion1.acfDependent_Value__c = 'test';
         insert objQuestion1;
 
-        objAnswer     = acfCommonTrackerClass.createAnswer(objQuestion.id, null,'2');
+        objAnswer     = WLCommonTrackerClass.createAnswer(objQuestion.id, null,'2');
         }
     }
 }

@@ -19,14 +19,26 @@
  *
  * See the Apex Language Reference for more information about Testing and Code Coverage.
  */
-@isTest(SeeAllData = false)
+@isTest(SeeAllData = true)
 private class ClickEnablePortalUserFromCRMTracker 
 {
-	private static Lead objLead;
+    private static Lead objLead;
+    private static Account objAcc;
+    private static Account objAccount;
     static testMethod void myUnitTest() 
     {
-    	objLead = acfCommonTrackerClass.createLeadForPortal(); 
+        objLead = WLCommonTrackerClass.createLeadForPortal(); 
+        List<Click_Community_Setup__c> lstComm = [select id from Click_Community_Setup__c limit 1];
+        objAcc = new Account ();
+        objAcc = WLCommonTrackerClass.createAccount(objAcc);
+        
+        objAccount= new Account ();
+        objAccount = WLCommonTrackerClass.createAccount(objAccount);
+        
         ClickEnablePortalUserFromCRM obj = new ClickEnablePortalUserFromCRM();//string strLeadFName,string strLeadLName,string strLeadEmail,string strPhone,string strLeadId
-        string res = ClickEnablePortalUserFromCRM.createPortalUserFromCRM('test','test','test@fakeEmail.com','+6123456789',string.valueof(objLead.id));
+        ClickEnablePortalUserFromCRM.createPortalUserFromCRM('test','test','test@fakeEmail.com','+6123456789',string.valueof(objLead.id));
+        ClickEnablePortalUserFromCRM.createPortalUserFromCRMWithAccounts(objAcc.id,'test','test','test1@fakeEmail.com','+6123456789',string.valueof(objLead.id),lstComm[0].Id);
+        ClickEnablePortalUserFromCRM.createPortalUserFromCRMWithAccount(objAccount.id,'test','test','test2@fakeEmail.com','+6123456789',string.valueof(objLead.id));
+        ClickEnablePortalUserFromCRM.createPortalUserFromCRMOnLead('test','test','test3@fakeEmail.com','+6123456789',string.valueof(objLead.id),ClickCommon.GetRecordTypeId('Lead','Click Refi'));
     }
 }

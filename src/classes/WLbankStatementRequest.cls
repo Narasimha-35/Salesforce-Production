@@ -27,29 +27,11 @@ public class WLbankStatementRequest
         acResponse.bankSatementResponseSuccessorFailure return_Ref = new acResponse.bankSatementResponseSuccessorFailure(Null,false,Null);
         
         String response;
-       /* if(String.isBlank(String.valueof(bank_Slug_Nmme)))
-        {
-            response = 'Bank Slug Name is Mandatory.';          
-            return new acResponse.bankSatementResponseSuccessorFailure(Null,false,response);
-        }
-        
-        if(String.isBlank(String.valueof(username)))
-        {
-            response = 'User Name is Mandatory.';
-            return new acResponse.bankSatementResponseSuccessorFailure(Null,false,response);
-        }
-        
-        if(String.isBlank(String.valueof(password)))
-        {
-            response = 'Password is Mandatory.';
-            return new acResponse.bankSatementResponseSuccessorFailure(Null,false,response);
-        }*/
         String strBody = '{"credentials": {"institution": "'+bank_Slug_Nmme+'"';
         for(integer i=0;i<lstUserQuearyType.size();i++){
             strBody = strBody+',"'+lstUserQuearyType[i]+'": "'+lstUserCredentials[i]+'"';
         }
         strBody = strBody+'}}';
-        //String body = '{"credentials": {"institution": "'+bank_Slug_Nmme+'","username": "'+username+'","password": "'+password+'"}}';
         System.debug('@@@@ body -'+strBody);
         HttpRequest req = new HttpRequest();
         req.setEndpoint(strEndpoint+'/login');
@@ -109,34 +91,14 @@ public class WLbankStatementRequest
             user_Token = objtoProcess.response.user_token;
          
             System.debug('$$$$$#### - ' + user_Token);
-            FetchFile(user_Token, parentId);
             string ReqDocId = '';
             if(parentId <> null)
             {
                 system.debug('parentId**************'+parentId);
+                //if lead not converted
                 list<Lead> lstLead = [select id, IsConverted, ConvertedOpportunityId from Lead where id =:parentId];
-                system.debug('lstLead**************'+lstLead);
                 if(lstLead != null && lstLead.size() > 0)
                 {
-                    if(lstLead[0].IsConverted == true)
-                    {
-                        system.debug('lstLead[0].IsConverted*****************************');
-                        list<Opportunity> lstOpportunity = [select Id , 
-                                                            (select id from Required_Documents__r where acf_Bank_Statement_Doc__c = true)
-                                                            from Opportunity where Id =: lstLead[0].ConvertedOpportunityId];
-                        system.debug('lstOpportunity**************'+lstOpportunity);
-                        if(lstOpportunity != null && lstOpportunity.size() > 0)
-                        {
-                           if(lstOpportunity[0].Required_Documents__r != null && lstOpportunity[0].Required_Documents__r.size() > 0)
-                           {
-                                system.debug('lstOpportunity**************'+lstOpportunity[0].Required_Documents__r);
-                                ReqDocId = string.valueOf(lstOpportunity[0].Required_Documents__r[0].id);
-                                system.debug('ReqDocId**************'+ReqDocId);
-                           }
-                        }
-                    }
-                    else
-                    {
                         list<Lead> lstLeadTemp = [select id, 
                                                     (select id, acfStatus__c from Required_Documents__r where acf_Bank_Statement_Doc__c = true)
                                                     from Lead where id =:parentId];
@@ -145,125 +107,47 @@ public class WLbankStatementRequest
                         {
                             if(lstLeadTemp[0].Required_Documents__r != null && lstLeadTemp[0].Required_Documents__r.size() > 0)
                             {
-                                system.debug('lstLeadTempABC **************'+lstLeadTemp[0].Required_Documents__r);
                                 ReqDocId = string.valueOf(lstLeadTemp[0].Required_Documents__r[0].id);
-                                system.debug('ReqDocIdAnkit**************'+ReqDocId);
+                              
                             }
                         }
-                    }
                 }
                 else
                 {
-                    list<Opportunity> lstOpportunity = [select Id , 
-                                                            (select id from Required_Documents__r where acf_Bank_Statement_Doc__c = true)
-                                                            from Opportunity where Id =: parentId];
-                        system.debug('lstOpportunity**************'+lstOpportunity);
-                        if(lstOpportunity != null && lstOpportunity.size() > 0)
-                        {
-                           if(lstOpportunity[0].Required_Documents__r != null && lstOpportunity[0].Required_Documents__r.size() > 0)
-                           {
-                                system.debug('lstOpportunity**************'+lstOpportunity[0].Required_Documents__r);
-                                ReqDocId = string.valueOf(lstOpportunity[0].Required_Documents__r[0].id);
-                                system.debug('ReqDocId**************'+ReqDocId);
-                           }
-                        }
+                     //for multiple applicants
+                    String ReqDocids = apexpages.currentpage().getparameters().get('Docid');
+                    if(ReqDocids != null && ReqDocids <> '')
+                    {
+                        ReqDocId = ReqDocids;
+                    }
+                    else
+                    {
+                        list<Opportunity> lstOpportunity = [select Id , 
+                                                                (select id from Required_Documents__r where acf_Bank_Statement_Doc__c = true)
+                                                                from Opportunity where Id =: parentId];
+                            system.debug('lstOpportunity**************'+lstOpportunity);
+                            if(lstOpportunity != null && lstOpportunity.size() > 0)
+                            {
+                               if(lstOpportunity[0].Required_Documents__r != null && lstOpportunity[0].Required_Documents__r.size() > 0)
+                               {
+                                    ReqDocId = string.valueOf(lstOpportunity[0].Required_Documents__r[0].id);
+                                    
+                               }
+                            }
+                     }
                 }
                 
             }
             populate(user_Token, selectedAccounts,bankname,ReqDocId);
-            
-        }
-        
+        }       
         return null;   
     }
-    
     //Method to call statemnt method to set account number to fetch statement from
     public void populate(string user_Token, string selectedAccounts, string bankname,string ReqDocId)
     {
          acfFetchBankStatementFile.BankStatementFetchFile(user_Token,selectedAccounts,bankname,strEndpoint,strApiKey,ReqDocId);   
     }
-    
-    //Method to fetch file from bank statement and save it in salesforce
-    public void FetchFile(string user_Token, string strLeadId)
-    {
-        //fetch the login details from custom settings
-       // acfBank_Statement_Credential__c objBankStatement = acfBank_Statement_Credential__c.getValues('Credential');
-         
-        //create http request
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint(strEndpoint+'/files?X-API-KEY='+strApiKey+'&user_token='+ user_Token);
-        req.setMethod('GET');
-        
-        //getting Response     
-        Http http = new Http();
-        HTTPResponse objresponse = http.send(req); 
-        system.debug('objresponse?????' + objresponse.getBody()); 
-        
-        Blob objBlob = objresponse.getBodyAsBlob();
-        
-        system.debug('status???' + objresponse.getBodyAsBlob());
-        try{
-        if(strLeadId != null && strLeadId != '')
-        {
-            list<Lead> lstLead = [select id, IsConverted, ConvertedOpportunityId from Lead where id =:strLeadId];
-            
-            if(lstLead != null && lstLead.size() > 0)
-            {
-                if(lstLead[0].IsConverted == true)
-                {
-                    list<Opportunity> lstOpportunity = [select Id , 
-                                                        (select id from Required_Documents__r where acf_Bank_Statement_Doc__c = true)
-                                                        from Opportunity where Id =: lstLead[0].ConvertedOpportunityId];
-                    
-                    if(lstOpportunity != null && lstOpportunity.size() > 0)
-                    {
-                       if(lstOpportunity[0].Required_Documents__r != null && lstOpportunity[0].Required_Documents__r.size() > 0)
-                       {
-                            Attachment attach = new Attachment();
-                            attach.Body = objBlob;
-                            attach.Name = 'Bankstatement.zip';
-                            attach.ContentType = 'application/zip';
-                            attach.ParentID = lstOpportunity[0].Required_Documents__r[0].id;
-                            insert attach;                                        
-                       }     
-                    }
-                }
-                else
-                {
-                    list<Lead> lstLeadTemp = [select id, 
-                                                (select id, acfStatus__c from Required_Documents__r where acf_Bank_Statement_Doc__c = true)
-                                                from Lead where id =:strLeadId];
-                    
-                    if(lstLeadTemp != null && lstLeadTemp.size() > 0)
-                    {
-                        if(lstLeadTemp[0].Required_Documents__r != null && lstLeadTemp[0].Required_Documents__r.size() > 0)
-                        {
-                            Attachment attach = new Attachment();
-                            attach.Body = objBlob;
-                            attach.Name = 'Bankstatement.zip';
-                            attach.ContentType = 'application/zip';
-                            attach.ParentID = lstLeadTemp[0].Required_Documents__r[0].id;
-                            insert attach; 
-                            system.debug('@@@@Att'+attach);   
-                            lstLeadTemp[0].Required_Documents__r[0].acfStatus__c = 'Uploaded'; 
-                            update lstLeadTemp[0].Required_Documents__r[0];                              
-                        }
-                         //For Updating Task
-                         list<task> lstTask = [select id,subject,status,acf_Is_Upload_Bank_Stmt__c from task where acf_Is_Upload_Bank_Stmt__c= true limit 1];
-                         if(lstTask != null && lstTask.size()>0)
-                         {
-                            lstTask[0].status = 'Completed';
-                            update lstTask[0];
-                         }   
-                    }                        
-                }
-            }
-        }
-        }catch(Exception ex){
-            system.debug('Exception@@'+ex);
-        }
-    }
-    
+    //To get bank credentials
     public Institution FetchInstitutionDetails(String strBankName,String PagePrefixOfCommunitySetUp)
     {
         //fetch the login details from custom settings
@@ -281,10 +165,7 @@ public class WLbankStatementRequest
         Http http = new Http();
         HTTPResponse objresponse = http.send(req); 
         system.debug('objresponse?????' + objresponse.getBody()); 
-        
-        //institution institutions = (institution)JSON.deserialize(objresponse.getBody(), institution.class);
-        //system.debug('NRAC::::'+institutions);
-        
+               
         //Parse entire JSON response.
         String strJsonResponse = objresponse.getBody().replace('"values":""','"values":{"one":1,"two":2,"three":3,"four":4}');  
         strJsonResponse = strJsonResponse.replace('"values":{"1":1,"2":2,"3":3,"4":4}','"values":{"one":1,"two":2,"three":3,"four":4}');    
@@ -317,12 +198,9 @@ public class WLbankStatementRequest
         
         return null;
     }
-
+    //for captcha type questions
     public String PreloadFetchCaptcha(String strBankName)
-    {
-        //fetch the login details from custom settings
-      //  acfBank_Statement_Credential__c objBankStatement = acfBank_Statement_Credential__c.getValues('Credential');
-        
+    {     
         //create http request
         HttpRequest req = new HttpRequest();
         req.setEndpoint(strEndpoint+'/preload?institution='+strBankName);
@@ -336,9 +214,6 @@ public class WLbankStatementRequest
         HTTPResponse objresponse = http.send(req); 
         system.debug('objresponse?????' + objresponse.getBody()); 
         
-        //institution institutions = (institution)JSON.deserialize(objresponse.getBody(), institution.class);
-        //system.debug('NRAC::::'+institutions);
-                
         Dom.Document doc = objresponse.getBodyDocument();
         
         //Retrieve the root element for this document.
@@ -376,7 +251,6 @@ public class WLbankStatementRequest
                           }
                      }
                 }
-               // Dom.XMLNode objCredentials = objCredentials.getChildElement('credentials', null);
             }
         }
         

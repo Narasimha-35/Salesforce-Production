@@ -116,6 +116,7 @@ global class ClickEnablePortalUserFromCRM
                 Database.DMLOptions dlo = new Database.DMLOptions();
                 dlo.EmailHeader.triggerUserEmail = false;
                 objUser.setOptions(dlo);
+       //       system.debug('###objUser'+objUser); 
                 insert(objUser);
                 //system.setPassword(objUser.id, 'testpassword1');
                 //Updating Account and Contact in Lead.
@@ -311,4 +312,83 @@ global class ClickEnablePortalUserFromCRM
             }  
             return '';   
         }
+   // to convert Lead from CRM manually.     
+   webservice static string createPortalUserFromCRMOnLead(string strLeadFName,string strLeadLName,string strLeadEmail,string strPhone,string strLeadId,string strRecordTypeId)
+   {
+   //   if(IsValidUserName(strLeadEmail))
+   //   {
+        string strrecordTypeName = '';
+        RecordType objRecTypeName = [SELECT id,Name from RecordType where id=:strRecordTypeId Limit 1];
+        if(objRecTypeName.Name <> null && objRecTypeName.Name <> '')
+        strrecordTypeName = objRecTypeName.Name;
+        string[] strrec = strrecordTypeName.split(' ');
+        string StrRecordTypeFirstName = strrec[0];
+        
+       //Creating Person Account
+        Id currentAccountRecordTypeId = acfcommon.GetRecordTypeId('Account',objRecTypeName.Name);
+        Account objPersonAccount      = new Account();
+        objPersonAccount.FirstName    = strLeadFName; 
+        objPersonAccount.LastName     = strLeadLName;
+        objPersonAccount.PersonMobilePhone        = strPhone;
+        objPersonAccount.PersonEmail  = strLeadEmail;
+        objPersonAccount.acf_Lead__pc = strLeadId;
+        if(currentAccountRecordTypeId <> null)
+        objPersonAccount.RecordTypeId = currentAccountRecordTypeId;  
+        objPersonAccount.Lead_Type__pc = objRecTypeName.Name;  
+        insert objPersonAccount;
+        //List To get Person Account Contact.
+        List<Account>lstPersonContact = [select id,PersonContactId from Account where id=:objPersonAccount.Id];
+        if(lstPersonContact <> null && lstPersonContact.size()>0)
+        {
+            List<Profile> lstCommUserProfile = new List<Profile>();
+            if(StrRecordTypeFirstName == 'Click')
+            {
+                lstCommUserProfile = [select id,name from profile where name='Community User' limit 1];
+            }
+            else if(StrRecordTypeFirstName == 'ACF')
+            {
+                lstCommUserProfile = [select id,name from profile where name='Community User ACF' limit 1];
+            }
+            User objUser = new User();
+            objUser.FirstName = strLeadFName;
+            objUser.LastName = strLeadLName;
+            objUser.Alias  = (strLeadLName+String.valueof(Math.random())).substring(0,5);
+            objUser.LocaleSidKey = 'en_AU';
+            objUser.LanguageLocaleKey = 'en_US';
+            objUser.MobilePhone = strPhone;
+             if(StrRecordTypeFirstName == 'Click')
+            {
+                objUser.Username = strLeadEmail;
+            }
+            else if(StrRecordTypeFirstName == 'ACF')
+            {
+                objUser.Username = 'ACF_'+strLeadEmail;
+            }
+            objUser.Email = strLeadEmail;
+            objUser.ProfileId = lstCommUserProfile[0].id;
+            objUser.ContactId = lstPersonContact[0].PersonContactId;
+            objuser.EmailEncodingKey = 'UTF-8';
+            objUser.CommunityNickname = String.valueof(Math.random()+DateTime.now().year()+DateTime.now().month()+DateTime.now().day()+DateTime.now().hour()+DateTime.now().minute()+DateTime.now().second());
+            objUser.TimeZoneSidKey = 'Australia/Brisbane';
+            objUser.acfIs_Password_Reset__c = true;
+            Database.DMLOptions dlo = new Database.DMLOptions();
+            dlo.EmailHeader.triggerUserEmail = false;
+            objUser.setOptions(dlo);
+            insert(objUser);
+            //system.setPassword(objUser.id, 'testpassword1');
+            //Updating Account and Contact in Lead.
+            Lead objLead = new Lead(id=strLeadId);
+            objLead.acf_Contact__c = lstPersonContact[0].PersonContactId;
+            objLead.acf_partner_account__c = objPersonAccount.id;
+            update objLead;
+            acfCustomerRegisterController.generateReqDocs(strLeadId);
+            return 'Portal user created.';
+        }
+  //    }
+  //    else
+  //    {
+ //        return 'Email already Exist, Please use different one.';   
+ //     }  
+      return '';   
+   }
 }

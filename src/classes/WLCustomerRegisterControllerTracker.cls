@@ -35,19 +35,17 @@ private class WLCustomerRegisterControllerTracker
         objL.acfApproximately_how_much_is_your_house__c = 2000.00;
         insert objL;
         
- /*     RecordType objRT=[select id, name, SObjectType From RecordType Where SObjectType= 'product2' AND name= 'Variable'];
+        RecordType objRT=[select id, name, SObjectType From RecordType Where SObjectType= 'product2' AND name= 'Variable'];
         product2 objPro = new product2();
         objPro.ACF_Comparison_Rate__c = 10;
         objPro.IsActive = true;
         objPro.acfType__c = 'Variable';
-        objPro.Recordtype.Name = 'Variable';
+        objPro.RecordtypeId= objRT.Id;
         objPro.acfTenure_in_Years__c = '2'; 
         objPro.acfvarTenure_In_Years__c = 10;
-        objPro.clickLoan_Type__c =  'Basic';
         objPro.acfOffset_Account__c = false;
         objPro.Name = 'test';
-       // objPro.acfRating__c = '1';
-        insert objPro;*/
+        insert objPro;
         
         objProduct2.recordtypeid = ClickCommon.GetRecordTypeId('product2','Fixed');
         objProduct2.acfTenure_in_Years__c = '3';
@@ -117,6 +115,17 @@ private class WLCustomerRegisterControllerTracker
         ApexPages.currentPage().setCookies( new Cookie[]{currentUId });
         Cookie ACFLeadApiNames = new Cookie('ACFLeadApiNames',''+objQuestion+'-:-'+objQuestion+'','true',72000, false);
         ApexPages.currentPage().setCookies( new Cookie[]{ACFLeadApiNames});
+        Cookie utm_source = new Cookie('utm_source','Web',null,72000, false);
+        ApexPages.currentPage().setCookies( new Cookie[]{utm_source});
+        Cookie utm_term= new Cookie('utm_term','2',null,72000, false);
+        ApexPages.currentPage().setCookies( new Cookie[]{utm_term});
+        Cookie utm_content= new Cookie('utm_content','Web',null,72000, false);
+        ApexPages.currentPage().setCookies( new Cookie[]{utm_content});
+        Cookie utm_campaign = new Cookie('utm_campaign','Web',null,72000, false);
+        ApexPages.currentPage().setCookies( new Cookie[]{utm_campaign});
+        Cookie utm_medium= new Cookie('utm_medium','Web',null,72000, false);
+        ApexPages.currentPage().setCookies( new Cookie[]{utm_medium});
+        
 
       //  acfCustomerRegisterController.generateReqDocs(LeadId.getvalue());
         
@@ -137,6 +146,7 @@ private class WLCustomerRegisterControllerTracker
         objacfCustomerRegisterController.IsUserAlreadyExist();
         
         objacfCustomerRegisterController.Registration();
+        objacfCustomerRegisterController.SendSmsAfterRegistration();
         objacfCustomerRegisterController.DisplayTop3Products(objL.id,WLCommonTrackerClass.testNetworkId) ; 
         objacfCustomerRegisterController.istermsConditionsConfirmed = true;      
         objacfCustomerRegisterController.verifyOTP();
@@ -148,6 +158,7 @@ private class WLCustomerRegisterControllerTracker
         objacfCustomerRegisterController.DisplayEstimatedSaving(5.0,3.0,12000,'Interest Only',10);
         
   }
+  
   
    static testMethod void ValidateRegistration01()
   {
@@ -206,7 +217,8 @@ private class WLCustomerRegisterControllerTracker
         ApexPages.currentPage().setCookies( new Cookie[]{IsNewHomeLoan});
         Cookie currentUId = new Cookie('currentUId ',''+userinfo.getuserid()+'','true',72000, false);
         ApexPages.currentPage().setCookies( new Cookie[]{currentUId });
-
+        
+        
         
         WLCustomerRegisterController objacfCustomerRegisterController = new WLCustomerRegisterController();
         objacfCustomerRegisterController.username = 'swati.sharma_1@saasfocus.com';
@@ -243,20 +255,20 @@ private class WLCustomerRegisterControllerTracker
         ApexPages.currentPage().setCookies( new Cookie[]{LeadId});
         Cookie strUserId = new Cookie('strUserId',''+objuser.id+'','true',72000, false);
         ApexPages.currentPage().setCookies( new Cookie[]{strUserId});*/
-        Lead objL = new Lead();
-        objL.FirstName = '+619654922845';
-        objL.LastName = '+619654922845';
-        objL.Email = 'swati.sharma@saasfocus.com';
-        objL.MobilePhone = '+619654922845';
-        objL.Status = 'Open';
-        objL.acfOneTimePassword__c = '724715';
-        objL.acfIsMobileVerified__c = true;
-        objL.acf_partner_account__c = objAccount.id;
-        objL.acfLoan_Amount__c = 1000.00;
-        objL.acfCurrentRate__c = 3;
-        objL.acfWhat_is_your_current_payment_type__c = 'Cash';
-        objL.acfApproximately_how_much_is_your_house__c = 2000.00;
-        insert objL;
+        Lead objL1 = new Lead();
+        objL1.FirstName = '+619654922845';
+        objL1.LastName = '+619654922845';
+        objL1.Email = 'swati.sharma@saasfocus.com';
+        objL1.MobilePhone = '+619654922845';
+        objL1.Status = 'Open';
+        objL1.acfOneTimePassword__c = '724715';
+        objL1.acfIsMobileVerified__c = true;
+        objL1.acf_partner_account__c = objAccount.id;
+        objL1.acfLoan_Amount__c = 1000.00;
+        objL1.acfCurrentRate__c = 3;
+        objL1.acfWhat_is_your_current_payment_type__c = 'Cash';
+        objL1.acfApproximately_how_much_is_your_house__c = 2000.00;
+        insert objL1;
         
         list<product2> lstpro = new list<product2>();
         
@@ -279,7 +291,7 @@ private class WLCustomerRegisterControllerTracker
         objacfCustomerRegisterController.confirmPassword = 'testing@007';
         objacfCustomerRegisterController.strProductLVRId = lstpro[0].id;
         objacfCustomerRegisterController.pList = lstpro;
-        objacfCustomerRegisterController.objLead = objL;
+        objacfCustomerRegisterController.objLead = objL1;
         
         
 
@@ -381,5 +393,144 @@ private class WLCustomerRegisterControllerTracker
         
         system.debug('objRequiredDocument'+objRequiredDocument);
     }
+    
+     static testMethod void ValidateRegistration02()
+  {
+        LoadData();
+        Lead objL = new Lead();
+        objL.FirstName = '+619654922845';
+        objL.LastName = '+619654922845';
+        objL.Email = 'swati.sharma@saasfocus.com';
+        objL.MobilePhone = '+619654922845';
+        objL.Status = 'Open';
+        objL.acfOneTimePassword__c = '724715';
+        objL.acfIsMobileVerified__c =true;
+        objL.acf_partner_account__c = objAccount.id;
+        objL.acfLoan_Amount__c = 1000.00;
+        objL.acfCurrentRate__c = 3;
+        objL.acfWhat_is_your_current_payment_type__c = 'Cash';
+        objL.acfApproximately_how_much_is_your_house__c = 2000.00;
+        objL.acfIs_User_Registered__c = false;
+        insert objL;
+        
+ /*     RecordType objRT=[select id, name, SObjectType From RecordType Where SObjectType= 'product2' AND name= 'Variable'];
+        product2 objPro = new product2();
+        objPro.ACF_Comparison_Rate__c = 10;
+        objPro.IsActive = true;
+        objPro.acfType__c = 'Variable';
+        objPro.Recordtype.Name = 'Variable';
+        objPro.acfTenure_in_Years__c = '2'; 
+        objPro.acfvarTenure_In_Years__c = 10;
+        objPro.clickLoan_Type__c =  'Basic';
+        objPro.acfOffset_Account__c = false;
+        objPro.Name = 'test';
+       // objPro.acfRating__c = '1';
+        insert objPro;*/
+        
+        objProduct2.recordtypeid = ClickCommon.GetRecordTypeId('product2','Fixed');
+        objProduct2.acfTenure_in_Years__c = '3';
+        objProduct2.acfvarTenure_In_Years__c = 3;
+        update objProduct2;
+                
+        LVR_Rate__c objLVR = new LVR_Rate__c();
+        objLVR.acfLVR__c = 51.25;
+        objLVR.acfRate__c = 10.25;
+        objLVR.acfProduct__c = objProduct2.id;
+        objLVR.acfLoan_Size__c = 1900.20;
+        objLVR.ACF_Comparison_Rate__c = 10.00; 
+        objLVR.clickFixed_Interest_Rate__c = 9.00;
+        objLVR.clickLoan_Size_From__c = 500.50;
+        objLVR.clickLVR_From__c = 1.2;
+        objLVR.acfApplication_Fee__c = 5000; 
+        
+        insert objLVR; 
+        
+        WLCustomerRegisterController.WrapperProducts wrap = new WLCustomerRegisterController.WrapperProducts();
+        wrap.decRate = 10.01;
+        wrap.strRateType ='test';
+        wrap.decComparisionRate = 10.01;
+        wrap.decApplicationFee = 10.50;
+        wrap.strcomparisionType ='Fixed';
+        wrap.decMonthlyPayment = 100;
+        wrap.intTenureYrs = 1;
+        wrap.strRating = 'good';
+        wrap.ProductId = objProduct2.id;
+        wrap.ProdLVRID = objLVR.id;
+        wrap.IndexNo = 1;
+        list<integer> lstint = new list<integer>();
+        lstint.add(1);
+        lstint.add(2);
+        wrap.lstProductRating = lstint;
+        wrap.IsDisplayHalfStar = true;
+        wrap.EstimatedMonthlySaving = 10.11;
+        wrap.strProdName = 'bottle';
+        
+        acfContentManagementSystem__c objContentManagementSystem = new acfContentManagementSystem__c();
+   //     objContentManagementSystem.Name='Test';
+        objContentManagementSystem.acfHeading__c = 'POPULAR SEARCHES';
+        objContentManagementSystem.acfPageName__c = 'ClickHome';
+        objContentManagementSystem.acfSectionName__c = 'Registration Popup';
+        objContentManagementSystem.acfSequence__c = 5;
+        objContentManagementSystem.acfDescription__c = 'Online loans';
+        objContentManagementSystem.acfIs_Checked__c = true;
+        objContentManagementSystem.acfHeader_Sequance__c = 4;
+        insert objContentManagementSystem;
+        
+        objScript     = WLCommonTrackerClass.createScript('Post-Login');//string strQuestion,Integer NewsequenceNo,string strType,boolean IsRefinence,boolean IsNew,Id ScriptID
+        system.debug('!@#$%'+objScript.id);
+        objQuestion   = WLCommonTrackerClass.CreatePrePostLoginQuestions('Who is your current lender?',1,'Button',true,false,objScript.id,objL.FirstName);
+        objQuestion   = WLCommonTrackerClass.CreatePrePostLoginQuestions('Who is your current lender?',1,'Button',true,false,objScript.id,objL.FirstName);
+        objQuestion   = WLCommonTrackerClass.CreatePrePostLoginQuestions('Who is your current lender?',1,'Text',true,false,objScript.id,objL.FirstName);
+        objAnswer     = WLCommonTrackerClass.createAnswer(objQuestion.id, null,'Westpac Bank');
+                        
+        Cookie ACFAnswers = new Cookie('ACFAnswers','acfPostcode__c'+'-:-'+201435+'-,-',null,72000, false);
+        ApexPages.currentPage().setCookies( new Cookie[]{ACFAnswers});
+        Cookie LeadId = new Cookie('LeadId',''+objL.id+'','true',72000, false);
+        ApexPages.currentPage().setCookies( new Cookie[]{LeadId});
+        Cookie strUserId = new Cookie('strUserId',''+userinfo.getuserid()+'','true',72000, false);
+        ApexPages.currentPage().setCookies( new Cookie[]{strUserId});
+        Cookie IsNewHomeLoan = new Cookie('IsNewHomeLoan','false','true',72000, false);
+        ApexPages.currentPage().setCookies( new Cookie[]{IsNewHomeLoan});
+       
+        Cookie ACFLeadApiNames = new Cookie('ACFLeadApiNames',''+objQuestion+'-:-'+objQuestion+'','true',72000, false);
+        ApexPages.currentPage().setCookies( new Cookie[]{ACFLeadApiNames});
+
+      //  acfCustomerRegisterController.generateReqDocs(LeadId.getvalue());
+      
+       Cookie currentUId = new Cookie('currentUId ',''+userinfo.getuserid()+'','true',72000, false);
+           currentUId =null;
+        ApexPages.currentPage().setCookies( new Cookie[]{currentUId });
+        
+        WLCustomerRegisterController objacfCustomerRegisterController = new WLCustomerRegisterController();
+        objacfCustomerRegisterController.username = 'swati.sharma_1@saasfocus.com';
+        objacfCustomerRegisterController.password = 'swatisharma10';
+        objacfCustomerRegisterController.mobile = '9212155244';
+        objacfCustomerRegisterController.mobile_otp = '724715';
+        objacfCustomerRegisterController.mobile_num = '9212155244';
+        objacfCustomerRegisterController.strTimezoneId = 'Asia/Kolkata';
+        objacfCustomerRegisterController.showformVar =false;
+        
+        
+        objacfCustomerRegisterController.getProductIdslist();
+        objacfCustomerRegisterController.Login(); 
+        objacfCustomerRegisterController.showResendOTPfrm();   
+        objacfCustomerRegisterController.VerifyEmail();
+        objacfCustomerRegisterController.IsUserAlreadyExist();
+        
+        objacfCustomerRegisterController.Registration();
+        objacfCustomerRegisterController.SendSmsAfterRegistration();
+        objacfCustomerRegisterController.DisplayTop3Products(objL.id,WLCommonTrackerClass.testNetworkId) ; 
+        objacfCustomerRegisterController.istermsConditionsConfirmed = true;      
+        objacfCustomerRegisterController.verifyOTP();
+        objacfCustomerRegisterController.mobile_num = '+918896292603';     
+//        objacfCustomerRegisterController.resendOTP();
+        objacfCustomerRegisterController.OK();
+        objacfCustomerRegisterController.RedirectToLandingPage();
+        objacfCustomerRegisterController.redirect();
+        objacfCustomerRegisterController.DisplayEstimatedSaving(5.0,3.0,12000,'Interest Only',10);
+        
+  }
+  
+    
     
 }

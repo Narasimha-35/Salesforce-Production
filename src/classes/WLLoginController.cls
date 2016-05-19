@@ -7,6 +7,7 @@ public class WLLoginController {
     public String Fusername {get; set;}
     public String password {get; set;}
     public boolean success {get; set;}
+    public string Networkid;
     
     public WLLoginController()
     { 
@@ -15,11 +16,11 @@ public class WLLoginController {
     public void UserforgotPassword() 
     {
         fusername= fusername.trim();
-         operatingSec = 'forgetPass';
-         strmsgs = '';
-         fstrmsgs = '';
-         success  = false;
-         String Networkid = Network.getNetworkId();
+        operatingSec = 'forgetPass';
+        strmsgs = '';
+        fstrmsgs = '';
+        success  = false;
+        Networkid = Network.getNetworkId();
          if(Networkid != null && fusername!= null && fusername!='')
          {
             string strUsername = fusername;
@@ -61,7 +62,7 @@ public class WLLoginController {
          fstrmsgs = '';
          operatingSec = 'login';
          success  = false;
-         String Networkid = Network.getNetworkId();
+         Networkid = Network.getNetworkId();
          if(Networkid != null && username!= null && username!='' && password !=Null && password != '')
          {
             string strUsername = username;
@@ -93,4 +94,24 @@ public class WLLoginController {
          }
          return null;
      }
+     
+    public pageReference RedirectLoggedInUser()
+    {
+        if (UserInfo.getName().tolowercase().contains('guest'))
+        {
+            return null;
+        }
+        else
+        {
+            Networkid = Network.getNetworkId();
+            if(Networkid != null)
+            {
+                Click_Community_Setup__c commSetup = ClickCommon.getCommunitySetup(Networkid);
+                if(commSetup != null)
+                return new pageReference('/'+commSetup.Click_Page_Prefix__c+'Dashboard');
+            }
+            return null;
+        }
+        return null;
+    }   
 }

@@ -226,9 +226,9 @@ private class ClickQuoteDetailTracker
         objLead.acfApproximately_how_much_is_your_house__c = 100.01;
         objLead.acfLoan_Amount__c = 100.20;
         objLead.acfIs_Bank_Statement_Submitted__c = true;
-        objLead.acfIs_Identity_Document_Submitted__c = true;
-        objLead.acfIs_Post_Login_Ques_Attempted__c =true;
-        objLead.acfIs_Identity_Document_Submitted__c =true;
+        //objLead.acfIs_Identity_Document_Submitted__c = true;
+        //objLead.acfIs_Post_Login_Ques_Attempted__c =true;
+        //objLead.acfIs_Identity_Document_Submitted__c =true;
         insert objLead;
  //   objLead = acfCommonTrackerClass.createLeadForPortal();
     }

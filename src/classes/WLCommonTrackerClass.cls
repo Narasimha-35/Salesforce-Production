@@ -399,10 +399,13 @@ public class WLCommonTrackerClass
         objOpportunity.name = 'test';
         objOpportunity.Stagename = 'Application Taken';
         objOpportunity.CloseDate = System.today();
+        objOpportunity.acfAsset_House_Worth__c = 200000;
         insert objOpportunity;
         
         system.assert(objOpportunity.id != null);
+           system.debug('objOpportunity-------'+objOpportunity.id);
         return objOpportunity;
+     
     }
     
     public static Document_Master__c createDocumentMaster(Document_Master__c objDocumentMaster)
@@ -429,4 +432,54 @@ public class WLCommonTrackerClass
         system.debug(objRequiredDocument.id != null);
         return objRequiredDocument;
     } 
+    
+    
+    public static Asset_And_Liability__c createAssetandLiablility(Asset_And_Liability__c objAssetandLiablility, Account objAccount)
+    {
+      Id AssetRecordTypeId = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosByName().get('Asset Real Estate').getRecordTypeId();
+      objAssetandLiablility = new Asset_And_Liability__c();
+      objAssetandLiablility.Account__c = objAccount.Id;
+      objAssetandLiablility.Account_Name__c = 'Bhasin Test';
+      objAssetandLiablility.Account_Number__c ='ACN123456';
+      objAssetandLiablility.RecordTypeId = AssetRecordTypeId;
+      objAssetandLiablility.Type__c ='Asset';
+      objAssetandLiablility.Value__c = 100000;
+      objAssetandLiablility.Primary_Purpose__c ='Owner Occupied';
+      objAssetandLiablility.Used_as_Security__c = true;
+      insert objAssetandLiablility;
+      
+      system.assert(objAssetandLiablility.id !=null);
+      return objAssetandLiablility;
+   }  
+     
+     public static click_Applicant__c createApplicant(click_Applicant__c objApplicant,Account objAccount){
+     
+         objApplicant = new click_Applicant__c();
+         objApplicant.acfAnnual_profit_income__c = '3234';
+         objApplicant.acf_applicant_Monthlly_Salary__c = 45;
+         objApplicant.clickApp_1_Monthly_Expenses__c  = 654.54;
+         objApplicant.click_Applicant_Number__c = '1';
+         objApplicant.click_Account__c = objAccount.id;
+         insert objApplicant;
+
+         system.assert(objApplicant.id !=null);
+         return objApplicant;
+     
+     }
+     
+     public static Income_And_Expense__c createIncomeExpense(Income_And_Expense__c objIncome, click_Applicant__c objApp){
+     
+     
+         Id IncomeRecordTypeId = Schema.SObjectType.Income_And_Expense__c.getRecordTypeInfosByName().get('Income').getRecordTypeId();
+         objIncome = new Income_And_Expense__c();
+         objIncome.recordTypeId = IncomeRecordTypeId;
+         objIncome.Amount__c = 45;
+         objIncome.Category__c = 'Full Time - PAYG';
+         objIncome.Applicant__c = objApp.Id;
+         insert objIncome;
+         
+         system.assert(objIncome.id !=null);
+         return objIncome;
+     
+     }
 }

@@ -9,9 +9,9 @@ public class CallFileMemberService {
       CallFileMemberSelector cfms = new CallFileMemberSelector(new Set < String > {'PostCode__c', 'Update_Priority_By_Postcode__c', 'vhc__Priority__c'}, null);
       return cfms.getQueryPartOne() + getSOQLCondition(callFiles, postcodeFrom, postcodeTo, newPriority);
    }
-
+   
    public static String getSOQLCondition(vhc__Campaign__c callFiles, String postcodeFrom, String postcodeTo, String newPriority) {
-      return 'WHERE PostCode__c != null AND vhc__Priority__c != \'' + newPriority + '\' AND Update_Priority_By_Postcode__c != true AND PostCode__c >= ' + postcodeFrom + ' AND PostCode__c <= ' + postcodeTo  + ' AND vhc__Campaign__c = \'' + callFiles.id + '\'';
+      return 'WHERE PostCode__c != null AND vhc__Priority__c != \'' + newPriority + '\' AND Update_Priority_By_Postcode__c != true AND PostCode__c >= ' + postcodeFrom + ' AND PostCode__c <= ' + postcodeTo  + ' AND vhc__Campaign__c = \'' + callFiles.id + '\''; 
    }
 
    public static Integer getCallFileMemberByCallFileAndPostcodeCount(vhc__Campaign__c callFiles, String postcodeFrom, String postcodeTo, String newPriority) {

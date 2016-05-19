@@ -10,7 +10,15 @@ public class ChangeAppointment_ClassTracker
     
     
    static testMethod void TestChangeAppointment() 
-   {
+   {    
+   
+       //Event newEvent = new Event();
+       //newEvent.DurationInMinutes =1440;
+       //newEvent.ActivityDateTime = Datetime.now();
+       //newEvent.DurationInMinutes=60;
+       //insert newEvent;
+       
+       
        loadData();
         
        Allocate_Appointment__c custobj = new Allocate_Appointment__c(Name = 'Phone_Broker');        
@@ -26,7 +34,7 @@ public class ChangeAppointment_ClassTracker
        obj.brokername = objBrk.id;
        System.assertNotEquals(objBrk,null);      
        obj.save();
-       
+       obj.Cancel();
    }
    
    static testMethod void TestCallouts() 
@@ -46,6 +54,7 @@ public class ChangeAppointment_ClassTracker
            insertBroker();
            insertAppointment();
            insertCustomSetting();
+           //insertEvent();
       
        }
 
@@ -81,9 +90,28 @@ public class ChangeAppointment_ClassTracker
        objBrk.Next_Sync_Token__c='fhsdjf';
        insert objBrk;
        
+       
         
     }
-   
+    
+    /*static void insertEvent()
+    {
+        Event e = new Event();
+         
+         e.Subject='Test for trigger';
+         e.Google_Event_ID__c = 'dsvfdsvds';
+         e.OwnerId = '00590000004QMlt';
+         e.IsAllDayEvent = true;
+         e.whatid = app.Broker__c;
+         e.Subject = app.name;
+         e.startdatetime = System.now();
+         e.enddatetime = System.now().addhours(1);
+         //e.ActivityDateTime = Datetime.now();
+         //e.DurationInMinutes=60;
+         insert e;
+    }
+    */
+    
    static void insertAppointment()
    {
        o = new Opportunity();
@@ -117,6 +145,7 @@ public class ChangeAppointment_ClassTracker
        
        app = new Appointment__c();
        app.RecordTypeId= '01290000000ttUO';
+      // app.name = 'Test';
        app.Opportunity__c= o.Id;
        app.Broker__c = objBrk.Id;
        app.Market__c = m.Id;

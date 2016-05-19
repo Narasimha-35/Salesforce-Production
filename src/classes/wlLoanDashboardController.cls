@@ -21,6 +21,8 @@ public class wlLoanDashboardController
     public string DateExpectedSettlement{get;set;}
     public string strConditionsOfApproval{get;set;}
     public string strDescription{get;set;}
+    public string strCurrentPaymentType{get;set;}
+    public string strEstimatedPayment{get;set;}
     public boolean isPasswordReset {get;set;}
     public boolean isCurrentLoanPanelDisplay {get;set;} 
     //Added By Lokesh on 16-12-14
@@ -48,21 +50,30 @@ public class wlLoanDashboardController
         If(lstUser != null && lstUser.size()>0){
            isPasswordReset = lstUser[0].acfIs_Password_Reset__c;
         }
-        OpportunityId = clickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');        
+       
+        OpportunityId = clickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');
+ system.debug('---ashna OpportunityId---'+OpportunityId);        
         if(OpportunityId <> null)
         {
+            system.debug('---ashna OpportunityId---'+OpportunityId);
            double HouseValue,LVR;   
-           List<Opportunity>lstOpportunity = [select id,Account.acfCurrent_Loan_Amount__pc,stageName,Description,acfApproval_Conditions__c,acfDate_Conditionally_Approved__c,acfDate_Formally_Approved__c,acfDate_Docs_Generated__c,acfExpected_Settlement_Date__c,acf_Status__c,Account.acfCurrent_Rate__pc,Account.acfApproximately_how_much_is_your_house__pc,Account.acfWhat_is_your_current_payment_type__pc,acfTenure__c from opportunity where AccountId<>null and id=:OpportunityId];
-           system.debug('@#%#$%lstOpportunity'+lstOpportunity);
+           List<Opportunity> lstOpportunity = [select id,Account.acfCurrent_Loan_Amount__pc,acfPayment_Type__c ,stageName,Description,acfApproval_Conditions__c,acfDate_Conditionally_Approved__c,acfDate_Formally_Approved__c,acfDate_Docs_Generated__c,acfExpected_Settlement_Date__c,acf_Status__c,Account.acfCurrent_Rate__pc,Account.acfApproximately_how_much_is_your_house__pc,Account.acfWhat_is_your_current_payment_type__pc,acfTenure__c,Account.acfAsset_House_Worth__c from opportunity where AccountId<>null and id=:OpportunityId];
+           system.debug('---ashna @#%#$%lstOpportunity'+lstOpportunity);
            
            if(lstOpportunity <> null && lstOpportunity.size()>0 && lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc <> null && lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc <> null)
            {
                
                 if(IsValidDecimal(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc))
+                  if(lstOpportunity[0].Account.acfAsset_House_Worth__c <> null)
+                  {
+                  HouseValue = double.valueof(lstOpportunity[0].Account.acfAsset_House_Worth__c);
+                  }
+                    else{
                       HouseValue = double.valueof(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc);
-                else
-                      HouseValue = 0.00;   
+                    }
+                   if (HouseValue <> null && HouseValue >0)
                 LVR =  ((lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc/HouseValue)* 100);
+                
                 system.debug('@#$%%'+LVR);
                 //Display Opportunity Products      
                 DisplayOpportunityLIProducts(OpportunityId,lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc,lstOpportunity[0].Account.acfWhat_is_your_current_payment_type__pc);
@@ -70,12 +81,14 @@ public class wlLoanDashboardController
                if(lstOpportunity[0].stageName  == 'Application Taken' /*Added by Sumit*/|| lstOpportunity[0].stageName == 'Appointed')
                {
                  strDescription = lstOpportunity[0].Description;
+                 strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c ;
                  DisplayLoanProducts(OpportunityId,HouseValue,LVR,lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc,lstOpportunity[0].Account.acfWhat_is_your_current_payment_type__pc);
                  IsApplication = true;
                }
                else if(lstOpportunity[0].stageName  == 'Approval')
                {
                   strDescription = lstOpportunity[0].Description;
+                  strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c;
                   strCustomLabelValue = 'AcfApproval';
                   if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
                     DateConditionallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Conditionally_Approved__c);
@@ -85,6 +98,7 @@ public class wlLoanDashboardController
                else if(lstOpportunity[0].stageName  == 'Loan Document')
                {
                   strDescription = lstOpportunity[0].Description;
+                  strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c;
                   strCustomLabelValue = 'acfLoanDocument';
                   if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
                     DateConditionallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Conditionally_Approved__c);
@@ -97,6 +111,7 @@ public class wlLoanDashboardController
                else if(lstOpportunity[0].stageName  == 'Settlement' && lstOpportunity[0].acf_Status__c  == 'Approved and pending settlement')
                {
                     strDescription = lstOpportunity[0].Description;
+                    strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c;
                     strCustomLabelValue = 'AcfSettlement';
                     if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
                         DateConditionallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Conditionally_Approved__c);
@@ -111,6 +126,7 @@ public class wlLoanDashboardController
                else if(lstOpportunity[0].stageName  == 'Settlement' && lstOpportunity[0].acf_Status__c  == 'Settled')
                {
                     strDescription = lstOpportunity[0].Description;
+                    strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c;
                     strCustomLabelValue = 'acfLoan_Dashboard_Settled';
                     if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
                         DateConditionallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Conditionally_Approved__c);
@@ -153,13 +169,20 @@ public class wlLoanDashboardController
                         if(OppLi.product2.recordtype.name == 'Variable' && OppLi.product2.acfOffset_Account__c == false)
                         {
                              objCurrentLoanDetails.ProductName = OppLi.product2.name;
+                       //*****----- Modified by Manish Bhasin --------------*****         
+                             objCurrentLoanDetails.strInterestRatelbl = 'Variable';
                         }else if(OppLi.product2.recordtype.name == 'Variable' && OppLi.product2.acfOffset_Account__c == true) 
                                 {
                                     objCurrentLoanDetails.ProductName = OppLi.product2.name;
+               //*****----- Modified by Manish Bhasin --------------*****                        
+                                    objCurrentLoanDetails.strInterestRatelbl = 'Variable with offset';
                                 }
                         if(OppLi.product2.recordtype.name == 'Fixed')
                         {
-                            objCurrentLoanDetails.ProductName = OppLi.product2.acfTenure_in_Years__c+' Yr '+OppLi.product2.name;
+                            objCurrentLoanDetails.ProductName = OppLi.product2.acfTenure_in_Years__c+' Yr '+OppLi.product2.name;                      
+               
+                     //*****----- Modified by Manish Bhasin --------------*****        
+                            objCurrentLoanDetails.strInterestRatelbl = OppLi.product2.acfTenure_in_Years__c+' Year Fixed';
                         }
                         objCurrentLoanDetails.ApplicationFee    =  OppLi.acfApplication_Fee__c;
                         objCurrentLoanDetails.OngoingFees    =  OppLi.acfOngoing_Fees__c;
@@ -198,6 +221,7 @@ public class wlLoanDashboardController
         set<string>setProductIdToExclude = new set<string>();
         Integer IndexCount   = 0;
         double usrLVR = 0;
+        
         List<LVR_Rate__c> lstProductIdToLVR = new list<LVR_Rate__c>();
         if(CurrentLoanAmount != null && HouseValue != null)
             usrLVR = (CurrentLoanAmount/HouseValue)*100;
@@ -234,6 +258,7 @@ public class wlLoanDashboardController
             {
                     setOfBankDetailId.add(objbank.Click_Loans_Bank_Detail__c);
             }
+            system.debug('---setOfBankDetailId---'+setOfBankDetailId);
         }
         //product filter logic added by karthik on 08-05-2015
         if(setOfBankDetailId <> null)
@@ -366,6 +391,16 @@ public class wlLoanDashboardController
                 objWrapVariableProduct.OffsetAccount    =  objLVRRate.acfProduct__r.acfOffset_Account__c;
                 objWrapVariableProduct.MultipleSplits    =  objLVRRate.acfProduct__r.acfMultiple_Splits__c;
                 
+         // String strEstimatedPayment;     
+                 if(objLVRRate.acfProduct__r.acfInterest_Only__c == true && strCurrentPaymentType == 'Interest Only')
+                 {
+                     strCurrentPaymentType = 'Interest Only';
+                 }
+                else
+                {
+                    strCurrentPaymentType ='Principal and Interest';
+                }
+                
                 If(objLVRRate.acfProduct__r.RecordType.Name == 'Fixed' && objLVRRate.acfProduct__r.acfvarTenure_In_Years__c != null && objLVRRate.clickFixed_Interest_Rate__c != null)
                 {
                     objWrapVariableProduct.decRate = objLVRRate.clickFixed_Interest_Rate__c;
@@ -377,9 +412,16 @@ public class wlLoanDashboardController
                         objWrapVariableProduct.TenureInYears = objLVRRate.acfProduct__r.acfvarTenure_In_Years__c;
                     }
                     //objWrapVariableProduct.EstimatedSaving = DisplayEstimatedSaving(currentRate,objLVRRate.acfRate__c,CurrentLoanAmount,strPaymentType,Decimal.valueof(objLVRRate.acfProduct__r.acfTenure_in_Years__c));
-                    if(CurrentLoanAmount != null && strPaymentType != null && objLVRRate.clickFixed_Interest_Rate__c != null && objLVRRate.acfProduct__r.acfvarTenure_In_Years__c != null)
+                    if(CurrentLoanAmount != null && strPaymentType != null && objLVRRate.clickFixed_Interest_Rate__c != null && objLVRRate.acfProduct__r.acfvarTenure_In_Years__c != null )
+                       
+                  
+          objWrapVariableProduct.decMonthlyPayment   = integer.valueof(acfCommon.calculateMonthlyPayment(CurrentLoanAmount,double.valueof(objLVRRate.clickFixed_Interest_Rate__c),strCurrentPaymentType,double.valueof(objLVRRate.acfProduct__r.acfvarTenure_In_Years__c)));               
+                    /*    else if(objLVRRate.acfProduct__r.acfInterest_Only__c ==false && strCurrentPaymentType.equals('Principal and Interest'))
+                 
                         objWrapVariableProduct.decMonthlyPayment   = integer.valueof(acfCommon.calculateMonthlyPayment(CurrentLoanAmount,double.valueof(objLVRRate.clickFixed_Interest_Rate__c),strPaymentType,double.valueof(objLVRRate.acfProduct__r.acfvarTenure_In_Years__c)));
-                }
+                      
+                      */
+                   }
                 If(objLVRRate.acfProduct__r.RecordType.Name == 'Variable')
                 {
                    if( objLVRRate.acfProduct__r.acfOffset_Account__c == false)
@@ -393,7 +435,10 @@ public class wlLoanDashboardController
                    objWrapVariableProduct.TenureInMonth = (objLVRRate.acfProduct__r.acfvarTenure_In_Years__c)*12;
                     objWrapVariableProduct.TenureInYears = objLVRRate.acfProduct__r.acfvarTenure_In_Years__c;    
                    if(CurrentLoanAmount != null && strPaymentType != null && objLVRRate.acfRate__c != null && objLVRRate.acfProduct__r.acfvarTenure_In_Years__c != null)
-                    objWrapVariableProduct.decMonthlyPayment   = integer.valueof(acfCommon.calculateMonthlyPayment(CurrentLoanAmount,double.valueof(objLVRRate.acfRate__c),strPaymentType,double.valueof(objLVRRate.acfProduct__r.acfvarTenure_In_Years__c)));
+                   
+          objWrapVariableProduct.decMonthlyPayment   = integer.valueof(acfCommon.calculateMonthlyPayment(CurrentLoanAmount,double.valueof(objLVRRate.acfRate__c),strCurrentPaymentType,double.valueof(objLVRRate.acfProduct__r.acfvarTenure_In_Years__c)));               
+                       
+                       
                     system.debug('Sumit objWrapVariableProduct ::'+objWrapVariableProduct);
                 }
                 objWrapVariableProduct.LoanFees   =  objLVRRate.acfTotal_Fee__c; 
@@ -404,8 +449,10 @@ public class wlLoanDashboardController
              }
              IndexCount = lstWrapperProduct.size();
             }
+      
         return null;
-    }
+       }
+    
     
     Public pagereference redirect()
     {

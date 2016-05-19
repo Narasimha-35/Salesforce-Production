@@ -51,6 +51,48 @@ public class WLpreloginQuestionController
     //Constructor 
     public WLpreloginQuestionController()
     {
+    
+        //set utm parameters by Ankit
+        String strUtmSource=apexpages.currentpage().getparameters().get('utm_source');
+        system.debug('strUtmSource*********************'+strUtmSource);
+        if(strUtmSource!=null && strUtmSource!='')
+        {
+            Cookie utm_source= new Cookie('utm_source',strUtmSource,null,72000, false); 
+            ApexPages.currentPage().setCookies(new Cookie[]{utm_source});
+        }
+        
+        String strUtmMedium=apexpages.currentpage().getparameters().get('utm_medium');
+        system.debug('strUtmMedium*********************'+strUtmMedium);
+        if(strUtmMedium!=null && strUtmMedium!='')
+        {
+            Cookie utm_medium= new Cookie('utm_medium',strUtmMedium,null,72000, false); 
+            ApexPages.currentPage().setCookies(new Cookie[]{utm_medium});
+        }
+        
+        String strUtmTerm=apexpages.currentpage().getparameters().get('utm_term');
+        system.debug('strUtmTerm*********************'+strUtmTerm);
+        if(strUtmTerm!=null && strUtmTerm!='')
+        {
+            Cookie utm_term= new Cookie('utm_term',strUtmTerm,null,72000, false); 
+            ApexPages.currentPage().setCookies(new Cookie[]{utm_term});
+        }
+        
+        String strUtmContent=apexpages.currentpage().getparameters().get('utm_content');
+        system.debug('strUtmContent*********************'+strUtmContent);
+        if(strUtmContent!=null && strUtmContent!='')
+        {
+            Cookie utm_content= new Cookie('utm_content',strUtmContent,null,72000, false); 
+            ApexPages.currentPage().setCookies(new Cookie[]{utm_content});
+        }
+        
+        String strUtmCampaign=apexpages.currentpage().getparameters().get('utm_campaign');
+        system.debug('strUtmCampaign*********************'+strUtmCampaign);
+        if(strUtmCampaign!=null && strUtmCampaign!='')
+        {
+            Cookie utm_campaign= new Cookie('utm_campaign',strUtmCampaign,null,72000, false); 
+            ApexPages.currentPage().setCookies(new Cookie[]{utm_campaign});
+        }
+         
         initializeCookies();
         IsRedirect = false;
         isCookiesexist = false;

@@ -4,6 +4,7 @@ global class WLDashboardDocumentController
    @TestVisible transient Attachment attach;
    @TestVisible transient Attachment docattach;
    public string strUseEmailID{get;set;}
+   public string recDownloadid{get;set;}
    public string strDocumentName{get;set;}
    public string IsPopupShow{get;set;}
    public boolean IsIdentificationCompleted{get;set;}
@@ -92,7 +93,7 @@ global class WLDashboardDocumentController
         for(Required_Document__c objRequiredDoc:[select id,name,acfOpportunity__c,Click_Is_Note_Type__c,acfOpportunity__r.clickJumio_Status__c,
                                                 acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,
                                                 acf_Is_Identity_Verification_Doc__c,acfStatus__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c,
-                                                click_Is_Uploaded__c,(select id from Attachments) 
+                                                click_Is_Uploaded__c,Is_Download_Doc__c ,acfDocument_Master__r.File_Address__c,(select id from Attachments) 
                                                 from Required_Document__c where acfOpportunity__c=:OppId order by createddate ASC])
         { 
             system.debug('OpportunityId'+objRequiredDoc.acfOpportunity__r.acfIs_Identity_Document_Rejected__c);
@@ -113,6 +114,7 @@ global class WLDashboardDocumentController
             
         }
         system.debug('@@Bankstmt'+mapIsBankstmtCompleted);
+        system.debug('@@Bankstmt12'+lstWrapperDocumnets);
      } 
    }
     
@@ -221,7 +223,7 @@ global class WLDashboardDocumentController
                     objRequiredDoc.acfStatus__c = 'Uploaded';
                     update objRequiredDoc;
                     //added by karthik on 29-01-2015
-                    List<Required_Document__c> lstobjRequiredDoc = [select id,Name,click_Is_Uploaded__c,acfOpportunity__c,acf_Bank_Statement_Doc__c,acf_Is_Identity_Verification_Doc__c from Required_Document__c where id=:objRequiredDoc.id];
+                    List<Required_Document__c> lstobjRequiredDoc = [select id,Name,click_Is_Uploaded__c,acfOpportunity__c,acf_Bank_Statement_Doc__c,acf_Is_Identity_Verification_Doc__c,Is_Download_Doc__c from Required_Document__c where id=:objRequiredDoc.id];
                     If(lstobjRequiredDoc != null && lstobjRequiredDoc.size()>0)
                     {
                         Opportunity ObjOpp = new Opportunity(id= lstobjRequiredDoc[0].acfOpportunity__c);
@@ -283,7 +285,7 @@ global class WLDashboardDocumentController
             );
             system.debug('###att'+att);
             insert att;
-            uploadMultipleDoc(fileIndexNo);
+          //  uploadMultipleDoc(fileIndexNo);
             //Return the new attachment Id
             return att.Id;   
         }
@@ -291,7 +293,7 @@ global class WLDashboardDocumentController
     } 
        
    @RemoteAction
-   global static void uploadMultipleDoc(integer fileIndexNo)
+   public static void uploadMultipleDoc(integer fileIndexNo)
     {
         if(fileIndexNo <> null)
         {
@@ -301,7 +303,7 @@ global class WLDashboardDocumentController
            for(Required_Document__c objRequiredDoc:[select id,name,acfOpportunity__c,Click_Is_Note_Type__c,acfOpportunity__r.clickJumio_Status__c,
                                                 acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,
                                                 acf_Is_Identity_Verification_Doc__c,acfStatus__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c,
-                                                click_Is_Uploaded__c
+                                                click_Is_Uploaded__c,Is_Download_Doc__c
                                                 from Required_Document__c where acfOpportunity__c=:currentOppId order by createddate ASC])
             {
                 WrapperDocuments objDocument = new WrapperDocuments();          
@@ -319,7 +321,7 @@ global class WLDashboardDocumentController
                     objRequiredDoc.acfStatus__c = 'Uploaded';
                     update objRequiredDoc;
                     //added by karthik on 29-01-2015
-                    List<Required_Document__c> lstobjRequiredDoc = [select id,Name,click_Is_Uploaded__c,acfOpportunity__c,acf_Bank_Statement_Doc__c,acf_Is_Identity_Verification_Doc__c from Required_Document__c where id=:objRequiredDoc.id];
+                    List<Required_Document__c> lstobjRequiredDoc = [select id,Name,click_Is_Uploaded__c,acfOpportunity__c,acf_Bank_Statement_Doc__c,acf_Is_Identity_Verification_Doc__c,Is_Download_Doc__c from Required_Document__c where id=:objRequiredDoc.id];
                     If(lstobjRequiredDoc != null && lstobjRequiredDoc.size()>0)
                     {
                         Opportunity ObjOpp = new Opportunity(id= lstobjRequiredDoc[0].acfOpportunity__c);
@@ -443,7 +445,21 @@ global class WLDashboardDocumentController
       if(currentUId <> null)
        IsPopupShow = currentUId.getvalue();
       return null;
-   }    
+   } 
+   
+   public void downloadFile(){
+       string reqDocId = Apexpages.currentPage().getParameters().get('recName');
+       system.debug('###reDoc'+reqDocId);
+       if(String.isNotEmpty(reqDocId)){
+           Required_Document__c reqDocObj = [Select Id,acfDocument_Master__r.File_Address__c From Required_Document__c where id=:reqDocId];
+           if(reqDocObj != null && reqDocObj.acfDocument_Master__r.File_Address__c != null ){
+                recDownloadid = reqDocObj.acfDocument_Master__r.File_Address__c ;
+                System.debug(recDownloadid);
+           }
+           
+       }
+      
+   }   
    // Wrapper Class for Document.
    public class WrapperDocuments
    {

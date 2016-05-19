@@ -691,5 +691,149 @@ public class ClickCommon
         }
          
          return retUrl;
-      }       
+      }   
+      
+      //to return user input type      
+      public static map<string,string> mapUserInputType()
+      {
+           map<id,user> mapUserIdToUser = new map<id,user>([select Alias,id,profileid,profile.name from user where isActive = true limit 200]);
+           map<string,string> mapusrIdToUsrInputType = new map<string,string>();
+           string strUsrInputType = '';
+           if(mapUserIdToUser != null && mapUserIdToUser.size()>0)
+           {
+               for(string userId : mapUserIdToUser.keyset())
+               {
+            
+                   if(mapUserIdToUser.get(userId).profile.name.contains('Community User')  || mapUserIdToUser.get(userId).Alias.contains('guest'))
+                   {
+                        
+                        mapusrIdToUsrInputType.put(userId,'Customer Input');
+                 
+                   }else if(mapUserIdToUser.get(userId).profile.name == 'Customize Partner User')
+                           {
+                               mapusrIdToUsrInputType.put(userId,'Partner User Input');
+                               
+                           }else {
+                               mapusrIdToUsrInputType.put(userId,'CRM User Input');
+                           }
+              }
+
+           }
+           return mapusrIdToUsrInputType;
+      }  
+      
+      public static map<string,string> mapUserInputType(List<id> createdbyId )
+      {
+           map<id,user> mapUserIdToUser = new map<id,user>([select Alias,id,profileid,profile.name from user where isActive = true and ID in :createdbyId ]);
+           map<string,string> mapusrIdToUsrInputType = new map<string,string>();
+           string strUsrInputType = '';
+           if(mapUserIdToUser != null && mapUserIdToUser.size()>0)
+           {
+               for(string userId : mapUserIdToUser.keyset())
+               {
+            
+                   if(mapUserIdToUser.get(userId).profile.name.contains('Community User')  || mapUserIdToUser.get(userId).Alias.contains('guest'))
+                   {
+                        
+                        mapusrIdToUsrInputType.put(userId,'Customer Input');
+                 
+                   }else if(mapUserIdToUser.get(userId).profile.name == 'Customize Partner User')
+                           {
+                               mapusrIdToUsrInputType.put(userId,'Partner User Input');
+                               
+                           }else {
+                               mapusrIdToUsrInputType.put(userId,'CRM User Input');
+                           }
+              }
+
+           }
+           return mapusrIdToUsrInputType;
+      }
+            //to calculate transfer fee
+      public static decimal calculateTransferFee(string strState,integer propertyValue)
+      {
+         list<State__c> lstStates = [select id,acfBase_Transfer_Fee__c,acfState_Short_Name__c,WA_Additional_Fee2__c,WA_Additional_Fee__c,acfEach_Amount__c,
+                                     VIC_Max_Additional_Fee_Limit__c,acfQLD_From_value_for_Add_Fee__c,acfAdditional_Transfer_Fee__c from State__c where acfState_Short_Name__c =:strState limit 1];
+          decimal decTransferFee = 0;
+          decimal intAdditionalFee = 0;
+          if(lstStates != null && lstStates.size()>0 && propertyValue <> null)
+          {
+              State__c objState = lstStates[0];
+              decTransferFee = objState.acfBase_Transfer_Fee__c;  
+              //QLD-$162.90 + additional fee for lodging a transfer if the consideration is more than $180,000 - $30.80 for each $10,000 or part of $10,000 more than $180,000
+              if(strState == 'QLD' && propertyValue > objState.acfQLD_From_value_for_Add_Fee__c && objState.acfEach_Amount__c>0)
+              {
+                  intAdditionalFee = propertyValue - objState.acfQLD_From_value_for_Add_Fee__c;
+                  decTransferFee = decTransferFee + ((math.ceil(intAdditionalFee/objState.acfEach_Amount__c))*(objState.acfAdditional_Transfer_Fee__c));//$30.80 for each $10,000                             
+              }                     
+              //VIC-$138.90 + $2.46 for every whole $1,000 of the monetary consideration. This fee does not exceed $1,369.
+              if(strState == 'VIC' && objState.acfEach_Amount__c>0)
+              {
+                  intAdditionalFee = (propertyValue/objState.acfEach_Amount__c)*(objState.acfAdditional_Transfer_Fee__c);
+                  decTransferFee = decTransferFee+intAdditionalFee;
+                  if(decTransferFee > objState.VIC_Max_Additional_Fee_Limit__c)
+                  {
+                      decTransferFee = objState.VIC_Max_Additional_Fee_Limit__c;
+                  }                 
+              }
+              //WA Transfer Fee $160 for land up to $85,000; $170 for land between $85,001 and $120,000; $190 for land between $120,001 and $200,000 and then $20 for every $100,000 or part thereof.
+              if(strState == 'WA')
+              {
+                  if(propertyValue > 85000 && propertyValue <= 120000)
+                  {
+                      decTransferFee = objState.WA_Additional_Fee__c;
+                  }else if(propertyValue > 120000 && propertyValue <= 200000)
+                          {
+                              decTransferFee = objState.WA_Additional_Fee2__c;
+                          }else if(propertyValue > 200000 && objState.acfEach_Amount__c>0)
+                                  {
+                                      intAdditionalFee = propertyValue - 200000;
+                                      decTransferFee = objState.WA_Additional_Fee2__c+((math.ceil(intAdditionalFee/objState.acfEach_Amount__c))*objState.acfAdditional_Transfer_Fee__c);
+                                  }               
+              }
+              return decTransferFee; 
+          } 
+          return 0;
+      } 
+      //to calculate registration fee
+      public static decimal getRegistrationFee(string strState)
+      {
+         if(strState != null && strState <> '')
+         {
+             list<State__c> lstStates = [select id,acfRegistration_Fee__c from State__c where acfState_Short_Name__c =:strState limit 1];
+             if(lstStates != null && lstStates.size()>0)
+             {
+                 return lstStates[0].acfRegistration_Fee__c;
+             }
+         }
+         return 0;
+      }
+      //to calculate stamp duty
+      public static decimal getStampdutyRate(string strState,integer propertyValue,string strPurpose)
+      {
+          decimal stampDuty = 0;
+          if(strState != null && strState != '' && propertyValue != null && strPurpose!= null && strPurpose != '')
+          {
+              list<State__c> lstStates = [select id,acfBase_Transfer_Fee__c,acfState_Short_Name__c,(select id,Acf_Purpose__c,Acf_Property_value_from__c,
+                           Acf_Property_value_to__c,Acf_Base_Value__c,Acf_Variable_rate__c,acfDivide_Number__c
+                           from Stamp_Duty_Table__r where Acf_Purpose__c=:strPurpose AND Acf_Property_value_from__c <=: propertyValue AND
+                           Acf_Property_value_to__c >=: propertyValue) from State__c where acfState_Short_Name__c =:strState limit 1];
+              if(lstStates != null && lstStates.size()>0 && lstStates[0].Stamp_Duty_Table__r != null && lstStates[0].Stamp_Duty_Table__r.size() > 0)
+              {
+                  acfStamp_Duty_Table__c objStampDutyTable = lstStates[0].Stamp_Duty_Table__r[0];
+                  if(objStampDutyTable.Acf_Base_Value__c <> null && objStampDutyTable.Acf_Variable_rate__c <> null)
+                  {
+                      if(objStampDutyTable.Acf_Property_value_from__c == 0 && lstStates[0].acfState_Short_Name__c == 'NT') //for NT state
+                      {
+                          stampDuty = (0.06571441*propertyValue*propertyValue)/1000000 + (15*propertyValue/1000);
+                      }else if(objStampDutyTable.acfDivide_Number__c <> null && objStampDutyTable.acfDivide_Number__c <> 0){
+                              stampDuty = objStampDutyTable.Acf_Base_Value__c + (objStampDutyTable.Acf_Variable_rate__c * (math.ceil((propertyValue-objStampDutyTable.Acf_Property_value_from__c)/objStampDutyTable.acfDivide_Number__c)));
+                           }else {
+                                    stampDuty = objStampDutyTable.Acf_Base_Value__c + (objStampDutyTable.Acf_Variable_rate__c * (propertyValue-objStampDutyTable.Acf_Property_value_from__c)/100);
+                                }  
+                 }               
+              }             
+          }
+          return stampDuty;
+       }
  }

@@ -1,12 +1,14 @@
 public class WlResetPassword 
 {
-        //variables declarations
+    //variables declarations
     public String stroldPassword {get;set;} 
     public String strnewPassword {get;set;}
     public String strverifynewPassword {get;set;}
     public String isSuccess {get;set;}
     Public String pageName {get;set;} 
     Public Boolean IsLoginAttemptCompleted {get;set;}
+    public string strUserName {get;set;}
+    public string strModifieddate {get;set;}
     List<User> lstUser;
     //Constructor
     public wlResetPassword()
@@ -20,22 +22,36 @@ public class WlResetPassword
         List<String> parts = pge.split('/'); 
         List<String> parts1 = parts[2].split('\\?');
         pageName = parts1[0].toLowerCase(); 
-        system.debug('cons pge_name --------'+pageName);   
-       /* pageName   = ApexPages.CurrentPage().getUrl(); 
-        pageName = pageName.replaceFirst('/apex/',''); 
-        pageName = pageName.substring(0,pageName.indexof('?')); 
-        system.debug('test' + pageName);
-        pageName = pageName.toLowerCase();*/
-        lstUser = [select id,AccountId from user where id=: UserInfo.getuserId()];
+        system.debug('cons pge_name --------'+pageName);
+        string strNetworkId =  Network.getNetworkId();
+        Click_Community_Setup__c objCommunity = new Click_Community_Setup__c();
+        if(ClickCommon.getCommunitySetup(strNetworkId)!= null)
+        {
+          system.debug('=======Network ID======'+strNetworkId);
+          objCommunity = ClickCommon.getCommunitySetup(strNetworkId);
+        }   
+        lstUser = [select id,AccountId,username,acfPassword_Modified_Date__c,acfIs_Password_Reset__c from user where id=: UserInfo.getuserId()];
         
-        If(lstUser != null && lstUser.size()>0){
-            If(lstUser[0].AccountId != null){
+        If(lstUser != null && lstUser.size()>0)
+        {
+            If(lstUser[0].AccountId != null)
+            {
+             strUserName = lstUser[0].username;
+             if(objCommunity <> null &&  objCommunity.Community_User_Name_Prefix__c != null )
+             {
+                 list<string> lststring = strUserName.split(objCommunity.Community_User_Name_Prefix__c.toLowerCase());
+                 if(lststring <> null && lststring.size()>1)
+                 {
+                     strUserName = lststring[1];
+                 }
+             }
+             strModifieddate = string.valueof(lstUser[0].acfPassword_Modified_Date__c);
              list<Account> lstAccount = [select id,acfIsLoginAttemptCompleted__pc,acfPassword__c from account where id=:lstUser[0].AccountId];
               system.debug('@@@Karthik'+lstUser[0]);
               if(lstAccount != null && lstAccount.size()>0)
               {
                IsLoginAttemptCompleted = lstAccount[0].acfIsLoginAttemptCompleted__pc; 
-               If(IsLoginAttemptCompleted == false && pageName != 'clickeditprofile'){
+               If(IsLoginAttemptCompleted == false && pageName.contains('editprofile') == false){
                      stroldPassword = lstAccount[0].acfPassword__c;
                }
               }
@@ -56,18 +72,24 @@ public class WlResetPassword
             }
         }*/
         system.debug('@@@@'+stroldPassword);
-        if(stroldPassword != Null && stroldPassword != '' && strnewPassword != Null && strnewPassword != '' && strverifynewPassword != Null && strverifynewPassword != '')
+        if(strnewPassword != Null && strnewPassword != '' && strverifynewPassword != Null && strverifynewPassword != '')
         {
 
                 if(strnewPassword.length() > 8 && strverifynewPassword.length() > 8 && ChkValidPassword(strnewPassword) && ChkValidPassword(strverifynewPassword))
                 {
                     try
                     {
-                        PageReference chngpass = Site.changePassword(strnewPassword,strverifynewPassword,stroldPassword);
+                       PageReference chngpass;
+                       if(pageName.contains('changepassword') == false && stroldPassword != Null && stroldPassword != '') 
+                       {
+                           chngpass = Site.changePassword(strnewPassword,strverifynewPassword,stroldPassword);
+                       }else if(pageName.contains('changepassword')){
+                           chngpass = Site.changePassword(strnewPassword,strverifynewPassword,null);
+                       }
                         
                         if(chngpass != null)
                         {
-                            if(pageName == 'clickeditprofile')
+                            if(pageName.contains('editprofile'))
                             {
                                 User objuser = new User(id=UserInfo.getUserId());  
                                 objuser.acfIs_Password_Reset__c = true;

@@ -37,6 +37,7 @@ public class ClickPreLoginQuestionController
     public ClickPreLoginQuestionController(ApexPages.StandardController controller)
     {
             mapIdToAnswer = new map<id,string>();
+            system.debug(strCurrentAccId);
             if(strCurrentAccId == null && strCurrentAccId == '')
             {
                  ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'Account Id is null'));                
@@ -45,6 +46,7 @@ public class ClickPreLoginQuestionController
             {
                 strCurrentAccId = ApexPages.currentPage().getParameters().get('id');   
             }
+        system.debug(strCurrentAccId);
             lstAcc = new List<Account>();
             objLead = new Lead();
      //     objLead.Click_Loan_Type__c = 'New Purchase';
@@ -209,8 +211,10 @@ public class ClickPreLoginQuestionController
         {
             Account objAcc = lstAcc[0];
             if(lstAcc[0].Click_Community_Setup__c == null)
-            {
+            {    
+                 system.debug('Ankit113****!@#$%^*'+AccRecTypeId );
                  if(AccRecTypeId <> null)
+                 system.debug('Ankit112*****@#$%^**'+AccRecTypeId);
                  objAcc.RecordTypeId = AccRecTypeId;
                  objAcc.Click_Is_Phone_Broker_customer__c = true;
                  objAcc.Click_Community_Setup__c = selectedCommunity;
@@ -238,6 +242,7 @@ public class ClickPreLoginQuestionController
         objInsertLead.MobilePhone = lstAcc[0].PersonMobilePhone;
         objInsertLead.Status = 'Open';
         
+        click_Applicant__c objFirstApplicant = new click_Applicant__c();
         for(WrapperQuestions objWrappQuestion : lstWrapperQuestion)
         {
            if((objWrappQuestion.strWrapAnswer == null || objWrappQuestion.strWrapAnswer == '' || objWrappQuestion.strWrapAnswer == 'NONE') && objWrappQuestion.lstCheckBoxAnswer.size()==0) 
@@ -284,8 +289,28 @@ public class ClickPreLoginQuestionController
                       //system.debug('Ankit114*******'+objInsertLead);
                 }
             }
+            
+             if(objWrappQuestion.objWrapQuestion.acf_ApiName__c == 'acfEmployment_Type__c')
+             {
+                  objFirstApplicant.put(objWrappQuestion.objWrapQuestion.acf_ApiName__c,string.valueof(mapIdToAnswer.get(objWrappQuestion.strWrapAnswer)));
+             }
+    
+             if(objWrappQuestion.objWrapQuestion.acf_ApiName__c == 'acfLast_2_years_Tax_Return_or_ATO_NOA__c')
+             {
+                  objFirstApplicant.put(objWrappQuestion.objWrapQuestion.acf_ApiName__c,string.valueof(mapIdToAnswer.get(objWrappQuestion.strWrapAnswer)));
+             }
+          
+              objFirstApplicant.acf_Applicant_Name__c = objAcc.firstname+' '+objAcc.lastname;
+              objFirstApplicant.click_Account__c = objAcc.id;
+              objFirstApplicant.click_Applicant_Number__c = '1';
+          
+      
+        }   
 
-        }         
+        if(objFirstApplicant !=null)
+          insert objFirstApplicant;
+          system.debug('Ankit113*******'+objFirstApplicant);
+                 
         AssignmentRule AR = new AssignmentRule();
         AR = [select id from AssignmentRule where SobjectType = 'Lead' and Active = true limit 1];
         if(AR <> null)
@@ -303,30 +328,40 @@ public class ClickPreLoginQuestionController
             strAccountId = objChildAccount.id;
         }else{
             objAcc.acf_Lead__pc = objInsertLead.id;
+            system.debug('test@@@'+objAcc);
             update objAcc;
+            system.debug('Feedback****Karthik'+objAcc);
             strAccountId = objAcc.id;
         }
         
        // updateAccount(objInsertLead.id,lstComm);
         if(strAccountId <> null && strAccountId <> '')
         {
-            string Feedback = ClickEnablePortalUserFromCRM.createPortalUserFromCRMWithAccounts(strAccountId ,objInsertLead.FirstName,objInsertLead.LastName,objInsertLead.Email,objInsertLead.MobilePhone,objInsertLead.id,selectedCommunity);
-            system.debug('Feedback************'+Feedback);
-            if(Feedback.contains('Portal user created.') || Feedback == '')
+            try
             {
-            //    system.debug('Feedback*******************'+Feedback);
-                  PageReference pg = new PageReference('/' + strCurrentAccId  + '');
-                  pg.setRedirect(true);
-                  return pg;
+                string Feedback = ClickEnablePortalUserFromCRM.createPortalUserFromCRMWithAccounts(strAccountId ,objInsertLead.FirstName,objInsertLead.LastName,objInsertLead.Email,objInsertLead.MobilePhone,objInsertLead.id,selectedCommunity);
+                //  system.debug('Feedback************'+Feedback);
+                if(Feedback.contains('Portal user created.') || Feedback == '')
+                {
+                //    system.debug('Feedback*******************'+Feedback);
+                      PageReference pg = new PageReference('/' + strAccountId + '');
+                      pg.setRedirect(true);
+                      return pg;
+                }
             }
-            else
+            catch(Exception e)
             {
-                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'Email already Exist, Please use different one.'));
-            //   system.debug('Feedback*******************');
-                 return null;
-            }       
-        }
-        }
+               if(e.getMessage().contains('PORTAL_USER_ALREADY_EXISTS_FOR_CONTACT')) 
+               {     
+                     ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'Email already Exist, Please use different one.'));
+                //   system.debug('Feedback*******************');
+                     return null;
+               }
+               return null;
+                     
+            } 
+         }
+      }
         return null;   
     }
     
@@ -379,6 +414,7 @@ public class ClickPreLoginQuestionController
            { 
              options.add(new SelectOption(objBank.acfBank_Name__c,objBank.acfBank_Name__c));
            }
+             options.add(new SelectOption('Other','Other'));
         }
         return options;
     }

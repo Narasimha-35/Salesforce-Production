@@ -323,6 +323,7 @@ public without sharing class acfCommon
                 strLeadId = lstuser[0].Contact.acf_Lead__c;
                 Opportunity objOpportunity = new Opportunity();               
                 strOppId = getCurrentLoggedInOpportunityId(lstuser[0].id);
+
                 system.debug('@@@Karthik:::'+strLeadId);
                 If(strOppId != null && strOppId != ''){
                     List<Opportunity> lstOpp = [select id,acfIs_Identity_Document_Rejected__c,acfIs_Identity_Document_Submitted__c from Opportunity where id =: strOppId];
@@ -420,13 +421,14 @@ public without sharing class acfCommon
     
     public static Id getCurrentLoggedInOpportunityId(Id CurrentUserId)
     {
-        Id ClickOppRecordTypeId = acfCommon.GetRecordTypeId('Opportunity','Click Refi');
+        Id ClickOppRefiRecordTypeId = acfCommon.GetRecordTypeId('Opportunity','Click Refi');
+        Id ClickOppNewLoanRecordTypeId = acfCommon.GetRecordTypeId('Opportunity','Click New Loans');
         List<Opportunity> List_opp = new List<Opportunity>();
         List<User>lstUser = [select id , ContactId, AccountId from User where id=:CurrentUserId];
         if(lstUser <> null && lstUser.size()>0)
         {
-            if(ClickOppRecordTypeId <> null)
-                List_opp = [select id from opportunity where accountId=:lstUser[0].AccountId and recordTypeId=:ClickOppRecordTypeId]; 
+            if(ClickOppRefiRecordTypeId <> null || ClickOppNewLoanRecordTypeId <> null)
+                List_opp = [select id from opportunity where accountId=:lstUser[0].AccountId and (recordTypeId=:ClickOppRefiRecordTypeId OR recordTypeId=:ClickOppNewLoanRecordTypeId)]; 
             else
                 List_opp = [select id from opportunity where accountId=:lstUser[0].AccountId];
         }
@@ -436,6 +438,7 @@ public without sharing class acfCommon
         }
         return null;
     }
+    
     //Method to Find Required Documents Based on the Answer Selected.
     public static void getRequiredDocumentsFromAnswers(Id LeadId,set<string> setSelectedAnswer)
     {
@@ -469,6 +472,7 @@ public without sharing class acfCommon
        //system.debug('@@@test'+strParnterBrokerAnsId);  
        if(setSelectedAnswer <> null && setSelectedAnswer.size()>0)
        {
+           system.debug('setSelectedAnswer------' +setSelectedAnswer);
             for(acfDependent_Product__c objDependentProd:[select id,acfAnswer__c,acfFilter__c,acfProduct__c,acfProduct_Family__c from acfDependent_Product__c where acfAnswer__c in:setSelectedAnswer])
             {         
                 acfSuggested_Product__c objSuggestedProd = new acfSuggested_Product__c();
@@ -518,15 +522,24 @@ public without sharing class acfCommon
     //Calculating EMI
     public static double calculateMonthlyPayment(decimal loanAmount,double decRate,string strPaymentType,double decTenure)
     {
-        decRate   = decRate/1200;//here 1200 is 12*100.
-        decTenure = decTenure*12;
-        if(strPaymentType == 'Interest Only') 
-            return (Math.Round((loanAmount)*(decRate)));
-        else if(strPaymentType == 'Principal and Interest')
-        {    
-          return (Math.Round((loanAmount)*((decRate*(Math.pow((1+decRate),decTenure)))/((Math.pow((1+decRate),decTenure))-1))));
+        try{
+            if(decRate !=0){
+                decRate   = decRate/1200;//here 1200 is 12*100.
+                decTenure = decTenure*12;
+                if(strPaymentType == 'Interest Only') 
+                    return (Math.Round((loanAmount)*(decRate)));
+                else if(strPaymentType == 'Principal and Interest')
+                {    
+                  return (Math.Round((loanAmount)*((decRate*(Math.pow((1+decRate),decTenure)))/((Math.pow((1+decRate),decTenure))-1))));
+                }
+                return null;
+            }
         }
-        return null;
+
+        catch(Exception ex){
+            System.debug('ErrorMessage'+ex.getMessage());
+        }
+        return null; 
     }
     
     //user redirect method

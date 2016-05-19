@@ -39,13 +39,23 @@ public class WLpostloginQuestionsController
     Public Map<String,String> mapDependentQuestoValue;
     Public String strleadQues;
     Public String strAccQues; 
+    Public string strApplicaneQues;
     Public String strCurrentLoggedInAccount;
     Public Set<String> setQuesAccountAPInames; 
     Public Set<String> setQuesLeadAPInames;
     Public boolean isRelatedQuesDisplay;
     Public List<user> lstuserMobile;
     public Integer NoOfPrePostdependent{get;set;}
-    private string strNetworkId;
+    //added on 03-03-2016 - multiple applicants
+    public map<string,string> mapAppNoToAppId;
+    public set<string> lstApplicantAPIName = new set<string>();
+    public map<string,string>mapApplicantAPINameToSelectedAnswer;
+    public Decimal intNoOfApplicants;
+    public list<integer> lstMultipleAppScriptIndex;
+    public set<string> setQuesApplicantAPInames;
+    public Id CommunitySetupId;
+    
+   @TestVisible private string strNetworkId;
     
     private Click_Community_Setup__c objCommSetup {get;set;}
     
@@ -54,8 +64,7 @@ public class WLpostloginQuestionsController
         try
         {
             strNetworkId = Network.getNetworkId();
-
-                
+        
             objCommSetup = new Click_Community_Setup__c();
             IsSlide = 'false';
             isRelatedQuesDisplay = false;
@@ -67,6 +76,7 @@ public class WLpostloginQuestionsController
             TotalNoQuestionSlide =0;
             strleadQues = '';
             strAccQues = '';
+            strApplicaneQues = '';
             strCurrentLoggedInAccount = '';
             IsSkipDependent = '';
             setQuesAccountAPInames = new set<string>();
@@ -82,13 +92,22 @@ public class WLpostloginQuestionsController
             List<Question__c>lstMasterQuestion = new List<Question__c>();
             List<Script__c>lstScript = new List<Script__c>();
             mapScriptIdToListOfQuestions = new map<string,List<Question__c>>();
+            mapApplicantAPINameToSelectedAnswer = new map<string,string>();
+            mapAppNoToAppId = new map<string,string>();
             ScriptIndexNo = 0;
             ScriptQuestionNo = 0;
+            
+            //multiple applicants
+            intNoOfApplicants = integer.valueof(system.label.clickNumber_Of_Applicants);
+            lstMultipleAppScriptIndex = new list<integer>();
+            setQuesApplicantAPInames = new set<string>();
             
             if(strNetworkId != null && strNetworkId != '')
                 objCommSetup = ClickCommon.getCommunitySetup(strNetworkId);
                 
             lstuserMobile = [select id,MobilePhone,accountId,firstname,lastname from user where id=:UserInfo.getUserId()];
+            system.debug('lstuserMobile--------------'+lstuserMobile);
+            
             If(lstuserMobile != null && lstuserMobile .size()>0)
                 strCurrentLoggedInAccount = lstuserMobile[0].accountId;
             
@@ -100,25 +119,36 @@ public class WLpostloginQuestionsController
             LoggedInLeadId  = ClickCommon.getCurrentLoggedInLeadId(UserInfo.getUserId());  
             system.debug('____@@@@____'+LoggedInContact);
             
-            for(Script__c objScript : [select id,acf_Sequence_no__c,acf_Type__c,acf_Stage_Name__c,Click_Community_Setup__c,acf_Question_Type__c  from Script__c where acf_Type__c=:'Post-Login' AND Click_Community_Setup__r.Click_Network_ID__c =: strNetworkId order by acf_Sequence_no__c asc])
+            for(Script__c objScript : [select id,acf_Sequence_no__c,clickAsk_for_every_applicant__c,acf_Type__c,acf_Stage_Name__c,Click_Community_Setup__c,acf_Question_Type__c  from Script__c where acf_Type__c=:'Post-Login' AND Click_Community_Setup__r.Click_Network_ID__c =: strNetworkId order by acf_Sequence_no__c asc])
             {
                 system.debug('Ankit*************'+objScript);
                 setScriptId.add(objScript.id);
                 lstScript.add(objScript);
             }
             system.debug('@@@'+setScriptId);
+            //multiple applicants
+            list<click_Applicant__c> lstApplicant = [select id,click_Account__c,click_Account__r.personContactId,acfEmployment_Type__c,click_Applicant_Number__c 
+                                                    from click_Applicant__c where click_Account__r.personContactId =: LoggedInContact];
+            if(lstApplicant != null && lstApplicant.size()>0)
+            {
+                for(click_Applicant__c objApp : lstApplicant)
+                {
+                    mapAppNoToAppId.put(objApp.click_Applicant_Number__c,objApp.id);                    
+                    //mapAppNoToEmpTypeValue.put(objApp.click_Applicant_Number__c,objApp.acfEmployment_Type__c);
+                }                
+            }
             if(setScriptId.size()>0)
             {
                 lstScriptQuestionsLadder  = [select id,acf_Sequence_no__c,acf_Type__c,acf_Stage_Name__c from Script__c where acf_Type__c=:'Post-Login' AND Click_Community_Setup__c =: objCommSetup.Id order by acf_Sequence_no__c desc];
                 //intTotalQuestions = lstScriptQuestionsLadder.size();
                 intTotalQuestions = 0;
-                for(Question__c objQuestion:[select id,acf_ApiName__c,acfDependent_Field_Name__c,acfDependent_Object_Name__c,acfDependent_Value__c,acf_Description__c,acfReplace_Mobile_No__c,Date__c,acfApplicant_2_Api_Name__c,acf_Master_Question__c,acfAppEmployment_Type__c,acfIs_Applicant_Question__c,acf_Question__c,acf_Script__c,acfEmployment_Type__c,acf_Dependents__c,acf_Postal_Code__c,acf_Type__c,acf_Stage_Name__c,acf_Sequence_No__c ,acfBubble_Text__c,acfWatermark_Text__c,
+                for(Question__c objQuestion:[select id,acf_ApiName__c,acfDependent_Field_Name__c,acfDependent_Object_Name__c,acfDependent_Value__c,acf_Description__c,acfReplace_Mobile_No__c,Date__c,acfApplicant_2_Api_Name__c,acf_Master_Question__c,
+                                            acfAppEmployment_Type__c,acfIs_Applicant_Question__c,acf_Question__c,acf_Script__c,acfEmployment_Type__c,acf_Dependents__c,acf_Postal_Code__c,acf_Type__c,acf_Stage_Name__c,acf_Sequence_No__c ,acfBubble_Text__c,acfWatermark_Text__c,
                                             acfComponent_Type__c,(select id,acf_Answer__c,acf_Question__c,acf_Related_Question__c,acfSequence_No__c from Answer__r order by acfSequence_No__c) from Question__c
                                            where ((acf_Master_Question__r.acf_Script__c in: setScriptId or acf_Script__c in:setScriptId) and acf_Active__c = true and Click_Is_Broker_Question__c = false) order by acf_Sequence_No__c asc ])  
                 {                                      
                     mapQuestionIdToQuestion.put(objQuestion.id,objQuestion);
-                    if(objQuestion.acf_ApiName__c <> null)
-                      lstContactAPINames.add(objQuestion.acf_ApiName__c);
+                    
                     if(objQuestion.acf_Script__c <> null)
                     {
                         if(mapScriptIdToListOfQuestions.get(objQuestion.acf_Script__c) == null)
@@ -135,6 +165,10 @@ public class WLpostloginQuestionsController
                             {
                                  setQuesLeadAPInames.add(objQuestion.acfDependent_Field_Name__c);
                                  //strleadQues = strleadQues+objQuestion.acfDependent_Field_Name__c+',';
+                            }
+                            if(objQuestion.acfDependent_Object_Name__c == 'Applicant')
+                            {
+                                setQuesApplicantAPInames.add(objQuestion.acfDependent_Field_Name__c);
                             }
                        }
                   }
@@ -154,58 +188,44 @@ public class WLpostloginQuestionsController
                     {
                              strAccQues = strAccQues+strApiname+',';
                     }
-                }  
-                If(strleadQues != null && strleadQues <> '' && LoggedInLeadId != null)
-                {                      
-                    String strQueryOnDependentObj = 'select '+strleadQues+'id from Lead where id = \'' + LoggedInLeadId + '\'';
-                    SObject[] lstDependentObj = Database.query(strQueryOnDependentObj); 
-                    If(lstDependentObj != null && lstDependentObj.size()>0)
+                }
+                //Applicant answer dependent  
+                if(setQuesApplicantAPInames != null && setQuesApplicantAPInames.size()>0)
+                {
+                    for(String strApiname : setQuesApplicantAPInames)
                     {
-                        for(SObject objDependentObj  : lstDependentObj)
-                        {
-                           // system.debug('@@@@@karthik'+setQuesAccountAPInames);
-                            for(String strApiName : setQuesLeadAPInames)
-                            {
-                                If(strApiName <> '' && objDependentObj.get(strApiName) <> null)
-                                {  
-                                    mapDependentQuestoValue.put(strApiName,string.valueof(objDependentObj.get(strApiName))); 
-                                }
-                            }   
-                        }
+                        strApplicaneQues = strApplicaneQues+strApiname+',';
                     }
                 }
-                If(strAccQues != null && strAccQues <> '' && LoggedInContact != null)
-                {
-                    String strQueryOnDependentObj = 'select '+strAccQues+'id from Contact where id = \'' + LoggedInContact + '\'';
-                    system.debug('!@#$%^&*'+strQueryOnDependentObj+'========'+strAccQues);
-                    SObject[] lstDependentObj = Database.query(strQueryOnDependentObj);
-                    system.debug('@@@@@karthik'+lstDependentObj);
-                    If(lstDependentObj != null && lstDependentObj.size()>0)
-                    {
-                        for(SObject objDependentObj  : lstDependentObj)
-                        {
-                            system.debug('@@@@@karthik'+setQuesAccountAPInames);
-                            for(String strApiName : setQuesAccountAPInames)
-                            {
-                                If(strApiName <> '' && objDependentObj.get(strApiName) <> null)
-                                {  
-                                    mapDependentQuestoValue.put(strApiName,string.valueof(objDependentObj.get(strApiName))); 
-                                }
-                            }   
-                        }
-                    }
-                } 
+                mapDependentQuestoValue.putAll(getDependentApiNameToValue(strleadQues,setQuesLeadAPInames,'Lead'));
+                mapDependentQuestoValue.putAll(getDependentApiNameToValue(strAccQues,setQuesAccountAPInames,'Contact'));
+                mapDependentQuestoValue.putAll(getDependentApiNameToValue(strApplicaneQues,setQuesApplicantAPInames,'click_Applicant__c'));
+             
+                //for multiple applicants
+                map<integer,string> mapDecTostring = new map<integer,string>();
+                mapDecTostring.put(1,'First');
+                mapDecTostring.put(2,'Second');
+                mapDecTostring.put(3,'Third');
+                mapDecTostring.put(4,'Fourth');
+                mapDecTostring.put(5,'Fifth');
+                mapDecTostring.put(6,'Sixth');
+                mapDecTostring.put(7,'Seventh');
+
                 system.debug('@@@@@karthik_map'+mapDependentQuestoValue);
                 system.debug('Map:::_____----'+mapScriptIdToListOfQuestions);
                 if(mapScriptIdToListOfQuestions.size()>0)
                 {
                     Integer IndexCount = 0;
+                    
                     for(Script__c objScript:lstScript)
                     {
                         WrapperScript objWrapScript = new WrapperScript();
                         objWrapScript.objScript = objScript;
                         objWrapScript.NoOfQuesSkipped = 0;
+                        objWrapScript.SkipFromAppNo = 0;
                         objWrapScript.IsSkipApp2 = false;
+                        objWrapScript.IsSkipQuestions = false;
+                        objWrapScript.isEmploymentTypeExist = false;
                         objWrapScript.lstScriptMasterQuestions = new List<WrapperQuestions>();
                         if(mapScriptIdToListOfQuestions.get(objScript.id) <> null)
                         {
@@ -219,9 +239,25 @@ public class WLpostloginQuestionsController
                                 objMasterQuestion.lstCheckBoxAnswer  = new List<string>();
                                 objMasterQuestion.IsApplicant2Question = false;
                                 objMasterQuestion.lstRelatedQuestion    = new List<WrapperQuestions>();
-                                if(objWrapScript.objScript.acf_Question_Type__c == 'Applicant Details' && objQuestion.acfIs_Applicant_Question__c <> true)
+                                if(objWrapScript.objScript.clickAsk_for_every_applicant__c == true)
                                 {
+                                    if(objQuestion.acfEmployment_Type__c == true)
+                                    {
+                                        objWrapScript.isEmploymentTypeExist = true;
+                                        continue;
+                                    }
                                     objMasterQuestion.strApplicantNo = 'First Applicant';
+                                    objMasterQuestion.strApplicantRecNo = '1';
+                                    objMasterQuestion.IsApplicant2Question = true;
+                                    lstMultipleAppScriptIndex.add(IndexCount);
+                                    if(objQuestion.acf_ApiName__c <> null)
+                                    {
+                                        lstApplicantAPIName.add(objQuestion.acf_ApiName__c);
+                                    }
+                                    
+                                }else{
+                                    if(objQuestion.acf_ApiName__c <> null)
+                                    lstContactAPINames.add(objQuestion.acf_ApiName__c);
                                 }
                                 if(objMasterQuestion.objWrapQuestion.acf_Type__c == 'Text' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Phone' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Number'|| objMasterQuestion.objWrapQuestion.acf_Type__c == 'Checkbox' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Currency' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                                 {
@@ -249,24 +285,27 @@ public class WLpostloginQuestionsController
                                 objWrapScript.lstScriptMasterQuestions.add(objMasterQuestion);
                             }
                             // For Applicant Detail script.
-                            if(objWrapScript.objScript.acf_Question_Type__c == 'Applicant Details')
+                            if(objWrapScript.objScript.clickAsk_for_every_applicant__c == true && intNoOfApplicants <> null)
                             {
+                              for(integer i=2;i<=intNoOfApplicants;i++)  
+                              {
                                 for(Question__c objQuestion: mapScriptIdToListOfQuestions.get(objScript.id))
                                 {
-                                    if(objQuestion.acfIs_Applicant_Question__c <> true)
-                                    {
                                         WrapperQuestions objMasterQuestion   = new WrapperQuestions();
                                         objMasterQuestion.objWrapQuestion    = objQuestion;
                                         objMasterQuestion.ScriptSequence     = IndexCount;
                                         objMasterQuestion.lstSelectOpt       = new List<SelectOption>();
-                                        objMasterQuestion.strApplicantNo     = 'Second Applicant';
+                                        objMasterQuestion.strApplicantNo     = mapDecTostring.get(i)+' Applicant';
+                                        objMasterQuestion.strApplicantRecNo = string.valueof(i);
                                         objMasterQuestion.IsApplicant2Question = true;
                                         objMasterQuestion.lstSelectOptions   = new List<Answer__c>();
                                         objMasterQuestion.lstCheckBoxAnswer  = new List<string>();
                                         objMasterQuestion.lstRelatedQuestion    = new List<WrapperQuestions>();
                                         //List To be added Applicant 2 Api Field
-                                        if(objQuestion.acfApplicant_2_Api_Name__c <> null)
-                                            lstContactAPINames.add(objQuestion.acfApplicant_2_Api_Name__c);
+                                        if(objQuestion.acf_ApiName__c <> null)
+                                         lstApplicantAPIName.add(objQuestion.acf_ApiName__c);
+
+                                           // lstContactAPINames.add(objQuestion.acfApplicant_2_Api_Name__c);
                                         if(objMasterQuestion.objWrapQuestion.acf_Type__c == 'Text' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Phone' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Number'|| objMasterQuestion.objWrapQuestion.acf_Type__c == 'Checkbox' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Currency' || objMasterQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                                         {
                                               objMasterQuestion.IsContinueDisplay = true;
@@ -281,9 +320,9 @@ public class WLpostloginQuestionsController
                                             }
                                         }
                                         lstMasterWrapperQuestion.add(objMasterQuestion);                            
-                                        objWrapScript.lstScriptMasterQuestions.add(objMasterQuestion);
-                                    }   
+                                        objWrapScript.lstScriptMasterQuestions.add(objMasterQuestion);  
                                 }
+                              }
                             }
                         }    
                         lstWrapperScript.add(objWrapScript);
@@ -294,13 +333,15 @@ public class WLpostloginQuestionsController
                  // For Dependent and Employment type question in application Detail
                 for(Question__c objQuestion:[select id,acf_ApiName__c,acfApplicant_2_Api_Name__c,acf_Master_Question__c,acf_Dependents__c,acfEmployment_Type__c,acf_Script__c,acfBubble_Text__c,acfWatermark_Text__c,acfDependent_Field_Name__c,acfDependent_Object_Name__c,acfDependent_Value__c,Date__c,
                                             acfAppEmployment_Type__c,acfIs_Applicant_Question__c,acf_Question__c from  Question__c where 
-                                            acf_Script__c = null and (acfEmployment_Type__c = true or acf_Dependents__c = true) and acf_Active__c = true AND Click_Is_Broker_Question__c = false])
+                                            acf_Script__c = null and acf_Dependents__c = true and acf_Active__c = true AND Click_Is_Broker_Question__c = false])
                 {
-                    if(objQuestion.acfApplicant_2_Api_Name__c <> null)
-                        lstContactAPINames.add(objQuestion.acfApplicant_2_Api_Name__c);
-                    if(objQuestion.acf_ApiName__c <> null) 
+                    if(objQuestion.acf_ApiName__c <> null)
+                    {
+                        lstApplicantAPIName.add(objQuestion.acf_ApiName__c);
+                    }
+                   /* if(objQuestion.acf_ApiName__c <> null) 
                         lstContactAPINames.add(objQuestion.acf_ApiName__c);
-                
+                */
                 }
                 //For Reloading(Refreshing) all Filled Questions
                 system.debug('!@#$%^&'+lstContactAPINames);
@@ -313,6 +354,7 @@ public class WLpostloginQuestionsController
                     TotalNoQuestionSlide = 0;
                     MasterQuesNo = 0;
                     mapContactAPINameToSelectedAnswer = getContactApiToAnswer(lstContactAPINames);
+                    mapApplicantAPINameToSelectedAnswer = getApplicantApiAnswer(lstApplicantAPIName);
                     system.debug('@#$#$###'+mapContactAPINameToSelectedAnswer.size());
                     boolean IsExitfromLoop = false;
                     system.debug('!@#$%%'+lstMasterWrapperQuestion.size());
@@ -332,7 +374,7 @@ public class WLpostloginQuestionsController
                             system.debug('@##$$$#'+objPrepopulatingScript);
                             if(objPrepopulatingScript <> null)
                             {
-                                system.debug('@@@##$'+objPrepopulatingScript.IsSkipApp2); 
+                                system.debug('@@@##$'+objPrepopulatingScript.IsSkipApp2+'@@@@test'+mapApplicantAPINameToSelectedAnswer); 
                                 if(objPrepopulatingScript.IsSkipApp2)
                                 {
                                     system.debug('-----APP2SKIP-------');
@@ -340,66 +382,73 @@ public class WLpostloginQuestionsController
                                 }
                                 system.debug('___###LOkesh___###'+objQuestions.objWrapQuestion.acfDependent_Value__c+'@#$%^%'+mapDependentQuestoValue.get(objQuestions.objWrapQuestion.acfDependent_Field_Name__c));
                                 //For Skipping dependent questions from lead or contact on page load if any 
-                                if(objQuestions.objWrapQuestion.acfDependent_Value__c <> null && objQuestions.objWrapQuestion.acfDependent_Field_Name__c <> null && (objQuestions.objWrapQuestion.acfDependent_Value__c <> mapDependentQuestoValue.get(objQuestions.objWrapQuestion.acfDependent_Field_Name__c)))
+                                if(objQuestions.objWrapQuestion.acfDependent_Value__c <> null && objQuestions.objWrapQuestion.acfDependent_Field_Name__c <> null)
                                 {
-                                   /*TotalNoQuestionSlide++;
-                                   MasterQuesNo++;
-                                   ScriptQuestionNo++;*/
-                               if((ScriptQuestionNo == objPrepopulatingScript.lstScriptMasterQuestions.size()-1)||(objPrepopulatingScript.IsSkipQuestions == true && ScriptQuestionNo == (objPrepopulatingScript.NoOfQuesSkipped)))
-                                {
-                                    if(objPrepopulatingScript.IsSkipQuestions == true && ScriptQuestionNo == (objPrepopulatingScript.NoOfQuesSkipped))
+                                    string strDependentQuesValue = '';
+                                    if(objQuestions.IsApplicant2Question == false)
                                     {
-                                        TotalNoQuestionSlide += objPrepopulatingScript.NoOfQuesSkipped;
-                                        MasterQuesNo += objPrepopulatingScript.NoOfQuesSkipped; 
-                                        TotalNoQuestionSlide++;
-                                        MasterQuesNo++;
-                                        ScriptIndexNo++;
-                                        objPrepopulatingScript.IsSkipApp2 = true;
-                                        ScriptQuestionNo = 0;
-                                        continue;
+                                        strDependentQuesValue = objQuestions.objWrapQuestion.acfDependent_Field_Name__c;
+                                    }else{
+                                        strDependentQuesValue = objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acfDependent_Field_Name__c;
                                     }
-                                    else
-                                    {                               
-                                        ScriptQuestionNo = 0;
-                                        MasterQuesNo++;
-                                        TotalNoQuestionSlide++;
-                                        ScriptIndexNo++;
-                                        continue;
-                                    }   
-                                }
-                                else
-                                {
-                                    ScriptQuestionNo++;
-                                    MasterQuesNo++;
-                                    TotalNoQuestionSlide++;
-                                    continue;
-                                   /* if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null && mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c){
-                                            //IsSkipDependent = 'true';
-                                            ++MasterQuesNo; 
-                                            ScriptQuestionNo++; 
-                                            TotalNoQuestionSlide++;   
-                                    }*/
-                                }
-                                   
-                                   
+                                     system.debug('isSKipAppTst@@'+strDependentQuesValue+'====='+mapDependentQuestoValue+'==='+ScriptQuestionNo+'==='+objPrepopulatingScript.SkipFromAppNo);
+                                    if((objQuestions.objWrapQuestion.acfDependent_Value__c <> mapDependentQuestoValue.get(strDependentQuesValue)))
+                                    {
+                                       if((ScriptQuestionNo == objPrepopulatingScript.lstScriptMasterQuestions.size()-1)||(objPrepopulatingScript.IsSkipQuestions == true && ScriptQuestionNo == (objPrepopulatingScript.SkipFromAppNo - 1)))
+                                        {
+                                            if(objPrepopulatingScript.IsSkipQuestions == true && ScriptQuestionNo == (objPrepopulatingScript.SkipFromAppNo - 1))
+                                            {
+                                                system.debug('isSKipAppTst@@');
+                                                TotalNoQuestionSlide += objPrepopulatingScript.NoOfQuesSkipped;
+                                                MasterQuesNo += objPrepopulatingScript.NoOfQuesSkipped; 
+                                                TotalNoQuestionSlide++;
+                                                MasterQuesNo++;
+                                                ScriptIndexNo++;
+                                                objPrepopulatingScript.IsSkipApp2 = true;
+                                                ScriptQuestionNo = 0;
+                                                continue;
+                                            }
+                                            else
+                                            {                               
+                                                ScriptQuestionNo = 0;
+                                                MasterQuesNo++;
+                                                TotalNoQuestionSlide++;
+                                                ScriptIndexNo++;
+                                                continue;
+                                            }   
+                                        }
+                                        else
+                                        {
+                                            ScriptQuestionNo++;
+                                            MasterQuesNo++;
+                                            TotalNoQuestionSlide++;
+                                            continue;
+                                           /* if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null && mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c){
+                                                    //IsSkipDependent = 'true';
+                                                    ++MasterQuesNo; 
+                                                    ScriptQuestionNo++; 
+                                                    TotalNoQuestionSlide++;   
+                                            }*/
+                                        } 
+                                    }
                                 }
                                 //If Assets and liabilities not filled and question type is component.
-                                if(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)==null || ((mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)=='false') && (objQuestions.objWrapQuestion.acf_Type__c == 'Component')))
+                                if(objQuestions.IsApplicant2Question == false && (mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)==null || ((mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)=='false') && (objQuestions.objWrapQuestion.acf_Type__c == 'Component'))))
                                 {
                                    IsExitfromLoop = true;
                                    break;
                                 }
-                                else if(objQuestions.IsApplicant2Question && mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c)==null)
+                                else if(objQuestions.IsApplicant2Question && mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acf_ApiName__c)==null)
                                 {
                                    IsExitfromLoop = true;
                                    break;
                                 }
                                 if(objQuestions.IsApplicant2Question)
                                 {
-                                    if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c)) <> null)
-                                        objQuestions.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c));
+                                    if(mapAnswerNameToAnswerId.get(mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acf_ApiName__c)) <> null)
+                                        objQuestions.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acf_ApiName__c));
                                     else
-                                        objQuestions.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c);                            
+                                        objQuestions.strWrapAnswer  = mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acf_ApiName__c);                            
                                 }       
                                 else
                                 {
@@ -432,22 +481,37 @@ public class WLpostloginQuestionsController
                                 }
                                 // For Applicant Question Script
                                 if(objPrepopulatingScript.objScript.acf_Question_Type__c == 'Applicant Details' && objQuestions.objWrapQuestion.acfIs_Applicant_Question__c)
-                                {
-                                    
+                                {                                    
                                     string strNoOfApp = '';
                                     strNoOfApp = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c);
                                     system.debug('@@@@'+strNoOfApp);
                                     objQuestions.strWrapAnswer = strNoOfApp;
-                                    if(strNoOfApp <> '2')
+                                    for(integer intIndexNo : lstMultipleAppScriptIndex)
                                     {
-                                        objPrepopulatingScript.IsSkipQuestions = true;
-                                        objPrepopulatingScript.NoOfQuesSkipped = ((objPrepopulatingScript.lstScriptMasterQuestions.size())/2);
-                                    }
-                                    else
-                                    {
-                                        objPrepopulatingScript.IsSkipQuestions = false;
-                                        objPrepopulatingScript.NoOfQuesSkipped = 0; 
-                                    }
+                                        WrapperScript objPrepopulatingMultipleScript = lstWrapperScript[intIndexNo];
+                                        system.debug('@@karthik@'+objPrepopulatingMultipleScript.objScript);
+                                        if(objPrepopulatingMultipleScript != null)
+                                        {
+                                            if(strNoOfApp <> string.valueof(intNoOfApplicants))
+                                            {
+                                                objPrepopulatingMultipleScript.IsSkipQuestions = true; 
+                                                if(objPrepopulatingMultipleScript.isEmploymentTypeExist == true)
+                                                {
+                                                    objPrepopulatingMultipleScript.SkipFromAppNo =  (Integer.valueof(integer.valueof(strNoOfApp)*((objPrepopulatingMultipleScript.lstScriptMasterQuestions.size()+1)/intNoOfApplicants)))-1;                            
+                                                    objPrepopulatingMultipleScript.NoOfQuesSkipped = Integer.valueof((intNoOfApplicants-integer.valueof(strNoOfApp))*((objPrepopulatingMultipleScript.lstScriptMasterQuestions.size()+1)/intNoOfApplicants));
+                                                }else{
+                                                    objPrepopulatingMultipleScript.SkipFromAppNo =  Integer.valueof(integer.valueof(strNoOfApp)*((objPrepopulatingMultipleScript.lstScriptMasterQuestions.size())/intNoOfApplicants));                            
+                                                    objPrepopulatingMultipleScript.NoOfQuesSkipped = Integer.valueof((intNoOfApplicants-integer.valueof(strNoOfApp))*((objPrepopulatingMultipleScript.lstScriptMasterQuestions.size())/intNoOfApplicants));
+                                                }
+                                                
+                                                system.debug('@@karthik'+objPrepopulatingMultipleScript.NoOfQuesSkipped+'@@@'+objPrepopulatingMultipleScript.lstScriptMasterQuestions.size());
+                                            } else
+                                                {
+                                                    objPrepopulatingMultipleScript.IsSkipQuestions = false;
+                                                    objPrepopulatingMultipleScript.NoOfQuesSkipped = 0; 
+                                                }
+                                        }
+                                     }    
                                 }
                                 system.debug('@#$%'+objPrepopulatingScript.IsSkipQuestions+'@#$%%^'+objPrepopulatingScript.NoOfQuesSkipped);
                                 //For Check box type questions
@@ -507,10 +571,10 @@ public class WLpostloginQuestionsController
                                             }
                                             if(objQuestions.IsApplicant2Question)
                                             {
-                                                if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c)) <> null)
-                                                    objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c));
+                                                if(mapAnswerNameToAnswerId.get(mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acf_ApiName__c)) <> null)
+                                                    objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objRelatedQuestion.objWrapQuestion.acf_ApiName__c));
                                                 else
-                                                    objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c);                            
+                                                    objRelatedQuestion.strWrapAnswer  = mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objRelatedQuestion.objWrapQuestion.acf_ApiName__c);                            
                                             }       
                                             else
                                             {
@@ -537,12 +601,12 @@ public class WLpostloginQuestionsController
                                         }  
                                     }   
                                 }
-                                else if(RelatedQuesId == null && objPrepopulatingScript.objScript.acf_Question_Type__c == 'Applicant Details'  && objQuestions.objWrapQuestion.acf_Dependents__c && (mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)<>null || mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c) <>null))
+                                else if(RelatedQuesId == null && objPrepopulatingScript.objScript.acf_Question_Type__c == 'Applicant Details'  && objQuestions.objWrapQuestion.acf_Dependents__c && (mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)<>null || mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acf_ApiName__c)<>null))
                                 {
                                     system.debug('____LOkesh_____');
                                     Integer NoOFDependent;
-                                    if(objQuestions.IsApplicant2Question)                       
-                                        NoOFDependent = Integer.valueof(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c));
+                                    if(objQuestions.IsApplicant2Question && mapApplicantAPINameToSelectedAnswer <> null && mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acf_ApiName__c) <> null )                       
+                                        NoOFDependent = Integer.valueof(mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acf_ApiName__c));
                                     else
                                         NoOFDependent = Integer.valueof(mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c));   
                                     for(Question__c objDependentQuestion : [select id,acf_ApiName__c,acf_Description__c,acf_Master_Question__c,acfApplicant_2_Api_Name__c,acfIs_Applicant_Question__c,acf_Question__c,acf_Script__c,acf_Dependents__c, acf_Postal_Code__c,Date__c,acf_Type__c,acf_Stage_Name__c,acf_Sequence_No__c ,acfBubble_Text__c,acfWatermark_Text__c,acfDependent_Field_Name__c,acfDependent_Object_Name__c,acfDependent_Value__c,
@@ -567,10 +631,10 @@ public class WLpostloginQuestionsController
                                         }
                                         if(objQuestions.IsApplicant2Question)
                                         {
-                                            if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c)) <> null)
-                                                objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c));
+                                            if(mapAnswerNameToAnswerId.get(mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objRelatedQuestion.objWrapQuestion.acf_ApiName__c)) <> null)
+                                                objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objRelatedQuestion.objWrapQuestion.acf_ApiName__c));
                                             else
-                                                objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c);                            
+                                                objRelatedQuestion.strWrapAnswer  = mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objRelatedQuestion.objWrapQuestion.acf_ApiName__c);                            
                                         }       
                                         else
                                         {
@@ -594,69 +658,13 @@ public class WLpostloginQuestionsController
                                         IsSlide = 'false';     
                                     }                           
                                 }
-                                else if(RelatedQuesId == null && objPrepopulatingScript.objScript.acf_Question_Type__c == 'Applicant Details'  && objQuestions.objWrapQuestion.acfEmployment_Type__c && (mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c)<>null || mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c) <>null))
-                                {
-                                    system.debug('____LOkesh_____');
-                                    string strType;
-                                    if(objQuestions.IsApplicant2Question)                       
-                                        strType = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acfApplicant_2_Api_Name__c);
-                                    else
-                                        strType = mapContactAPINameToSelectedAnswer.get(objQuestions.objWrapQuestion.acf_ApiName__c);   
-                                    for(Question__c objDependentQuestion : [select id,acf_ApiName__c,acf_Description__c,acfApplicant_2_Api_Name__c,acf_Master_Question__c,acfIs_Applicant_Question__c,acfAppEmployment_Type__c,acf_Question__c,acf_Script__c,acf_Dependents__c,acf_Postal_Code__c,Date__c,acf_Type__c,acf_Stage_Name__c,acf_Sequence_No__c ,acfWatermark_Text__c,
-                                                                             (select id,acf_Answer__c,acf_Question__c,acf_Related_Question__c,acfSequence_No__c from Answer__r order by acfSequence_No__c) from Question__c
-                                                                               where acfIs_Applicant_Question__c = true and acf_Active__c = true and acfEmployment_Type__c = true and acfAppEmployment_Type__c =:strType and acf_Script__c = null AND Click_Is_Broker_Question__c = false order by acf_Sequence_No__c  ])
-                                    {                   
-                                        objQuestions.IsContinueDisplay = false;
-                                        WrapperQuestions objRelatedQuestion = new WrapperQuestions();
-                                        objRelatedQuestion.objWrapQuestion = objDependentQuestion ;
-                                        objRelatedQuestion.lstSelectOpt = new List<SelectOption>();
-                                        objRelatedQuestion.lstSelectOptions = new List<Answer__c>();
-                                        objRelatedQuestion.lstCheckBoxAnswer = new List<string>();
-                                        if(objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Text' || objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Phone' || objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Number'|| objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Checkbox' ||objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Currency' ||objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Percent')
-                                        {
-                                          objQuestions.IsContinueDisplay = true;
-                                        }
-                                        for(Answer__c objAnswer:objRelatedQuestion.objWrapQuestion.Answer__r)
-                                        {
-                                            mapAnswerNameToAnswerId.put(objAnswer.acf_Answer__c,objAnswer.id);
-                                            objRelatedQuestion.lstSelectOpt.add(new SelectOption((objAnswer.id),objAnswer.acf_Answer__c));
-                                            objRelatedQuestion.lstSelectOptions.add(objAnswer);
-                                        }
-                                        if(objQuestions.IsApplicant2Question)
-                                        {
-                                            if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c)) <> null)
-                                                objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c));
-                                            else
-                                                objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c);                            
-                                        }       
-                                        else
-                                        {
-                                            if(mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c)) <> null)
-                                                 objRelatedQuestion.strWrapAnswer  = mapAnswerNameToAnswerId.get(mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c));
-                                             else
-                                                 objRelatedQuestion.strWrapAnswer  = mapContactAPINameToSelectedAnswer.get(objRelatedQuestion.objWrapQuestion.acf_ApiName__c);                           
-                                        }
-                                        if(objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Checkbox')
-                                        {
-                                            objRelatedQuestion.IsContinueDisplay = true;
-                                            if(objRelatedQuestion.strWrapAnswer <> '')
-                                            {
-                                                for(string objChkboxAns:objRelatedQuestion.strWrapAnswer.split(','))
-                                                {
-                                                   objRelatedQuestion.lstCheckBoxAnswer.add(mapAnswerNameToAnswerId.get(objChkboxAns));
-                                                }
-                                            }    
-                                        }
-                                        objQuestions.lstRelatedQuestion.add(objRelatedQuestion);
-                                        IsSlide = 'false';     
-                                    }                           
-                                }
+                          
                                 system.debug('@#$$ScriptQuestionNo--'+ScriptQuestionNo);
                                 //lstMasterWrapperQuestion.set(MasterQuesNo,objQuestions);
                                 //system.debug('@#$$ScriptQuestionNo--'+objPrepopulatingScript.lstScriptMasterQuestions[ScriptQuestionNo]);
-                                if((ScriptQuestionNo == objPrepopulatingScript.lstScriptMasterQuestions.size()-1)||(objPrepopulatingScript.IsSkipQuestions == true && ScriptQuestionNo == (objPrepopulatingScript.NoOfQuesSkipped)))
+                                if((ScriptQuestionNo == objPrepopulatingScript.lstScriptMasterQuestions.size()-1)||(objPrepopulatingScript.IsSkipQuestions == true && ScriptQuestionNo == (objPrepopulatingScript.SkipFromAppNo - 1)))
                                 {
-                                    if(objPrepopulatingScript.IsSkipQuestions == true && ScriptQuestionNo == (objPrepopulatingScript.NoOfQuesSkipped))
+                                    if(objPrepopulatingScript.IsSkipQuestions == true && ScriptQuestionNo == (objPrepopulatingScript.SkipFromAppNo - 1))
                                     {
                                         TotalNoQuestionSlide += objPrepopulatingScript.NoOfQuesSkipped;
                                         MasterQuesNo += objPrepopulatingScript.NoOfQuesSkipped; 
@@ -709,6 +717,8 @@ public class WLpostloginQuestionsController
      
       if(objCommSetup != null && strNetworkId != null)
       {
+          system.debug('objCommSetup---------' +objCommSetup);
+          system.debug('strNetworkId---------'+strNetworkId);
           string returnURL = ClickCommon.redirect(userinfo.getuserId(),objCommSetup.Click_Page_Prefix__c+'postloginquestionnaires',strNetworkId);
           if(returnURL != null && returnURL <> '' && returnURL != 'false')
           {
@@ -755,6 +765,35 @@ public class WLpostloginQuestionsController
             for(string objContactFields:lstContactAPIFields)
             {
                 mapApiNameToAnswer.put(objContactFields,string.valueof(objContact.get(objContactFields)));
+            } 
+         }
+         if(mapApiNameToAnswer <> null)
+         {
+            return mapApiNameToAnswer;
+         }   
+         return null;
+    }
+    
+    //mulitple applicants
+    public map<string,string> getApplicantApiAnswer(Set<string>lstApplicantAPIFields)
+    {
+ 
+         map<string,string>mapApiNameToAnswer = new map<string,string>();
+         List<click_Applicant__c>lstApplicants = new List<click_Applicant__c>();
+         string Query = ' select id,';
+         for(string objApplicantFields:lstApplicantAPIFields)
+         { 
+            Query += objApplicantFields+',';
+         }
+         //Query = Query.removeEnd(',');
+         Query +='click_Applicant_Number__c from click_Applicant__c where click_Account__r.personContactId = \''+ LoggedInContact+'\'';
+         system.debug('@#$%test'+Query);
+         lstApplicants = Database.query(Query);
+         for(Sobject objApplicant:lstApplicants)
+         {
+            for(string objApplicantFields:lstApplicantAPIFields)
+            {
+                mapApiNameToAnswer.put(string.valueof(objApplicant.get('click_Applicant_Number__c')+objApplicantFields),string.valueof(objApplicant.get(objApplicantFields)));
             } 
          }
          if(mapApiNameToAnswer <> null)
@@ -875,33 +914,6 @@ public class WLpostloginQuestionsController
                             }
                         }   
                     }
-                    else if(RelatedQuesId == null && objScript.objScript.acf_Question_Type__c == 'Applicant Details'  && objQuestion.objWrapQuestion.acfEmployment_Type__c  && strAnswers <> null && strAnswers <> '')
-                    {
-                        for(Question__c objDependentQuestion : [select id,acf_ApiName__c,acf_Description__c,acfApplicant_2_Api_Name__c,acf_Master_Question__c,acfIs_Applicant_Question__c,acfAppEmployment_Type__c,acf_Question__c,acf_Script__c,acf_Dependents__c,acf_Postal_Code__c,Date__c,acf_Type__c,acf_Stage_Name__c,acf_Sequence_No__c ,acfBubble_Text__c,acfWatermark_Text__c,
-                                                                (select id,acf_Answer__c,acf_Question__c,acf_Related_Question__c,acfSequence_No__c from Answer__r order by acfSequence_No__c) from Question__c
-                                                                where acfIs_Applicant_Question__c = true and acf_Active__c = true and acfEmployment_Type__c = true and acfAppEmployment_Type__c =:strAnswers and acf_Script__c = null AND Click_Is_Broker_Question__c = false order by acf_Sequence_No__c  ])
-                        {
-                            system.debug('::::Applicant::::::::'+objDependentQuestion );
-                            objQuestion.IsContinueDisplay = false;
-                            WrapperQuestions objRelatedQuestion = new WrapperQuestions();
-                            objRelatedQuestion.objWrapQuestion = objDependentQuestion ;
-                            objRelatedQuestion.lstSelectOpt = new List<SelectOption>();
-                            objRelatedQuestion.lstSelectOptions = new List<Answer__c>();
-                            objRelatedQuestion.lstCheckBoxAnswer = new List<string>();
-                            if(objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Text' || objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Phone' || objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Number' ||objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Checkbox' ||objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Currency'||objRelatedQuestion.objWrapQuestion.acf_Type__c == 'Percent')
-                            {
-                              objQuestion.IsContinueDisplay = true;
-                            }
-                            for(Answer__c objAnswer:objRelatedQuestion.objWrapQuestion.Answer__r)
-                            {
-                                objRelatedQuestion.lstSelectOpt.add(new SelectOption((objAnswer.id),objAnswer.acf_Answer__c));
-                                objRelatedQuestion.lstSelectOptions.add(objAnswer);
-                            }
-                            objQuestion.lstRelatedQuestion.add(objRelatedQuestion);
-                            IsSlide = 'false';
-                        }
-                        
-                    }
                     else
                     {
                       objQuestion.IsContinueDisplay = true;
@@ -931,7 +943,7 @@ public class WLpostloginQuestionsController
             if(objQuestion <> null && objQuestion.ScriptSequence <> null)
             {
                 // if Dependent Question and Employment Type question then return from method.
-                if((objQuestion.objWrapQuestion.acf_Dependents__c || objQuestion.objWrapQuestion.acfEmployment_Type__c))
+                if(objQuestion.objWrapQuestion.acf_Dependents__c)
                 {
                    return null;
                 }
@@ -1027,6 +1039,7 @@ public class WLpostloginQuestionsController
         map<Question__c,string>mapQuesToSelectedAnswer = new map<Question__c,string>();
         //LoggedInContact = '003O000000WP6Qd';
         Contact objPortalContact = new Contact(id = LoggedInContact);
+        click_Applicant__c objApplicant = new click_Applicant__c();
         system.debug('@@#$%%'+MasterQuesNo +'@#$%'+lstMasterWrapperQuestion);
         if(MasterQuesNo < lstMasterWrapperQuestion.size())
         {
@@ -1036,6 +1049,15 @@ public class WLpostloginQuestionsController
             if(objQuestion <> null && objQuestion.ScriptSequence <> null)
             {
                 WrapperScript objWrapScript = lstWrapperScript[objQuestion.ScriptSequence];
+                if(mapAppNoToAppId != null && mapAppNoToAppId.get(objQuestion.strApplicantRecNo) != null)
+                {
+                   system.debug('@@@karthik@'+mapAppNoToAppId+'@@@'+mapAppNoToAppId.get(objQuestion.strApplicantRecNo));
+                    objApplicant.id = mapAppNoToAppId.get(objQuestion.strApplicantRecNo);
+                }
+                 else if(objQuestion.IsApplicant2Question){
+                        objApplicant.click_Applicant_Number__c = objQuestion.strApplicantRecNo;
+                    }
+
                 ScriptIndexNo = objQuestion.ScriptSequence;
                 if((objWrapScript <> null))
                 {
@@ -1050,14 +1072,18 @@ public class WLpostloginQuestionsController
                             if(objQuestion.objWrapQuestion.acf_Type__c == 'Number' || objQuestion.objWrapQuestion.acf_Type__c == 'Currency'|| objQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                             {
                                 if(objQuestion.IsApplicant2Question)
-                                   objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
+                                {
+                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
+                                }
                                 else  
                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
                             }  
                             else
                             {
                                 if(objQuestion.IsApplicant2Question)
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));
+                                {
+                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));
+                                }
                                 else
                                     objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));
                             }  
@@ -1066,15 +1092,19 @@ public class WLpostloginQuestionsController
                         {
                             if(objQuestion.objWrapQuestion.acf_Type__c == 'Number' || objQuestion.objWrapQuestion.acf_Type__c == 'Currency' || objQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                             {
-                                if(objQuestion.IsApplicant2Question) 
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(objQuestion.strWrapAnswer)); 
+                                if(objQuestion.IsApplicant2Question)
+                                {
+                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));
+                                } 
                                 else
                                     objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));                                    
                             }    
                             else
                             {
-                                if(objQuestion.IsApplicant2Question)                                    
-                                     objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,objQuestion.strWrapAnswer);
+                                if(objQuestion.IsApplicant2Question)
+                                {
+                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,objQuestion.strWrapAnswer);
+                                }
                                 else     
                                      objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,objQuestion.strWrapAnswer);
                             }   
@@ -1102,7 +1132,9 @@ public class WLpostloginQuestionsController
                                     if(mapAnswerIdToAnswer <> null && mapAnswerIdToAnswer.get(strAns)<> null)
                                     {
                                         if(objQuestion.IsApplicant2Question)
-                                           objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(strAns));
+                                        {
+                                           objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));
+                                        }
                                          else
                                             objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(strAns));
                                     }    
@@ -1114,14 +1146,18 @@ public class WLpostloginQuestionsController
                                 if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Number' || objRelatedQues.objWrapQuestion.acf_Type__c == 'Currency' || objRelatedQues.objWrapQuestion.acf_Type__c == 'Percent')
                                 {
                                     if(objQuestion.IsApplicant2Question)
-                                         objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));
+                                    {
+                                       objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));
+                                    }
                                     else
                                          objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));                                                                                    
                                 }
                                 else
                                 {
                                     if(objQuestion.IsApplicant2Question)
-                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer));                                     
+                                    {
+                                       objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer));
+                                    }                                    
                                     else
                                         objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer));                                                                               
                                 }  
@@ -1131,15 +1167,19 @@ public class WLpostloginQuestionsController
                                  //mapQuesToSelectedAnswer.put(objRelatedQues.objWrapQuestion,objRelatedQues.strWrapAnswer);
                                 if(objRelatedQues.objWrapQuestion.acf_Type__c == 'Number' || objRelatedQues.objWrapQuestion.acf_Type__c == 'Currency' || objRelatedQues.objWrapQuestion.acf_Type__c == 'Percent')
                                 {
-                                     if(objQuestion.IsApplicant2Question)
-                                         objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(objRelatedQues.strWrapAnswer));
-                                     else
+                                    if(objQuestion.IsApplicant2Question)
+                                    {
+                                       objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(objRelatedQues.strWrapAnswer));
+                                    }
+                                    else
                                          objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(objRelatedQues.strWrapAnswer));                                      
                                 }  
                                 else
                                 {
                                     if(objQuestion.IsApplicant2Question)
-                                        objPortalContact.put(objRelatedQues.objWrapQuestion.acfApplicant_2_Api_Name__c,objRelatedQues.strWrapAnswer);
+                                    {
+                                       objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,objRelatedQues.strWrapAnswer);
+                                    }
                                     else
                                         objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,objRelatedQues.strWrapAnswer);                                       
                                 }    
@@ -1190,7 +1230,9 @@ public class WLpostloginQuestionsController
                                 {
                                     //mapQuesToSelectedAnswer.put(objQuestion.objWrapQuestion,mapAnswerIdToAnswer.get(strAns));
                                     if(objQuestion.IsApplicant2Question)
-                                        objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(strAns));
+                                    {
+                                       objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(strAns));
+                                    }
                                     else
                                          objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(strAns));
                                 }   
@@ -1202,14 +1244,18 @@ public class WLpostloginQuestionsController
                             if(objQuestion.objWrapQuestion.acf_Type__c == 'Number' || objQuestion.objWrapQuestion.acf_Type__c == 'Currency' || objQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                             {
                               if(objQuestion.IsApplicant2Question)
-                                     objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
+                                {
+                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
+                                }
                               else
                                      objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));                            
                             } 
                             else
                             {
                                 if(objQuestion.IsApplicant2Question)
-                                     objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));
+                                {
+                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));
+                                }
                                 else 
                                      objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer));                               
                             }  
@@ -1220,14 +1266,18 @@ public class WLpostloginQuestionsController
                             if(objQuestion.objWrapQuestion.acf_Type__c == 'Number' || objQuestion.objWrapQuestion.acf_Type__c == 'Currency'|| objQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                             {
                                 if(objQuestion.IsApplicant2Question)
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,decimal.valueof(objQuestion.strWrapAnswer));
+                                {
+                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));
+                                }
                                 else
                                     objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));                    
                             }   
                             else
                             {
                                 if(objQuestion.IsApplicant2Question)
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acfApplicant_2_Api_Name__c,objQuestion.strWrapAnswer); 
+                                {
+                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,objQuestion.strWrapAnswer);
+                                } 
                                 else    
                                      objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,objQuestion.strWrapAnswer); 
                             }   
@@ -1238,46 +1288,72 @@ public class WLpostloginQuestionsController
                     {
                         string strNoOfApp = '';
                         strNoOfApp = mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer);
-                        system.debug('@@@@APPPP'+strNoOfApp);
-                        if(strNoOfApp <> '2')
+                        system.debug('@@@@APPPP'+strNoOfApp);                       
+                        for(integer intIndexNo : lstMultipleAppScriptIndex)
                         {
-                            objWrapScript.IsSkipQuestions = true;
-                            objWrapScript.NoOfQuesSkipped = ((objWrapScript.lstScriptMasterQuestions.size())/2);
-                        }
-                        else
-                        {
-                            objWrapScript.IsSkipQuestions = false;
-                            objWrapScript.NoOfQuesSkipped = 0; 
-                        }
+                            WrapperScript objPrepopulatingMultipleScript = lstWrapperScript[intIndexNo];
+                            system.debug('@@karthik@'+objPrepopulatingMultipleScript.objScript);
+                            if(objPrepopulatingMultipleScript != null)
+                            {
+                                if(strNoOfApp <> string.valueof(intNoOfApplicants))
+                                {
+                                    objPrepopulatingMultipleScript.IsSkipQuestions = true; 
+                                    if(objPrepopulatingMultipleScript.isEmploymentTypeExist == true)
+                                    {
+                                        objPrepopulatingMultipleScript.SkipFromAppNo =  (Integer.valueof(integer.valueof(strNoOfApp)*((objPrepopulatingMultipleScript.lstScriptMasterQuestions.size()+1)/intNoOfApplicants)))-1;                            
+                                        objPrepopulatingMultipleScript.NoOfQuesSkipped = Integer.valueof((intNoOfApplicants-integer.valueof(strNoOfApp))*((objPrepopulatingMultipleScript.lstScriptMasterQuestions.size()+1)/intNoOfApplicants));
+                                    }else{
+                                        objPrepopulatingMultipleScript.SkipFromAppNo =  Integer.valueof(integer.valueof(strNoOfApp)*((objPrepopulatingMultipleScript.lstScriptMasterQuestions.size()/intNoOfApplicants)));                            
+                                        objPrepopulatingMultipleScript.NoOfQuesSkipped = Integer.valueof((intNoOfApplicants-integer.valueof(strNoOfApp))*((objPrepopulatingMultipleScript.lstScriptMasterQuestions.size())/intNoOfApplicants));
+                                    }
+                                    
+                                    system.debug('@@karthik'+objPrepopulatingMultipleScript.NoOfQuesSkipped+'@@@'+objPrepopulatingMultipleScript.lstScriptMasterQuestions.size());
+                                } else
+                                    {
+                                        objPrepopulatingMultipleScript.IsSkipQuestions = false;
+                                        objPrepopulatingMultipleScript.NoOfQuesSkipped = 0; 
+                                    }
+                            }
+                         }                    
                     }
                     if(objPortalContact <> null)
                     {
                       update objPortalContact;
-                      If(objPortalContact.acf_Applicant_Name__c != null){
+                      if(objApplicant <> null && objQuestion.IsApplicant2Question)
+                       {                                                                            
                          if(lstuserMobile <> null && lstuserMobile.size()>0)
-                          {
+                         {
                               User objUser = lstuserMobile[0];
                               if(objUser.accountId != null)
                               {
-                                List<String> lstName = objPortalContact.acf_Applicant_Name__c.split(' ');
-                                  objUser.firstname = '';
-                                  Account objAccount = new Account(id=objUser.accountId);
-                                  objAccount.firstname = '';
-                                  If(lstName != null && lstName.size()>1)
+                                  if(objApplicant.click_Account__c == null)
                                   {
-                                    objUser.firstname = lstName[0];
-                                    objAccount.firstname = lstName[0];
-                                    objUser.lastname = lstName[1];
-                                    objAccount.lastname =lstName[1];
-                                  }else if(lstName != null && lstName.size() == 1){
-                                         objUser.lastname = lstName[0];
-                                         objAccount.lastname =lstName[0];
-                                        }
-                                 Update objUser;
-                                 Update objAccount;
-                              }
+                                     objApplicant.click_Account__c = objUser.accountId; 
+                                  }
+                                  If(objApplicant.acf_Applicant_Name__c != null && objQuestion.strApplicantRecNo == '1')
+                                  {
+                                      List<String> lstName = objApplicant.acf_Applicant_Name__c.split(' ');
+                                      objUser.firstname = '';
+                                      Account objAccount = new Account(id=objUser.accountId);
+                                      objAccount.firstname = '';
+                                      If(lstName != null && lstName.size()>1)
+                                      {
+                                        objUser.firstname = lstName[0];
+                                        objAccount.firstname = lstName[0];
+                                        objUser.lastname = lstName[1];
+                                        objAccount.lastname =lstName[1];
+                                      }else if(lstName != null && lstName.size() == 1){
+                                             objUser.lastname = lstName[0];
+                                             objAccount.lastname =lstName[0];
+                                            }
+                                     Update objUser;
+                                     Update objAccount;                                
+                                   }
+                               }
                           }
-                      }
+                      upsert objApplicant;
+                      mapAppNoToAppId.put(objApplicant.click_Applicant_Number__c,objApplicant.id);
+                    }
                     }
                     System.debug('test'+objWrapScript.IsSkipQuestions+'#$$%#'+objWrapScript.NoOfQuesSkipped);
                     //if last question
@@ -1295,8 +1371,8 @@ public class WLpostloginQuestionsController
                         string retPgName = ClickCommon.sendReturnUrl(Userinfo.getuserID(),false,+ objCommSetup.Click_Page_Prefix__c+'postloginQuestions',strNetworkId); 
                         return new pageReference(retPgName);
                     } 
-                    system.debug('karthik test@@@123'+ScriptQuestionNo+'===='+objWrapScript.NoOfQuesSkipped+'==='+MasterQuesNo+'==='+ScriptIndexNo+'===='+lstScriptQuestionsLadder.size());
-                    if((ScriptQuestionNo == objWrapScript.lstScriptMasterQuestions.size()-1)||(objWrapScript.IsSkipQuestions == true && ScriptQuestionNo == (objWrapScript.NoOfQuesSkipped)))
+                    system.debug('karthik test@@@123'+ScriptQuestionNo+'===='+objWrapScript.NoOfQuesSkipped+'==='+MasterQuesNo+'==='+ScriptIndexNo+'===='+objWrapScript.SkipFromAppNo);
+                    if((ScriptQuestionNo == objWrapScript.lstScriptMasterQuestions.size()-1)||(objWrapScript.IsSkipQuestions == true && ScriptQuestionNo == (objWrapScript.SkipFromAppNo - 1)))
                     {
                          System.debug('test');
                          ScriptIndexNo++; 
@@ -1324,7 +1400,8 @@ public class WLpostloginQuestionsController
                         ScriptQuestionNo++;
                         IsSlide = 'true';
                         system.debug('karthik==Continue'+mapDependentQuestoValue);
-                        If(strAccQues != null && strAccQues <> ''&& LoggedInContact != null){
+                        
+                       /* If(strAccQues != null && strAccQues <> ''&& LoggedInContact != null){
                             String strQueryOnDependentObj = 'select '+strAccQues+'id from Contact where id = \'' + LoggedInContact + '\'';
                             SObject[] lstDependentObj = Database.query(strQueryOnDependentObj);
                             If(lstDependentObj != null && lstDependentObj.size()>0){
@@ -1337,18 +1414,38 @@ public class WLpostloginQuestionsController
                                }   
                               }
                             }
-                        } 
+                        } */
+                        
+                        mapDependentQuestoValue.putAll(getDependentApiNameToValue(strAccQues,setQuesAccountAPInames,'Contact'));
+                        system.debug('@@@@test@#'+getDependentApiNameToValue(strApplicaneQues,setQuesApplicantAPInames,'click_Applicant__c'));
+                        mapDependentQuestoValue.putAll(getDependentApiNameToValue(strApplicaneQues,setQuesApplicantAPInames,'click_Applicant__c'));
+                
                         system.debug('karthik_map@@@@'+mapDependentQuestoValue+'====='+lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c);
-                        if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null && mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c)
+                        if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null) 
                         {
-                            while((mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c) && (MasterQuesNo < lstMasterWrapperQuestion.size()))
+                            string strDependentQuesValue = '';
+                            if(lstMasterWrapperQuestion[MasterQuesNo].IsApplicant2Question == false)
                             {
-                                IsSkipDependent = 'true';
-                                NoOfPrePostdependent++; 
-                                ++MasterQuesNo; 
-                                ScriptQuestionNo++;
-                                
+                                strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
+                            }else{
+                                strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].strApplicantRecNo+lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
                             }
+                            if(mapDependentQuestoValue.get(strDependentQuesValue) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c)
+                            {
+                                while((MasterQuesNo < lstMasterWrapperQuestion.size())&&(mapDependentQuestoValue.get(strDependentQuesValue) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c))
+                                {
+                                    IsSkipDependent = 'true';
+                                    NoOfPrePostdependent++; 
+                                    ++MasterQuesNo; 
+                                    ScriptQuestionNo++;
+                                    if(lstMasterWrapperQuestion[MasterQuesNo].IsApplicant2Question == false)
+                                    {
+                                        strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
+                                    }else{
+                                        strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].strApplicantRecNo+lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
+                                    }
+                                }
+                            }                     
                         } 
                         system.debug('test karthik@@@'+ScriptQuestionNo + '==='+objWrapScript.lstScriptMasterQuestions.size());
                        if(ScriptQuestionNo == objWrapScript.lstScriptMasterQuestions.size())
@@ -1388,9 +1485,11 @@ public class WLpostloginQuestionsController
             }
         }
         system.debug('!@#$$$$'+setSelectedAnswer);
+         CommunitySetupId = Network.getNetworkId();
         if(setSelectedAnswer.size()>0)
         {
-            ClickCommon.getRequiredDocumentsFromAnswers(LeadID,setSelectedAnswer);
+           
+            ClickCommon.getRequiredDocumentsFromAnswersFromCRM(LeadId,setSelectedAnswer,CommunitySetupId);
             //Method used to getSuggestedProducts Based on Answers.
             ClickCommon.getSuggestedProductsFromAnswers(LeadID,setSelectedAnswer,strNetworkId);
         } 
@@ -1436,17 +1535,32 @@ public class WLpostloginQuestionsController
                             {
                                  NoOfLeftSlide = 0;
                                  ScriptQuestionNo = objPreviousWrapScript.lstScriptMasterQuestions.size()-1;
-                                 if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null && mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c)
+                                 if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null)
                                     {
-                                        while(MasterQuesNo>0 && MasterQuesNo<lstMasterWrapperQuestion.size() && (mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c) && (MasterQuesNo < lstMasterWrapperQuestion.size()))
+                                        string strDependentQuesValue = '';
+                                        if(lstMasterWrapperQuestion[MasterQuesNo].IsApplicant2Question == false)
                                         {
-                                            IsSkipDependent = 'true';
-                                            --ScriptQuestionNo;
-                                            --MasterQuesNo;
-                                            NoOfPrePostdependent++;
+                                            strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
+                                        }else{
+                                            strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].strApplicantRecNo+lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
                                         }
-                                
-                                    }  
+                                        if(mapDependentQuestoValue.get(strDependentQuesValue) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c)
+                                        {
+                                            while(MasterQuesNo>0 && MasterQuesNo<lstMasterWrapperQuestion.size() && (mapDependentQuestoValue.get(strDependentQuesValue) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c) && (MasterQuesNo < lstMasterWrapperQuestion.size()))
+                                            {
+                                                IsSkipDependent = 'true';
+                                                --ScriptQuestionNo;
+                                                --MasterQuesNo;
+                                                NoOfPrePostdependent++;
+                                                if(lstMasterWrapperQuestion[MasterQuesNo].IsApplicant2Question == false)
+                                                {
+                                                    strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
+                                                }else{
+                                                    strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].strApplicantRecNo+lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
+                                                }
+                                            }
+                                        }
+                                    } 
                                  IsSlide = 'true';
                             }
                         }
@@ -1457,17 +1571,32 @@ public class WLpostloginQuestionsController
                         --ScriptQuestionNo;
                         --MasterQuesNo;
                         
-                        if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null && mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c)
+                       if(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion <> null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c != null && lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c != null)
                         {
-                            while(MasterQuesNo>0 && MasterQuesNo<lstMasterWrapperQuestion.size() && (mapDependentQuestoValue.get(lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c) && (MasterQuesNo < lstMasterWrapperQuestion.size()))
+                            string strDependentQuesValue = '';
+                            if(lstMasterWrapperQuestion[MasterQuesNo].IsApplicant2Question == false)
                             {
-                                IsSkipDependent = 'true';
-                                --ScriptQuestionNo;
-                                --MasterQuesNo;
-                                NoOfPrePostdependent++;
+                                strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
+                            }else{
+                                strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].strApplicantRecNo+lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
                             }
-                        
-                        }  
+                            if(mapDependentQuestoValue.get(strDependentQuesValue) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c)
+                            {
+                                while(MasterQuesNo>0 && MasterQuesNo<lstMasterWrapperQuestion.size() && (mapDependentQuestoValue.get(strDependentQuesValue) != lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Value__c) && (MasterQuesNo < lstMasterWrapperQuestion.size()))
+                                {
+                                    IsSkipDependent = 'true';
+                                    --ScriptQuestionNo;
+                                    --MasterQuesNo;
+                                    NoOfPrePostdependent++;
+                                    if(lstMasterWrapperQuestion[MasterQuesNo].IsApplicant2Question == false)
+                                    {
+                                        strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
+                                    }else{
+                                        strDependentQuesValue = lstMasterWrapperQuestion[MasterQuesNo].strApplicantRecNo+lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfDependent_Field_Name__c;
+                                    }
+                                }
+                            }
+                        } 
                         strBubbleText = lstMasterWrapperQuestion[MasterQuesNo].objWrapQuestion.acfBubble_Text__c; 
                         IsSlide = 'true';
                     }
@@ -1542,6 +1671,52 @@ public class WLpostloginQuestionsController
         }
         return null;
     }
+    //to get dependent values
+    public map<string,string> getDependentApiNameToValue(String strQues,set<string> setQuesAPInames,string strObjName)
+    {
+        map<string,string> maptempDependentQuestoValue = new map<string,string>();
+        If(strQues != null && strQues <> '' && LoggedInContact != null)
+        {
+            String strQueryOnDependentObj = 'select '+strQues+'id';
+            system.debug('!@#$%^&*'+strQueryOnDependentObj+'========'+strQues+'====='+strObjName);
+            if(strObjName == 'Lead')
+            {
+                strQueryOnDependentObj = strQueryOnDependentObj+' from Lead where id = \'' + LoggedInLeadId + '\'';
+            }
+            if(strObjName == 'Contact')
+            {
+                strQueryOnDependentObj = strQueryOnDependentObj+' from Contact where id = \'' + LoggedInContact + '\'';
+            }
+            if(strObjName == 'click_Applicant__c')
+                {
+                    strQueryOnDependentObj = strQueryOnDependentObj+',click_Applicant_Number__c from click_Applicant__c where click_Account__r.personContactId = \''+ LoggedInContact+'\'';
+                }
+              system.debug('@@@@@karthik'+strQueryOnDependentObj);    
+            SObject[] lstDependentObj = Database.query(strQueryOnDependentObj);
+            system.debug('!@#$%^&test'+lstDependentObj);
+            If(lstDependentObj != null && lstDependentObj.size()>0)
+            {
+                for(SObject objDependentObj  : lstDependentObj)
+                {
+                    system.debug('@@@@@karthik'+setQuesAPInames);
+                    for(String strApiName : setQuesAPInames)
+                    {
+                        If(strApiName <> '' && objDependentObj.get(strApiName) <> null)
+                        {  
+                            if(strObjName == 'click_Applicant__c')
+                            {
+                                maptempDependentQuestoValue.put(string.valueof(objDependentObj.get('click_Applicant_Number__c'))+strApiName,string.valueof(objDependentObj.get(strApiName))); 
+                            }else{
+                                maptempDependentQuestoValue.put(strApiName,string.valueof(objDependentObj.get(strApiName)));
+                            }                           
+                        }
+                    }   
+                }
+            }
+        } 
+        return maptempDependentQuestoValue;
+    }
+    
     public boolean IsValidDate(string strDate)
     {
        date DtDate;
@@ -1576,12 +1751,15 @@ public class WLpostloginQuestionsController
          public Integer NoOfQuesSkipped{get;set;}
          public boolean IsSkipApp2{get;set;}
          public List<WrapperQuestions>lstScriptMasterQuestions{get;set;}
+         public Integer SkipFromAppNo{get;set;}
+         public boolean isEmploymentTypeExist{get;set;}
     }
     //Master Question Wrapper
     public class WrapperQuestions
     {
           public Question__c objWrapQuestion {get;set;}
           public string strApplicantNo{get;set;}
+          public string strApplicantRecNo {get;set;}
           public string strWrapAnswer {get;set;}
           public List<SelectOption>lstSelectOpt {get;set;}
           public List<WrapperQuestions>lstRelatedQuestion {get;set;}

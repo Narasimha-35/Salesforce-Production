@@ -32,7 +32,7 @@ public class TestCallFileMemberSelector {
       }
       //field 'name' is been selected
       System.assert(true);
-
+      
       try{
           res[0].get('CreatedBy');
           System.assert(false);
@@ -55,7 +55,7 @@ public class TestCallFileMemberSelector {
 
       Test.stopTest();
    }
-
+   
    static testMethod void testGetByOpenCondition() {
       List<vhc__Campaign__c> cl = TestUtilities.createTestCallFile(100);
       insert cl;
@@ -70,11 +70,11 @@ public class TestCallFileMemberSelector {
       for(vhc__Campaign_Member__c cm : cml) ids.add(cm.id);
 
       Test.startTest();
-
+      
       CallFileMemberSelector cfms = new CallFileMemberSelector(new Set<String>{'name'}, null);
       List<vhc__Campaign_Member__c> res = cfms.getByOpenCondition('WHERE vhc__Campaign__c = \'' + cl[0].id + '\'');
       System.assertEquals(2, res.size());
-
+      
       Test.stopTest();
    }
 

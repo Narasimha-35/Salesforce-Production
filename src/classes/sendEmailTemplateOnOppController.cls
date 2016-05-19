@@ -1,19 +1,25 @@
 public without sharing class sendEmailTemplateOnOppController 
 {
     public Id accId {get; set;}
-
+ //   public string accountEmail{get;set;}
     public sendEmailTemplateOnOppController() 
-    {        
+    {  
+   //   accountEmail='';      
     }
     
     public List<Required_Document__c> getlstReqDocs() 
     {
-       list<Opportunity> lstOpportunity = [select id,name,RecordType.Name,Account.Name,AccountId,Owner.Name,Owner.Phone,Owner.Email from Opportunity where accountId =:accId AND (RecordType.Name = 'Click Refi' OR RecordType.Name = 'Click New Loans')];
+       list<Opportunity> lstOpportunity = [select id,name,RecordType.Name,Account.Name,Account.PersonEmail,AccountId,Owner.Name,Owner.Phone,Owner.Email from Opportunity where accountId =:accId AND (RecordType.Name = 'Click Refi' OR RecordType.Name = 'Click New Loans' 
+                                            OR RecordType.Name = 'ACF Refi' OR RecordType.Name = 'ACF New Loans')];
+   //    if(lstOpportunity[0].Account.PersonEmail <> null && lstOpportunity[0].Account.PersonEmail <> '')
+   //    accountEmail = lstOpportunity[0].Account.PersonEmail;
+       system.debug('lstOpportunity **********'+lstOpportunity);
        if(lstOpportunity != null && lstOpportunity.size()>0)
        {
            opportunity objOpp = lstOpportunity[0];
            List<Required_Document__c> lstReqDocs = [SELECT Name,acfStatus__c FROM Required_Document__c WHERE acfOpportunity__c = :objOpp.id AND acfStatus__c =: 'Pending'];
            return lstReqDocs;
+           system.debug('lstReqDocs**********'+lstReqDocs);
        }
        return null;
     }

@@ -19,6 +19,12 @@ public  class acfTriggerOnRequiredDocumnetHandler
     public void OnAfterInsert(List<Required_Document__c>triggerNew,Map<Id,Required_Document__c> triggerOld)
     {
         InsertTaskOfRequiredDocumentForSelectedOpportunity(triggerNew,triggerOld);
+        addDocumentSchema(triggerNew,triggerOld);
+    }
+    
+    public void OnBeforeInsert(List<Required_Document__c>triggerNew)
+    {
+        updateDownloadLinkonRequiredDocument(triggerNew);
     }
     public void OnAfterDelete(List<Required_Document__c> triggerOld)
     {
@@ -32,14 +38,66 @@ public  class acfTriggerOnRequiredDocumnetHandler
         }
         updateCountOfDocsOnOpp(setoppIds);
     }
-    
-    //Create Task For Selected Opportunity
+
+    //Added By Manish for adding Document Schema under Document Master
+    public void addDocumentSchema(List<Required_Document__c>triggerNew,Map<Id,Required_Document__c> triggerOld){
+        Set<id> docMasterId = new Set<id>();
+        for(Required_Document__c objReqDoc:triggerNew){
+            if(!docMasterId.contains(objReqDoc.acfDocument_Master__c)){
+                docMasterId.add(objReqDoc.acfDocument_Master__c);
+            }
+        }
+        
+
+        Map<Id,List<Document_Schema__c>> docSchemaMasterMap = new Map<Id,List<Document_Schema__c>>();
+        
+        List<Document_Schema__c> docSchemaList = new List<Document_Schema__c>();
+        
+        
+        docSchemaList = [Select id,Click_Loans_Document_Master__c,Name,
+                                Click_Loans_Required_Document__c,Field_Display_Name__c,Field_Value__c 
+                                FROM Document_Schema__c where Click_Loans_Document_Master__c IN:docMasterId];
+        system.debug('###docSchema'+docSchemaList);
+                                
+        for(Document_Schema__c dSchema:docSchemaList){
+            if(!docSchemaMasterMap.containsKey(dSchema.Click_Loans_Document_Master__c)){
+                docSchemaMasterMap.put(dSchema.Click_Loans_Document_Master__c,new List<Document_Schema__c>());
+            }
+            docSchemaMasterMap.get(dSchema.Click_Loans_Document_Master__c).add(dSchema);
+        }
+        
+        docSchemaList.clear();
+        
+        for(Required_Document__c objReqDoc:triggerNew)
+        {
+            if(objReqDoc.acfDocument_Master__c <> null && docSchemaMasterMap <> null && docSchemaMasterMap.size() > 0
+            && docSchemaMasterMap.get(objReqDoc.acfDocument_Master__c) <> null
+               && docSchemaMasterMap.get(objReqDoc.acfDocument_Master__c).size() > 0 
+               )
+              {
+                    for(Document_Schema__c docMap:docSchemaMasterMap.get(objReqDoc.acfDocument_Master__c))
+                    {
+                        Document_Schema__c dSchemaObj = new Document_Schema__c();
+                        dSchemaObj.Name = docMap.Name;
+                        dSchemaObj.Click_Loans_Required_Document__c = objReqDoc.id;
+                        dSchemaObj.Field_Display_Name__c = docMap.Field_Display_Name__c;
+                        dSchemaObj.Field_Value__c =  docMap.Field_Value__c;
+                        docSchemaList.add(dSchemaObj);
+                    }
+              }
+        }
+        
+        if(docSchemaList.size() > 0)
+            insert docSchemaList;
+    }
+
+  //Create Task For Selected Opportunity
     public void InsertTaskOfRequiredDocumentForSelectedOpportunity(List<Required_Document__c>triggerNew,Map<Id,Required_Document__c> triggerOld)
     {
         List<Task>lstTaskToInsert = new List<Task>();
         set<Id>setOpportunityId = new set<Id>();
         set<string>setTaskName = new set<string>();
-        
+
         for(Required_Document__c objRequiredDoc:triggerNew)
         {
             //system.debug('***triggerOld.get(objRequiredDoc.id).acfOpportunity__c'+triggerOld.get(objRequiredDoc.id).acfOpportunity__c);
@@ -109,9 +167,9 @@ public  class acfTriggerOnRequiredDocumnetHandler
     {
         if(setOppId != null && setOppId.size()>0)
         { 
-             list<Opportunity> lstOpp = [select id,recordtype.name,(select id,acfOpportunity__c,acfStatus__c from Required_Documents__r 
+             list<Opportunity> lstOpp = [select id,recordtype.name,account.click_Is_Required_Document_Sent__c,(select id,acfOpportunity__c,acfStatus__c from Required_Documents__r 
                                          where acfStatus__c != 'Uploaded' AND acfStatus__c != 'Verified') from Opportunity where id IN: setOppId 
-                                         AND recordtype.name = 'Click Refi'];
+                                         AND account.click_Is_Required_Document_Sent__c = false];
              if(lstOpp != null && lstOpp.size()>0)
              {
                  for(Opportunity objOpp : lstOpp)
@@ -128,5 +186,44 @@ public  class acfTriggerOnRequiredDocumnetHandler
                  Update lstOpp;
               }
          }
+      }
+      
+      public void updateDownloadLinkonRequiredDocument(List<Required_Document__c> triggerNew)
+      {
+          map<id,string> mapIdToSource = new map<id,string>();
+          set<id> setOfDocId = new set<id>();
+          for(Required_Document__c objRequiredDocs : triggerNew)
+          {
+              if(objRequiredDocs.acfDocument_Master__c <> null)
+              {
+                  setOfDocId.add(objRequiredDocs.acfDocument_Master__c);
+              }
+          }
+          
+          List<Document_Master__c> lstDocumentMaster = [select id,acf_Source__c from Document_Master__c where id in:setOfDocId];
+          
+          if(lstDocumentMaster <> null && lstDocumentMaster.size() > 0)
+          {
+              for(Document_Master__c objDocMas : lstDocumentMaster )
+              {
+                  mapIdToSource.put(objDocMas.id,objDocMas.acf_Source__c );
+              }
+          }
+          
+          for(Required_Document__c objRD : triggernew)
+          {
+              if(objRD.acfDocument_Master__c<> null && mapIdToSource.containskey(objRD.acfDocument_Master__c))
+              {
+                  if(mapIdToSource.get(objRD.acfDocument_Master__c) == 'Note')
+                  {
+                      objRD.Click_Is_Note_Type__c = true;  
+                  }
+                  else if(mapIdToSource.get(objRD.acfDocument_Master__c) == 'Download Link')
+                  {
+                      objRD.Is_Download_Doc__c = true;  
+                  }
+                  
+              }
+          }
       }
 }

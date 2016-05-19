@@ -140,7 +140,7 @@ public without sharing class acf_PreLoginQuestionController{
       strmsg = '';
       if(MyAccountId<> null && MyAccountId<> '')
         {
-            lstAcc = [select id,LastName,RecordTypeId,FirstName,PersonEmail,Is_Partner_Broker_Customer__c,PersonMobilePhone from Account where id=:MyAccountId];
+            lstAcc = [select id,LastName,Name,RecordTypeId,FirstName,PersonEmail,Is_Partner_Broker_Customer__c,PersonMobilePhone from Account where id=:MyAccountId];
             system.Debug('lstAccount-------------'+lstAcc);
            
         }
@@ -293,6 +293,7 @@ public without sharing class acf_PreLoginQuestionController{
         objInsertLead.Status = 'Open';
             
         system.Debug('lstWrapperQuestion================='+ lstWrapperQuestion);
+        click_Applicant__c objFirstApplicant = new click_Applicant__c();
         for(WrapperQuestions objWrappQuestion : lstWrapperQuestion)
         {
         
@@ -336,8 +337,25 @@ public without sharing class acf_PreLoginQuestionController{
                 }
             }
 
+            if(objWrappQuestion.objWrapQuestion.acf_ApiName__c == 'acfEmployment_Type__c'){
+              objFirstApplicant.put(objWrappQuestion.objWrapQuestion.acf_ApiName__c,string.valueof(mapIdToAnswer.get(objWrappQuestion.strWrapAnswer)));
+            }
+
+           if(objWrappQuestion.objWrapQuestion.acf_ApiName__c == 'acfLast_2_years_Tax_Return_or_ATO_NOA__c'){
+                objFirstApplicant.put(objWrappQuestion.objWrapQuestion.acf_ApiName__c,string.valueof(mapIdToAnswer.get(objWrappQuestion.strWrapAnswer)));
+            }
+            
+            objFirstApplicant.acf_Applicant_Name__c = lstAcc[0].Name;
+            objFirstApplicant.click_Account__c = lstAcc[0].id;
+            objFirstApplicant.click_Applicant_Number__c = '1';
+            objFirstApplicant.Applicant_Email__c = lstAcc[0].PersonEmail;
+            objFirstApplicant.Applicant_Phone__c = lstAcc[0].PersonMobilePhone;           
+        }   
+
+        if(objFirstApplicant !=null)
+        {
+          insert objFirstApplicant;
         }
-         
         AssignmentRule AR = new AssignmentRule();
         AR = [select id from AssignmentRule where SobjectType = 'Lead' and Active = true limit 1];
         if(AR <> null)
@@ -356,7 +374,7 @@ public without sharing class acf_PreLoginQuestionController{
          }
          system.Debug('objInsertLead================='+ objInsertLead);
         
-        string Feedback = ClickEnablePortalUserFromCRM.createPortalUserFromCRMWithAccount(MyAccountId,objInsertLead.FirstName,objInsertLead.LastName,objInsertLead.Email,objInsertLead.MobilePhone,objInsertLead.id);
+        string Feedback = ClickEnablePortalUserFromCRM.createPortalUserFromCRMWithAccounts(MyAccountId,objInsertLead.FirstName,objInsertLead.LastName,objInsertLead.Email,objInsertLead.MobilePhone,objInsertLead.id,communityid);
         //string feedback='';
         
         if(Feedback.contains('Portal user created.') || Feedback == '')
