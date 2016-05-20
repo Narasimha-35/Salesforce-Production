@@ -238,9 +238,9 @@ public with sharing class TestMercuryUtility {
 
     //The chance of not picking up is (1/2)^5 = 0.00390625
     private static testMethod void testGetMostRecentAppointmentAccountWithouSynced() {
-        for(Integer i = 0; i < 8; i++) {
-            randomTestGetMostRecentAppointmentAccountWithouSynced();
-        }
+        // for(Integer i = 0; i < 8; i++) {
+        randomTestGetMostRecentAppointmentAccountWithouSynced();
+        // }
     }
 
     private static void randomTestGetMostRecentAppointmentAccountWithouSynced() {
