@@ -1,4 +1,6 @@
 public abstract class Model {
+	//the patten prefix for the field name are system reserved
+	public static final String REMOVE_RESERVE_PATTEN = 'param_rr_';
 
 	public Object get(String f) {
 		Map<String, Object> oMap;
@@ -28,5 +30,11 @@ public abstract class Model {
 		Set<String> ret = getAttributes();
 		for(String s : ret) if(get(s) == null) ret.remove(s);
 		return ret;
+	}
+
+	//Note: very unlikely to have some field starts with 'param_rr_' and does not because of system reserved
+	public Boolean isContainsReservedName() {
+		for(String s : getAttributes()) if(s.startsWith(REMOVE_RESERVE_PATTEN)) return true;
+		return false;
 	}
 }

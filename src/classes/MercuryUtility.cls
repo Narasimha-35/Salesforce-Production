@@ -323,11 +323,13 @@ global without sharing class MercuryUtility {
 		return ret;
 	}
 
-	public static String getEncodedChangeList(Model mod) {
-		Set<String> notNullFields = mod.getNonNullAttributeSet();
+	public static String getEncodedChangeList(Model mercModel) {
+		Set<String> notNullFields = mercModel.getNonNullAttributeSet();
 		notNullFields.remove('webAccess');
 		notNullFields.remove('uniqueId');
-		return EncodingUtil.urlEncode(JSON.serialize(notNullFields), MercuryModel.ENCODING_SCHEME);
+		String str = JSON.serialize(notNullFields);
+		if(mercModel.isContainsReservedName()) str.replace(Model.REMOVE_RESERVE_PATTEN, '');
+		return EncodingUtil.urlEncode(str, MercuryStaticValue.ENCODING_SCHEME);
 	}
 
 	public class MercuryMismatchException extends Exception {

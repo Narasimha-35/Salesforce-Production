@@ -176,7 +176,7 @@ public with sharing class TestMercuryModel {
 		insert acc;
 		MercuryModel.People p = new MercuryModel.People(acc, '');
 		System.assertEquals(acc.id, p.uniqueId);
-		System.assertEquals(MercuryModel.ACF_BRANCH_ID, p.company);
+		System.assertEquals(MercuryStaticValue.ACF_BRANCH_ID, p.company);
 	}
 
 	private static testMethod void testConstructPeopleFromApp() {
