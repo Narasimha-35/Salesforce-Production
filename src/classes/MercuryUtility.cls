@@ -111,7 +111,7 @@ global without sharing class MercuryUtility {
 		Database.UpsertResult accRes = Database.upsert(applicantAcc, Account.Fields.Id, false);
 		oppo.accountId = applicantAcc.id;
 		System.debug(LoggingLevel.DEBUG, '[MercuryUtility] Upserting Opportunity: ' + oppo);
-		Database.SaveResult oppoRes = Database.insert(oppo, false);
+		Database.UpsertResult oppoRes = Database.upsert(oppo, Opportunity.Fields.Id, false);
 		System.debug(LoggingLevel.DEBUG, '[MercuryUtility] Deleting Mercury Opportunity: ' + merc_oppo);
 		Database.DeleteResult delMercOppoRes = Database.delete(merc_oppo, false);
 
@@ -141,6 +141,11 @@ global without sharing class MercuryUtility {
 		}
 
 		return null;
+	}
+
+	public static Id getLastNotSyncedOppoId(Account acc) {
+		Opportunity oppo = [SELECT id FROM Opportunity WHERE accountId = :acc.id AND merc_current_status__c = null ORDER BY lastmodifieddate DESC LIMIT 1]; //not good for soql performance
+		return oppo.id;
 	}
 
 	public static Account getApplicantAccount(MercuryModel.People applicant) {
@@ -323,13 +328,11 @@ global without sharing class MercuryUtility {
 		return ret;
 	}
 
-	public static String getEncodedChangeList(Model mercModel) {
-		Set<String> notNullFields = mercModel.getNonNullAttributeSet();
+	public static String getEncodedChangeList(Model mod) {
+		Set<String> notNullFields = mod.getNonNullAttributeSet();
 		notNullFields.remove('webAccess');
 		notNullFields.remove('uniqueId');
-		String str = JSON.serialize(notNullFields);
-		if(mercModel.isContainsReservedName()) str.replace(Model.REMOVE_RESERVE_PATTEN, '');
-		return EncodingUtil.urlEncode(str, MercuryStaticValue.ENCODING_SCHEME);
+		return EncodingUtil.urlEncode(JSON.serialize(notNullFields), MercuryStaticValue.ENCODING_SCHEME);
 	}
 
 	public class MercuryMismatchException extends Exception {

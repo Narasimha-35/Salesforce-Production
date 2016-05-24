@@ -99,4 +99,29 @@ public with sharing class TestMercuryService {
 	// 	Test.stopTest();
 	// }
 
+	private static testMethod void testCreateIncomeAndExpense() {
+		Account acct = TestUtilities.createAccount();
+		acct.mercury_People_ID__c = '9c6f5809-08b1-464a-9cc7-71b31903e0aa';
+		insert acct;
+
+		Income_And_Expense__c iae = TestUtilities.createIncomeAndExpense();
+		iae.account__c = acct.id;
+		iae.amount__c = 1;
+		iae.balance__c = 2;
+		iae.credit_Limit__c = 3;
+		iae.category__c = 'Salary';
+		iae.frequency__c = 'Yearly';
+		iae.recordTypeId = IncomeRecordType.getInstance().id;
+		insert iae;
+
+		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+		mock.setStaticResource('MercuryLoginSuccessResponse');
+		mock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, mock);
+
+		Test.startTest();
+		MercuryService.createIncomeAndExpense(iae, acct, 'P200019');
+		Test.stopTest();
+	}
+
 }
