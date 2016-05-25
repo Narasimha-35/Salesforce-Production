@@ -313,6 +313,44 @@ public with sharing class TestMercuryUtility {
         System.assertEquals(prevMercOppoSize, [SELECT id FROM Mercury_Opportunity__c].size());
     }
 
+    private static testMethod void testRemoveMercuryOpportunityAndCreateOpportunityUpdateOppo() {
+        MercuryTestUtilities.setCustomSettings(true);
+        Account applicantAcc = TestUtilities.createAccount();
+        Opportunity oppo = TestUtilities.createOpportunity();
+        insert oppo;
+        Mercury_Opportunity__c merc_oppo = new Mercury_Opportunity__c();
+        insert merc_oppo;
+
+        Integer prevAccSize = [SELECT id FROM Account].size();
+        Integer prevOppoSize = [SELECT id FROM Opportunity].size();
+        Integer prevMercOppoSize = [SELECT id FROM Mercury_Opportunity__c].size();
+
+        Boolean res = MercuryUtility.removeMercuryOpportunityAndCreateOpportunity(applicantAcc, oppo, merc_oppo);
+        System.assertEquals(true, res);
+        System.assertEquals(prevAccSize + 1, [SELECT id FROM Account].size());
+        System.assertEquals(prevOppoSize, [SELECT id FROM Opportunity].size());
+        System.assertEquals(prevMercOppoSize - 1, [SELECT id FROM Mercury_Opportunity__c].size());
+    }
+
+    private static testMethod void testRemoveMercuryOpportunityAndCreateOpportunityUpdateAcc() {
+        MercuryTestUtilities.setCustomSettings(true);
+        Account applicantAcc = TestUtilities.createAccount();
+        insert applicantAcc;
+        Opportunity oppo = TestUtilities.createOpportunity();
+        Mercury_Opportunity__c merc_oppo = new Mercury_Opportunity__c();
+        insert merc_oppo;
+
+        Integer prevAccSize = [SELECT id FROM Account].size();
+        Integer prevOppoSize = [SELECT id FROM Opportunity].size();
+        Integer prevMercOppoSize = [SELECT id FROM Mercury_Opportunity__c].size();
+
+        Boolean res = MercuryUtility.removeMercuryOpportunityAndCreateOpportunity(applicantAcc, oppo, merc_oppo);
+        System.assertEquals(true, res);
+        System.assertEquals(prevAccSize, [SELECT id FROM Account].size());
+        System.assertEquals(prevOppoSize + 1, [SELECT id FROM Opportunity].size());
+        System.assertEquals(prevMercOppoSize - 1, [SELECT id FROM Mercury_Opportunity__c].size());
+    }
+
     private static testMethod void testConstructOpportunityFromMercuryOpp() {
         Mercury_Opportunity__c mo = testMercOppo;
         Opportunity o = MercuryUtility.constructOpportunityFromMercuryOpp(mo);
@@ -407,6 +445,33 @@ public with sharing class TestMercuryUtility {
         System.assertEquals(false, MercuryUtility.checkRecordFromResMap(null, 'account', 'abc'));
         System.assertEquals(false, MercuryUtility.checkRecordFromResMap(resMap, 'account', 'abCd'));
         System.assertEquals(false, MercuryUtility.checkRecordFromResMap(resMap, 'account', 'abc'.toUpperCase()));
+    }
+
+    private static testMethod void testGetLastNotSyncedOppoId() {
+        Account acc = TestUtilities.createAccount();
+        insert acc;
+        Opportunity oppo = TestUtilities.createOpportunity();
+        oppo.accountId = acc.id;
+
+        List<Opportunity> oppoList = TestUtilities.createOpportunities(5, oppo);
+        insert oppoList;
+        //make sure there are enough delay
+        update oppoList.get(3);
+        update oppoList.get(3);
+        update oppoList.get(3);
+        update oppoList.get(3);
+        update oppoList.get(3);
+        update oppoList.get(3);
+        update oppoList.get(3);
+        update oppoList.get(3);
+        update oppoList.get(3);
+        update oppoList.get(3);
+
+        Opportunity lastOppo = oppoList.get(4);
+        lastOppo.merc_current_status__c = 'something';
+        update lastOppo;
+
+        System.assertEquals(oppoList.get(3).id, MercuryUtility.getLastNotSyncedOppoId(acc));
     }
 
 }

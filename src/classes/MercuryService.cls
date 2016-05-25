@@ -1,51 +1,5 @@
-/**
-* See https://github.com/financialforcedev/fflib-apex-common for more info
-*
-* Install library via
-*   https://githubsfdeploy.herokuapp.com/app/githubdeploy/financialforcedev/fflib-apex-common
-*/
-
-/**
-* Encapsulates all service layer logic for a given function or module in the application
-*
-* For more guidelines and details see
-*   https://developer.salesforce.com/page/Apex_Enterprise_Patterns_-_Service_Layer
-*
-**/
 global class MercuryService {
-	private static final Integer MERC_CLEAN_BATCH_SIZE = 5;
 	public static MercurySettings__c mercSettings = MercurySettings__c.getOrgDefaults();
-
-	public class MercurySyncException extends Exception {
-		private List<Exception> exceptionList = null;
-
-		public MercurySyncException(List<Exception> exceptionList) {
-			this.exceptionList = exceptionList;
-		}
-
-		public List<Exception> getExceptions() {
-			return exceptionList;
-		}
-	}
-
-	public static final List<String> p1RequiredStatus;
-	static {
-		p1RequiredStatus = new List<String>{
-			'Signed',
-			'Signed - Additional Docs Required',
-			'Submit to Production',
-			'Submitted - On Hold',
-			'AIP',
-			'Submit to Production WIP',
-			'Submitted',
-			'Submitted MIR',
-			'Conditional Approval',
-			'Unconditional Approval',
-			'Pending Settlement',
-			'Settled (not paid)',
-			'Settled'
-		};
-	}
 	public static MercuryModel.Params param1;
 	static {
 		param1 = new MercuryModel.Params();
@@ -148,7 +102,7 @@ global class MercuryService {
 		MercuryModel.LoanResponse res = null;
 		Set<String> ids = new Set<String>();
 		if(method == 1) {
-			for(String s : p1RequiredStatus) {
+			for(String s : MercuryStaticValue.MERC_SYNC_TARGET_STATUS) {
 				param1.targetStatus = s;
 				res = getLoansFromMercury('Opportunity', 'P200019', 'businessStats', param1);
 				System.debug(LoggingLevel.INFO, '[MercuryService] loans to update: ' + res);
@@ -192,7 +146,7 @@ global class MercuryService {
 
 	public static void startCleanMercuryOpportunityBatch() {
 		MercuryOpportunityCleanUpBatch b = new MercuryOpportunityCleanUpBatch();
-		Database.executeBatch(b, MERC_CLEAN_BATCH_SIZE);
+		Database.executeBatch(b, MercuryStaticValue.MERC_CLEAN_BATCH_SIZE);
 	}
 
 	webservice static void cleanMercuryOpportunity(String input) {
@@ -209,7 +163,9 @@ global class MercuryService {
 		IncomeAndExpenseSelector iaeSelector = new IncomeAndExpenseSelector();
 		List<Income_And_Expense__c> iaeList = iaeSelector.getByAccount(acc);
 
-		//TODO: update loan details
+		//update loan details
+		MercuryModel.Loan loan = new MercuryModel.Loan(oppo, branchId);
+		MercuryApiUtilities.updateMercuryRecord(loan);
 		//upsert applicant details
 		for(Click_Applicant__c applicant : applicants) {
 			MercuryModel.People people;
@@ -222,10 +178,37 @@ global class MercuryService {
 			}
 		}
 		for(Income_And_Expense__c iae : iaeList) {
-			MercuryApiUtilities.createIncomeAndExpense(iae, acc, branchId);
+			createIncomeAndExpense(iae, acc, branchId);
 		}
-		MercuryApiUtilities.createAddress(acc, branchId);
+		createAddress(acc, branchId);
 		//TODO: upsert loan people
+	}
+
+	public static void createIncomeAndExpense(Income_And_Expense__c iae, Account acc, String branchId) {
+		Model mercModel;
+		if(iae.recordTypeId == IncomeRecordType.getInstance().id) {
+			mercModel = new MercuryModel.Income(iae, acc, branchId);
+		} else if(iae.recordTypeId == ExpenseRecordType.getInstance().id) {
+			mercModel = new MercuryModel.Expense(iae, acc, branchId);
+		}
+		MercuryApiUtilities.insertMercuryRecord(mercModel);
+	}
+
+	public static void createAddress(Account acc, String branchId) {
+		MercuryModel.Address addr = new MercuryModel.Address(acc, branchId);
+		MercuryApiUtilities.insertMercuryRecord(addr);
+	}
+
+	public class MercurySyncException extends Exception {
+		private List<Exception> exceptionList = null;
+
+		public MercurySyncException(List<Exception> exceptionList) {
+			this.exceptionList = exceptionList;
+		}
+
+		public List<Exception> getExceptions() {
+			return exceptionList;
+		}
 	}
 
 }

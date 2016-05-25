@@ -12,6 +12,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 	public static List<String> recipients                 = null;
 	public static String debugEmailTemplate               = null;
 	public static List<Map<String, String>> pendingEmails = null;
+	public static final String TOKEN_PLACEHOLDER          = '{{token}}';
+	public static final String RESOURCE_NAME_PLACEHOLDER = '{{resourceName}}';
 
 	//The object map between salesforce and mercury
 	public static final Map<String, String> sfToMercuryObjectMap;
@@ -250,45 +252,34 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return sendGetRequest(endPoint);
 	}
 
-	public static MercuryUtility.HttpSet insertMercuryRecord(Model mercModel) {
+	public static HttpRequest buildRequest(String endPointTemplate, String method, Model mercModel) {
+		HttpRequest req = new HttpRequest();
+
 		String token = MercuryAuth.getInstance().getToken();
 		String resourceName = MercuryModel.getResourceName(mercModel);
-
-		HttpRequest req = new HttpRequest();
-		Http http = new Http();
+		endPointTemplate.replace(TOKEN_PLACEHOLDER, token).replace(RESOURCE_NAME_PLACEHOLDER, resourceName);
+		String endPoint = endPointTemplate;
 		req.setHeader('Content-Type', 'application/json');
-		req.setEndPoint(BASE_URL + token + '/' + resourceName);
-		req.setMethod(AbstractWebService.HTTP_METHOD_POST);
-		req.setBody(JSON.serialize(mercModel));
+		req.setEndPoint(endPoint);
+		req.setMethod(method);
+		String payload = JSON.serialize(mercModel);
+		if(mercModel.isContainsReservedName()) payload.replace(Model.REMOVE_RESERVE_PATTEN, '');
+		req.setBody(payload);
+		return req;
+	}
+
+	public static MercuryUtility.HttpSet insertMercuryRecord(Model mercModel) {
+		String endPointTemplate = BASE_URL + TOKEN_PLACEHOLDER + '/' + RESOURCE_NAME_PLACEHOLDER;
+		HttpRequest req = buildRequest(endPointTemplate, 'POST', mercModel);
+		Http http = new Http();
 		return new MercuryUtility.HttpSet(req, http.send(req));
 	}
 
 	public static MercuryUtility.HttpSet updateMercuryRecord(Model mercModel) {
-		String token = MercuryAuth.getInstance().getToken();
-		String resourceName = MercuryModel.getResourceName(mercModel);
-
-		HttpRequest req = new HttpRequest();
+		String endPointTemplate = BASE_URL + TOKEN_PLACEHOLDER + '/' + RESOURCE_NAME_PLACEHOLDER + '/' + mercModel.get('uniqueId') + '?changes=' + MercuryUtility.getEncodedChangeList(mercModel);
+		HttpRequest req = buildRequest(endPointTemplate, 'PUT', mercModel);
 		Http http = new Http();
-		req.setHeader('Content-Type', 'application/json');
-		req.setEndPoint(BASE_URL + token + '/' + resourceName + '/' + mercModel.get('uniqueId') + '?changes=' + MercuryUtility.getEncodedChangeList(mercModel));
-		req.setMethod('PUT');
-		req.setBody(JSON.serialize(mercModel));
 		return new MercuryUtility.HttpSet(req, http.send(req));
-	}
-
-	public static void createIncomeAndExpense(Income_And_Expense__c iae, Account acc, String branchId) {
-		Model mercModel;
-		if(iae.recordTypeId == IncomeRecordType.getInstance().id) {
-			mercModel = new MercuryModel.Income(iae, acc, branchId);
-		} else if(iae.recordTypeId == ExpenseRecordType.getInstance().id) {
-			mercModel = new MercuryModel.Expense(iae, acc, branchId);
-		}
-		insertMercuryRecord(mercModel);
-	}
-
-	public static void createAddress(Account acc, String branchId) {
-		MercuryModel.Address addr = new MercuryModel.Address(acc, branchId);
-		insertMercuryRecord(addr);
 	}
 
 }

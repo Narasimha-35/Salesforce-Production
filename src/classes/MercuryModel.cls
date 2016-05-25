@@ -1,26 +1,4 @@
 public without sharing class MercuryModel {
-	public static final String API_USER_ID = 'CA51708';
-	public static final String ENCODING_SCHEME = 'UTF-8';
-	public static final String ACF_BRANCH_ID = 'P200019';
-	public static final String ACF_LEAD_SOURCE_ID = '3f85d5db-5924-11e4-88e4-00155db85119';
-	public static final String ACF_LEAD_SOURCE_NAME = 'ACF Client';
-	public static final String DEFAULT_TRANSACTION_TYPE = 'Loan';
-	public static final Map<String, String> GENDER_MAP = new Map<String, String> {
-		'M'      => 'Male',
-		'Male'   => 'Male',
-		'F'      => 'Female',
-		'Female' => 'Female',
-		''       => null
-	};
-	public static final Set<String> AVALIABLE_TITLE = new Set<String>{
-		'Dr',
-		'Miss',
-		'Ms',
-		'Mr',
-		'Mrs',
-		'Prof',
-		'Rev'
-	};
 
 	public static String getResourceName(Object mercModel) {
 		if(mercModel instanceOf MercuryModel.People) return 'person';
@@ -29,6 +7,8 @@ public without sharing class MercuryModel {
 		if(mercModel instanceOf MercuryModel.Expense) return 'expense';
 		if(mercModel instanceOf MercuryModel.LoanPeople) return 'loanPeople';
 		if(mercModel instanceOf MercuryModel.Address) return 'address';
+		if(mercModel instanceOf MercuryModel.Asset) return 'asset';
+		if(mercModel instanceOf MercuryModel.Liability) return 'liability';
 		return null;
 	}
 
@@ -107,7 +87,7 @@ public without sharing class MercuryModel {
 			uniqueId = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
 			//Currently no effect, so comment it out
 			//createdOn = acc.createdDate.format('yyyy-MM-dd\'T\'HH:mm:ssXXX');
-			createdBy = API_USER_ID;
+			createdBy = MercuryStaticValue.API_USER_ID;
 			firstName = acc.firstName;
 			lastName = acc.lastName;
 			dateOfBirth = acc.personBirthdate != null ? ((Datetime) acc.personBirthdate).format('yyyy-MM-dd\'T\'HH:mm:ssXXX') : null;
@@ -168,7 +148,7 @@ public without sharing class MercuryModel {
 			ret.mercury_People_ID__c = uniqueId;
 			ret.firstName = firstName;
 			ret.lastName = lastName;
-			ret.gender__pc = gender != null ? GENDER_MAP.get(gender) : null;
+			ret.gender__pc = gender != null ? MercuryStaticValue.GENDER_MAP.get(gender) : null;
 			ret.marital_Status__pc = maritalStatus;
 			ret.job_Title__pc = jobTitle;
 			ret.employment_Status__pc = employmentStatus;
@@ -207,9 +187,9 @@ public without sharing class MercuryModel {
 		private void validateAndClean() {
 			firstName = firstName != null && firstName != '' ? firstName : 'defaultFirstName';
 			annualSalary = annualSalary != null ? annualSalary : 0;
-			title = title != null && AVALIABLE_TITLE.contains(title.toLowerCase().capitalize()) ? title.toLowerCase().capitalize() : null;
+			title = title != null && MercuryStaticValue.AVALIABLE_TITLE.contains(title.toLowerCase().capitalize()) ? title.toLowerCase().capitalize() : null;
 			gender = gender != null ? gender.left(1) : null;
-			company = company != null && company != '' ? company : ACF_BRANCH_ID;
+			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
 		}
 
 		@testVisible
@@ -339,8 +319,8 @@ public without sharing class MercuryModel {
 			// fixedRateExpiry = ((Datetime)merc_oppo.merc_fixed_rate_expiry__c).format('yyyy-MM-dd');
 			// interestOnlyExpiry = ((Datetime)merc_oppo.merc_interest_only_expiry__c).format('yyyy-MM-dd');
 			metaData = merc_oppo.merc_categories__c;
-			leadSourceDisplay = ACF_LEAD_SOURCE_ID;
-			leadSourceId = ACF_LEAD_SOURCE_ID;
+			leadSourceDisplay = MercuryStaticValue.ACF_LEAD_SOURCE_ID;
+			leadSourceId = MercuryStaticValue.ACF_LEAD_SOURCE_ID;
 			validateAndClean();
 		}
 
@@ -370,10 +350,10 @@ public without sharing class MercuryModel {
 		@testVisible
 		private void validateAndClean() {
 			amount = amount != null ? amount : 0;
-			company = company != null && company != '' ? company : ACF_BRANCH_ID;
-			transactionType = transactionType != null ? transactionType : DEFAULT_TRANSACTION_TYPE;
-			leadSourceDisplay = leadSourceDisplay != null ? leadSourceDisplay : ACF_LEAD_SOURCE_ID;
-			leadSourceId = leadSourceId != null ? leadSourceId : ACF_LEAD_SOURCE_ID;
+			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
+			transactionType = transactionType != null ? transactionType : MercuryStaticValue.ACF_LEAD_SOURCE_ID;
+			leadSourceDisplay = leadSourceDisplay != null ? leadSourceDisplay : MercuryStaticValue.ACF_LEAD_SOURCE_ID;
+			leadSourceId = leadSourceId != null ? leadSourceId : MercuryStaticValue.ACF_LEAD_SOURCE_ID;
 		}
 
 	}
@@ -403,13 +383,13 @@ public without sharing class MercuryModel {
 		@testVisible
 		private void init() {
 			isDeleted = false;
-			company = ACF_BRANCH_ID;
-			createdBy = API_USER_ID;
+			company = MercuryStaticValue.ACF_BRANCH_ID;
+			createdBy = MercuryStaticValue.API_USER_ID;
 		}
 
 		@testVisible
 		private void validateAndClean() {
-			company = company != null && company != '' ? company : ACF_BRANCH_ID;
+			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
 		}
 	}
 
@@ -461,7 +441,7 @@ public without sharing class MercuryModel {
 			ret += '&currentPartnerId=' + currentPartnerId;
 			ret += '&currentGroupId=' + currentGroupId;
 			ret += '&searchType=' + searchType;
-			ret += '&params={' + EncodingUtil.urlEncode(paramString, ENCODING_SCHEME) + '}';
+			ret += '&params={' + EncodingUtil.urlEncode(paramString, MercuryStaticValue.ENCODING_SCHEME) + '}';
 			ret += '&page=' + page;
 			ret += '&start=' + start;
 			ret += '&limit=' + lmt;
@@ -571,14 +551,14 @@ public without sharing class MercuryModel {
 		@testVisible
 		private void init() {
 			isDeleted = false;
-			company = ACF_BRANCH_ID;
-			createdBy = API_USER_ID;
+			company = MercuryStaticValue.ACF_BRANCH_ID;
+			createdBy = MercuryStaticValue.API_USER_ID;
 			sortKey = 0;
 		}
 
 		@testVisible
 		private void validateAndClean() {
-			company = company != null && company != '' ? company : ACF_BRANCH_ID;
+			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
 		}
 	}
 
@@ -614,14 +594,14 @@ public without sharing class MercuryModel {
 		@testVisible
 		private void init() {
 			isDeleted = false;
-			company = ACF_BRANCH_ID;
-			createdBy = API_USER_ID;
+			company = MercuryStaticValue.ACF_BRANCH_ID;
+			createdBy = MercuryStaticValue.API_USER_ID;
 			sortKey = 0;
 		}
 
 		@testVisible
 		private void validateAndClean() {
-			company = company != null && company != '' ? company : ACF_BRANCH_ID;
+			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
 		}
 	}
 
@@ -656,17 +636,8 @@ public without sharing class MercuryModel {
 
 		public Address(Account acc, String branchId) {
 			init();
-			parentType = 'person';
-			// System.Address addr = acc.PersonMailingAddress;
-			//
-			// city = addr.getCity();
-			// country = addr.getCountry();
-			// postcode = addr.getPostalCode();
-			// state = addr.getState();
-			// streetName = addr.getStreet();
-			// addrGeoLongitude = String.valueof(addr.getLongitude());
-			// addrGeoLatitude = String.valueof(addr.getLatitude());
 
+			parentType = 'person';
 			parentID = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
 			addressBlock = acc.acfWhat_is_your_postcode__pc;
 			streetSearch = acc.acfWhat_is_your_postcode__pc;
@@ -679,16 +650,228 @@ public without sharing class MercuryModel {
 		@testVisible
 		private void init() {
 			isDeleted = false;
-			company = ACF_BRANCH_ID;
-			createdBy = API_USER_ID;
+			company = MercuryStaticValue.ACF_BRANCH_ID;
+			createdBy = MercuryStaticValue.API_USER_ID;
 			isCorrespondenceAddress = false;
 		}
 
 		@testVisible
 		private void validateAndClean() {
-			company = company != null && company != '' ? company : ACF_BRANCH_ID;
+			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
 			addrGeoLatitude = addrGeoLatitude != null ? addrGeoLatitude : '0.0';
 			addrGeoLongitude = addrGeoLongitude != null ? addrGeoLongitude : '0.0';
+		}
+	}
+
+	public class RealEstate extends Model {
+		public String uniqueId;
+		public Boolean isDeleted;
+		public String createdBy;
+		public String company;
+		public String parentID;
+		public String parentType;
+		public String type;
+		public String streetName;
+		public String streetNumber;
+		public String streetType;
+		public String city;
+		public String state;
+		public String postcode;
+		public String country;
+		public String unitNumber;
+		public String buildingName;
+		public String floorNumber;
+		public Boolean isCorrespondenceAddress;
+		// public String fromDate;
+		// public String toDate;
+		public String addressBlock;
+		public String format;
+		public String housingSituation;
+		public Boolean requiresConfirmation;
+		// public String poBoxNumber;
+		public String poBoxType;
+		// public String personName;
+		public String addrGeoLatitude;
+		public String addrGeoLongitude;
+
+		public RealEstate(Asset_And_Liability__c aal, String branchId) {
+			init();
+
+			company = branchId;
+			parentID = aal.id;
+			streetName = aal.street_Name__c;
+			streetNumber = aal.street_Number__c;
+			streetType = aal.street_Type__c;
+			city = aal.city__c;
+			state = aal.state__c;
+			postcode = aal.postcode__c != null ? String.valueOf(aal.postcode__c) : null;
+			country = aal.country__c;
+
+			validateAndClean();
+		}
+
+		@testVisible
+		private void init() {
+			isDeleted = false;
+			company = MercuryStaticValue.ACF_BRANCH_ID;
+			parentType = 'asset';
+			isCorrespondenceAddress = false;
+			format = 'standard';
+			requiresConfirmation = false;
+			createdBy = MercuryStaticValue.API_USER_ID;
+		}
+
+		@testVisible
+		private void validateAndClean() {
+			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
+			addrGeoLatitude = addrGeoLatitude != null ? addrGeoLatitude : '0.0';
+			addrGeoLongitude = addrGeoLongitude != null ? addrGeoLongitude : '0.0';
+		}
+
+	}
+
+	public class Asset extends Model {
+		public String uniqueId;
+		public Boolean isDeleted;
+		public String createdBy;
+		public String company;
+		public String parentType;
+		public String parentId;
+		public String name;
+		public String type;
+		public Decimal value;
+		public String valueBasis;
+		public String details;
+		public String institution;
+		public String accountName;
+		public String accountNumber;
+		public String accountBSB;
+		public Boolean realEstateUseAsSecurity;
+		public String realEstatePurpose;
+		public String realEstateZoning;
+		public RealEstate realEstateObject;
+		public Boolean realEstateToBePurchased;
+		public Decimal realEstateRentalIncome;
+		public String realEstateRentalIncomeFrequency;
+		public Boolean realEstateRentalEvidenceOfTenancy;
+		public String existingMortgageCreditor;
+		public Decimal existingMortgageBalance;
+		public Integer existingMortgageRepayment;
+		public String existingMortgageRepaymentFrequency;
+		public Boolean existingMortgageRepaymentClearing;
+		public String motorVehicleType;
+		public String motorVehiceYear;
+		public String motorVehicleMake;
+
+		public Asset(Asset_And_Liability__c aal, Opportunity oppo, Income_And_Expense__c iae, String branchId) {
+			init();
+
+			uniqueId = aal.id;
+			company = branchId;
+			parentId = oppo.mercury_Loan_Id__c != null && oppo.mercury_Loan_Id__c != '' ? oppo.mercury_Loan_Id__c : oppo.id;
+			name = AssetAndLiabilityRecordType.getInstance().rtMapById.get(aal.recordTypeId).getName().replaceFirst('Asset ', '');
+			type = name.replace(' ', '');
+			value = aal.value__c;
+			valueBasis = aal.value_Basis__c;
+			institution = aal.institution__c;
+			accountName = aal.account_Name__c;
+			accountNumber = aal.account_Number__c;
+			accountBSB = aal.bsb__c;
+			realEstateUseAsSecurity = aal.used_as_Security__c;
+			realEstatePurpose = aal.primary_Purpose__c;
+			realEstateZoning = aal.zoning__c;
+			realEstateObject = new RealEstate(aal, branchId);
+			realEstateToBePurchased = aal.to_Be_Purchased__c;
+			realEstateRentalIncome = iae.amount__c;
+			realEstateRentalIncomeFrequency = aal.repayment_Frequency__c;
+			realEstateRentalEvidenceOfTenancy = aal.evidence_of_Tenancy__c;
+			existingMortgageCreditor = aal.creditor__c;
+			existingMortgageBalance = aal.current_Balance__c;
+			existingMortgageRepayment = (Integer) aal.repayments__c;
+			existingMortgageRepaymentFrequency = aal.repayment_Frequency__c;
+			existingMortgageRepaymentClearing = aal.clearing_From_This_Loan__c;
+			motorVehicleType = aal.vehicle_Type__c;
+			motorVehiceYear = aal.vehicle_Year__c;
+			motorVehicleMake = aal.vehicle_Make__c;
+
+			validateAndClean();
+		}
+
+		@testVisible
+		private void init() {
+			isDeleted = false;
+			company = MercuryStaticValue.ACF_BRANCH_ID;
+			parentType = 'loan';
+			createdBy = MercuryStaticValue.API_USER_ID;
+		}
+
+		@testVisible
+		private void validateAndClean() {
+			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
+			value = value != null ? value : 0;
+			realEstateRentalIncome = realEstateRentalIncome != null ? realEstateRentalIncome : 0;
+			existingMortgageBalance = existingMortgageBalance != null ? existingMortgageBalance : 0;
+			existingMortgageRepayment = existingMortgageRepayment != null ? existingMortgageRepayment : 0;
+		}
+	}
+
+	public class Liability extends Model {
+		public String uniqueId;
+		public String company;
+		public Boolean isDeleted;
+		public String createdBy;
+		public String parentType;
+		public String parentId;
+		public String name;
+		public String type;
+		public Decimal value;
+		public String details;
+		public Decimal param_rr_limit;
+		public String institution;
+		public String accountName;
+		public String accountBSB;
+		public String accountNumber;
+		public Decimal accountRepayment;
+		public String accountRepaymentFrequency;
+		public String creditCardType;
+		public Boolean accountClearingFromLoan;
+
+		public Liability(Asset_And_Liability__c aal, Opportunity oppo, String branchId) {
+			init();
+
+			uniqueId = aal.id;
+			company = branchId;
+			parentId = oppo.mercury_Loan_Id__c != null && oppo.mercury_Loan_Id__c != '' ? oppo.mercury_Loan_Id__c : oppo.id;
+			name = AssetAndLiabilityRecordType.getInstance().rtMapById.get(aal.recordTypeId).getName().replaceFirst('Liability ', '');
+			type = name.replace(' ', '');
+			value = aal.value__c;
+			param_rr_limit = aal.limit__c;
+			institution = aal.institution__c;
+			accountName = aal.account_Name__c;
+			accountNumber = aal.account_Number__c;
+			accountBSB = aal.bsb__c;
+			accountRepayment = aal.repayments__c;
+			accountRepaymentFrequency = aal.repayment_Frequency__c;
+			creditCardType = aal.credit_Card_Type__c;
+			accountClearingFromLoan = aal.clearing_From_This_Loan__c;
+
+			validateAndClean();
+		}
+
+		@testVisible
+		private void init() {
+			isDeleted = false;
+			company = MercuryStaticValue.ACF_BRANCH_ID;
+			parentType = 'loan';
+			createdBy = MercuryStaticValue.API_USER_ID;
+		}
+
+		@testVisible
+		private void validateAndClean() {
+			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
+			value = value != null ? value : 0;
+			param_rr_limit = param_rr_limit != null ? param_rr_limit : 0;
+			accountRepayment = accountRepayment != null ? accountRepayment : 0;
 		}
 	}
 
