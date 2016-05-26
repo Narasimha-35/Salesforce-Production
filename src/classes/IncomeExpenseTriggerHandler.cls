@@ -3,7 +3,7 @@
     =============================================================================
     Name                             Date                                version
     =============================================================================
-    Karthik Chekkilla               05/05/2016                               1.0
+    Karthik Chekkilla               05/05/2016                            1.0
     =============================================================================
 */
 public class IncomeExpenseTriggerHandler extends TriggerHandler
@@ -11,13 +11,12 @@ public class IncomeExpenseTriggerHandler extends TriggerHandler
     public override void afterInsert() 
     {
         list<Financials_Source__c> lstFinancialSource = new list<Financials_Source__c>();
-        list<id> tempUserId = new list<id>();
-        for(Income_And_Expense__c  objIncome : (list<Income_And_Expense__c>)trigger.new)
+        list<string> lstUserIds = new list<string>();
+        for(Income_And_Expense__c objIncome : (List<Income_And_Expense__c>) trigger.new)
         {
-            tempUserId.add(objIncome.CreatedById);
+            lstUserIds.add(objIncome.createdbyid);
         }
-        map<String,String> mapUser  =ClickCommon.mapUserInputType(tempUserId);
-        map<string,string> mapUsrIdToUsrInputType = ClickCommon.mapUserInputType();
+        map<string,string> mapUsrIdToUsrInputType = ClickCommon.mapUserInputType(lstUserIds);
         string strUserType = '';
         //create financial records
         for(Income_And_Expense__c objIncome : (List<Income_And_Expense__c>) trigger.new)

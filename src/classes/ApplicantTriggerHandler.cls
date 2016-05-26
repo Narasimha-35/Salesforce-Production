@@ -3,7 +3,7 @@
     =============================================================================
     Name                             Date                                version
     =============================================================================
-    Karthik Chekkilla               04/05/2016                               1.0
+    Karthik Chekkilla               04/05/2016                              1.0
     =============================================================================
 */
 public class ApplicantTriggerHandler extends TriggerHandler
@@ -11,9 +11,6 @@ public class ApplicantTriggerHandler extends TriggerHandler
     string strIncomeSelfEmployedAPI = system.label.acfIncome_SelfEmployed_API;
     string strIncomePAYGAPI = system.label.acfIncome_PAYG_API;
     string strExpenseAPI = system.label.acfExpense_API;
-    
-    
-    
     public override void afterInsert() 
     {
         insertIncomeExpenses();
@@ -106,16 +103,17 @@ public class ApplicantTriggerHandler extends TriggerHandler
             objApplicant.get(strExpenseAPI) != Trigger.oldmap.get(objApplicant.id).get(strExpenseAPI))
             {
                 setApplicantIds.add(objApplicant.id);
-                lstid.add(objApplicant.createdById);
+                lstid.add(objApplicant.lastmodifiedbyid);
             }
             
         }
         system.debug('setApplicantIds-----'+setApplicantIds.size());
-        map<string,string> mapUsrIdToUsrInputType = ClickCommon.mapUserInputType(lstid);
+        
         set<string> setIncomeCategories = new set<string>();
         setIncomeCategories.add('Full Time - PAYG');
         setIncomeCategories.add('Self Employed');
         setIncomeCategories.add('Basic Living Expense');
+        map<string,string> mapUsrIdToUsrInputType = new map<string,string>();
         system.debug('Income_And_Expense__c ' + Financials_Source__c.Income_And_Expense__c + ' ' + setApplicantIds +' '+ setIncomeCategories);        
         list<Financials_Source__c> lstFinanceSources = [select id,Amount__c,Income_And_Expense__r.Applicant__c,createdbyId,Income_And_Expense__r.Category__c,Source__c from Financials_Source__c 
                                                         where Income_And_Expense__c != null AND Income_And_Expense__r.Applicant__c IN:setApplicantIds AND Income_And_Expense__r.Category__c IN:setIncomeCategories];
@@ -123,8 +121,11 @@ public class ApplicantTriggerHandler extends TriggerHandler
         system.debug('lstFinanceSources----'+lstFinanceSources.size());
         if(lstFinanceSources != null && lstFinanceSources.size()>0)
         {
-        
-        
+            for(Financials_Source__c objFinance : lstFinanceSources)
+            {
+                lstid.add(objFinance.createdbyid);
+            }
+            mapUsrIdToUsrInputType = ClickCommon.mapUserInputType(lstid);
             for(Financials_Source__c objFinance : lstFinanceSources)
             {
                 if(mapAppIdToFSrc.get(objFinance.Income_And_Expense__r.Applicant__c) == null)
@@ -154,7 +155,7 @@ public class ApplicantTriggerHandler extends TriggerHandler
                 if(mapAppIdToFSrc.get(objApplicant.id) != null && mapAppIdToFSrc.get(objApplicant.id).size()>0)
                 {
                     list<Financials_Source__c> lstFinance = mapAppIdToFSrc.get(objApplicant.id);
-                    system.debug('!@#$%^test'+mapUsrIdToUsrInputType.get(lstFinance[0].createdById));
+                    //system.debug('!@#$%^test'+mapUsrIdToUsrInputType.get(lstFinance[0].createdById));
                     if(lstFinance != null && lstFinance.size()>0)
                     {
                         for(Financials_Source__c objFinance : lstFinance)
