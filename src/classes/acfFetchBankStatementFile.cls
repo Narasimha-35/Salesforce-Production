@@ -1,9 +1,9 @@
 global without sharing class acfFetchBankStatementFile{
-
+public static string resp = '';
 @future(callout=true)
-  public static void BankStatementFetchFile(string user_Token, string selectedAccounts, string bankname,string strEndpoint,string strApiKey,string ReqDocId) 
-  {
-        //to fetch statements
+  public static void BankStatementFetchFile(string user_Token, string selectedAccounts, string bankname,string strEndpoint,string strApiKey,string ReqDocId) {
+     try
+     {
         String body = '{"user_token":"'+user_Token+'","accounts":{"'+bankname+'":['+selectedAccounts+']}}';
         Integer SubcategoryIndex = 1;
         Integer CategoryIndex = 1;
@@ -15,33 +15,18 @@ global without sharing class acfFetchBankStatementFile{
         req.setHeader('Accept', 'application/json');
         req.setHeader('X-API-KEY',strApiKey);
         req.setbody(body);
-        req.setTimeout(100000);        
-        System.debug('!!!!Statement Body -'+body);       
+        req.setTimeout(100000);
+        
+        System.debug('!!!!Statement Body -'+body);
+        
         Http http = new Http();
         HTTPResponse objresponse = http.send(req);
         String Statuscode = String.valueOf(objresponse.getStatusCode());
-        String resp = objresponse.getBody();        
-        System.debug('!!!! JSon Response - '+resp);
-    
-        //To fetch zip file
-        HttpRequest reqest = new HttpRequest();
-        reqest.setEndpoint(strEndpoint+'/files?X-API-KEY='+strApiKey+'&user_token='+user_Token);
-        reqest.setMethod('GET');    
-        Http httpreq = new Http();
-        HTTPResponse objZipresponse = httpreq.send(reqest); 
-        system.debug('objresponse?????' + objZipresponse.getBody());        
-        Blob objBlob = objZipresponse.getBodyAsBlob();       
-        system.debug('status???' + objZipresponse.getBodyAsBlob());
-        if(objBlob <> null && ReqDocId<> null && ReqDocId<> '')
-        {
-            Attachment attach = new Attachment();
-            attach.Body = objBlob;
-            attach.Name = 'Bankstatement.zip';
-            attach.ContentType = 'application/zip';            
-            attach.ParentID = ReqDocId;
-            insert attach;
-        }
+        resp = objresponse.getBody();
         
+        System.debug('!!!! XML Response - '+resp);
+    
+       
         if(string.isNotEmpty(resp))
         {
             if(resp.Contains('accounts'))
@@ -426,6 +411,30 @@ global without sharing class acfFetchBankStatementFile{
                 system.debug('lstTransaction***********************************'+lstTransaction);
             }
         } 
+      }
+      catch(Exception Ex)
+      {
+        Blob b = blob.valueOf(resp);
+        Messaging.EmailFileAttachment efa = new Messaging.EmailFileAttachment();
+        efa.setFileName('BankStatement Response');
+        efa.setBody(b);
+
+        system.debug('!@#$%%%^'+Ex.getmessage());
+        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+        string strSubject = 'Bank Statement Response Issue';
+        string strContent = 'Required Document Id:'+ReqDocId+'\n Exception:'+Ex.getmessage();
+        list<string> lstToaddress = new list<string>();
+        lstToaddress.add('chen@creditandfinance.com.au');
+        lstToaddress.add('karthik.chekkila@saasfocus.com');
+        lstToaddress.add('ankit.singh@saasfocus.com');
+        if(lstToaddress <> null && lstToaddress.size()>0)
+            email.setToAddresses(lstToaddress);   
+        email.setSubject(strSubject);
+        email.setSenderDisplayName('ACF Support');
+        email.setPlainTextBody(strContent);
+        email.setFileAttachments(new Messaging.EmailFileAttachment[] {efa});
+        Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+      } 
     }     
     public static void CallBenefits(FromBankstatementWrapper.cls_analysis objanalysis,integer SubcategoryIndex,integer CategoryIndex,integer TransactionIndex,List<click_Bank_Statements_Sub_Category__c> lstSubctegory,List<click_Bank_Statement_Data__c> lstctegory,List<click_Bank_Statements_Transactions__c> lstTransaction,string AccountNumber,String ReqDocId)
     {
