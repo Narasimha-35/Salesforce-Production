@@ -34,6 +34,5 @@ global class createFinancialSourceForExistingRecord implements Database.Batchabl
      }     
      
       global void finish(Database.BatchableContext BC) {
-
     }
  }
