@@ -1,10 +1,9 @@
-trigger acfTriggerOnOpportunity on Opportunity (after insert , after update) 
+/*====================================================
+        Click Loans
+========================================================*/
+trigger acfTriggerOnOpportunity on Opportunity (after insert) 
 {
-    acfTriggerOnOpportunityHandler objTrgOppHandler = new acfTriggerOnOpportunityHandler();
-    if(trigger.isAfter && trigger.isInsert)
-      objTrgOppHandler.OnAfterInsert(Trigger.new);
-    if(trigger.isAfter && trigger.isUpdate)
-    {
-        objTrgOppHandler.onAfterUpdate(trigger.new,trigger.oldMap);
-    }      
+  acfTriggerOnOpportunityHandler objTrgOppHandler = new acfTriggerOnOpportunityHandler();
+  if(trigger.isAfter && trigger.isInsert)
+    objTrgOppHandler.OnAfterInsert(Trigger.new);
 }

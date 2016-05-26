@@ -12,6 +12,8 @@ public  class acfTriggerOnOpportunityHandler
        //Create Task from TaskMaster    
        CreateTaskFromTaskMaster(lstTriggerNew); 
        CreateOpportunityLineItems(lstTriggerNew);
+       mapOpportunityWIthFpRecord(lstTriggerNew);
+       TagApplicantWithOpportunity(lstTriggerNew);
     }
     public void onAfterUpdate(list<opportunity> triggernew,map<id,opportunity> triggerOldMap)
     {
@@ -267,7 +269,7 @@ public  class acfTriggerOnOpportunityHandler
                         
                         if(ObjOpp.id != null)
                         {                      
-                           if(mapOppIdToOpp != null && mapOppIdToOpp.get(ObjOpp.Accountid) != null && mapOppIdToOpp.get(ObjOpp.Accountid).acfAsset_House_Worth__c != null)    
+                           if(mapOppIdToOpp.get(ObjOpp.Accountid).acfAsset_House_Worth__c != null)    
                             HouseValue = (mapOppIdToOpp.get(ObjOpp.Accountid).acfAsset_House_Worth__c);
                              System.debug(HouseValue);                  
                         }
@@ -393,4 +395,66 @@ public  class acfTriggerOnOpportunityHandler
           if(updateOLI <> null && updateOLI.size() > 0)
               update updateOLI;
         }
+        
+    
+    public void mapOpportunityWIthFpRecord(list<opportunity> triggernew){
+                set<Id> setObj = new set<Id>();
+        map<Id, Id> mapObj = new map<Id,ID>();
+         for(Opportunity ObjTemp  : Triggernew )
+        {   mapObj.put(ObjTemp.accountid, ObjTemp.id);
+            setObj.add(ObjTemp.accountid);
+        }
+        List<Funding_Position__c> updateFp = new List<Funding_Position__c>();
+        List<Funding_Position__c> lstFp = [SELECT Account__c, Opportunity__c FROM Funding_Position__c where Account__c in :setObj  ];
+        
+        for(Funding_Position__c fp :lstFp){
+            
+            if(mapObj.get(fp.Account__c) != null){
+                fp.Opportunity__c = mapObj.get(fp.Account__c);
+                updateFp.add(fp);
+            }
+            
+        }
+        if(updateFp.size() > 0){
+            update updateFp;
+        }       
+    }    
+    
+    // This method is used to Tag Applicant from Account to opportunity   
+    public void TagApplicantWithOpportunity(List<opportunity>lstTriggerNew)
+    {
+        List<click_Applicant__c> lstupdatedApplicant = new List<click_Applicant__c>();
+        map<id,id> mapAccountIdToOppId = new map<id,id>();
+        if(lstTriggerNew != null && lstTriggerNew.size() > 0)
+        {
+            for(opportunity objopp : lstTriggerNew)
+            {
+                if(objopp.AccountId != null)
+                {
+                    mapAccountIdToOppId.put(objopp.AccountId,objopp.Id);
+                }
+            }
+            
+            List<click_Applicant__c> lstApplicant = [select id,click_Account__c,clickOpportunity__c from click_Applicant__c
+                                                     where click_Account__c =: mapAccountIdToOppId.keyset()];
+            if(lstApplicant != null && lstApplicant.size() > 0)
+            {
+                for(click_Applicant__c objApplicant : lstApplicant)
+                {
+                    if(objApplicant.click_Account__c != null && mapAccountIdToOppId != null && mapAccountIdToOppId.keyset() != null
+                       && mapAccountIdToOppId.get(objApplicant.click_Account__c) != null)
+                    {
+                        objApplicant.clickOpportunity__c = mapAccountIdToOppId.get(objApplicant.click_Account__c);
+                        lstupdatedApplicant.add(objApplicant);
+                    }  
+                }  
+            }
+            
+            if(lstupdatedApplicant != null && lstupdatedApplicant.size() > 0)
+            {
+                update lstupdatedApplicant;
+            }
+        }
+    
+    }   
 }

@@ -201,10 +201,10 @@ public class WLAssetLiabilitiesControllerExtn {
         Asset_And_Liability__c objAssetsLiabAssetLiab = new Asset_And_Liability__c();
         List<Asset_And_Liability__c> assetLiabListNew = new List<Asset_And_Liability__c>();
        // System.debug('###objLead'+lstLead[0]);
-        if(assliabList.size() == 0 && lstLead != null && lstLead.size()>0 ){
+       if(assliabList.size() == 0 && lstLead != null && lstLead.size()>0 ){
             if(lstLead[0].acfApproximately_how_much_is_your_house__c != null)
-                objAssetsLiabAsset.Value__c = objwrapperAssetLiabilities.strAmount;
-                objAssetsLiabAsset.Desciption__c = objwrapperAssetLiabilities.strDescription;
+                objAssetsLiabAsset.Value__c = lstLead[0].acfApproximately_how_much_is_your_house__c;
+               // objAssetsLiabAsset.Desciption__c = objwrapperAssetLiabilities.strDescription;
                 objAssetsLiabAsset.RecordTypeId = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosByName().get('Asset Real Estate').getRecordTypeId();
                 objAssetsLiabAsset.Account__c = accountId;
                 objAssetsLiabAsset.Primary_Purpose__c = 'Owner Occupied';
@@ -212,7 +212,7 @@ public class WLAssetLiabilitiesControllerExtn {
                 objAssetsLiabAsset.Type__c = 'Asset'; 
                 assetLiabListNew.add(objAssetsLiabAsset);
             if(lstLead[0].acfLoan_Amount__c != null){
-                objAssetsLiabAssetLiab.Current_Balance__c = objwrapperAssetLiabilities.strBalance;
+                objAssetsLiabAssetLiab.Current_Balance__c = lstLead[0].acfLoan_Amount__c;
                 objAssetsLiabAssetLiab.RecordTypeId = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosByName().get('Liability Mortgage Loan').getRecordTypeId();
                 objAssetsLiabAssetLiab.Account__c = accountId;
                 objAssetsLiabAssetLiab.Limit__c = objwrapperAssetLiabilities.strLimit;
