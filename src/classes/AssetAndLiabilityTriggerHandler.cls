@@ -8,6 +8,8 @@
 */ 
 public class AssetAndLiabilityTriggerHandler extends TriggerHandler
 {
+   Public List<Funding_Position_Detail__c> fundPosdList; 
+   Public List<Funding_Position_Detail__c> fundPosdUpdate; 
    public override void afterInsert() 
     {
       
@@ -46,25 +48,37 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         Map<String,string> stateMap = new Map<String,String>();
         
         for(Asset_And_Liability__c assLiab:((List<Asset_And_Liability__c>) trigger.new)){
-            accIdSet.add(assLiab.Account__c);
-            if(!accAsettMap.containsKey(assLiab.Account__c))
-                accAsettMap.put(assLiab.Account__c,new List<Asset_And_Liability__c>());
-            accAsettMap.get(assLiab.Account__c).add(assLiab);
+            if(assLiab.Account__c !=null){
+                accIdSet.add(assLiab.Account__c);
+                if(!accAsettMap.containsKey(assLiab.Account__c))
+                    accAsettMap.put(assLiab.Account__c,new List<Asset_And_Liability__c>());
+                accAsettMap.get(assLiab.Account__c).add(assLiab);
+            }
         }
         
-        List<Lead> leadList = [Select id,acf_partner_account__c,acfWhat_is_your_postcode__c from lead where acf_partner_account__c =:accIdSet];
+        List<Lead> leadList = [Select id,acf_partner_account__c,acfWhat_is_your_postcode__c,ConvertedAccountId,IsConverted from lead where acf_partner_account__c =:accIdSet OR ConvertedAccountId =:accIdSet];
         
         List<State__c> stateList = [SELECT acfState_Short_Name__c,Name FROM State__c];
         for(State__c st:stateList){
-            stateMap.put(st.Name,st.acfState_Short_Name__c);
+            if(st.Name !=null && st.Name != '')
+                stateMap.put(st.Name,st.acfState_Short_Name__c);
         }
         system.debug('###stateMap'+stateMap);
         system.debug('###leadList'+leadList);
         for(Lead lList:leadList){
             for(State__c st:stateList){
-                if(lList.acfWhat_is_your_postcode__c.contains(st.Name)){
-                    for(Asset_And_Liability__c aLiab:accAsettMap.get(lList.acf_partner_account__c)){
-                        aLiab.State__c = stateMap.get(st.Name);
+                if(lList.acfWhat_is_your_postcode__c !=null && lList.acfWhat_is_your_postcode__c !=''){
+                    if(lList.acfWhat_is_your_postcode__c.contains(st.Name)){
+                        if(lList.IsConverted == true){
+                            for(Asset_And_Liability__c aLiab:accAsettMap.get(lList.ConvertedAccountId)){
+                                aLiab.State__c = stateMap.get(st.Name);
+                            }
+                        }
+                        else{
+                            for(Asset_And_Liability__c aLiab:accAsettMap.get(lList.acf_partner_account__c)){
+                                aLiab.State__c = stateMap.get(st.Name);
+                            }
+                        }
                     }
                 }
             }
@@ -72,9 +86,11 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
     }   
     public void checkClearingLoan(){
          for(Asset_And_Liability__c assLiab:((List<Asset_And_Liability__c>) trigger.new)){
-             string recordtypename = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(assLiab.recordtypeid).getname();
-             if(recordtypename == 'Liability Mortgage Loan' && assLiab.Name.contains('Liabilities Mortgage Loan')){
-                assLiab.Clearing_From_This_Loan__c = true; 
+             if(assLiab.recordtypeid !=null){
+                 string recordtypename = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(assLiab.recordtypeid).getname();
+                 if(recordtypename == 'Liability Mortgage Loan' && assLiab.Name.contains('Liabilities Mortgage Loan')){
+                    assLiab.Clearing_From_This_Loan__c = true; 
+                 }
              }
          }
     }
@@ -82,7 +98,9 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         Map<Id,Lead> leadMap = new Map<Id,Lead>();
         Set<Id> accIdSet = new Set<Id>();
         for(Asset_And_Liability__c assLiab:((List<Asset_And_Liability__c>) trigger.new)){
-            accIdSet.add(assLiab.Account__c);
+            if(assLiab.Account__c !=null){
+                accIdSet.add(assLiab.Account__c);
+            }
         }
         List<Lead> leadList = [SELECT id,ConvertedOpportunityId,ConvertedAccountId FROM Lead where ConvertedAccountId = :accIdSet];
         
@@ -93,185 +111,336 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         }
         system.debug('##leadMap'+leadMap);
         for(Asset_And_Liability__c assLiab:((List<Asset_And_Liability__c>) trigger.new)){
-            if(leadMap.containsKey(assLiab.Account__c)){
-                assLiab.Opportunity__c = leadMap.get(assLiab.Account__c).ConvertedOpportunityId;
+            if(assLiab.Account__c !=null){
+                if(leadMap.containsKey(assLiab.Account__c)){
+                    assLiab.Opportunity__c = leadMap.get(assLiab.Account__c).ConvertedOpportunityId;
+                }
             }
-        //    system.debug('leadMap123'+leadMap.get(assLiab.Account__c).ConvertedOpportunityId);
-        //    system.debug('##assLiab'+assLiab.Opportunity__c);
         }
-        
-        
     }
     
    
     public void createFundingPosition(String event){
-         Funding_Position__c   fPos = new Funding_Position__c();
-         List<Funding_Position__c> fPosExisting; 
+         //Funding_Position__c   fPos = new Funding_Position__c();
+         fundPosdList = new List<Funding_Position_Detail__c>();
+         fundPosdUpdate = new List<Funding_Position_Detail__c>();
+         List<Funding_Position__c> fPosExistingList = new List<Funding_Position__c>(); 
+         List<Funding_Position__c> fPosExistingNew = new List<Funding_Position__c>(); 
          Set<Id> oppId = new Set<Id>();
-         String accId;
+         Set<Id> accId = new Set<Id>();
+         Map<Id,Funding_Position__c> accountFPCountMap = new Map<Id,Funding_Position__c>();
+         Map<Id,Id> accountOpportunityMap = new Map<Id,Id>();
+         Map<Id,OpportunityLineItem> oppLineItemMap = new Map<Id,OpportunityLineItem>();
+         Map<Id,List<Funding_Position_Detail__c>> assetLiabMap = new Map<Id,List<Funding_Position_Detail__c>>();
          for(Asset_And_Liability__c assLiab:((List<Asset_And_Liability__c>) trigger.new)){
-            accId = assLiab.Account__c;
-           
-            fPos.Account__c = assLiab.Account__c;
-            if(assLiab.Opportunity__c != null){
-                fPos.opportunity__c = assLiab.opportunity__c;
-                oppId.add(assLiab.opportunity__c);
+            if(assLiab.Account__c !=null){
+                accId.add(assLiab.Account__c);
+               // fPos.Account__c = assLiab.Account__c;
+                if(assLiab.Opportunity__c != null){
+                    oppId.add(assLiab.opportunity__c);
+                    accountOpportunityMap.put(assLiab.Account__c,assLiab.Opportunity__c);
+                }
              }
          }
-         
-         fPosExisting = [Select id from Funding_Position__c where Account__c =:accId];
-         if(fPosExisting.size() == 0){
-             if(oppId.size() > 0){
-                 List<OpportunityLineItem> oppLineList = [SELECT acfLegal_Fees__c,clickEstablishment_Fee__c,clickMortgage_Risk_Fee__c FROM OpportunityLineItem where OpportunityId =:oppId ORDER BY CreatedDate ASC LIMIT 1];
-                 if(oppLineList.size() > 0){
-                     system.debug('##oppLi'+oppLineList);
-                     if(oppLineList[0].acfLegal_Fees__c !=null && oppLineList[0].clickEstablishment_Fee__c!=null && oppLineList[0].clickMortgage_Risk_Fee__c!=null){
-                         fPos.Lender_Set_Up_Fees__c = Integer.valueOf(oppLineList[0].acfLegal_Fees__c) + Integer.valueOf(oppLineList[0].clickEstablishment_Fee__c) + Integer.valueOf(oppLineList[0].clickMortgage_Risk_Fee__c);
-                     }
-                 }
+
+
+
+         fPosExistingList = [Select id,Account__c from Funding_Position__c where Account__c =:accId];
+         if(fPosExistingList.size() > 0){
+             for(Funding_Position__c fp:fPosExistingList){
+                accountFPCountMap.put(fp.Account__c,fp);
              }
-             if(fPos !=null)
-                 insert fPos;
          }
-         system.debug('##fpos'+fPos);  
-         string CLEARING_FROM_LOAN = 'Clearing_From_This_Loan__c';
-         string USED_AS_SECURITY = 'Used_as_Security__c';
-         string TO_BE_PURCHASED = 'To_Be_Purchased__c';
-         List<Funding_Position_Detail__c> fundPosdList = new List<Funding_Position_Detail__c>();
+
+         if(oppId.size() > 0){
+            List<OpportunityLineItem> oppLineList = [SELECT acfLegal_Fees__c,OpportunityId,clickEstablishment_Fee__c,clickMortgage_Risk_Fee__c FROM OpportunityLineItem where OpportunityId =:oppId ORDER BY CreatedDate ASC LIMIT 1];
+            if(oppLineList.size() > 0){
+                for(OpportunityLineItem oli:oppLineList){
+                    if(!oppLineItemMap.containsKey(oli.OpportunityId)){
+                        oppLineItemMap.put(oli.OpportunityId,oli);
+                    }
+                }
+            }
+         }
+
+         for(Id acc:accId){
+            if(accountFPCountMap !=null && !accountFPCountMap.containsKey(acc)){
+                Funding_Position__c fpObject = new Funding_Position__c();
+                fpObject.Account__c = acc;
+                if(accountOpportunityMap.containsKey(acc)){
+                    fpObject.Opportunity__c =  accountOpportunityMap.get(acc);
+
+                    if(oppLineItemMap.containsKey(fpObject.Opportunity__c) && oppLineItemMap.get(fpObject.Opportunity__c).acfLegal_Fees__c !=null && oppLineItemMap.get(fpObject.Opportunity__c).clickEstablishment_Fee__c !=null && oppLineItemMap.get(fpObject.Opportunity__c).clickMortgage_Risk_Fee__c !=null)
+                        fpObject.Lender_Set_Up_Fees__c = (Integer)oppLineItemMap.get(fpObject.Opportunity__c).acfLegal_Fees__c + (Integer) oppLineItemMap.get(fpObject.Opportunity__c).clickEstablishment_Fee__c + (Integer) oppLineItemMap.get(fpObject.Opportunity__c).clickMortgage_Risk_Fee__c;
+                }
+                fPosExistingNew.add(fpObject);
+            }
+
+         }
+         if(fPosExistingNew.size() > 0 && event == 'Insert')
+             insert fPosExistingNew;
+
+         List<Asset_And_Liability__c> assLiabList = [Select id,(Select id,Name,Amount__c,Detail_Type__c,Category__c from Funding_Position_Details__r) From Asset_And_Liability__c];
+         for(Asset_And_Liability__c assLiab:assLiabList){
+            assetLiabMap.put(assLiab.id,assLiab.Funding_Position_Details__r);
+         }
+
+        
+         string STATE = 'State__c';
+         string VALUE = 'Value__c';
+         string PRIMARY_PURPOSE = 'Primary_Purpose__c';
+         string LIM = 'Limit__c';
+         string CURRENT_BALANCE = 'Current_Balance__c';
+         string REPAYMENT = 'Repayments__c';
+
          for(Asset_And_Liability__c assLiab:((List<Asset_And_Liability__c>) trigger.new)){
-            system.debug('##rec'+assLiab.RecordTypeId);
-            string recTypeId = ClickCommon.GetRecordTypeId('Asset_And_Liability__c','Liability Mortgage Loan');
-            system.debug('##rec1'+recTypeId);
+            string recordtypename ='';
+            if(assLiab.recordtypeid !=null)
+                recordtypename = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(assLiab.recordtypeid).getname();
+            if(recordtypename == 'Liability Mortgage Loan' && assLiab.Clearing_From_This_Loan__c && event == 'Insert'){
+                insertFPLiabilityRecords(fPosExistingNew, assLiab, accountFPCountMap);
+            }
 
-            if((assLiab.RecordtypeId == recTypeId && assLiab.Clearing_From_This_Loan__c && event == 'Update' && assLiab.Clearing_From_This_Loan__c != trigger.oldMap.get(assLiab.id).get(CLEARING_FROM_LOAN)) 
-                || (assLiab.RecordtypeId == recTypeId && assLiab.Clearing_From_This_Loan__c && event == 'Insert')){
-                Funding_Position_Detail__c  fPosd = new Funding_Position_Detail__c ();
-                Funding_Position_Detail__c  fPosdFirst = new Funding_Position_Detail__c ();
-                
-                fPosd.Name = assLiab.Name + '-' + assLiab.Limit__c;
-                fPosd.Detail_Type__c = 'Home Loan to Repay';
-               
-                fPosd.Category__c = 'Debt';
-                if(fPosExisting.size() > 0)
-                    fPosd.Funding_Position__c = fPosExisting[0].id;
-                else
-                    fPosd.Funding_Position__c = fPos.id;
-                fPosd.Asset_And_Liability__c = assLiab.id;
-                fPosd.Amount__c = assLiab.Limit__c;
+            if(recordtypename == 'Liability Mortgage Loan' && assLiab.Clearing_From_This_Loan__c && event == 'Update'){
+                if(assetLiabMap.get(assLiab.id).size() == 0){
+                    insertFPLiabilityRecords(fPosExistingNew, assLiab, accountFPCountMap);
+                }
+                else{
+                    for(Funding_Position_Detail__c fpd:assetLiabMap.get(assLiab.id)){
+                        if(assLiab.Repayments__c!=null && assLiab.Repayments__c != trigger.oldMap.get(assLiab.id).get(REPAYMENT)){
+                            if(fpd.Detail_Type__c == 'Potential Accrued Interest'){
+                                fpd.Name = assLiab.Name + '-' + assLiab.Repayments__c;
+                                if(assLiab.Repayment_Frequency__c == 'Weekly'  ){
+                                    fpd.Amount__c = assLiab.Repayments__c * 52/12 *0.5 ;
+                                }
+                                if(assLiab.Repayment_Frequency__c == 'Monthly'  ){
+                                    fpd.Amount__c = assLiab.Repayments__c * 1 *0.5 ;  
+                               }
+                                if(assLiab.Repayment_Frequency__c == 'Anually'  ){
+                                    fpd.Amount__c = assLiab.Repayments__c * 1/12 * 0.5 ;  
+                               }
+                                if(assLiab.Repayment_Frequency__c == 'Fortnightly'  ){
+                                    fpd.Amount__c = assLiab.Repayments__c * 26/12* 0.5 ;
+                                }
+                            }
+                            fundPosdUpdate.add(fpd);
+                        }
 
-               system.debug('##Entered here');
-               if(assLiab.Repayments__c !=null){
-                   if(assLiab.Repayment_Frequency__c == 'Weekly'  ){
-                     fPosdFirst.Amount__c = assLiab.Repayments__c * 52/12 ;
+                        if(assLiab.Limit__c!=null && assLiab.Limit__c != trigger.oldMap.get(assLiab.id).get(Lim)){
+                            if(fpd.Detail_Type__c == 'Home Loan to Repay'){
+                                fpd.Amount__c = assLiab.Limit__c;
+                                fpd.Name = assLiab.Name + '-' + assLiab.Limit__c;
+                            }
+                            fundPosdUpdate.add(fpd);
+                        }
                         
-                   }
-                    if(assLiab.Repayment_Frequency__c == 'Monthly'  ){
-                     fPosdFirst.Amount__c = assLiab.Repayments__c * 1 ;
+                    }
+                }
+            }
+
+            if(recordtypename.Contains('Liability')  &&  recordtypename != 'Liability Mortgage Loan' &&  assLiab.Clearing_From_This_Loan__c && event == 'Insert'){
+                insertFPLiabilityOtherRecords(fPosExistingNew, assLiab, accountFPCountMap);
+            }
+
+            if(recordtypename.Contains('Liability')  &&  recordtypename != 'Liability Mortgage Loan' &&  assLiab.Clearing_From_This_Loan__c && event == 'Update'){
+                if(assetLiabMap.get(assLiab.id).size() == 0){
+                    insertFPLiabilityOtherRecords(fPosExistingNew, assLiab, accountFPCountMap);
+                }
+                else{
+                    for(Funding_Position_Detail__c fpd:assetLiabMap.get(assLiab.id)){
+                        if(assLiab.Current_Balance__c!=null && assLiab.Current_Balance__c != trigger.oldMap.get(assLiab.id).get(CURRENT_BALANCE)){
+                            if(fpd.Detail_Type__c == 'Other Debts to Repay'){
+                                fpd.Amount__c = assLiab.Current_Balance__c;
+                                fpd.Name = assLiab.Name + '-' + assLiab.Current_Balance__c;
+                            }
+                            fundPosdUpdate.add(fpd);
+                        }
                         
-                   }
-                    if(assLiab.Repayment_Frequency__c == 'Anually'  ){
-                     fPosdFirst.Amount__c = assLiab.Repayments__c * 1/12 ;
+                    }
+                }
+            }
+
+            if(recordtypename == 'Asset Real Estate' &&  assLiab.Used_as_Security__c == true && assLiab.To_Be_Purchased__c && event == 'Insert'){
+                insertFPAssetEstateRecords(fPosExistingNew, assLiab, accountFPCountMap);
+            }
+
+             if(recordtypename == 'Asset Real Estate' &&  assLiab.Used_as_Security__c == true && assLiab.To_Be_Purchased__c && event == 'Update'){
+                if(assetLiabMap.get(assLiab.id).size() < 3){
+                    insertFPAssetEstateRecords(fPosExistingNew, assLiab, accountFPCountMap);
+                }
+                else{
+                    for(Funding_Position_Detail__c fpd:assetLiabMap.get(assLiab.id)){
+                        system.debug('##entered');
+                        if((assLiab.State__c!=null && assLiab.State__c != trigger.oldMap.get(assLiab.id).get(STATE)) || (assLiab.Value__c!=null && assLiab.Value__c != trigger.oldMap.get(assLiab.id).get(VALUE)) || (assLiab.Primary_Purpose__c!=null && assLiab.Primary_Purpose__c != trigger.oldMap.get(assLiab.id).get(PRIMARY_PURPOSE))){
+                            if(fpd.Detail_Type__c == 'Purchase Stamp Duty'){
+                                fpd.Amount__c = ClickCommon.getStampDutyRate(assLiab.State__c,Integer.valueOf(assLiab.Value__c),assLiab.Primary_Purpose__c);
+                                system.debug('###'+fpd.Amount__c);
+                            }
+                            if(fpd.Detail_Type__c == 'Transfer Fee'){
+                                fpd.Amount__c = ClickCommon.calculateTransferFee(String.valueOf(assLiab.State__c),Integer.valueOf(assLiab.Value__c));
+                                system.debug('###'+fpd.Amount__c);
+                            }
+                            fundPosdUpdate.add(fpd);
+                        }
                         
-                   }
-                    if(assLiab.Repayment_Frequency__c == 'Fortnightly'  ){
-                     fPosdFirst.Amount__c = assLiab.Repayments__c * 26/12 ;
-                        
-                   }
-               }
-               fPosdFirst.Detail_Type__c = 'Potential Accrued Interest'; 
-               fPosdFirst.Category__c    = 'Other';
-               fPosdFirst.Name = assLiab.Name + '-' + assLiab.Limit__C;
-               if(fPosExisting.size() > 0)
-                    fPosdFirst.Funding_Position__c = fPosExisting[0].id;
-               else
-                    fPosdFirst.Funding_Position__c = fPos.id;
-               fPosdFirst.Asset_And_Liability__c = assLiab.id;
-               
-               fundPosdList.add(fPosd);
-               fundPosdList.add(fPosdFirst);
-        }
-                       
-        string recordtypename = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(assLiab.recordtypeid).getname();
-        system.debug('###recType'+recordtypename);
-        if((recordtypename.Contains('Liability')  &&  recordtypename != 'Liability Mortgage Loan' &&  assLiab.Clearing_From_This_Loan__c && event == 'Insert') ||
-            (recordtypename.Contains('Liability')  &&  recordtypename != 'Liability Mortgage Loan' &&  assLiab.Clearing_From_This_Loan__c && event == 'Update' && assLiab.Clearing_From_This_Loan__c != trigger.oldMap.get(assLiab.id).get(CLEARING_FROM_LOAN))){
-            Funding_Position_Detail__c  fPosdSecond = new Funding_Position_Detail__c ();
-            fPosdSecond.Name = assLiab.Name + '-' + assLiab.Current_Balance__c;
-            fPosdSecond .Detail_Type__c = 'Other Debts to Repay';
-            fPosdSecond .Category__c = 'Debt';
-            if(fPosExisting.size() > 0)
-                fPosdSecond.Funding_Position__c = fPosExisting[0].id;
-            else
-                fPosdSecond.Funding_Position__c = fPos.id;
-            fPosdSecond.Asset_And_Liability__c = assLiab.id;
-            fPosdSecond.Amount__c = assLiab.Current_Balance__c;
-            fundPosdList.add(fPosdSecond);
-        }
-       
-        if((recordtypename.Contains('Asset')  &&  recordtypename == 'Asset Real Estate' &&  assLiab.Used_as_Security__c == true && assLiab.To_Be_Purchased__c && event =='Insert') ||
-            (recordtypename.Contains('Asset')  &&  recordtypename == 'Asset Real Estate' &&  assLiab.Used_as_Security__c == true && assLiab.To_Be_Purchased__c && event =='Update'
-             && assLiab.Used_as_Security__c != trigger.oldMap.get(assLiab.id).get(USED_AS_SECURITY) && assLiab.To_Be_Purchased__c != trigger.oldMap.get(assLiab.id).get(TO_BE_PURCHASED))){
-            
-            Funding_Position_Detail__c  fPosdThird = new Funding_Position_Detail__c ();
-            fPosdThird.Amount__c = ClickCommon.getStampDutyRate(assLiab.State__c,Integer.valueOf(assLiab.Value__c),assLiab.Primary_Purpose__c);
-            fPosdThird.Category__c = 'Fee';
-            fPosdThird.Detail_Type__c = 'Purchase Stamp Duty';
-            fPosdThird.Name = assLiab.Name + '- Purchase Stamp Duty';
-            if(fPosExisting.size() > 0)
-                fPosdThird.Funding_Position__c = fPosExisting[0].id;
-            else
-                fPosdThird.Funding_Position__c = fPos.id;
-            fPosdThird.Asset_And_Liability__c = assLiab.id;
-            
-            Funding_Position_Detail__c  fPosdFourth = new Funding_Position_Detail__c ();
-            fPosdFourth.Amount__c = ClickCommon.calculateTransferFee(assLiab.State__c,Integer.valueOf(assLiab.Value__c));
-            fPosdFourth.Category__c = 'Fee';
-            fPosdFourth.Detail_Type__c = 'Transfer Fee';
-            fPosdFourth.Name = assLiab.Name + '- Transfer Fee';
-            if(fPosExisting.size() > 0)
-                fPosdFourth.Funding_Position__c = fPosExisting[0].id;
-            else
-                fPosdFourth.Funding_Position__c = fPos.id;
-            fPosdFourth.Asset_And_Liability__c = assLiab.id;
-            
-            Funding_Position_Detail__c  fPosdFifth = new Funding_Position_Detail__c ();
-            fPosdFifth.Amount__c = integer.valueof(System.Label.FUNDING_DETAIL_AMOUNT);
-            fPosdFifth.Category__c = 'Fee';
-            fPosdFifth.Detail_Type__c = 'Discharge Costs';
-            fPosdFifth.Name = assLiab.Name + '- Discharge Costs';
-            if(fPosExisting.size() > 0)
-                fPosdFifth.Funding_Position__c = fPosExisting[0].id;
-            else
-                fPosdFifth.Funding_Position__c = fPos.id;
-            fPosdFifth.Asset_And_Liability__c = assLiab.id;
-            fundPosdList.add(fPosdThird);
-            fundPosdList.add(fPosdFourth);
-            fundPosdList.add(fPosdFifth); 
-            
-        }
-        
-        if((recordtypename == 'Asset Real Estate' &&  assLiab.Used_as_Security__c == true && Event == 'Insert') ||
-            (recordtypename == 'Asset Real Estate' &&  assLiab.Used_as_Security__c == true && Event == 'Update' && assLiab.Used_as_Security__c != trigger.oldMap.get(assLiab.id).get(USED_AS_SECURITY))){
-            Funding_Position_Detail__c  fPosdSixth = new Funding_Position_Detail__c ();
-            decimal amount =  ClickCommon.getRegistrationFee(assLiab.State__c);
-            fPosdSixth.Amount__c = 2*amount;
-            fPosdSixth.Category__c = 'Fee';
-            fPosdSixth.Detail_Type__c = 'Registration Fee';
-            fPosdSixth.Name = assLiab.Name + '- Registration Fee';
-            if(fPosExisting.size() > 0)
-                fPosdSixth .Funding_Position__c = fPosExisting[0].id;
-            else
-                fPosdSixth .Funding_Position__c = fPos.id;
-            fPosdSixth .Asset_And_Liability__c = assLiab.id;
-            fundPosdList.add(fPosdSixth);
-        }
-                
-                    
-    }
-        
-        if(fundPosdList.size() > 0)
+                    }
+                }
+             }
+
+             decimal amount= 0;
+             if(recordtypename == 'Asset Real Estate' &&  assLiab.Used_as_Security__c == true && assLiab.To_Be_Purchased__c == false && event == 'Insert'){
+                insertAssetEstateSingleRecords(fPosExistingNew, assLiab, accountFPCountMap,amount);
+             }
+
+             if(recordtypename == 'Asset Real Estate' &&  assLiab.Used_as_Security__c == true && assLiab.To_Be_Purchased__c == false && event == 'Update'){
+                boolean createRegistration = true;
+                boolean stateChanged = false;
+                for(Funding_Position_Detail__c fpd:assetLiabMap.get(assLiab.id)){
+                    if((assLiab.State__c!=null && assLiab.State__c != trigger.oldMap.get(assLiab.id).get(STATE))){
+                        if(fpd.Detail_Type__c == 'Registration Fee'){ 
+                            amount =  ClickCommon.getRegistrationFee(assLiab.State__c);
+                            fpd.Amount__c = 2*amount;
+                            createRegistration = false;
+                            fundPosdUpdate.add(fpd);
+                        }
+                        system.debug('$$$Entered'+amount);
+                        stateChanged = true;
+                    }
+                   
+                }
+                if(createRegistration && stateChanged){
+                    insertAssetEstateSingleRecords(fPosExistingNew, assLiab, accountFPCountMap,amount);
+                }
+
+             }
+
+
+         }
+         system.debug('###update'+fundPosdUpdate);
+         if(fundPosdList.size() > 0)
             insert fundPosdList;
+         if(fundPosdUpdate.size()> 0)
+            update fundPosdUpdate;
+        
   }
+
+    public void insertFPLiabilityOtherRecords(List<Funding_Position__c> fPosExistingNew, Asset_And_Liability__c assLiab, Map<Id,Funding_Position__c> accountFPCountMap){
+        Funding_Position_Detail__c  fPosdSecond = new Funding_Position_Detail__c ();
+        fPosdSecond.Name = assLiab.Name + '-' + assLiab.Current_Balance__c;
+        fPosdSecond.Detail_Type__c = 'Other Debts to Repay';
+        fPosdSecond.Category__c = 'Debt';
+        if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null)
+            fPosdSecond.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
+        else 
+            fPosdSecond.Funding_Position__c = fPosExistingNew[0].id;
+        fPosdSecond.Asset_And_Liability__c = assLiab.id;
+        fPosdSecond.Amount__c = assLiab.Current_Balance__c;
+        fundPosdList.add(fPosdSecond);
+    }
+
+    Public void insertFPAssetEstateRecords(List<Funding_Position__c> fPosExistingNew, Asset_And_Liability__c assLiab, Map<Id,Funding_Position__c> accountFPCountMap){
+        Funding_Position_Detail__c  fPosdThird = new Funding_Position_Detail__c ();
+        if(assLiab.Value__c !=null && assLiab.State__c !=null && assLiab.Primary_Purpose__c != null)
+            fPosdThird.Amount__c = ClickCommon.getStampDutyRate(assLiab.State__c,Integer.valueOf(assLiab.Value__c),assLiab.Primary_Purpose__c);
+        fPosdThird.Category__c = 'Fee';
+        fPosdThird.Detail_Type__c = 'Purchase Stamp Duty';
+        fPosdThird.Name = assLiab.Name + '- Purchase Stamp Duty';
+        if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null)
+            fPosdThird.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
+        else 
+            fPosdThird.Funding_Position__c = fPosExistingNew[0].id;
+        fPosdThird.Asset_And_Liability__c = assLiab.id;
+        
+        Funding_Position_Detail__c  fPosdFourth = new Funding_Position_Detail__c ();
+        if(assLiab.Value__c !=null && assLiab.State__c !=null)
+            fPosdFourth.Amount__c = ClickCommon.calculateTransferFee(assLiab.State__c,Integer.valueOf(assLiab.Value__c));
+        fPosdFourth.Category__c = 'Fee';
+        fPosdFourth.Detail_Type__c = 'Transfer Fee';
+        fPosdFourth.Name = assLiab.Name + '- Transfer Fee';
+        if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null)
+            fPosdFourth.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
+        else 
+            fPosdFourth.Funding_Position__c = fPosExistingNew[0].id;
+        fPosdFourth.Asset_And_Liability__c = assLiab.id;
+        
+        Funding_Position_Detail__c  fPosdFifth = new Funding_Position_Detail__c ();
+        fPosdFifth.Amount__c = integer.valueof(System.Label.FUNDING_DETAIL_AMOUNT);
+        fPosdFifth.Category__c = 'Fee';
+        fPosdFifth.Detail_Type__c = 'Discharge Costs';
+        fPosdFifth.Name = assLiab.Name + '- Discharge Costs';
+        if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null)
+            fPosdFifth.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
+        else 
+            fPosdFifth.Funding_Position__c = fPosExistingNew[0].id;
+        fPosdFifth.Asset_And_Liability__c = assLiab.id;
+        fundPosdList.add(fPosdThird);
+        fundPosdList.add(fPosdFourth);
+        fundPosdList.add(fPosdFifth);
+    }
+
+    Public void insertFPLiabilityRecords(List<Funding_Position__c> fPosExistingNew, Asset_And_Liability__c assLiab, Map<Id,Funding_Position__c> accountFPCountMap){
+
+        Funding_Position_Detail__c  fPosd = new Funding_Position_Detail__c ();
+        Funding_Position_Detail__c  fPosdFirst = new Funding_Position_Detail__c ();
+        
+        fPosd.Name = assLiab.Name + '-' + assLiab.Limit__c;
+        fPosd.Detail_Type__c = 'Home Loan to Repay';
+       
+        fPosd.Category__c = 'Debt';
+        if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null)
+            fPosd.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
+        else 
+            fPosd.Funding_Position__c = fPosExistingNew[0].id;
+        fPosd.Asset_And_Liability__c = assLiab.id;
+        fPosd.Amount__c = assLiab.Limit__c;
+
+       system.debug('##Entered here');
+       if(assLiab.Repayments__c !=null){
+           if(assLiab.Repayment_Frequency__c == 'Weekly'  ){
+             fPosdFirst.Amount__c = assLiab.Repayments__c * 52/12 *0.5 ;
+                
+           }
+            if(assLiab.Repayment_Frequency__c == 'Monthly'  ){
+             fPosdFirst.Amount__c = assLiab.Repayments__c * 1 *0.5 ;
+                
+           }
+            if(assLiab.Repayment_Frequency__c == 'Anually'  ){
+             fPosdFirst.Amount__c = assLiab.Repayments__c * 1/12 * 0.5 ;
+                
+           }
+            if(assLiab.Repayment_Frequency__c == 'Fortnightly'  ){
+             fPosdFirst.Amount__c = assLiab.Repayments__c * 26/12* 0.5 ;
+                
+           }
+       }
+       fPosdFirst.Detail_Type__c = 'Potential Accrued Interest'; 
+       fPosdFirst.Category__c    = 'Other';
+       fPosdFirst.Name = assLiab.Name + '-' + assLiab.Repayments__c;
+       if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null)
+            fPosdFirst.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
+        else 
+            fPosdFirst.Funding_Position__c = fPosExistingNew[0].id;
+       fPosdFirst.Asset_And_Liability__c = assLiab.id;
+       
+       fundPosdList.add(fPosd);
+       fundPosdList.add(fPosdFirst);
+    }
+
+    Public void insertAssetEstateSingleRecords(List<Funding_Position__c> fPosExistingNew, Asset_And_Liability__c assLiab, Map<Id,Funding_Position__c> accountFPCountMap,decimal amount){
+        Funding_Position_Detail__c  fPosdSixth = new Funding_Position_Detail__c (); 
+        if(assLiab.State__c !=null)
+            amount =  ClickCommon.getRegistrationFee(assLiab.State__c);
+        fPosdSixth.Amount__c = 2*amount;
+        fPosdSixth.Category__c = 'Fee';
+        fPosdSixth.Detail_Type__c = 'Registration Fee';
+        fPosdSixth.Name = assLiab.Name + '- Registration Fee';
+        if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null)
+            fPosdSixth.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
+        else 
+            fPosdSixth.Funding_Position__c = fPosExistingNew[0].id;
+        fPosdSixth .Asset_And_Liability__c = assLiab.id;
+        fundPosdList.add(fPosdSixth);
+    }
      
     
     
@@ -281,13 +450,15 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         list<Financials_Source__c> lstFs = new list<Financials_Source__c>();
         
         set<Id> IeId = new Set<Id>();
-      
-        map<String,String> mapUser  =ClickCommon.mapUserInputType();
+        List<Id> lstid = new List<id>();
+        
         for(Asset_And_Liability__c objAsset : triggernew)
         {
             IeId.add(objAsset.id);
             CreateRpdata(objAsset.id);
+            lstid.add(objAsset.createdById);
         }
+        map<String,String> mapUser  =ClickCommon.mapUserInputType(lstid);
         List<Income_And_Expense__c>  lstIE = 
         [Select Asset_And_Liability__c , Amount__c ,Frequency__c , acfDetails__c  from Income_And_Expense__c where Asset_And_Liability__c in : IeId];
         
@@ -380,10 +551,8 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                     Financials_Source__c tempObj1 = new Financials_Source__c();
                     tempObj1.Amount__c = objAsset.Value__c;
                     if(mapUser.get(objAsset.CreatedById) != null){
-                       
                             tempObj1.Source__c = mapUser.get(objAsset.CreatedById);
                         }
-                    
                     tempObj1.Asset_And_Liability__c = objAsset.id;
                     lstFs.add(tempObj1);
                  }
@@ -519,7 +688,7 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             =============================================================================
         */ 
         
-            List<Income_And_Expense__c>  lstIncomeAndExp = [Select Asset_And_Liability__c ,Asset_And_Liability__r.Repayment_Frequency__c,
+             /*  List<Income_And_Expense__c>  lstIncomeAndExp = [Select Asset_And_Liability__c ,Asset_And_Liability__r.Repayment_Frequency__c,
                                                                 Amount__c ,Frequency__c , acfDetails__c,Asset_And_Liability__r.Repayments__c,
                                                                 (select id,Amount__c from Financials_Sources__r)
                                                                 from Income_And_Expense__c where Asset_And_Liability__c in : setOfLiabilityId];
@@ -532,7 +701,7 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                     for(Income_And_Expense__c objIncomeAndExp : lstIncomeAndExp)
                     {
                         
-                    /*  if(objIncomeAndExp.Asset_And_Liability__r.Repayment_Frequency__c == 'Weekly'  && objIncomeAndExp.Asset_And_Liability__r.Repayments__c != null)
+                   if(objIncomeAndExp.Asset_And_Liability__r.Repayment_Frequency__c == 'Weekly'  && objIncomeAndExp.Asset_And_Liability__r.Repayments__c != null)
                         {
                             objIncomeAndExp.Amount__c = objIncomeAndExp.Asset_And_Liability__r.Repayments__c * 52;
                             objIncomeAndExp.Frequency__c = 'Weekly' ;
@@ -552,7 +721,7 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                             objIncomeAndExp.Amount__c = objIncomeAndExp.Asset_And_Liability__r.Repayments__c * 26;
                             objIncomeAndExp.Frequency__c = 'Fortnightly' ;
                         }
-                        lstupdatedIncomeAndExp.add(objIncomeAndExp);     */
+                        lstupdatedIncomeAndExp.add(objIncomeAndExp);     
                         if(objIncomeAndExp.Financials_Sources__r != null && objIncomeAndExp.Financials_Sources__r.size() > 0)
                         {
                             for(Financials_Source__c objFinancialSource : objIncomeAndExp.Financials_Sources__r)
@@ -580,10 +749,10 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                                         tempFsObj.add(objFinancialSource) ;
                                 }
                             }
-                        }
+                        }  
                     }
                 }   
-            }   
+            }   */
         /*  if(lstupdatedIncomeAndExp != null && lstupdatedIncomeAndExp.size() > 0)
             {
                 update lstupdatedIncomeAndExp;
