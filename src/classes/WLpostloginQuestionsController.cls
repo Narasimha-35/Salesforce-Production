@@ -1073,11 +1073,37 @@ public class WLpostloginQuestionsController
                             {
                                 if(objQuestion.IsApplicant2Question)
                                 {
-                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
+                                    try
+                                    {
+                                        objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        IsSlide = 'false';
+                                        strmsg = 'Please enter valid value';
+                                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                        system.debug(strmsg);
+                                        WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                        return null;
+                                    }
                                 }
                                 else  
-                                   objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
-                            }  
+                                {
+                                    try
+                                    {
+                                        objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        IsSlide = 'false';
+                                        strmsg = 'Please enter valid value';
+                                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                        system.debug(strmsg);
+                                        WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                        return null;
+                                    }
+                                }
+                           }  
                             else
                             {
                                 if(objQuestion.IsApplicant2Question)
@@ -1093,11 +1119,37 @@ public class WLpostloginQuestionsController
                             if(objQuestion.objWrapQuestion.acf_Type__c == 'Number' || objQuestion.objWrapQuestion.acf_Type__c == 'Currency' || objQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                             {
                                 if(objQuestion.IsApplicant2Question)
-                                {
-                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));
+                                { 
+                                    try
+                                    {
+                                        objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        IsSlide = 'false';
+                                        strmsg = 'Please enter valid value';
+                                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                        system.debug(strmsg);
+                                        WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                        return null;
+                                    }
                                 } 
                                 else
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));                                    
+                                {
+                                    try
+                                    {   
+                                        objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        IsSlide = 'false';
+                                        strmsg = 'Please enter valid value';
+                                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                        system.debug(strmsg);
+                                        WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                        return null;
+                                    }
+                                }                                                   
                             }    
                             else
                             {
@@ -1133,7 +1185,19 @@ public class WLpostloginQuestionsController
                                     {
                                         if(objQuestion.IsApplicant2Question)
                                         {
-                                           objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));
+                                            try
+                                            {   
+                                                objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));
+                                            }
+                                            catch(Exception ex)
+                                            {
+                                                IsSlide = 'false';
+                                                strmsg = 'Please enter valid value';
+                                                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                                system.debug(strmsg);
+                                                WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                                return null;
+                                            }
                                         }
                                          else
                                             objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,mapAnswerIdToAnswer.get(strAns));
@@ -1147,11 +1211,37 @@ public class WLpostloginQuestionsController
                                 {
                                     if(objQuestion.IsApplicant2Question)
                                     {
-                                       objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));
+                                        try
+                                        {           
+                                            objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));
+                                        }
+                                        catch(Exception ex)
+                                        {
+                                            IsSlide = 'false';
+                                            strmsg = 'Please enter valid value';
+                                            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                            system.debug(strmsg);
+                                            WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                            return null;
+                                        }
                                     }
                                     else
-                                         objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));                                                                                    
-                                }
+                                    {
+                                        try
+                                        {
+                                            objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objRelatedQues.strWrapAnswer)));                                                                                    
+                                        }
+                                        catch(Exception ex)
+                                        {
+                                            IsSlide = 'false';
+                                            strmsg = 'Please enter valid value';
+                                            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                            system.debug(strmsg);
+                                            WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                            return null;
+                                        }
+                                    }                               
+                               }
                                 else
                                 {
                                     if(objQuestion.IsApplicant2Question)
@@ -1169,10 +1259,36 @@ public class WLpostloginQuestionsController
                                 {
                                     if(objQuestion.IsApplicant2Question)
                                     {
-                                       objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(objRelatedQues.strWrapAnswer));
+                                        try
+                                        {   
+                                            objApplicant.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(objRelatedQues.strWrapAnswer));
+                                        }
+                                        catch(Exception ex)
+                                        {
+                                            IsSlide = 'false';
+                                            strmsg = 'Please enter valid value';
+                                            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                            system.debug(strmsg);
+                                            WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                            return null;
+                                        }
                                     }
                                     else
-                                         objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(objRelatedQues.strWrapAnswer));                                      
+                                    {    
+                                        try
+                                        {                                       
+                                            objPortalContact.put(objRelatedQues.objWrapQuestion.acf_ApiName__c,decimal.valueof(objRelatedQues.strWrapAnswer)); 
+                                        }
+                                        catch(Exception ex)
+                                        {
+                                            IsSlide = 'false';
+                                            strmsg = 'Please enter valid value';
+                                            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                            system.debug(strmsg);
+                                            WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                            return null;
+                                        }                                       
+                                    }
                                 }  
                                 else
                                 {
@@ -1243,12 +1359,38 @@ public class WLpostloginQuestionsController
                              //mapQuesToSelectedAnswer.put(objQuestion.objWrapQuestion,mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)); 
                             if(objQuestion.objWrapQuestion.acf_Type__c == 'Number' || objQuestion.objWrapQuestion.acf_Type__c == 'Currency' || objQuestion.objWrapQuestion.acf_Type__c == 'Percent')
                             {
-                              if(objQuestion.IsApplicant2Question)
+                                if(objQuestion.IsApplicant2Question)
                                 {
-                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
+                                    try
+                                    {
+                                        objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));
+                                    }  
+                                    catch(Exception ex)
+                                    {
+                                        IsSlide = 'false';
+                                        strmsg = 'Please enter valid value';
+                                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                        system.debug(strmsg);
+                                        WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                        return null;
+                                    }                                   
                                 }
-                              else
-                                     objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));                            
+                                else
+                                {
+                                    try
+                                    {
+                                        objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(mapAnswerIdToAnswer.get(objQuestion.strWrapAnswer)));                            
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        IsSlide = 'false';
+                                        strmsg = 'Please enter valid value';
+                                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                        system.debug(strmsg);
+                                        WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                        return null;
+                                    }
+                               }
                             } 
                             else
                             {
@@ -1267,10 +1409,36 @@ public class WLpostloginQuestionsController
                             {
                                 if(objQuestion.IsApplicant2Question)
                                 {
-                                   objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));
+                                    try
+                                    {
+                                        objApplicant.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        IsSlide = 'false';
+                                        strmsg = 'Please enter valid value';
+                                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                        system.debug(strmsg);
+                                        WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                        return null;
+                                    }
                                 }
                                 else
-                                    objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));                    
+                                {
+                                    try
+                                    {
+                                        objPortalContact.put(objQuestion.objWrapQuestion.acf_ApiName__c,decimal.valueof(objQuestion.strWrapAnswer));
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        IsSlide = 'false';
+                                        strmsg = 'Please enter valid value';
+                                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter valid value.'));
+                                        system.debug(strmsg);
+                                        WLQuoteDetail.setProgressBarWidth(MasterQuesNo,intTotalQuestions,+ objCommSetup.Click_Page_Prefix__c+'PostloginQuestionnaires',strNetworkId);
+                                        return null;
+                                    }
+                                }                                               
                             }   
                             else
                             {
@@ -1646,9 +1814,10 @@ public class WLpostloginQuestionsController
                                 InsertRequiredDocuments(LoggedInLeadId,lstMasterWrapperQuestion);
                                 objLead.acfIs_Post_Login_Ques_Attempted__c = true;
                                 update objLead;
+                                string retPgName = ClickCommon.sendReturnUrl(Userinfo.getuserID(),false,objCommSetup.Click_Page_Prefix__c+'postloginQuestions',strNetworkId); 
+                                return new pageReference(retPgName);
                           } 
-                          string retPgName = ClickCommon.sendReturnUrl(Userinfo.getuserID(),false,objCommSetup.Click_Page_Prefix__c+'postloginQuestions',strNetworkId); 
-                          return new pageReference(retPgName);
+                         
                         }      
                         else
                         {
