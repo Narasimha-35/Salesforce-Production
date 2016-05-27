@@ -18,4 +18,8 @@ public with sharing class IncomeAndExpenseSelector extends SObjectSelector {
 	public List<Income_And_Expense__c> getByAccount(Account acc) {
 		return (List<Income_And_Expense__c>) super.selectByOpenCondition('WHERE Account__c = \'' + acc.id + '\'');
 	}
+
+	public List<Income_And_Expense__c> getByApplicantId(Id applicantId) {
+		return (List<Income_And_Expense__c>) super.selectByOpenCondition('WHERE Applicant__c = \'' + applicantId + '\'');
+	}
 }

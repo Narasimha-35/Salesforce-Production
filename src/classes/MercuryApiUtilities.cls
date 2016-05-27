@@ -136,6 +136,11 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		MercuryUtility.HttpSet hs = insertMercuryRecord(lp);
 	}
 
+	public static MercuryUtility.HttpSet createLoanPeopleInMercury(MercuryModel.People peop, MercuryModel.Loan loan) {
+		MercuryModel.LoanPeople lp = new MercuryModel.LoanPeople(peop, loan);
+		return insertMercuryRecord(lp);
+	}
+
 	//Sync relationship between opportunity and account
 	public static void createLoanPeopleInMercury(String oppoAndaccountId, String oppId, String accountId) {
 		String token = MercuryAuth.getInstance().getToken();
@@ -257,13 +262,11 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 		String token = MercuryAuth.getInstance().getToken();
 		String resourceName = MercuryModel.getResourceName(mercModel);
-		endPointTemplate.replace(TOKEN_PLACEHOLDER, token).replace(RESOURCE_NAME_PLACEHOLDER, resourceName);
-		String endPoint = endPointTemplate;
 		req.setHeader('Content-Type', 'application/json');
-		req.setEndPoint(endPoint);
+		req.setEndPoint(endPointTemplate.replace(TOKEN_PLACEHOLDER, token).replace(RESOURCE_NAME_PLACEHOLDER, resourceName));
 		req.setMethod(method);
 		String payload = JSON.serialize(mercModel);
-		if(mercModel.isContainsReservedName()) payload.replace(Model.REMOVE_RESERVE_PATTEN, '');
+		if(mercModel.isContainsReservedName()) payload = payload.replace(Model.REMOVE_RESERVE_PATTEN, '');
 		req.setBody(payload);
 		return req;
 	}
@@ -280,6 +283,14 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		HttpRequest req = buildRequest(endPointTemplate, 'PUT', mercModel);
 		Http http = new Http();
 		return new MercuryUtility.HttpSet(req, http.send(req));
+	}
+
+	public static Boolean handleResponse(MercuryUtility.HttpSet hs) {
+		if(hs.res.getStatusCode() != 200) {
+			System.debug(LoggingLevel.DEBUG, '[MercuryApiUtilities.handleResponse] Fail Response: ' + hs.res);
+			return false;
+		}
+		return true;
 	}
 
 }

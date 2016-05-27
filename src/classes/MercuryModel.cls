@@ -78,6 +78,7 @@ public without sharing class MercuryModel {
 		public String fullName {get; set;}
 		public String salutationOrFirstName {get; set;}
 		public List<ContactMethod> contactMethods;
+		public Boolean isPrimaryApplicant;
 
 		public People() {
 		}
@@ -101,6 +102,7 @@ public without sharing class MercuryModel {
 			employer = acc.employer_Name__pc;
 			occupation = acc.current_Role__pc;
 			jobTitle = acc.job_Title__pc;
+			isPrimaryApplicant = true;
 
 			contactMethods = new List<ContactMethod>();
 			contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.HOME, acc.personHomePhone));
@@ -127,6 +129,8 @@ public without sharing class MercuryModel {
 			occupation = apct.current_Role__c;
 			employmentStatus = apct.acfEmployment_Type__c;
 			employmentCommenced = ApplicantUtilities.getDateFieldInGMT(apct.aCf1_Current_employer_Start_Date__c);
+			isPrimaryApplicant = false;
+
 			contactMethods = new List<ContactMethod>();
 			contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.MOBILE, apct.applicant_Phone__c));
 			contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.EMAIL1, apct.applicant_Email__c));
@@ -190,6 +194,7 @@ public without sharing class MercuryModel {
 			title = title != null && MercuryStaticValue.AVALIABLE_TITLE.contains(title.toLowerCase().capitalize()) ? title.toLowerCase().capitalize() : null;
 			gender = gender != null ? gender.left(1) : null;
 			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
+			numberOfDependents = numberOfDependents != null ? numberOfDependents : 0;
 		}
 
 		@testVisible
@@ -319,7 +324,7 @@ public without sharing class MercuryModel {
 			// fixedRateExpiry = ((Datetime)merc_oppo.merc_fixed_rate_expiry__c).format('yyyy-MM-dd');
 			// interestOnlyExpiry = ((Datetime)merc_oppo.merc_interest_only_expiry__c).format('yyyy-MM-dd');
 			metaData = merc_oppo.merc_categories__c;
-			leadSourceDisplay = MercuryStaticValue.ACF_LEAD_SOURCE_ID;
+			leadSourceDisplay = MercuryStaticValue.ACF_LEAD_SOURCE_DISPLAY;
 			leadSourceId = MercuryStaticValue.ACF_LEAD_SOURCE_ID;
 			validateAndClean();
 		}
@@ -351,8 +356,8 @@ public without sharing class MercuryModel {
 		private void validateAndClean() {
 			amount = amount != null ? amount : 0;
 			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
-			transactionType = transactionType != null ? transactionType : MercuryStaticValue.ACF_LEAD_SOURCE_ID;
-			leadSourceDisplay = leadSourceDisplay != null ? leadSourceDisplay : MercuryStaticValue.ACF_LEAD_SOURCE_ID;
+			transactionType = transactionType != null ? transactionType : MercuryStaticValue.DEFAULT_TRANSACTION_TYPE;
+			leadSourceDisplay = leadSourceDisplay != null ? leadSourceDisplay : MercuryStaticValue.ACF_LEAD_SOURCE_DISPLAY;
 			leadSourceId = leadSourceId != null ? leadSourceId : MercuryStaticValue.ACF_LEAD_SOURCE_ID;
 		}
 
@@ -377,6 +382,20 @@ public without sharing class MercuryModel {
 			relationship = 'Primary Applicant';
 			fullName = oppo.id + '-' + acc.id;
 
+			validateAndClean();
+		}
+
+		public LoanPeople(MercuryModel.People peop, MercuryModel.Loan loan) {
+			init();
+			uniqueId = loan.uniqueId + '-' + peop.uniqueId;
+			loanID = loan.uniqueId;
+			personID = peop.uniqueId;
+			if(peop.isPrimaryApplicant) {
+				relationship = 'Primary Applicant';
+			} else {
+				relationship = 'Applicant';
+			}
+			fullName = loan.uniqueId + '-' + peop.uniqueId;
 			validateAndClean();
 		}
 
@@ -535,12 +554,12 @@ public without sharing class MercuryModel {
 		public String frequency;
 		public Integer sortKey;
 
-		public Income(Income_And_Expense__c iae, Account acc, String branchId) {
+		public Income(Income_And_Expense__c iae, MercuryModel.People people, String branchId) {
 			init();
 
 			uniqueId = iae.id;
 			amount = iae.amount__c;
-			personId = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
+			personId = people.uniqueId;
 			type = iae.category__c;
 			frequency = iae.frequency__c == 'Yearly' ? 'Annual' : iae.frequency__c;
 			company = branchId;
@@ -576,12 +595,12 @@ public without sharing class MercuryModel {
 		public Decimal balance;
 		public Decimal creditLimit;
 
-		public Expense(Income_And_Expense__c iae, Account acc, String branchId) {
+		public Expense(Income_And_Expense__c iae, MercuryModel.People people, String branchId) {
 			init();
 
 			uniqueId = iae.id;
 			amount = iae.amount__c;
-			personId = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
+			personId = people.uniqueId;
 			type = iae.category__c;
 			frequency = iae.frequency__c == 'Yearly' ? 'Annual' : iae.frequency__c;
 			creditLimit = iae.credit_Limit__c;
@@ -639,6 +658,7 @@ public without sharing class MercuryModel {
 
 			parentType = 'person';
 			parentID = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
+			//TODO: fix mapping here currently we put everything in stree name because we can't spearate the address
 			addressBlock = acc.acfWhat_is_your_postcode__pc;
 			streetSearch = acc.acfWhat_is_your_postcode__pc;
 			streetName = acc.acfWhat_is_your_postcode__pc;
@@ -704,7 +724,7 @@ public without sharing class MercuryModel {
 			streetType = aal.street_Type__c;
 			city = aal.city__c;
 			state = aal.state__c;
-			postcode = aal.postcode__c != null ? String.valueOf(aal.postcode__c) : null;
+			postcode = aal.postcode__c != null ? String.valueOf((Integer)aal.postcode__c) : null;
 			country = aal.country__c;
 
 			validateAndClean();
@@ -763,12 +783,12 @@ public without sharing class MercuryModel {
 		public String motorVehiceYear;
 		public String motorVehicleMake;
 
-		public Asset(Asset_And_Liability__c aal, Opportunity oppo, Income_And_Expense__c iae, String branchId) {
+		public Asset(Asset_And_Liability__c aal, MercuryModel.Loan loan, String branchId) {
 			init();
 
 			uniqueId = aal.id;
 			company = branchId;
-			parentId = oppo.mercury_Loan_Id__c != null && oppo.mercury_Loan_Id__c != '' ? oppo.mercury_Loan_Id__c : oppo.id;
+			parentId = loan.uniqueId;
 			name = AssetAndLiabilityRecordType.getInstance().rtMapById.get(aal.recordTypeId).getName().replaceFirst('Asset ', '');
 			type = name.replace(' ', '');
 			value = aal.value__c;
@@ -782,17 +802,18 @@ public without sharing class MercuryModel {
 			realEstateZoning = aal.zoning__c;
 			realEstateObject = new RealEstate(aal, branchId);
 			realEstateToBePurchased = aal.to_Be_Purchased__c;
-			realEstateRentalIncome = iae.amount__c;
-			realEstateRentalIncomeFrequency = aal.repayment_Frequency__c;
+			realEstateRentalIncome = aal.gross_Amount__c;
+			realEstateRentalIncomeFrequency = MercuryStaticValue.MERC_REPAYMENT_FREQUENCY_MAP.get(aal.repayment_Frequency__c);
 			realEstateRentalEvidenceOfTenancy = aal.evidence_of_Tenancy__c;
 			existingMortgageCreditor = aal.creditor__c;
 			existingMortgageBalance = aal.current_Balance__c;
 			existingMortgageRepayment = (Integer) aal.repayments__c;
-			existingMortgageRepaymentFrequency = aal.repayment_Frequency__c;
+			existingMortgageRepaymentFrequency = MercuryStaticValue.MERC_REPAYMENT_FREQUENCY_MAP.get(aal.repayment_Frequency__c);
 			existingMortgageRepaymentClearing = aal.clearing_From_This_Loan__c;
 			motorVehicleType = aal.vehicle_Type__c;
 			motorVehiceYear = aal.vehicle_Year__c;
 			motorVehicleMake = aal.vehicle_Make__c;
+			details = aal.vehicle_Make__c;
 
 			validateAndClean();
 		}
@@ -836,22 +857,22 @@ public without sharing class MercuryModel {
 		public String creditCardType;
 		public Boolean accountClearingFromLoan;
 
-		public Liability(Asset_And_Liability__c aal, Opportunity oppo, String branchId) {
+		public Liability(Asset_And_Liability__c aal, MercuryModel.Loan loan, String branchId) {
 			init();
 
 			uniqueId = aal.id;
 			company = branchId;
-			parentId = oppo.mercury_Loan_Id__c != null && oppo.mercury_Loan_Id__c != '' ? oppo.mercury_Loan_Id__c : oppo.id;
+			parentId = loan.uniqueId;
 			name = AssetAndLiabilityRecordType.getInstance().rtMapById.get(aal.recordTypeId).getName().replaceFirst('Liability ', '');
 			type = name.replace(' ', '');
-			value = aal.value__c;
+			value = aal.current_Balance__c;
 			param_rr_limit = aal.limit__c;
 			institution = aal.institution__c;
 			accountName = aal.account_Name__c;
 			accountNumber = aal.account_Number__c;
 			accountBSB = aal.bsb__c;
 			accountRepayment = aal.repayments__c;
-			accountRepaymentFrequency = aal.repayment_Frequency__c;
+			accountRepaymentFrequency = MercuryStaticValue.MERC_REPAYMENT_FREQUENCY_MAP.get(aal.repayment_Frequency__c);
 			creditCardType = aal.credit_Card_Type__c;
 			accountClearingFromLoan = aal.clearing_From_This_Loan__c;
 

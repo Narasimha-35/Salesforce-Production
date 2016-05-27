@@ -15,7 +15,7 @@ public with sharing class AssetAndLiabilitySelector extends SObjectSelector{
 		return (Asset_And_Liability__c) super.selectByIds(new List<Id>{rid})[0];
 	}
 
-	public List<Asset_And_Liability__c> getByAccount(Account acc) {
-		return (List<Asset_And_Liability__c>) super.selectByOpenCondition('WHERE Account__c = \'' + acc.id + '\'');
+	public List<Asset_And_Liability__c> getByOpportunit(Opportunity oppo) {
+		return (List<Asset_And_Liability__c>) super.selectByOpenCondition('WHERE Opportunity__c = \'' + oppo.id + '\'');
 	}
 }

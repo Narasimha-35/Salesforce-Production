@@ -114,13 +114,44 @@ public with sharing class TestMercuryService {
 		iae.recordTypeId = IncomeRecordType.getInstance().id;
 		insert iae;
 
+		Income_And_Expense__c iae2 = TestUtilities.createIncomeAndExpense();
+		iae2.account__c = acct.id;
+		iae2.amount__c = 1;
+		iae2.balance__c = 2;
+		iae2.credit_Limit__c = 3;
+		iae2.category__c = 'Salary';
+		iae2.frequency__c = 'Yearly';
+		iae2.recordTypeId = ExpenseRecordType.getInstance().id;
+		insert iae2;
+
 		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
 		mock.setStaticResource('MercuryLoginSuccessResponse');
 		mock.setHeader('Content-Type', 'application/json');
 		Test.setMock(HttpCalloutMock.class, mock);
 
 		Test.startTest();
-		MercuryService.createIncomeAndExpense(iae, acct, 'P200019');
+		MercuryModel.People peop = new MercuryModel.People(acct, MercuryStaticValue.ACF_BRANCH_ID);
+		MercuryService.createIncomeAndExpense(iae, peop, MercuryStaticValue.ACF_BRANCH_ID);
+		MercuryService.createIncomeAndExpense(iae2, peop, MercuryStaticValue.ACF_BRANCH_ID);
+		Test.stopTest();
+	}
+
+	private static testMethod void testCreateAssetAndLiability() {
+		List<RecordType> recordTypeList = [SELECT id, name, sobjectType FROM RecordType WHERE sobjectType = 'Asset_And_Liability__c'];
+
+		Asset_And_Liability__c aal = TestUtilities.createAssetAndLiability();
+		aal.opportunity__c = oppo.id;
+		aal.recordTypeId = recordTypeList[0].id;
+		insert aal;
+
+		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+		mock.setStaticResource('MercuryLoginSuccessResponse');
+		mock.setHeader('Content-Type', 'application/json');
+		Test.setMock(HttpCalloutMock.class, mock);
+
+		Test.startTest();
+		MercuryModel.Loan loan = new MercuryModel.Loan(oppo, MercuryStaticValue.ACF_BRANCH_ID);
+		MercuryService.createAssetAndLiability(aal, loan, MercuryStaticValue.ACF_BRANCH_ID);
 		Test.stopTest();
 	}
 
