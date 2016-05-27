@@ -3,6 +3,7 @@ public with sharing class MercuryStaticValue {
 	public static final String ENCODING_SCHEME = 'UTF-8';
 	public static final String ACF_BRANCH_ID = 'P200019';
 	public static final String ACF_LEAD_SOURCE_ID = '3f85d5db-5924-11e4-88e4-00155db85119';
+	public static final String ACF_LEAD_SOURCE_DISPLAY = 'ACF Client';
 	public static final String DEFAULT_TRANSACTION_TYPE = 'Loan';
 	public static final Integer MERC_CLEAN_BATCH_SIZE = 5;
 
@@ -38,5 +39,13 @@ public with sharing class MercuryStaticValue {
 		'Pending Settlement',
 		'Settled (not paid)',
 		'Settled'
+	};
+
+	//key: SF value, value: Mercury value
+	public static final Map<String, String> MERC_REPAYMENT_FREQUENCY_MAP = new Map<String, String> {
+		'Monthly'     => 'monthly',
+ 		'Weekly'      => 'weekly',
+		'Fortnightly' => 'fortnightly',
+		'Anually'     => 'annually'
 	};
 }

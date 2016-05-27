@@ -75,6 +75,8 @@ global class Chen_GoogleCalenderHelper {
 		Boolean result = false;
 		//email, and appointment ref
 		List<Appointment__c> appointments = [select Id, Name, Region__r.Sydney_Timezone_Offset__c, Appointment_Date_and_Time__c, Broker_Email__c from Appointment__c where Id = :appointmentId];
+		List<event> events;
+		String[] googleEmail;
 		if (appointments.size() > 0) {
 			if (appointments.get(0).Broker_Email__c != null && appointments.get(0).Name != null) {
 				String subjectLike = '\'' + appointments.get(0).Name + '%' + '\'';
@@ -83,15 +85,21 @@ global class Chen_GoogleCalenderHelper {
 				String googleEventIdLike = '\'' + '%' + appointments.get(0).Broker_Email__c + '%\'';
 				String query = 'Select Id, Google_Event_ID__c from event where Subject like ' + subjectLike + ' and Google_Event_ID__c like ' + googleEventIdLike;
 				System.debug(query);
-				List<event> events = Database.query(query);
+				events = Database.query(query);
 				if (events.size() > 0 && events.size() == 1 && events.get(0).Google_Event_ID__c != null) {
-					String[] googleEmail = events.get(0).Google_Event_ID__c.split('~');
+					googleEmail = events.get(0).Google_Event_ID__c.split('~');
 					if (googleEmail.size() == 2) {
 						result = deleteEventOnGoogleCalendar(googleEmail[1], googleEmail[0], true);
 					}
 				}
 			}
 		}
+
+		String bodyText = 'appointments: ' + JSON.serialize(appointments) + '\n';
+		bodyText += 'events: ' + JSON.serialize(events) + '\n';
+		bodyText += 'googleEmail: ' + JSON.serialize(googleEmail) + '\n';
+
+		if(!result) sendChenFailedEmail(bodyText);
 		update appointments;
 		return result;
 	}
@@ -114,12 +122,6 @@ global class Chen_GoogleCalenderHelper {
 			Broker__c broker = [select Id from Broker__c where email__c = 'who@creditandfinance.com.au'];
 			appointments.get(0).Broker__c = broker.Id;
 			update appointments;
-			if (!result) {
-				String bodyText = 'Appointment reschedule is failed: ' + appointmentId;
-	        	//send chen email about the failure
-	        	sendChenFailedEmail(bodyText);
-			}
-
 		}
 	}
 
@@ -128,6 +130,7 @@ global class Chen_GoogleCalenderHelper {
         	Messaging.SingleEmailMessage mailsSc = new Messaging.SingleEmailMessage();
         	List<String> sendToEmails = new List<String>();
       		sendToEmails.add('chen@creditandfinance.com.au');
+			sendToEmails.add('anthony.xuan@creditandfinance.com.au');
       		mailsSc.setToAddresses(sendToEmails);
 
       		mailsSc.setReplyTo('chen@creditandfinance.com.au');

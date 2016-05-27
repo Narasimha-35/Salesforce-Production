@@ -218,4 +218,9 @@ public class TestUtilities {
       return app;
    }
 
+   public static Asset_And_Liability__c createAssetAndLiability() {
+      Asset_And_Liability__c aal = new Asset_And_Liability__c();
+      return aal;
+   }
+
 }
