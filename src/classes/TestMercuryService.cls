@@ -142,6 +142,7 @@ public with sharing class TestMercuryService {
 		Asset_And_Liability__c aal = TestUtilities.createAssetAndLiability();
 		aal.opportunity__c = oppo.id;
 		aal.recordTypeId = recordTypeList[0].id;
+		aal.account__c = acc.id;
 		insert aal;
 
 		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
