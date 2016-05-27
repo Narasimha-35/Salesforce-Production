@@ -12,6 +12,10 @@ public with sharing class AsyncRequestService {
 		return new AsyncRequest__c(type__c = '' + AsyncRequestType.SF_TO_MERCURY, params__c = '{"accId":"' + accId + '", "oppoId":"' + oppoId + '"}');
 	}
 
+	public static AsyncRequest__c createApplyOnlineRequst(String oppoId) {
+		return new AsyncRequest__c(type__c = '' + AsyncRequestType.APPLY_ONLINE, params__c = '{"oppoId":"' + oppoId + '"}');
+	}
+
 	public static void deduplicateRequest(List<AsyncRequest__c> newRequests, List<AsyncRequest__c> pendingRequest) {
 		Set<String> params = new Set<String>();
 		for(AsyncRequest__c req : pendingRequest) {

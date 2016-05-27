@@ -8,7 +8,7 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 	global MercuryRequestBatch(Integer start) {
 		baseQuery = 'SELECT id, Params__c, Type__c FROM AsyncRequest__c ';
 		condition = 'WHERE (Type__c = \'' + AsyncRequestType.SF_TO_MERCURY + '\' ';
-		condition += 'OR Type__c = \'' + AsyncRequestType.MERCURY_TO_SF + '\') ';
+		condition += 'OR Type__c = \'' + AsyncRequestType.APPLY_ONLINE + '\') ';
 		condition += 'AND Failed__c = false ';
 		baseQuery += condition;
 		query = baseQuery + ' LIMIT 1';
@@ -31,6 +31,10 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 				System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] Sync to Mercury...' + param);
 				System.debug(LoggingLevel.DEBUG, '[MercuryRequestBatch] Check DML Limit: ' + Limits.getDMLRows());
 				MercuryService.syncWithMercury((String) param.get('oppoId'), (String) param.get('accId'));
+			} else if(request.type__c == '' + AsyncRequestType.APPLY_ONLINE) {
+				OpportunitySelector oppoSelector = new OpportunitySelector();
+				Opportunity oppo = oppoSelector.getById((String) param.get('oppoId'));
+				MercuryService.updateApplication(oppo);
 			}
 
 			System.debug(LoggingLevel.INFO, '[MercuryRequestBatch] Deleting Request...');

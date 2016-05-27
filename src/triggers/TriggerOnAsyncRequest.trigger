@@ -12,7 +12,7 @@ trigger TriggerOnAsyncRequest on AsyncRequest__c (after insert) {
    for(AsyncRequest__c ar : Trigger.new) {
       if(ar.failed__c == true) continue;
       System.debug(LoggingLevel.INFO, '[TriggerOnAsyncRequest] Checking Request Type: ' + ar);
-      if(ar.type__c == '' + AsyncRequestType.SF_TO_MERCURY) {
+      if(ar.type__c == '' + AsyncRequestType.SF_TO_MERCURY || ar.type__c == '' + AsyncRequestType.APPLY_ONLINE) {
          mercuryRequestBatchStartFlag = true;
          break;
       }

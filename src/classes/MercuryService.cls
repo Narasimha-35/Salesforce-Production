@@ -153,10 +153,8 @@ global class MercuryService {
 		MercuryService.startCleanMercuryOpportunityBatch();
 	}
 
-	webservice static void appliyOnline(Id opportunityId) {
-		OpportunitySelector oppoSelector = new OpportunitySelector();
-		Opportunity oppo = oppoSelector.getById(opportunityId);
-		MercuryService.updateApplication(oppo);
+	webservice static void applyOnline(Id opportunityId) {
+		insert AsyncRequestService.createApplyOnlineRequst(opportunityId);
 	}
 
 	//Only update the loan in Mercury
