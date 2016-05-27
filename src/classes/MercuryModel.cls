@@ -578,6 +578,7 @@ public without sharing class MercuryModel {
 		@testVisible
 		private void validateAndClean() {
 			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
+			amount = amount != null ? amount : 0;
 		}
 	}
 
@@ -621,6 +622,9 @@ public without sharing class MercuryModel {
 		@testVisible
 		private void validateAndClean() {
 			company = company != null && company != '' ? company : MercuryStaticValue.ACF_BRANCH_ID;
+			creditLimit = creditLimit != null ? creditLimit : 0;
+			balance = balance != null ? balance : 0;
+			amount = amount != null ? amount : 0;
 		}
 	}
 
