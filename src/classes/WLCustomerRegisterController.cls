@@ -470,7 +470,16 @@ public without sharing class WLCustomerRegisterController
             }
            strOTPtxt = strOTPtxt.replace('<OTP>',OTP_PIN);
            system.debug('@@@otp test message'+strOTPtxt);
-           string response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPtxt, true) ;
+           string response = '';
+           boolean isTwilio =  Twilio__c.getValues('Twilio').Twilio__c;
+           if(isTwilio == false){
+                response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPtxt , true) ;
+           }
+           else if(isTwilio){
+                response = Clickcommon.sendSMSTwillio(objLead.MobilePhone,strOTPtxt );
+           }
+           system.debug('##resp'+response);
+
            system.debug('respone ======================= '+response);
            if(response <> null && response <> '' && response.contains('success'))
            {
@@ -518,7 +527,16 @@ public without sharing class WLCustomerRegisterController
                }
                strOTPmsg = strOTPmsg.replace('<OTP>',password);
                system.debug('@@@otp test message'+strOTPmsg);
-               string response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, '+'+objLead.MobilePhone, strOTPmsg, true) ;//This will also be your first time password to log into ACF portal
+               string response = '';
+                boolean isTwilio =  Twilio__c.getValues('Twilio').Twilio__c;
+               if(isTwilio == false){
+                    response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPmsg, true) ;
+                }
+                else if(isTwilio){
+                    response = Clickcommon.sendSMSTwillio(objLead.MobilePhone,strOTPmsg);
+                }
+                system.debug('##resp'+response);
+
                system.debug('respone ======================= '+response);
                response = 'success';
                //update lead and account if response success

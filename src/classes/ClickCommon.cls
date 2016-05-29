@@ -164,6 +164,29 @@ public class ClickCommon
         }        
     }
     
+    public static string sendSMSTwillio(String recepientNumber, String message){
+        TwilioConfig__c tc = TwilioConfig__c.getOrgDefaults();
+
+        String ACCOUNT_SID = '';
+        String AUTH_TOKEN = '';
+        if(tc.AccountSid__c !=null){
+            ACCOUNT_SID = tc.AccountSid__c;
+        }
+        if(tc.AccountSid__c !=null){
+            AUTH_TOKEN = tc.AuthToken__c;
+        }
+        
+        TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
+
+        Map<String,String> properties = new Map<String,String>();
+        properties.put('To',recepientNumber);
+        properties.put('From','+61400738629');
+        properties.put('Body',message);
+        
+        TwilioMessage response = client.getAccount().getMessages().create(properties);
+        return string.valueOf(response);
+    }
+    
     
     /*
     * 
