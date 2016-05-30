@@ -899,4 +899,9 @@ public without sharing class MercuryModel {
 		}
 	}
 
+	public class LodgeLoanResponse extends Model {
+		public Boolean success;
+		public String result;
+	}
+
 }
