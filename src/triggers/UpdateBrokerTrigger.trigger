@@ -15,7 +15,7 @@ trigger UpdateBrokerTrigger on Appointment__c (after update) {
                     requestList.add(AsyncRequestService.createSyncToRequst(app.Account_Id__c, app.Opportunity__c));
                 } else {
                     System.debug(LoggingLevel.INFO, '[UpdateBrokerTrigger] Sync to future method');
-                    if(!Test.isRunningTest()) MercuryService.futureSyncWithMercury(app.Opportunity__c, app.Account_Id__c);
+                    if(!Test.isRunningTest()) MercuryApiUtilities.futureSyncWithMercury(app.Opportunity__c, app.Account_Id__c);
                 }
             }
         }

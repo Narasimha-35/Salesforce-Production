@@ -293,4 +293,26 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return true;
 	}
 
+	@future(callout=true)
+	public static void futureSyncWithMercury(String oppoId, String accountId) {
+		try {
+			MercuryService.syncWithMercury(oppoId, accountId);
+		} catch (Exception e) {
+
+		}
+	}
+
+	@future(callout=true)
+	public static void futureSyncWithMercury(Id reqId) {
+		AsyncRequestSelector ars = new AsyncRequestSelector();
+		AsyncRequest__c req = ars.getById(new List<Id>{reqId})[0];
+		Map<String, Object> param = (Map<String, Object>) JSON.deserializeUntyped((String)(req.get('params__c')));
+		try {
+			MercuryService.syncWithMercury((String) param.get('oppoId'), (String) param.get('accId'));
+			Delete req;
+		} catch (Exception e) {
+
+		}
+	}
+
 }

@@ -15,7 +15,7 @@ public with sharing class TestMercuryService {
 		urlParam = new MercuryModel.URLParams();
 		urlParam.currentPartnerId = 'P200019';
 		urlParam.searchType = 'businessStats';
-		urlParam.params = MercuryService.param2;
+		urlParam.params = MercuryStaticValue.param2;
 
 		MercuryTestUtilities.setCustomSettings(true);
 		MercuryTestUtilities.setMock(oppo.id, acc.id, urlParam);
@@ -47,23 +47,9 @@ public with sharing class TestMercuryService {
 		Test.stopTest();
 	}
 
-	private static testMethod void futureSyncWithMercuryTest1() {
-		Test.startTest();
-		MercuryService.futureSyncWithMercury(oppo.id, acc.id);
-		Test.stopTest();
-	}
-
-	private static testMethod void futureSyncWithMercuryTest2() {
-		AsyncRequest__c req = AsyncRequestService.createSyncToRequst(acc.id, oppo.id);
-		insert req;
-		Test.startTest();
-		MercuryService.futureSyncWithMercury(req.id);
-		Test.stopTest();
-	}
-
 	// private static testMethod void getLoansFromMercuryTest() {
 	// 	Test.startTest();
-	// 	MercuryModel.LoanResponse res = MercuryService.getLoansFromMercury('Opportunity', 'P200019', 'businessStats', MercuryService.param2);
+	// 	MercuryModel.LoanResponse res = MercuryService.getLoansFromMercury('Opportunity', 'P200019', 'businessStats', MercuryStaticValue.param2);
 	// 	System.assertEquals(1, res.idList.size());
 	// 	Test.stopTest();
 	// }
@@ -71,7 +57,7 @@ public with sharing class TestMercuryService {
 	// TODO: can't get rid of _dc
 	// private static testMethod void getLoansFromMercuryTest() {
 	// 	Test.startTest();
-	// 	MercuryService.getLoansFromMercury('Opportunity', 'P200019', 'businessStats', MercuryService.param2);
+	// 	MercuryService.getLoansFromMercury('Opportunity', 'P200019', 'businessStats', MercuryStaticValue.param2);
 	// 	Test.stopTest();
 	// }
 
@@ -142,6 +128,7 @@ public with sharing class TestMercuryService {
 		Asset_And_Liability__c aal = TestUtilities.createAssetAndLiability();
 		aal.opportunity__c = oppo.id;
 		aal.recordTypeId = recordTypeList[0].id;
+		aal.account__c = acc.id;
 		insert aal;
 
 		StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
