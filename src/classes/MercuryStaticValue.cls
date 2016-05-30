@@ -6,6 +6,7 @@ public with sharing class MercuryStaticValue {
 	public static final String ACF_LEAD_SOURCE_DISPLAY = 'ACF Client';
 	public static final String DEFAULT_TRANSACTION_TYPE = 'Loan';
 	public static final Integer MERC_CLEAN_BATCH_SIZE = 5;
+	public static MercurySettings__c mercSettings = MercurySettings__c.getOrgDefaults();
 
 	public static final Map<String, String> GENDER_MAP = new Map<String, String> {
 		'M'      => 'Male',
@@ -48,4 +49,26 @@ public with sharing class MercuryStaticValue {
 		'Fortnightly' => 'fortnightly',
 		'Anually'     => 'annually'
 	};
+
+	public static MercuryModel.Params param1;
+	static {
+		param1 = new MercuryModel.Params();
+		param1.transactionType = 'loan';
+		param1.transactionTypeRaw = 'loan';
+		param1.groupBy = 'Current Status';
+		param1.dateTo = Utilities.getGMTTime((DateTime) Date.today()).getTime();
+		param1.dateFrom = Utilities.getGMTTime(((DateTime) Date.today()).addDays(-1)).getTime();
+		param1.dateSearchType = 'Target Status';
+	}
+	public static MercuryModel.Params param2;
+	static {
+		param2 = new MercuryModel.Params();
+		param2.transactionType = 'loan';
+		param2.transactionTypeRaw = 'loan';
+		param2.groupBy = 'Current Status';
+		param2.dateFrom = Utilities.getGMTTime(Utilities.getCurrentMonthStartTime()).getTime();
+		param2.dateTo = Utilities.getGMTTime(Utilities.getCurrentMonthStartTime().addMonths(3)).getTime();
+		param2.dateSearchType = 'Settlement';
+		param2.targetStatus = 'All';
+	}
 }

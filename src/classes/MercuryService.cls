@@ -1,48 +1,4 @@
 global class MercuryService {
-	public static MercurySettings__c mercSettings = MercurySettings__c.getOrgDefaults();
-	public static MercuryModel.Params param1;
-	static {
-		param1 = new MercuryModel.Params();
-		param1.transactionType = 'loan';
-		param1.transactionTypeRaw = 'loan';
-		param1.groupBy = 'Current Status';
-		param1.dateTo = Utilities.getGMTTime((DateTime) Date.today()).getTime();
-		param1.dateFrom = Utilities.getGMTTime(((DateTime) Date.today()).addDays(-1)).getTime();
-		param1.dateSearchType = 'Target Status';
-	}
-	public static MercuryModel.Params param2;
-	static {
-		param2 = new MercuryModel.Params();
-		param2.transactionType = 'loan';
-		param2.transactionTypeRaw = 'loan';
-		param2.groupBy = 'Current Status';
-		param2.dateFrom = Utilities.getGMTTime(Utilities.getCurrentMonthStartTime()).getTime();
-		param2.dateTo = Utilities.getGMTTime(Utilities.getCurrentMonthStartTime().addMonths(3)).getTime();
-		param2.dateSearchType = 'Settlement';
-		param2.targetStatus = 'All';
-	}
-
-	@future(callout=true)
-	public static void futureSyncWithMercury(String oppoId, String accountId) {
-		try {
-			MercuryService.syncWithMercury(oppoId, accountId);
-		} catch (Exception e) {
-
-		}
-	}
-
-	@future(callout=true)
-	public static void futureSyncWithMercury(Id reqId) {
-		AsyncRequestSelector ars = new AsyncRequestSelector();
-		AsyncRequest__c req = ars.getById(new List<Id>{reqId})[0];
-		Map<String, Object> param = (Map<String, Object>) JSON.deserializeUntyped((String)(req.get('params__c')));
-		try {
-			MercuryService.syncWithMercury((String) param.get('oppoId'), (String) param.get('accId'));
-			Delete req;
-		} catch (Exception e) {
-
-		}
-	}
 
 	public static MercuryModel.LoanResponse getLoansFromMercury(String sfObjectName, String branchId, String searchType, MercuryModel.Params params) {
 		MercuryModel.URLParams p = new MercuryModel.URLParams();
@@ -103,13 +59,13 @@ global class MercuryService {
 		Set<String> ids = new Set<String>();
 		if(method == 1) {
 			for(String s : MercuryStaticValue.MERC_SYNC_TARGET_STATUS) {
-				param1.targetStatus = s;
-				res = getLoansFromMercury('Opportunity', 'P200019', 'businessStats', param1);
+				MercuryStaticValue.param1.targetStatus = s;
+				res = getLoansFromMercury('Opportunity', 'P200019', 'businessStats', MercuryStaticValue.param1);
 				System.debug(LoggingLevel.INFO, '[MercuryService] loans to update: ' + res);
 				ids.addAll(res.idList);
 			}
 		} else if(method == 2) {
-			res = getLoansFromMercury('Opportunity', 'P200019', 'businessStats', param2);
+			res = getLoansFromMercury('Opportunity', 'P200019', 'businessStats', MercuryStaticValue.param2);
 			System.debug(LoggingLevel.INFO, '[MercuryService] loans to update: ' + res);
 			ids.addAll(res.idList);
 		}
@@ -255,16 +211,20 @@ global class MercuryService {
 		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.createLoanPeopleInMercury(people, loan));
 	}
 
-	public static Boolean createIncomeAndExpense(Income_And_Expense__c iae, MercuryModel.People people, String branchId) {
-		Model mercModel;
-		if(iae.recordTypeId == IncomeRecordType.getInstance().id) {
-			System.debug('income');
-			mercModel = new MercuryModel.Income(iae, people, branchId);
-		} else if(iae.recordTypeId == ExpenseRecordType.getInstance().id) {
-			System.debug('expense');
-			mercModel = new MercuryModel.Expense(iae, people, branchId);
-		}
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(mercModel));
+	public static Boolean createAsset(MercuryModel.Asset asset) {
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(asset));
+	}
+
+	public static Boolean createLiability(MercuryModel.Liability liability) {
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(liability));
+	}
+
+	public static Boolean createIncome(MercuryModel.Income income) {
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(income));
+	}
+
+	public static Boolean createExpense(MercuryModel.Expense expense) {
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(expense));
 	}
 
 	public static Boolean createAddress(Account acc, String branchId) {
@@ -272,14 +232,24 @@ global class MercuryService {
 		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(addr));
 	}
 
-	public static Boolean createAssetAndLiability(Asset_And_Liability__c aal, MercuryModel.Loan loan, String branchId) {
-		Model mercModel;
-		if(AssetAndLiabilityRecordType.getInstance().rtMapById.get(aal.recordTypeId).getName().startsWith('Asset')) {
-			mercModel = new MercuryModel.Asset(aal, loan, branchId);
-		} else {
-			mercModel = new MercuryModel.Liability(aal, loan, branchId);
+	public static Boolean createIncomeAndExpense(Income_And_Expense__c iae, MercuryModel.People people, String branchId) {
+		Boolean ret = false;
+		if(iae.recordTypeId == IncomeRecordType.getInstance().id) {
+			ret = createIncome(new MercuryModel.Income(iae, people, branchId));
+		} else if(iae.recordTypeId == ExpenseRecordType.getInstance().id) {
+			ret = createExpense(new MercuryModel.Expense(iae, people, branchId));
 		}
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(mercModel));
+		return ret;
+	}
+
+	public static Boolean createAssetAndLiability(Asset_And_Liability__c aal, MercuryModel.Loan loan, String branchId) {
+		Boolean ret = false;
+		if(AssetAndLiabilityRecordType.getInstance().rtMapById.get(aal.recordTypeId).getName().startsWith('Asset')) {
+			ret = createAsset(new MercuryModel.Asset(aal, loan, branchId));
+		} else {
+			ret = createLiability(new MercuryModel.Liability(aal, loan, branchId));
+		}
+		return ret;
 	}
 
 	public class MercurySyncException extends Exception {

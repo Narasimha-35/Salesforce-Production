@@ -315,7 +315,6 @@ public without sharing class MercuryModel {
 			securityValue = merc_oppo.merc_security_value__c;
 			lmi = merc_oppo.merc_lmi__c;
 			sitRep = merc_oppo.merc_status_notes__c;
-			tranxType = merc_oppo.merc_transaction_type__c;
 			lenderReference = merc_oppo.merc_lender_reference__c;
 			nextGenId = merc_oppo.merc_apply_online_id__c;
 			financeDate = ((Datetime)merc_oppo.merc_finance_date__c).format('yyyy-MM-dd');

@@ -117,7 +117,7 @@ global without sharing class MercurySyncBackBatch implements Database.Batchable<
 		Utilities.sendEmail(recipients, '[MercurySyncBackBatch] report', emailBody);
 
 		//Start clean up Batch
-		if(MercuryService.mercSettings.cleanMismatchAfterSyncBack__c) {
+		if(MercuryStaticValue.mercSettings.cleanMismatchAfterSyncBack__c) {
 			MercuryService.startCleanMercuryOpportunityBatch();
 		}
 	}

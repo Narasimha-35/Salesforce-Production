@@ -150,4 +150,18 @@ private class TestMercuryApiUtilities {
 	// 		system.assert(true);
 	// 	}
 
+	private static testMethod void futureSyncWithMercuryTest1() {
+		Test.startTest();
+		MercuryApiUtilities.futureSyncWithMercury(oppo.id, account.id);
+		Test.stopTest();
+	}
+
+	private static testMethod void futureSyncWithMercuryTest2() {
+		AsyncRequest__c req = AsyncRequestService.createSyncToRequst(account.id, oppo.id);
+		insert req;
+		Test.startTest();
+		MercuryApiUtilities.futureSyncWithMercury(req.id);
+		Test.stopTest();
+	}
+
 }
