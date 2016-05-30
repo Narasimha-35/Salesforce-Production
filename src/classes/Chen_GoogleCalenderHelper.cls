@@ -99,7 +99,7 @@ global class Chen_GoogleCalenderHelper {
 		bodyText += 'events: ' + JSON.serialize(events) + '\n';
 		bodyText += 'googleEmail: ' + JSON.serialize(googleEmail) + '\n';
 
-		if(!result) sendChenFailedEmail(bodyText);
+		if(!result && events.size() != 0) sendChenFailedEmail(bodyText);
 		update appointments;
 		return result;
 	}
