@@ -257,6 +257,20 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return sendGetRequest(endPoint);
 	}
 
+	public static MercuryUtility.HttpSet lodgeLoan(MercuryModel.Loan loan, String branchId) {
+		String token = MercuryAuth.getInstance().getToken();
+		String endPoint = BASE_URL + token + '/' + 'nextgen?loanId=' + loan.uniqueId + '&actionType=lodgeLoan&currentPartnerId=' + branchId;
+
+		HttpRequest req = new HttpRequest();
+		HttpResponse res = new HttpResponse();
+		Http http = new Http();
+		req.setHeader('Content-Type', 'application/json');
+		req.setEndPoint(endPoint);
+		system.debug(req.getEndpoint());
+		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
+		return new MercuryUtility.HttpSet(req, http.send(req));
+	}
+
 	public static HttpRequest buildRequest(String endPointTemplate, String method, Model mercModel) {
 		HttpRequest req = new HttpRequest();
 

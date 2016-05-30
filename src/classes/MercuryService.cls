@@ -189,6 +189,15 @@ global class MercuryService {
 		} else {
 			System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] to create Address for Account Fail: ' + acc.id);
 		}
+
+		//update apply online
+		loan.nextGenId = getApplyOnlineId(loan, branchId);
+		System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] start to update loan id: ' + loan.uniqueId);
+		if(updateLoan(loan)) {
+			System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] update loan Success: ' + loan.uniqueId);
+		} else {
+			System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] update loan Fail: ' + loan.uniqueId);
+		}
 	}
 
 	public static Boolean createLoan(MercuryModel.Loan loan) {
@@ -230,6 +239,11 @@ global class MercuryService {
 	public static Boolean createAddress(Account acc, String branchId) {
 		MercuryModel.Address addr = new MercuryModel.Address(acc, branchId);
 		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(addr));
+	}
+
+	public static String getApplyOnlineId(MercuryModel.Loan loan, String branchId) {
+		MercuryModel.LodgeLoanResponse response = (MercuryModel.LodgeLoanResponse) JSON.deserialize(MercuryApiUtilities.lodgeLoan(loan, branchId).res.getBody(), MercuryModel.LodgeLoanResponse.class);
+		return response.result;
 	}
 
 	public static Boolean createIncomeAndExpense(Income_And_Expense__c iae, MercuryModel.People people, String branchId) {
