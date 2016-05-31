@@ -10,7 +10,7 @@ public with sharing class TestEmailUtilities {
 	}
 
 	private static testMethod void testConstructSingleEmailMessage() {
-		EmailUtilities.constructSingleEmailMessage('', 'subject', 'body', new Messaging.EmailFileAttachment[]{}, '', '');
+		EmailUtilities.constructSingleEmailMessage('', 'subject', 'body', new Messaging.EmailFileAttachment[]{}, null, null);
 	}
 
 }
