@@ -25,6 +25,8 @@ private class TestUpdateBrokerTrigger {
 
 	private static testMethod void testNotQueue() {
 		MercuryTestUtilities.setCustomSettings(false);
+		MercuryTestUtilities.setEmailTemplateDocument();
+
 		Appointment__c app = TestUtilities.createAppointment();
 		insert app;
 		MercuryTestUtilities.setMock(app.Opportunity__c, app.Account_Id__c);
