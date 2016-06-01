@@ -44,16 +44,6 @@ global without sharing class MercuryUtility {
 		}
 	}
 
-	public class HttpSet {
-		public HttpRequest req;
-		public HttpResponse res;
-
-		public HttpSet(HttpRequest req, HttpResponse res) {
-			this.req = req;
-			this.res = res;
-		}
-	}
-
 	public static String getPrimaryApplicantId(List<MercuryModel.LoanPeople> loanPeopleList) {
 		for(MercuryModel.LoanPeople lp : loanPeopleList) if(lp.relationship == 'Primary Applicant') return lp.personID;
 		return null;
@@ -193,7 +183,7 @@ global without sharing class MercuryUtility {
 		if(resMap == null) return false;
 		if(rid.length() == 18) return true;
 
-		Object temp = resMap.get(MercuryApiUtilities.sfToMercuryItemMap.get(sfObjectName.toLowerCase()));
+		Object temp = resMap.get(MercuryStaticValue.sfToMercuryItemMap.get(sfObjectName.toLowerCase()));
 		Map<String, Object> m = null;
 		if(temp instanceOf Map<String, Object>) {
 			m = (Map<String, Object>) temp;
@@ -229,14 +219,14 @@ global without sharing class MercuryUtility {
 	public static String getBrokerBranch(String oppoId) {
 		String acfBranch = getBrokerBranchRaw(oppoId);
 		if(acfBranch == null || acfBranch == '') {
-			return MercuryApiUtilities.ACF_BRANCH_ID;
+			return MercuryStaticValue.ACF_BRANCH_ID;
 		}
 		return acfBranch;
 	}
 
 	public static String getBrokerBranchRaw(String oppoId) {
 		//default ACF Branch
-		String acfBranch = MercuryApiUtilities.ACF_BRANCH_ID;
+		String acfBranch = MercuryStaticValue.ACF_BRANCH_ID;
 		List<Opportunity> oppos = [Select Id, Current_Assigned_Broker__c From Opportunity Where Id = :oppoId];
 		if (oppos.size() == 1) {
 			if (oppos.get(0).Current_Assigned_Broker__c != null) {
@@ -278,18 +268,18 @@ global without sharing class MercuryUtility {
 		if(MercuryApiUtilities.emailSwh) {
 			system.debug(LoggingLevel.INFO, 'Sending Email to subscribers...');
 			for(Map<String, String> pe : MercuryApiUtilities.pendingEmails) {
-				String body = generateHTMLEmailBody(MercuryApiUtilities.APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details'));
+				String body = generateHTMLEmailBody(MercuryStaticValue.APPLICATION, 'MercuryApiUtilities', pe.get('methodName'), pe.get('details'));
 				Utilities.sendEmail(MercuryApiUtilities.recipients, 'Salesforce Debug', body);
 			}
 		}
 	}
 
 	public static String generateHTMLEmailBody(String projectName, String className, String methodName, String detail) {
-		if(MercuryApiUtilities.debugEmailTemplate == null) {
+		if(MercuryStaticValue.DEBUG_EMAIL_TEMPLATE == null) {
 			Document doc = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
-			MercuryApiUtilities.debugEmailTemplate = doc.body.toString();
+			MercuryStaticValue.DEBUG_EMAIL_TEMPLATE = doc.body.toString();
 		}
-		return MercuryApiUtilities.debugEmailTemplate.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
+		return MercuryStaticValue.DEBUG_EMAIL_TEMPLATE.replace('%%projectName%%', projectName).replace('%%className%%', className).replace('%%methodName%%', methodName).replace('%%details%%', detail);
 	}
 
 	public static String getTokenFromXml(Dom.Document doc) {

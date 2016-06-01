@@ -1,5 +1,9 @@
 @isTest
 public with sharing class TestMercuryModel {
+	static {
+		MercuryTestUtilities.setCustomSettings(true);
+		MercuryTestUtilities.setEmailTemplateDocument();
+	}
 
 	private static testMethod void test() {
 		MercuryModel.Partner p = new MercuryModel.Partner();
