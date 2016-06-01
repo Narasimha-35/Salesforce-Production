@@ -371,6 +371,8 @@ public class SaaSFocus_AppointmentController_beta {
         CalenderEvents  = ob.getEventslist(EveStartTime,EveEndTime ,IdBroker);
 
         if(Utilities.isBussy(eveStartTime, eveEndTime, calenderEvents)) {
+            Utilities.sendEmail(new List<String>{'anthony.xuan@creditandfinance.com.au', 'chen@creditandfinance.com.au'}, 'out of sync', 'Broker Id:' + IdBroker + ' Start time:' + EveStartTime + ' End Time' + EveEndTime);
+
             pagereference pg= new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId +'&err=1');
             pg.setRedirect(true);
             return pg;
