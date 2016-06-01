@@ -6,10 +6,10 @@ public class MercuryTestUtilities {
    }
 
    public static void setMock(String oppoId, String accountId, MercuryModel.URLParams urlParams) {
-      String baseURL = MercuryApiUtilities.DOMAIN + '/' + MercuryApiUtilities.API_VERSION + '/' + MercuryApiUtilities.APPLICATION + '/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/';
+      String baseURL = MercuryStaticValue.DOMAIN + '/' + MercuryStaticValue.API_CHANNEL + '/' + MercuryStaticValue.APPLICATION + '/aaf498ce-fc28-4e0c-a2c3-63cfd7d6ff18/';
 
       MultiStaticResourceCalloutMock multimock = new MultiStaticResourceCalloutMock();
-      multimock.setStaticResource(MercuryApiUtilities.LOGIN_END_POINT, 'MercuryLoginSuccessResponse');
+      multimock.setStaticResource(MercuryStaticValue.LOGIN_END_POINT, 'MercuryLoginSuccessResponse');
       multimock.setStaticResource(baseURL + 'loan/' + oppoId, 'MercuryLoanSuccessResponse');
       multimock.setStaticResource(baseURL + 'loan/' + oppoId.left(15), 'MercuryLoanFail1Response');
       multimock.setStaticResource(baseURL + 'person/' + accountId, 'MercuryPersonSuccessResponse');
@@ -44,6 +44,12 @@ public class MercuryTestUtilities {
       setMercurySettings(isQueued);
       setEmailSettings();
       setACFSwitchSettings();
+   }
+
+   public static void setEmailTemplateDocument() {
+      Folder folder = [SELECT id FROM Folder WHERE type = 'Document' AND name = 'public'];
+      Document doc = new Document(name = 'DebugEmailTemplate', FolderId = folder.id, body = Blob.valueOf(''));
+      insert doc;
    }
 
 }

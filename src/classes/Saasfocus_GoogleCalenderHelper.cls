@@ -30,7 +30,13 @@ public with sharing class Saasfocus_GoogleCalenderHelper {
       for(Event event: eventList){
          if(event.Google_Event_ID__c != null) continue;
          Broker__c broker = bmap.get(event.whatId);
-         GoogleCalendarModel.ResponseBody res = GoogleCalendarUtility.handleResponse(GoogleCalendarUtility.insertCalenderEvent(event, broker));
+         GoogleCalendarModel.ResponseBody res;
+         try {
+            res = GoogleCalendarUtility.handleResponse(GoogleCalendarUtility.insertCalenderEvent(event, broker));
+         } catch (HttpRequestResponse.HttpException e) {
+            e.sendExceptionEmail('Google Calendar Sync', 'Saasfocus_GoogleCalenderHelper', 'processEvent');
+            //handle
+         }
          system.debug(LoggingLevel.INFO, '[Saasfocus_GoogleCalenderHelper] Google ResponseBody: ' + res);
          event.google_Event_ID__c = GoogleCalendarUtility.generateGoogleEventId(res.id, broker.email__c);
          event.googleId__c = res.id;

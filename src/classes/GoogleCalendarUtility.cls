@@ -10,7 +10,7 @@ public with sharing class GoogleCalendarUtility {
 	}
 
 	//TODO: remove broker and make this class can handle a list of event
-	public static HttpResponse insertCalenderEvent(Event event, Broker__c broker) {
+	public static HttpRequestResponse insertCalenderEvent(Event event, Broker__c broker) {
 		System.debug(LoggingLevel.INFO, '[GoogleCalendarUtility.insertCalenderEvent] event: ' + event);
 		System.debug(LoggingLevel.INFO, '[GoogleCalendarUtility.insertCalenderEvent] broker: ' + broker);
 		GoogleCalendarModel.RequestBody reqBody = new GoogleCalendarModel.RequestBody(event);
@@ -23,7 +23,7 @@ public with sharing class GoogleCalendarUtility {
 		req.setBody(reqBody.getJSON());
 
 		Http http = new Http();
-		return http.send(req);
+		return new HttpRequestResponse(req, http.send(req));
 	}
 
 	public static String constructEndPoint(Event e, String googleAccount) {
@@ -45,19 +45,16 @@ public with sharing class GoogleCalendarUtility {
 		return googleId + '~' + brokerEmail;
 	}
 
-	public static GoogleCalendarModel.ResponseBody handleResponse(HttpResponse res) {
+	public static GoogleCalendarModel.ResponseBody handleResponse(HttpRequestResponse httpRR) {
 		GoogleCalendarModel.ResponseBody ret = null;
-		system.debug(LoggingLevel.INFO, '[GoogleCalendarUtility] Google Response: '+res.getBody());
+		system.debug(LoggingLevel.INFO, '[GoogleCalendarUtility] Google Response: ' + httpRR.res.getBody());
 
-		if(res.getStatusCode() == 200) {
-			ret = (GoogleCalendarModel.ResponseBody)JSON.deserialize(res.getBody(), GoogleCalendarModel.ResponseBody.Class);
+		if(httpRR.res.getStatusCode() == 200) {
+			ret = (GoogleCalendarModel.ResponseBody)JSON.deserialize(httpRR.res.getBody(), GoogleCalendarModel.ResponseBody.Class);
 		} else {
-			throw new SyncException();
+			throw new HttpRequestResponse.HttpException(httpRR);
 		}
 		return ret;
-	}
-
-	public class SyncException extends Exception {
 	}
 
 }
