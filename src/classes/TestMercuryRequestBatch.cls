@@ -11,6 +11,7 @@ public with sharing class TestMercuryRequestBatch {
 		oppo = TestUtilities.createOpportunity();
 		insert oppo;
 
+		MercuryTestUtilities.setEmailTemplateDocument();
 		MercuryTestUtilities.setCustomSettings(true);
 		MercuryTestUtilities.setMock(oppo.id, account.id);
 	}

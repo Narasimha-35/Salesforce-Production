@@ -1,43 +1,14 @@
-public without sharing class MercuryApiUtilities extends AbstractWebService{
-	public static final String ACF_BRANCH_ID              = 'P200019';
-	private static final Credential__c credential         = Credential__c.getAll().get('Mercury');
-	private static final String USER_NAME                 = credential.Mercury_Username__c;
-	private static final String PASSWORD                  = credential.Mercury_Password__c;
-	public static final String LOGIN_END_POINT            = credential.Mercury_Login_End_Point__c;
-	public static final String DOMAIN                     = credential.Mercury_Domain__c;
-	public static final String APPLICATION                = credential.Mercury_Application__c;
-	public static final String API_VERSION                = 'api';
-	public static final String BASE_URL                   = DOMAIN + '/' + API_VERSION + '/' + APPLICATION + '/';
+public without sharing class MercuryApiUtilities {
 	public static Boolean emailSwh                        = false;
 	public static List<String> recipients                 = null;
-	public static String debugEmailTemplate               = null;
 	public static List<Map<String, String>> pendingEmails = null;
-	public static final String TOKEN_PLACEHOLDER          = '{{token}}';
-	public static final String RESOURCE_NAME_PLACEHOLDER = '{{resourceName}}';
 
-	//The object map between salesforce and mercury
-	public static final Map<String, String> sfToMercuryObjectMap;
-	//The item map between salesforce and mercury in response body {'success':'true', 'people':[....]}
-	public static final Map<String, String> sfToMercuryItemMap;
 	static {
-		sfToMercuryObjectMap = new Map<String, String>{
-			'account'     => 'person',
-			'opportunity' => 'loan',
-			'loanpeople'  => 'loanPeople'
-		};
-		sfToMercuryItemMap = new Map<String, String>{
-			'account'     => 'people',
-			'opportunity' => 'loans',
-			'loanpeople'  => 'loanPeople'
-		};
-
 		ACFSwitch__c acfswh         = ACFSwitch__c.getOrgDefaults();
 		emailSwh                    = (Boolean) acfswh.get('Mercury_Email_Switch__c');
 		if(emailSwh) {
 			ACFEmailList__c emaiSetting = ACFEmailList__c.getOrgDefaults();
 			recipients                  = ((String) emaiSetting.get('Mercury_Email_Receiver__c')).split(',');
-			Document doc                = [select id, body from Document where name = 'DebugEmailTemplate' limit 1];
-			debugEmailTemplate          = doc.body.toString();
 		}
 		pendingEmails = new List<Map<String, String>>();
 		system.debug(LoggingLevel.INFO, 'Email Switch: ' + emailSwh);
@@ -84,7 +55,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		if(checkRecord('Opportunity', oppo.id) && !testMode) return oppo;
 		MercuryModel.Loan loan = new MercuryModel.Loan(oppo, branchId);
 
-		MercuryUtility.HttpSet hs = insertMercuryRecord(loan);
+		HttpRequestResponse hs = insertMercuryRecord(loan);
 		HttpRequest req = hs.req;
 		HttpResponse res = hs.res;
 
@@ -114,7 +85,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		if(checkRecord('Account', account.id) && !testMode) return account;
 		MercuryModel.People peop = new MercuryModel.People(account, branchId);
 
-		MercuryUtility.HttpSet hs = insertMercuryRecord(peop);
+		HttpRequestResponse hs = insertMercuryRecord(peop);
 		HttpRequest req = hs.req;
 		HttpResponse res = hs.res;
 		account.Sync_With_Mercury__pc = true;
@@ -133,10 +104,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 	public static void createLoanPeopleInMercury(Account acc, Opportunity oppo) {
 		MercuryModel.LoanPeople lp = new MercuryModel.LoanPeople(acc, oppo);
-		MercuryUtility.HttpSet hs = insertMercuryRecord(lp);
+		HttpRequestResponse hs = insertMercuryRecord(lp);
 	}
 
-	public static MercuryUtility.HttpSet createLoanPeopleInMercury(MercuryModel.People peop, MercuryModel.Loan loan) {
+	public static HttpRequestResponse createLoanPeopleInMercury(MercuryModel.People peop, MercuryModel.Loan loan) {
 		MercuryModel.LoanPeople lp = new MercuryModel.LoanPeople(peop, loan);
 		return insertMercuryRecord(lp);
 	}
@@ -149,10 +120,10 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		Http http = new Http();
 		String createdTime = MercuryUtility.convertCurrentTimeToGMTWithTimeZone();
 		req.setHeader('Content-Type', 'application/json');
-		req.setEndPoint(BASE_URL + token + '/loanPeople');
-		String jsonToSendOver = '{"uniqueId":"' + oppoAndaccountId + '","isDeleted":false,"createdOn":"' + createdTime + '","deletedOn":null,"company":"' + ACF_BRANCH_ID + '","createdBy":"CA47482","loanID":"' + oppId + '","personID":"' + accountId + '","fullName":"' + oppoAndaccountId + '","relationship":"Primary Applicant"}';
+		req.setEndPoint(MercuryStaticValue.BASE_URL + token + '/loanPeople');
+		String jsonToSendOver = '{"uniqueId":"' + oppoAndaccountId + '","isDeleted":false,"createdOn":"' + createdTime + '","deletedOn":null,"company":"' + MercuryStaticValue.ACF_BRANCH_ID + '","createdBy":"CA47482","loanID":"' + oppId + '","personID":"' + accountId + '","fullName":"' + oppoAndaccountId + '","relationship":"Primary Applicant"}';
 		req.setBody(jsonToSendOver);
-		req.setMethod(AbstractWebService.HTTP_METHOD_POST);
+		req.setMethod('POST');
 		if (Test.isRunningTest()) {
 			res.setBody('');
 			res.setStatusCode(200);
@@ -170,9 +141,9 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		HttpResponse res = new HttpResponse();
 		Http http        = new Http();
 		req.setHeader('Content-Type', 'application/x-www-form-urlencoded');
-		req.setEndPoint(LOGIN_END_POINT);
-		req.setBody('username=' + USER_NAME + '&password=' + PASSWORD + '&application=' + APPLICATION);
-		req.setMethod(AbstractWebService.HTTP_METHOD_POST);
+		req.setEndPoint(MercuryStaticValue.LOGIN_END_POINT);
+		req.setBody('username=' + MercuryStaticValue.USER_NAME + '&password=' + MercuryStaticValue.PASSWORD + '&application=' + MercuryStaticValue.APPLICATION);
+		req.setMethod('POST');
 		res = http.send(req);
 
 		Dom.Document doc = res.getBodyDocument();
@@ -233,7 +204,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		req.setHeader('Content-Type', 'application/json');
 		req.setEndPoint(endPoint);
 		system.debug(req.getEndpoint());
-		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
+		req.setMethod('GET');
 		System.debug(LoggingLevel.DEBUG, '[MercuryApiUtilities] Check DML Limit: ' + Limits.getLimitDMLStatements());
 		res = http.send(req);
 		if(res.getStatusCode() != 200) {
@@ -247,19 +218,19 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 
 	public static HttpResponse sendGetRequest(String sfObjectName, MercuryModel.URLParams urlParams) {
 		String token = MercuryAuth.getInstance().getToken();
-		String endPoint = BASE_URL + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '?';
+		String endPoint = MercuryStaticValue.BASE_URL + token + '/' + MercuryStaticValue.sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '?';
 		return sendGetRequest(endPoint + urlParams.toString());
 	}
 
 	public static HttpResponse sendGetRequest(String sfObjectName, String rid) {
 		String token = MercuryAuth.getInstance().getToken();
-		String endPoint = BASE_URL + token + '/' + sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '/' + rid;
+		String endPoint = MercuryStaticValue.BASE_URL + token + '/' + MercuryStaticValue.sfToMercuryObjectMap.get(sfObjectName.toLowerCase()) + '/' + rid;
 		return sendGetRequest(endPoint);
 	}
 
-	public static MercuryUtility.HttpSet lodgeLoan(MercuryModel.Loan loan, String branchId) {
+	public static HttpRequestResponse lodgeLoan(MercuryModel.Loan loan, String branchId) {
 		String token = MercuryAuth.getInstance().getToken();
-		String endPoint = BASE_URL + token + '/' + 'nextgen?loanId=' + loan.uniqueId + '&actionType=lodgeLoan&currentPartnerId=' + branchId;
+		String endPoint = MercuryStaticValue.BASE_URL + token + '/' + 'nextgen?loanId=' + loan.uniqueId + '&actionType=lodgeLoan&currentPartnerId=' + branchId;
 
 		HttpRequest req = new HttpRequest();
 		HttpResponse res = new HttpResponse();
@@ -267,8 +238,8 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		req.setHeader('Content-Type', 'application/json');
 		req.setEndPoint(endPoint);
 		system.debug(req.getEndpoint());
-		req.setMethod(AbstractWebService.HTTP_METHOD_GET);
-		return new MercuryUtility.HttpSet(req, http.send(req));
+		req.setMethod('GET');
+		return new HttpRequestResponse(req, http.send(req));
 	}
 
 	public static HttpRequest buildRequest(String endPointTemplate, String method, Model mercModel) {
@@ -277,7 +248,7 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		String token = MercuryAuth.getInstance().getToken();
 		String resourceName = MercuryModel.getResourceName(mercModel);
 		req.setHeader('Content-Type', 'application/json');
-		req.setEndPoint(endPointTemplate.replace(TOKEN_PLACEHOLDER, token).replace(RESOURCE_NAME_PLACEHOLDER, resourceName));
+		req.setEndPoint(endPointTemplate.replace(MercuryStaticValue.TOKEN_PLACEHOLDER, token).replace(MercuryStaticValue.RESOURCE_NAME_PLACEHOLDER, resourceName));
 		req.setMethod(method);
 		String payload = JSON.serialize(mercModel);
 		if(mercModel.isContainsReservedName()) payload = payload.replace(Model.REMOVE_RESERVE_PATTEN, '');
@@ -285,21 +256,26 @@ public without sharing class MercuryApiUtilities extends AbstractWebService{
 		return req;
 	}
 
-	public static MercuryUtility.HttpSet insertMercuryRecord(Model mercModel) {
-		String endPointTemplate = BASE_URL + TOKEN_PLACEHOLDER + '/' + RESOURCE_NAME_PLACEHOLDER;
-		HttpRequest req = buildRequest(endPointTemplate, 'POST', mercModel);
+	public static HttpRequestResponse sendGetRequest(Model mercModel) {
+		HttpRequest req = buildRequest(MercuryStaticValue.REQUEST_BASE_URL + '/' + mercModel.get('uniqueId'), 'GET', mercModel);
 		Http http = new Http();
-		return new MercuryUtility.HttpSet(req, http.send(req));
+		return new HttpRequestResponse(req, http.send(req));
 	}
 
-	public static MercuryUtility.HttpSet updateMercuryRecord(Model mercModel) {
-		String endPointTemplate = BASE_URL + TOKEN_PLACEHOLDER + '/' + RESOURCE_NAME_PLACEHOLDER + '/' + mercModel.get('uniqueId') + '?changes=' + MercuryUtility.getEncodedChangeList(mercModel);
+	public static HttpRequestResponse insertMercuryRecord(Model mercModel) {
+		HttpRequest req = buildRequest(MercuryStaticValue.REQUEST_BASE_URL, 'POST', mercModel);
+		Http http = new Http();
+		return new HttpRequestResponse(req, http.send(req));
+	}
+
+	public static HttpRequestResponse updateMercuryRecord(Model mercModel) {
+		String endPointTemplate = MercuryStaticValue.REQUEST_BASE_URL + '/' + mercModel.get('uniqueId') + '?changes=' + MercuryUtility.getEncodedChangeList(mercModel);
 		HttpRequest req = buildRequest(endPointTemplate, 'PUT', mercModel);
 		Http http = new Http();
-		return new MercuryUtility.HttpSet(req, http.send(req));
+		return new HttpRequestResponse(req, http.send(req));
 	}
 
-	public static Boolean handleResponse(MercuryUtility.HttpSet hs) {
+	public static Boolean handleResponse(HttpRequestResponse hs) {
 		if(hs.res.getStatusCode() != 200) {
 			System.debug(LoggingLevel.DEBUG, '[MercuryApiUtilities.handleResponse] Fail Response: ' + hs.res);
 			return false;

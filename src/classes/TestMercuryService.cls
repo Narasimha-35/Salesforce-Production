@@ -12,12 +12,14 @@ public with sharing class TestMercuryService {
 		oppo = TestUtilities.createOpportunity();
 		insert oppo;
 
+		MercuryTestUtilities.setCustomSettings(true);
+		MercuryTestUtilities.setEmailTemplateDocument();
+
 		urlParam = new MercuryModel.URLParams();
 		urlParam.currentPartnerId = 'P200019';
 		urlParam.searchType = 'businessStats';
 		urlParam.params = MercuryStaticValue.param2;
 
-		MercuryTestUtilities.setCustomSettings(true);
 		MercuryTestUtilities.setMock(oppo.id, acc.id, urlParam);
 	}
 

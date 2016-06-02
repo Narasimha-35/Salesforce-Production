@@ -199,6 +199,9 @@ public with sharing class TestMercuryUtility {
         testMercOppo.merc_loanPeople__c = testLoanPeopleString;
         testMercOppo.merc_uniqueId__c = 'Some id';
 
+        MercuryTestUtilities.setCustomSettings(true);
+        MercuryTestUtilities.setEmailTemplateDocument();
+
         loanPeopleList = MercuryUtility.getLoanPeopleFromMercuryOpportunity(testMercOppo);
         peopleList = MercuryUtility.getPeopleFromMercuryOpportunity(testMercOppo);
     }
@@ -278,7 +281,6 @@ public with sharing class TestMercuryUtility {
     }
 
     private static testMethod void testRemoveMercuryOpportunityAndCreateOpportunitySuccess() {
-        MercuryTestUtilities.setCustomSettings(true);
         Account applicantAcc = TestUtilities.createAccount();
         Opportunity oppo = TestUtilities.createOpportunity();
         Mercury_Opportunity__c merc_oppo = new Mercury_Opportunity__c();
@@ -296,7 +298,6 @@ public with sharing class TestMercuryUtility {
     }
 
     private static testMethod void testRemoveMercuryOpportunityAndCreateOpportunityFail() {
-        MercuryTestUtilities.setCustomSettings(true);
         Account applicantAcc = TestUtilities.createAccount();
         Opportunity oppo = new Opportunity();
         Mercury_Opportunity__c merc_oppo = new Mercury_Opportunity__c();
@@ -314,7 +315,6 @@ public with sharing class TestMercuryUtility {
     }
 
     private static testMethod void testRemoveMercuryOpportunityAndCreateOpportunityUpdateOppo() {
-        MercuryTestUtilities.setCustomSettings(true);
         Account applicantAcc = TestUtilities.createAccount();
         Opportunity oppo = TestUtilities.createOpportunity();
         insert oppo;
@@ -333,7 +333,6 @@ public with sharing class TestMercuryUtility {
     }
 
     private static testMethod void testRemoveMercuryOpportunityAndCreateOpportunityUpdateAcc() {
-        MercuryTestUtilities.setCustomSettings(true);
         Account applicantAcc = TestUtilities.createAccount();
         insert applicantAcc;
         Opportunity oppo = TestUtilities.createOpportunity();
@@ -435,7 +434,6 @@ public with sharing class TestMercuryUtility {
     }
 
     private static testMethod void testCheckRecordFromResMap() {
-        MercuryTestUtilities.setCustomSettings(true);
         Map<String, Object> resMap = new Map<String, Object>();
         Map<String, String> item = new Map<String, String>();
         item.put('uniqueId', 'abc');
@@ -456,6 +454,8 @@ public with sharing class TestMercuryUtility {
         List<Opportunity> oppoList = TestUtilities.createOpportunities(5, oppo);
         insert oppoList;
         //make sure there are enough delay
+        update oppoList.get(3);
+        update oppoList.get(3);
         update oppoList.get(3);
         update oppoList.get(3);
         update oppoList.get(3);

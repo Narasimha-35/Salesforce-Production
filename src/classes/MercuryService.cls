@@ -60,12 +60,12 @@ global class MercuryService {
 		if(method == 1) {
 			for(String s : MercuryStaticValue.MERC_SYNC_TARGET_STATUS) {
 				MercuryStaticValue.param1.targetStatus = s;
-				res = getLoansFromMercury('Opportunity', 'P200019', 'businessStats', MercuryStaticValue.param1);
+				res = getLoansFromMercury('Opportunity', 'all', 'businessStats', MercuryStaticValue.param1);
 				System.debug(LoggingLevel.INFO, '[MercuryService] loans to update: ' + res);
 				ids.addAll(res.idList);
 			}
 		} else if(method == 2) {
-			res = getLoansFromMercury('Opportunity', 'P200019', 'businessStats', MercuryStaticValue.param2);
+			res = getLoansFromMercury('Opportunity', 'all', 'businessStats', MercuryStaticValue.param2);
 			System.debug(LoggingLevel.INFO, '[MercuryService] loans to update: ' + res);
 			ids.addAll(res.idList);
 		}
