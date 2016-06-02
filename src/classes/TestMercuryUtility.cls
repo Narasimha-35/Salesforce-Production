@@ -466,14 +466,6 @@ public with sharing class TestMercuryUtility {
         update oppoList.get(3);
         update oppoList.get(3);
         update oppoList.get(3);
-        update oppoList.get(3);
-        update oppoList.get(3);
-        update oppoList.get(3);
-        update oppoList.get(3);
-        update oppoList.get(3);
-        update oppoList.get(3);
-        update oppoList.get(3);
-        update oppoList.get(3);
 
         Opportunity lastOppo = oppoList.get(4);
         lastOppo.merc_current_status__c = 'something';
