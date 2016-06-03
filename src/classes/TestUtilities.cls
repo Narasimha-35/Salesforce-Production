@@ -224,10 +224,23 @@ public class TestUtilities {
    }
 
    public static S3Document__c createS3Document() {
+      return createS3Document('testDoc', 'f9c2b7e0-2863-11e6-80bb-bb4552b59e84', 'GCOWn09kbNBHPWuqmA5dLss9STLEb15s');
+   }
+
+   public static S3Document__c createS3Document(String name, String objKey, String version) {
       S3Document__c doc = new S3Document__c();
-      doc.objectKey__c = 'f9c2b7e0-2863-11e6-80bb-bb4552b59e84';
-      doc.version__c = 'GCOWn09kbNBHPWuqmA5dLss9STLEb15s';
+      doc.name = name;
+      doc.objectKey__c = objKey;
+      doc.version__c = version;
       return doc;
+   }
+
+   public static List<S3Document__c> createS3Documents(Integer numOfRecords) {
+      List<S3Document__c> ret = new List<S3Document__c>();
+      for(Integer i = 0; i < numOfRecords; i++) {
+         ret.add(createS3Document('testDoc' + i, 'testObjectKey' + i, 'testVersionId' + i));
+      }
+      return ret;
    }
 
 }

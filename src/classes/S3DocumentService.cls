@@ -1,6 +1,7 @@
 public with sharing class S3DocumentService {
 	public static final String SERVICE_DOMAIN = S3DocumentSetting__c.getOrgDefaults().domain__c;
 	public static final String TOKEN = S3DocumentSetting__c.getOrgDefaults().token__c;
+	public static final String FAILED_VERSION_ID = 'Fail';
 
 	public static List<S3Document__c> uploadDocument(Map<String, Blob> docMap) {
 		List<S3Document__c> docList = new List<S3Document__c>();
@@ -18,7 +19,7 @@ public with sharing class S3DocumentService {
 				doc.version__c = postRes.version;
 
 			} catch (HttpRequestResponse.HttpException e) {
-				doc.version__c = 'Fail';
+				doc.version__c = FAILED_VERSION_ID;
 			}
 			docList.add(doc);
 		}

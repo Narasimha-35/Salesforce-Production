@@ -3,7 +3,7 @@ public with sharing class S3DocumentUtilities {
 	public static HttpRequest buildBasicRequest(String endPoint, String method) {
 		HttpRequest req = new HttpRequest();
 		req.setHeader('Content-Type', 'application/json');
-		req.setHeader('Authorization', 'Bearer ' + '{token}');
+		req.setHeader('Authorization', 'Bearer ' + S3DocumentService.TOKEN);
 		req.setEndPoint(endPoint);
 		req.setMethod(method);
 		return req;
@@ -45,6 +45,20 @@ public with sharing class S3DocumentUtilities {
 		} else {
 			//Unknow
 		}
+	}
+
+	public static List<Attachment> constructFailureAsAttachment(List<S3Document__c> s3Docs, Map<String, Blob> docMap) {
+		List<Attachment> errorList = new List<Attachment>();
+		for(S3Document__c doc : s3Docs) {
+			if(doc.version__c == S3DocumentService.FAILED_VERSION_ID) {
+				Attachment attachment = new Attachment();
+				attachment.name = doc.name;
+				attachment.body = docMap.get(doc.name);
+				attachment.parentId = doc.id;
+				errorList.add(attachment);
+			}
+		}
+		return errorList;
 	}
 
 }

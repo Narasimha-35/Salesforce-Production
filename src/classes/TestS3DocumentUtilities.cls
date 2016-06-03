@@ -1,0 +1,67 @@
+@isTest
+public with sharing class TestS3DocumentUtilities {
+	public static List<S3Document__c> s3Docs = TestUtilities.createS3Documents(10);
+	public static Map<String, Blob> docMap;
+	public static HttpRequestResponse httpRR;
+	static {
+		s3Docs.get(1).version__c = S3DocumentService.FAILED_VERSION_ID;
+		s3Docs.get(5).version__c = S3DocumentService.FAILED_VERSION_ID;
+		insert s3Docs;
+
+		docMap = new Map<String, Blob>();
+		for(S3Document__c doc : s3Docs) {
+			docMap.put(doc.name, Blob.valueOf(doc.name));
+		}
+
+		HttpRequest req = new HttpRequest();
+		HttpResponse res = new HttpResponse();
+		httpRR = new HttpRequestResponse(req, res);
+	}
+
+	private static testMethod void testConstructFailureAsAttachment() {
+		List<Attachment> failList = S3DocumentUtilities.constructFailureAsAttachment(s3Docs, docMap);
+		System.assertEquals(2, failList.size());
+		System.assertEquals(s3Docs.get(1).id, failList.get(0).parentId);
+		System.assertEquals(s3Docs.get(5).id, failList.get(1).parentId);
+		System.debug(s3Docs.get(1).name + ' Vs. ' + failList.get(0).body.toString());
+		System.assertEquals(s3Docs.get(1).name, failList.get(0).body.toString());
+		System.assertEquals(s3Docs.get(5).name, failList.get(1).body.toString());
+	}
+
+	private static testMethod void testHandleResponse() {
+		httpRR.res.setStatusCode(200);
+		try{
+			S3DocumentUtilities.handleResponse(httpRR);
+			System.assert(true);
+		} catch (HttpRequestResponse.HttpException e) {
+			System.assert(false);
+		}
+
+		httpRR.res.setStatusCode(400);
+		try{
+			S3DocumentUtilities.handleResponse(httpRR);
+			System.assert(false);
+		} catch (HttpRequestResponse.HttpException e) {
+			System.assert(true);
+		}
+
+		httpRR.res.setStatusCode(500);
+		try{
+			S3DocumentUtilities.handleResponse(httpRR);
+			System.assert(false);
+		} catch (HttpRequestResponse.HttpException e) {
+			System.assert(true);
+		}
+	}
+
+	//TODO: test insertS3Document
+	//TODO: test getS3Document
+
+	private static testMethod void testBuildBasicRequest() {
+		HttpRequest req = S3DocumentUtilities.buildBasicRequest('test end point', 'POST');
+		System.assertEquals('application/json', req.getHeader('Content-Type'));
+		System.assertEquals('Bearer ' + S3DocumentService.TOKEN, req.getHeader('Authorization'));
+		System.assertEquals('test end point', req.getEndpoint());
+		System.assertEquals('POST', req.getMethod());
+	}
+}

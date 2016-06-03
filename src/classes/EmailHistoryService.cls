@@ -19,7 +19,7 @@ public with sharing class EmailHistoryService {
 		}
 
 		//register to SF as doc Reference email history
-		emailHistory__c eh = new emailHistory__c();
+		EmailHistory__c eh = new EmailHistory__c();
 		eh.emailContent__c = htmlBody;
 		eh.subject__c = emailSubject;
 		eh.recipants__c = JSON.serialize(recipants);
@@ -27,22 +27,11 @@ public with sharing class EmailHistoryService {
 		insert eh;
 
 		for(S3Document__c doc : s3Docs) {
-			doc.emailHistory__c = eh.id;
+			doc.EmailHistory__c = eh.id;
 		}
 
 		insert s3Docs;
-
-		List<Attachment> errorList = new List<Attachment>();
-		for(S3Document__c doc : s3Docs) {
-			if(doc.version__c == 'Fail') {
-				Attachment attachment = new Attachment();
-				attachment.name = doc.name;
-				attachment.body = docMap.get(doc.name);
-				attachment.parentId = doc.id;
-				errorList.add(attachment);
-			}
-		}
-		insert errorList;
+		insert S3DocumentUtilities.constructFailureAsAttachment(s3Docs, docMap);
 	}
 
 }
