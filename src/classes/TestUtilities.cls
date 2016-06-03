@@ -223,4 +223,11 @@ public class TestUtilities {
       return aal;
    }
 
+   public static S3Document__c createS3Document() {
+      S3Document__c doc = new S3Document__c();
+      doc.objectKey__c = 'f9c2b7e0-2863-11e6-80bb-bb4552b59e84';
+      doc.version__c = 'GCOWn09kbNBHPWuqmA5dLss9STLEb15s';
+      return doc;
+   }
+
 }

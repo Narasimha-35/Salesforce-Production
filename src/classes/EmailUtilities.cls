@@ -1,18 +1,5 @@
 public with sharing class EmailUtilities {
 
-	public static PageReference constructPageRef(String pageName, Map<String, String> params) {
-		PageReference ret = new PageReference('/apex/' + pageName);
-		for(String k : params.keySet()) {
-			ret.getParameters().put(k, params.get(k));
-		}
-		return ret;
-	}
-
-	//could Throws VisualforceException
-	public static Blob getPageAsPDF(PageReference pr) {
-		return pr.getContentAsPDF();
-	}
-
 	public static Messaging.EmailFileAttachment constructInlineEmailAttachmentAsPDF(String name, Blob body) {
 		return constructEmailAttachment('application/pdf', name, false, body);
 	}
@@ -26,18 +13,18 @@ public with sharing class EmailUtilities {
 		return attach;
 	}
 
-	public static Messaging.SingleEmailMessage constructSingleEmailMessage(String recipant, String subject, String htmlBody, Messaging.EmailFileAttachment[] attachments, Id whoId, Id whatId) {
+	public static Messaging.SingleEmailMessage constructBasicSingleEmailMessage(List<String> recipants, List<String> ccRecipants, String subject, String htmlBody) {
 		Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 		mail.setUseSignature(false);
-		mail.setToAddresses(new String[] {recipant});
+		mail.setToAddresses(recipants);
+		mail.setCcAddresses(ccRecipants);
 		mail.setSubject(subject);
 		mail.setHtmlBody(htmlBody);
+		return mail;
+	}
+
+	public static Messaging.SingleEmailMessage addFileAttachment(Messaging.SingleEmailMessage mail, List<Messaging.EmailFileAttachment> attachments) {
 		mail.setFileAttachments(attachments);
-		if(whoId != null || whatId != null) {
-			if(whoId != null) mail.setTargetObjectId(whoId);
-			if(whatId != null) mail.setWhatId(whatId);
-			mail.setSaveAsActivity(true);
-		}
 		return mail;
 	}
 

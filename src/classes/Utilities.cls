@@ -384,4 +384,17 @@ global class Utilities {
     return false;
   }
 
+  public static PageReference constructPageRef(String pageName, Map<String, String> params) {
+		PageReference ret = new PageReference('/apex/' + pageName);
+		for(String k : params.keySet()) {
+			ret.getParameters().put(k, params.get(k));
+		}
+		return ret;
+	}
+
+	//could Throws VisualforceException
+	public static Blob getPageAsPDF(PageReference pr) {
+		return pr.getContentAsPDF();
+	}
+
 }

@@ -41,7 +41,7 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 				//make sure no account is get created
 				if(applicantAcc.id == null && merc_oppo.merc_lead_source__c != SELF_GEN_ID) continue;
 				//merge and update the last not synced oppo for given acc
-				if(applicantAcc.id != null) oppo.id = MercuryUtility.getLastNotSyncedOppoId(applicantAcc);
+				if(applicantAcc.id != null) oppo = MercuryUtility.mergeWithLastNotSyncedOppo(oppo, applicantAcc);
 
 				if(MercuryUtility.removeMercuryOpportunityAndCreateOpportunity(applicantAcc, oppo, merc_oppo)) totalSuccessCounter++;
 			} catch (Exception e) {
