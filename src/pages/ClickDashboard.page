@@ -17,6 +17,7 @@
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
 <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
 
+
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
 <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
 
@@ -126,6 +127,17 @@ display:none;
 {
 min-height: 0px!important;
 }
+.dropdown .loan-select {
+background: transparent;
+border: 0 none;
+border-radius: 0px;
+font-size:0.95em;
+color:#777;
+}
+.dropdown-menu .divider{margin:0px auto; width:90%;}
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover, .dropdown-toggle{background:transparent; border-radius:0px;border:0px;}
+.loan-select .dropdown-menu li a{padding:12px 27px; border:0px;border-radius:0px; color:#337ab7!important; font-weight:bold;}
+.nav-tabs .dropdown-menu{margin:1px 0px 0px; padding:0px; border-radius:0px;}
 </style>
 <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>
 </head>
@@ -273,7 +285,20 @@ $( document ).ready(function() {
 });
 
 </script>
-<apex:form >
+<script>
+     function opportunityIdsfn(oppId)
+  {
+      parameter(oppId);
+  }
+</script>
+<apex:form id="theForm">
+<apex:actionstatus id="ResetstatusId" starttext="Processing..." startStyleClass="color:red;">
+    <apex:facet name="start">
+        <div style="text-align:center;width:100%;height:100%;opacity:0.2;background-color:#000;position:fixed;left:0px;top:0px;z-index:99;">
+            <img style="position: relative;top: 127px;width:300px" src="{!URLFOR($Resource.AppointmentImage)}"  />
+        </div>    
+     </apex:facet>
+</apex:actionStatus>
     <!-- Code END for set current tab to maintain after referesh also  -->
     <apex:actionFunction name="SetAsDefaultTab" action="{!SetCurrentTab}" rerender="pnlDefaultTabIgnore,pnlFeedComponent">
         <apex:param name="currenttab" value=""/>
@@ -281,8 +306,9 @@ $( document ).ready(function() {
     <apex:outputPanel id="pnlDefaultTabIgnore"/>
     <!-- Code END for set current tab to maintain after referesh also  -->
     
-   
-    
+   <apex:actionFunction name="parameter" action="{!redirectOppId}" status="ResetstatusId" rerender="theForm">
+       <apex:param id="OpportuntyId" name="OpportuntyIds" value=""/>   
+   </apex:actionFunction> 
 </apex:form>
 
 <main class="container-fluid" id="mn">
@@ -290,7 +316,7 @@ $( document ).ready(function() {
  <c:ClickHeader ></c:ClickHeader>
 </div>
 <div class="clearfix"></div>
-
+<apex:outputPanel id="mainpnlid">
 <section class="row dashboard">
 <apex:form >
  <!--Code for reset password popup -->
@@ -306,26 +332,37 @@ $( document ).ready(function() {
        <div class="modal-backdrop  in" style="{!if(isPasswordReset == true,'display:none;','')}"></div>
     </apex:outputPanel>
     <!--Code for reset password popup ends here -->
- </apex:form>   
+ </apex:form>    
     <div class="container container_cstm cont_cstm_right">
-        <article class="col-md-8 col-xs-12" id="left_panel">
-            <c:ClickWelcomeDashboard />
+        <article class="col-md-8 col-xs-12" id="left_panel">  
+            <c:ClickWelcomeDashboard oppId="{!redirectOppId}" id="weldash"/>
         <section class="row">
             <div class="panel with-nav-tabs panel-default cstm panel-default">
                 <div class="panel-heading cstm_panel-heading">
                 
                   <ul class="nav nav-tabs cstm_nav_tabs">
                     <li class="{!IF(strActiveTab == 'Loan', 'active', '')}"><a id="aLoanTab" href="#tab1default" data-toggle="tab" onclick="SetAsDefaultTab('Loan');">Loans</a></li>
-                    <li class="{!IF(strActiveTab == 'Feed', 'active', '')}"><a id="aFeedTab" href="#tab2default" data-toggle="tab" onclick="SetAsDefaultTab('Feed');">Feed</a></li>
+                    <li class="{!IF(strActiveTab == 'Feed', 'active', '')}"><a id="aFeedTab" href="#tab2default" data-toggle="tab" onclick="SetAsDefaultTab('Feed');">Feed</a></li> 
                     <li class="{!IF(strActiveTab == 'Document', 'active', '')}"><a id="aDocumentTab" href="#tab3default" data-toggle="tab" onclick="SetAsDefaultTab('Document');">Documents</a></li>                  
-                    </ul>
+                    <li role="presentation" class="dropdown loan-select pull-right"> 
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Choose Loan <span class="caret"></span> </a> 
+                    <ul class="dropdown-menu" aria-labelledby="drop5">
+                     <!--   <apex:variable value="{!0}" var="Counter"/>    id="Id{!Counter}"  -->
+                        <apex:repeat value="{!lstwrapper}" var="wrap">
+                            <li><a href="#" onclick="opportunityIdsfn('{!wrap.opportunityId}')" style="{!if(wrap.opportunityId == redirectOppId,"background-color: #1f8acb;color:#fff!important;","background-color: #fff;")}">{!wrap.OpportunityName}</a></li>
+                            <li role="separaltor" class="divider"></li> 
+                   <!--     <apex:variable var="Counter" value="{!Counter+1}"/>    -->
+                        </apex:repeat>
+                    </ul> 
+                    </li>
+                   </ul>
                 </div>
                 
                 <div class="panel-body cstm_panel_body">
                     <div class="tab-content">
                        
                         <div class="tab-pane fade {!IF(strActiveTab == 'Loan', 'active in', '')}" id="tab1default">
-                            <c:ClickLoanDashaboard />
+                             <c:ClickLoanDashaboard oppId="{!redirectOppId}" id="lndash"/>
                         </div><!--first div section close-->                        
                        
                         <div class="tab-pane fade {!IF(strActiveTab == 'Feed', 'active in', '')}" id="tab2default">
@@ -356,7 +393,7 @@ $( document ).ready(function() {
                         </div> 
                       
                         <div class="tab-pane fade {!IF(strActiveTab == 'Document', 'active in', '')}" id="tab3default">
-                            <c:ClickDocumentsDashboard id="CDD"/>
+                            <c:ClickDocumentsDashboard oppsId="{!redirectOppId}" id="CDD"/>
                         </div>
                         
                     </div>
@@ -375,11 +412,9 @@ $( document ).ready(function() {
                             <a href="#" class=" col-md-12 col-xs-12 btn btn-default btn_dash_book" onclick="ResetReqDocPopup();">Add New Document</a>
                         </div>
                        </section>
-                       <c:ClickAddDocument cmpAccId="{!accntid}"/>   
+                       <c:ClickAddDocument oppId="{!redirectOppId}" id="addDoc"/> <!-- cmpAccId="{!accntid}"   --> 
                  </apex:outputPanel>
-                <apex:outputPanel id="IdTskPannel"> 
-                 <c:ClickTaskDashboard />
-               </apex:outputPanel>  
+                 <c:ClickTaskDashboard oppId="{!redirectOppId}" id="IdTskPannel"/>
         </aside>
      <div class="clearfix"></div>
      <c:ClickPostQuestion ></c:ClickPostQuestion>
@@ -394,16 +429,16 @@ $( document ).ready(function() {
          </div>
      </div>
      </div><!--container close-->
-     
+    
   </section><!--row fluid close-->
-
+</apex:outputPanel> 
 <!---Feature section start here-------->
 <footer class="footer row">
     <c:acfFooter ></c:acfFooter>
 </footer>
 <!---Footer ends here--------------->
 </main><!--main div close-->
-
 </body>
 </html>
+
 </apex:page>

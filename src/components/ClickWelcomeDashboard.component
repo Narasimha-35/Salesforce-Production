@@ -1,4 +1,24 @@
 <apex:component controller="WLWelcomeDashboard">
+<apex:attribute name="oppId" type="String" assignTo="{!MyOpportunityIds}" description="Opportunity ID"/>
+<!--
+<script>
+ $(document).ready(function() {
+     alert($("[id$=theHiddenInput]").val());
+         if($("[id$=theHiddenInput]").val() == 'true')
+        {
+            OnCall();
+           //alert('In If Loop');
+        }
+        else
+        {
+          //alert('In else Loop');
+          OnCall();
+        }
+});
+</script>
+<apex:inputHidden id="theHiddenInput" value="{!InputHidden}"/>
+ <apex:actionFunction name="OnCall" action="{!Dashboard}" />
+--> 
      <section class="row">
                 <div class="blog_box">
                     <hgroup class="blog_grp">

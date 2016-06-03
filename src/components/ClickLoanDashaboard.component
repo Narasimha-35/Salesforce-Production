@@ -1,4 +1,5 @@
 <apex:component controller="wlLoanDashboardController"  >
+<apex:attribute name="oppId" type="String" assignTo="{!MyOpportunityId}" description="Opportunity ID"/>
 <html >
 <style>
     .displaynone{

@@ -8,8 +8,25 @@ public class ClickAddDocumentController
     public string docMasterId {get;set;}
     public string strCommunityName {get;set;}
     public boolean strCommName {get;set;}
-    public ClickAddDocumentController()
+    public String MyOpportunityIds;
+    public string setMyOpportunityIds(String testId)
     {
+        MyOpportunityIds = testId; 
+     // AddDocument();
+        return null; 
+    } 
+    
+    public String getMyOpportunityIds()
+    {
+       return MyOpportunityIds; 
+    }
+    
+    public void AddDocument()
+    {
+        
+    }
+    public ClickAddDocumentController()
+    {   
         strerrMsg = ''; 
         isDocAdded = false;
         docMasterId = '';   
@@ -23,11 +40,10 @@ public class ClickAddDocumentController
         else if(strCommunityName == 'Click')
         {
         strCommName  = true;
-        }
-        
+        }     
     }
     
-    public Account getObjAccount()
+ /*   public Account getObjAccount()
     {
        Account objAcc = new Account();
        List<User> lstUser = [select id,AccountId,acfIs_Password_Reset__c from User where id =: UserInfo.getuserId() AND IsActive =: true];
@@ -45,19 +61,24 @@ public class ClickAddDocumentController
             }
         }
         return objAcc;
-    }
+    }     */
     public void insertReqDocument()
     {
        try
        {
-        objAccount = getObjAccount();
-        system.debug('objAccount!@#$%'+objAccount+'!@#$%^&*ANKIT'+objAccount.acf_Lead__pr+'*******'+objAccount.acf_Lead__pr.ConvertedOpportunityId);
-        if(objAccount != null && objAccount.acf_Lead__pr.ConvertedOpportunityId != null)
+     /* objAccount = getObjAccount();
+        system.debug('objAccount!@#$%'+objAccount+'!@#$%^&*ANKIT'+objAccount.acf_Lead__pr+'*******'+objAccount.acf_Lead__pr.ConvertedOpportunityId);  */
+        if(MyOpportunityIds != null && MyOpportunityIds <> '')   
         {
+           system.debug('MyOpportunityIds___________AddDoc'+MyOpportunityIds);
+           system.debug('strReqDocName ###########'+strReqDocName );
+           system.debug('docMasterId ###########'+docMasterId );
+                
            if(strReqDocName != null && strReqDocName <> '' && docMasterId != null && docMasterId <> '')
            { 
                 List<Document_Master__c> lstDocMaster = [select id,acf_Source__c from Document_Master__c where id=:docMasterId and
                                                             (acf_Source__c = 'Jumio' OR acf_Source__c = 'Bank Statement' OR acf_Source__c = 'Note')];
+                system.debug('lstDocMaster ###########'+lstDocMaster);                                            
                 Required_Document__c ObjReqDocument = new Required_Document__c();
                 ObjReqDocument.Name = strReqDocName;
                 ObjReqDocument.acfStatus__c = 'Pending';
@@ -77,11 +98,12 @@ public class ClickAddDocumentController
                         ObjReqDocument.Click_Is_Note_Type__c = true;
                     }
                 }
-                if(objAccount.acf_Lead__pc != null && objAccount.acf_Lead__pr.isConverted == true)
+                if(MyOpportunityIds != null && MyOpportunityIds <> '') // objAccount.acf_Lead__pc != null && objAccount.acf_Lead__pr.isConverted == true
                 {
-                   ObjReqDocument.acfOpportunity__c = objAccount.acf_Lead__pr.ConvertedOpportunityId;
+                   ObjReqDocument.acfOpportunity__c = Id.valueof(MyOpportunityIds); //objAccount.acf_Lead__pr.ConvertedOpportunityId;
                 }
                 insert ObjReqDocument;
+                system.debug('ObjReqDocument___________'+ObjReqDocument);
                 strerrMsg = 'Required document added successfully.';
                 isDocAdded = true;
            }else{
@@ -102,7 +124,7 @@ public class ClickAddDocumentController
  //   string strNetworkId =  Network.getNetworkId();
       if(ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c != null)
       {
-        Pagereference pageref = new Pagereference('/apex/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'Dashboard');
+        Pagereference pageref = new Pagereference('/apex/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'Dashboard?id='+MyOpportunityIds);
         pageref.setRedirect(true);
         Cookie cookieActiveTab = new Cookie('cookieActiveTab', 'Document', null, -1, true);           
         ApexPages.currentPage().setCookies( new Cookie[]{ cookieActiveTab });

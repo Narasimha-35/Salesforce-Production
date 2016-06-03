@@ -18,6 +18,7 @@ public class WLJumioIntegration
     Public string strNetworkId;
     Public string strURLPrifix {get{return ClickCommon.URLPRefix;}set;}
     Public string loggedInOppId;
+    public string OppIds;
     
     //Constructor
     public  WLJumioIntegration()
@@ -26,19 +27,21 @@ public class WLJumioIntegration
         if(strNetworkId != null) objCommunity = ClickCommon.getCommunitySetup(strNetworkId);
          
         LoggedInLeadId  = ClickCommon.getCurrentLoggedInLeadId(UserInfo.getUserId()); 
-        loggedInOppId = ClickCommon.getCurrentLoggedInOpportunityId(UserInfo.getuserId(),(ClickCommon.getCommunitySetup(strNetworkId)).Click_Page_Prefix__c);
+        OppIds = Apexpages.currentpage().getparameters().get('id');
+        system.debug('OppIds**************'+OppIds);
+        if(OppIds != null && OppIds != '')
+        {
+            loggedInOppId = OppIds;
+        }
+        else
+        {
+            loggedInOppId = ClickCommon.getCurrentLoggedInOpportunityId(UserInfo.getuserId(),(ClickCommon.getCommunitySetup(strNetworkId)).Click_Page_Prefix__c);
+        }
         isOppExist = false;
         If(loggedInOppId != null)
         {
            isOppExist = true;
-           /* List<Lead> lstLead = [select id,acfIs_Bank_Statement_Submitted__c,acfIs_Post_Login_Ques_Attempted__c from lead where id=:LoggedInLeadId];
-            If(lstLead != null && lstLead.size()>0){
-                   System.debug('@@@leadid'+lstLead);
-                   If(lstLead[0].isConverted){
-                        isLeadConverted = true;
-                   }
-            }*/
-         }
+        }
          WLQuoteDetail.setProgressBarWidth(0,0,(ClickCommon.getCommunitySetup(strNetworkId)).Click_Page_Prefix__c+'jumiointegration',strNetworkId);
     }
     
@@ -52,7 +55,9 @@ public class WLJumioIntegration
     */
     public void CallToJumio() 
     {
+        OppIds = Apexpages.currentpage().getparameters().get('id');
         String ReqDocid = apexpages.currentpage().getparameters().get('Docid');
+        system.debug('ReqDocid !@#$%'+ReqDocid +'!@#$%^'+OppIds);
         JSONGenerator objJsonGen = JSON.createGenerator(true);
         objJsonGen.writeStartObject();
         
@@ -68,7 +73,16 @@ public class WLJumioIntegration
         {
             if(ReqDocid <> null && ReqDocid <> '')
             {
-                strRetUrl =  objCommunity.Click_URL__c+ClickCommon.URLPrefix+'AcfJumioSuccess?Docid='+ReqDocid;  
+                if(OppIds <> null && OppIds <> '')
+                {
+                    system.debug('OppIds1**************'+OppIds);
+                    strRetUrl =  objCommunity.Click_URL__c+ClickCommon.URLPrefix+'AcfJumioSuccess?Docid='+ReqDocid+'&id='+OppIds;  
+                    system.debug('strRetUrl 2345**************'+strRetUrl );
+                }
+                else
+                {
+                    strRetUrl =  objCommunity.Click_URL__c+ClickCommon.URLPrefix+'AcfJumioSuccess';
+                }
                 system.debug('Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii:'+objCommunity.Click_URL__c+ClickCommon.URLPrefix+'AcfJumioSuccess');
             }
             else
@@ -118,14 +132,24 @@ public class WLJumioIntegration
             if(objRootObject.jumioIdScanReference <> null)
             {
                    List<Required_Document__c> lstRequiredDoc = new List<Required_Document__c>();
-                   if(ReqDocid <> null && ReqDocid <> '')
+                   if(ReqDocid <> null && ReqDocid <> '' && OppIds != null && OppIds != '')
                    {
-                       lstRequiredDoc = [select id,acfStatus__c,acf_Reference_No__c,acfDocument_Master__c from Required_Document__c Where id=:ReqDocid];
+                       lstRequiredDoc = [select id,acfStatus__c,acfOpportunity__c,acf_Reference_No__c,acfDocument_Master__c from Required_Document__c Where id=:ReqDocid and acfOpportunity__c =:OppIds];
                    }else{
-                           lstRequiredDoc = [select id,acfStatus__c,acf_Reference_No__c,acfDocument_Master__c from Required_Document__c 
+                           if(OppIds <> null && OppIds <> '')
+                           {
+                               lstRequiredDoc = [select id,acfStatus__c,acf_Reference_No__c,acfDocument_Master__c from Required_Document__c 
+                                                                           Where acfDocument_Master__c <> null AND ((Lead__c <> null AND Lead__c=:LoggedInLeadId) OR (acfOpportunity__c <> null AND acfOpportunity__c=:OppIds)) 
+                                                                           AND acfDocument_Master__r.acf_Source__c =: 'Jumio' limit 1];
+                               system.debug('@@karthik'+lstRequiredDoc+'!@#'+objRootObject.jumioIdScanReference+'@@@'+LoggedInLeadId +'@@'+ OppIds );
+                           }
+                           else
+                           {
+                               lstRequiredDoc = [select id,acfStatus__c,acf_Reference_No__c,acfDocument_Master__c from Required_Document__c 
                                                                        Where acfDocument_Master__c <> null AND ((Lead__c <> null AND Lead__c=:LoggedInLeadId) OR (acfOpportunity__c <> null AND acfOpportunity__c=:lstLead[0].convertedOpportunityId)) 
                                                                        AND acfDocument_Master__r.acf_Source__c =: 'Jumio' limit 1];
-                           system.debug('@@karthik'+lstRequiredDoc+'!@#'+objRootObject.jumioIdScanReference+'@@@'+LoggedInLeadId +'@@'+ lstLead[0].convertedOpportunityId);
+                               system.debug('@@karthik'+lstRequiredDoc+'!@#'+objRootObject.jumioIdScanReference+'@@@'+LoggedInLeadId +'@@'+ lstLead[0].convertedOpportunityId);
+                           }
                    }
                    if(lstRequiredDoc <> null && lstRequiredDoc.size()>0)
                    {

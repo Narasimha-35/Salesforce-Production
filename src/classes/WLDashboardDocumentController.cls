@@ -4,7 +4,6 @@ global class WLDashboardDocumentController
    @TestVisible transient Attachment attach;
    @TestVisible transient Attachment docattach;
    public string strUseEmailID{get;set;}
-   public string recDownloadid{get;set;}
    public string strDocumentName{get;set;}
    public string IsPopupShow{get;set;}
    public boolean IsIdentificationCompleted{get;set;}
@@ -17,7 +16,7 @@ global class WLDashboardDocumentController
    public list<Note> noteLst1{get;set;}
    
    public List<user>lstuser;
-   public Id OpportunityId;
+   public id OpportunityId{get;set;}
    public Id RequiredDocumentId {get;set;}
    public Integer IndexNo{get;set;}
    public Integer IndexNo1{get;set;}
@@ -48,7 +47,40 @@ global class WLDashboardDocumentController
         docattach = new Attachment();
      return docattach;
    } 
+    public id oppIds{get;set;}
+   // changes Done by Ankit.
+    public String MyOpportunityIds;
+    public void setMyOpportunityIds(String oppsId)
+    {
+        if(oppsId != null)
+        {
+            MyOpportunityIds = oppsId; 
+            oppIds = Id.valueof(oppsId);
+            system.debug('oppIds!@#$%^*******************************'+oppIds);
+            DashboardDocument();
+        }
+    } 
+    
+    public String getMyOpportunityIds()
+    {
+       return MyOpportunityIds; 
+    }
+
+    
    //public  Attachment docattach{get;set;} 
+   public void DashboardDocument()
+   {
+   //OpportunityId = ClickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');
+     if(MyOpportunityIds != null && MyOpportunityIds != '')
+     {
+         OpportunityId = Id.valueof(MyOpportunityIds);
+     }
+  // Bind Required Documents in Wrapper list.
+     if(OpportunityId != null)
+     {
+         BindWrapperDocument(OpportunityId);
+     }
+   }
    public WLDashboardDocumentController()
    {
      requiredDocName = '';
@@ -70,12 +102,8 @@ global class WLDashboardDocumentController
      lstWrapperDocumnets = new List<WrapperDocuments>();
      Cookie currentUId = ApexPages.currentPage().getCookies().get('DocPopUp');
      if(currentUId <> null)
-      IsPopupShow = currentUId.getvalue();
-     OpportunityId = ClickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');
+     IsPopupShow = currentUId.getvalue();
      lstUploadDocs = new list<Click_Uploaded_Documents__c>();
-     // Bind Required Documents in Wrapper list.
-     
-     BindWrapperDocument(OpportunityId);
      lstAttach = new List<Attachment>();
      noteLst1 = new list<Note>();
      lstWrapAttach = new list<wrapAttachDocs>();
@@ -93,7 +121,7 @@ global class WLDashboardDocumentController
         for(Required_Document__c objRequiredDoc:[select id,name,acfOpportunity__c,Click_Is_Note_Type__c,acfOpportunity__r.clickJumio_Status__c,
                                                 acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,
                                                 acf_Is_Identity_Verification_Doc__c,acfStatus__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c,
-                                                click_Is_Uploaded__c,Is_Download_Doc__c ,acfDocument_Master__r.File_Address__c,(select id from Attachments) 
+                                                click_Is_Uploaded__c,Is_Download_Doc__c,(select id from Attachments) 
                                                 from Required_Document__c where acfOpportunity__c=:OppId order by createddate ASC])
         { 
             system.debug('OpportunityId'+objRequiredDoc.acfOpportunity__r.acfIs_Identity_Document_Rejected__c);
@@ -185,7 +213,7 @@ global class WLDashboardDocumentController
                           update objTask;
                           system.debug('objTask@#$%^&*'+objTask);
                       }  
-                      return (new Pagereference(ClickCommon.URLPrefix + ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c +'Dashboard'));
+                      return (new Pagereference(ClickCommon.URLPrefix + ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c +'Dashboard?id='+MyOpportunityIds));
                   
                   }                                            
            } 
@@ -260,7 +288,7 @@ global class WLDashboardDocumentController
         finally{
           attachmnt = new Attachment();
         }         
-        return (new Pagereference(ClickCommon.URLPrefix + ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c +'Dashboard'));
+        return (new Pagereference(ClickCommon.URLPrefix + ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c +'Dashboard?id='+MyOpportunityIds));
    } 
    
    //Multiupload functionality
@@ -293,13 +321,22 @@ global class WLDashboardDocumentController
     } 
        
    @RemoteAction
-   public static void uploadMultipleDoc(integer fileIndexNo)
+   public static void uploadMultipleDoc(integer fileIndexNo,string oppsIds)
     {
         if(fileIndexNo <> null)
         {
            system.debug('@@@'+fileIndexNo);
+           Id currentOppId;
            list<WrapperDocuments> lstStaticWrapDocs = new list<WrapperDocuments>();
-           Id currentOppId = ClickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');
+           system.debug('oppIds12345678================='+oppsIds);
+           if(oppsIds != null && oppsIds != '')
+           {
+               currentOppId = Id.valueof(oppsIds) ;
+           }
+           else
+           {
+               currentOppId = ClickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');
+           }
            for(Required_Document__c objRequiredDoc:[select id,name,acfOpportunity__c,Click_Is_Note_Type__c,acfOpportunity__r.clickJumio_Status__c,
                                                 acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,
                                                 acf_Is_Identity_Verification_Doc__c,acfStatus__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c,
@@ -362,18 +399,16 @@ global class WLDashboardDocumentController
     }
     public void fetchDocName()
     {
-         if(IndexNo  <> null)
+        if(IndexNo  <> null)
+        {
+           WrapperDocuments objWrapDoc = lstWrapperDocumnets[IndexNo];
+           requiredDocName = objWrapDoc.objRequiredDocumnets.name;
+           noteLst1 = [select id,Body,Title,ParentId from Note where ParentId =:objWrapDoc.objRequiredDocumnets.id];
+           if(noteLst1 <> null && noteLst1.size() > 0)
            {
-               WrapperDocuments objWrapDoc = lstWrapperDocumnets[IndexNo];
-               requiredDocName = objWrapDoc.objRequiredDocumnets.name;
-               noteLst1 = [select id,Body,Title,ParentId from Note where ParentId =:objWrapDoc.objRequiredDocumnets.id];
-               if(noteLst1 <> null && noteLst1.size() > 0)
-               {
-                  strPost1 = noteLst1[0].Body;
-               } 
-           }
-           
-          
+              strPost1 = noteLst1[0].Body;
+           } 
+        }
     }
     //To add notes
 
@@ -447,18 +482,14 @@ global class WLDashboardDocumentController
       return null;
    } 
    
-   public void downloadFile(){
+   public pagereference downloadFile(){
        string reqDocId = Apexpages.currentPage().getParameters().get('recName');
        system.debug('###reDoc'+reqDocId);
        if(String.isNotEmpty(reqDocId)){
            Required_Document__c reqDocObj = [Select Id,acfDocument_Master__r.File_Address__c From Required_Document__c where id=:reqDocId];
-           if(reqDocObj != null && reqDocObj.acfDocument_Master__r.File_Address__c != null ){
-                recDownloadid = reqDocObj.acfDocument_Master__r.File_Address__c ;
-                System.debug(recDownloadid);
-           }
-           
+           return new pagereference(reqDocObj.acfDocument_Master__r.File_Address__c);
        }
-      
+       return null;
    }   
    // Wrapper Class for Document.
    public class WrapperDocuments
@@ -471,13 +502,18 @@ global class WLDashboardDocumentController
    
    public pagereference redirect()
    {
-        String oppId = acfCommon.getCurrentLoggedInOpportunityId(userInfo.getuserId()); 
+        String oppId = ClickCommon.getCurrentLoggedInOpportunityId(userInfo.getuserId(),''); 
         If(oppId != null && oppId <> ''){
            return null;
         }else{
-                String retUrl  = acfCommon.sendReturnUrl(userInfo.getuserId(),false,'acfDocumentDashboard'); 
-                Pagereference pageref= new Pagereference(retUrl);
-                return pageref;
+                string strNetworkId = Network.getNetworkId();
+                if(strNetworkId != null && strNetworkId <> '')
+                {
+                    String retUrl  = ClickCommon.sendReturnUrl(userInfo.getuserId(),false,'acfDocumentDashboard',strNetworkId); 
+                    Pagereference pageref= new Pagereference(retUrl);
+                    return pageref;
+                }
+                return null;
              }
    }
    //white lable delete functionality
@@ -513,13 +549,13 @@ global class WLDashboardDocumentController
             }
        }     
        BindWrapperDocument(OpportunityId);    
-       return (new Pagereference(ClickCommon.URLPrefix + ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c +'Dashboard'));       
+       return (new Pagereference(ClickCommon.URLPrefix + ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c +'Dashboard&id='+MyOpportunityIds));       
    }
 
    public pagereference frameURL()
    {
-        strBankFrameURl =ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c+'/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'BankInfoDetails?Docid='+RequiredDocumentId;
-        strJumioFrameUrl =ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c+'/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'JumioIntegration?Docid='+RequiredDocumentId;
+        strBankFrameURl =ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c+'/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'BankInfoDetails?Docid='+RequiredDocumentId+'&id='+MyOpportunityIds;
+        strJumioFrameUrl =ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c+'/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'JumioIntegration?Docid='+RequiredDocumentId+'&id='+MyOpportunityIds;
         return null;
    }
    public class wrapAttachDocs

@@ -30,49 +30,131 @@ public class wlLoanDashboardController
     public List<WrapperProducts>lstWrapperProduct{get;set;}
     public List<WrapperProducts>lstWrapperProductNotApplication{get;set;}
     //Added by karthik on 08-05-2015
-    Public wlLoanDashboardController() 
+    
+    // Added by Ankit
+    public String MyOpportunityId;
+    public string setMyOpportunityId(String testId)
     {
-         IsApplication = false;
-         IsApproval = false;
-         IsLoanDocument = false;
-         IsSettlement = false;
-         IsSettled = false;
-         isButtonvisible = true;
-         isPasswordReset = false;
-         lstWrapperProduct = new List<WrapperProducts>();
-         lstWrapperProductNotApplication = new List<WrapperProducts>();
-        //Created by lokesh on 15-12-2014
-        strRate = 0.00;
-        strComparsionRate = 0.00;
-        strMonthlyPayment = 0.00;
-        strLoanFees  = 0.00;
-        List<User> lstUser = [select id,acfIs_Password_Reset__c from User where id =: UserInfo.getuserId() AND IsActive =: true];
-        If(lstUser != null && lstUser.size()>0){
-           isPasswordReset = lstUser[0].acfIs_Password_Reset__c;
-        }
-       
-        OpportunityId = clickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');
- system.debug('---ashna OpportunityId---'+OpportunityId);        
+        MyOpportunityId = testId;
+        LoanDashboard(); 
+        return null; 
+    } 
+    
+    public String getMyOpportunityId()
+    {
+       return MyOpportunityId; 
+    }
+    public void LoanDashboard()
+    {
+     // OpportunityId = clickCommon.getCurrentLoggedInOpportunityId(userinfo.getUserId(),'');
+        if(MyOpportunityId != null && MyOpportunityId != '')
+            OpportunityId =  id.valueof(MyOpportunityId);
+        system.debug('---ashna OpportunityId---'+OpportunityId);        
         if(OpportunityId <> null)
         {
             system.debug('---ashna OpportunityId---'+OpportunityId);
            double HouseValue,LVR;   
-           List<Opportunity> lstOpportunity = [select id,Account.acfCurrent_Loan_Amount__pc,acfPayment_Type__c ,stageName,Description,acfApproval_Conditions__c,acfDate_Conditionally_Approved__c,acfDate_Formally_Approved__c,acfDate_Docs_Generated__c,acfExpected_Settlement_Date__c,acf_Status__c,Account.acfCurrent_Rate__pc,Account.acfApproximately_how_much_is_your_house__pc,Account.acfWhat_is_your_current_payment_type__pc,acfTenure__c,Account.acfAsset_House_Worth__c from opportunity where AccountId<>null and id=:OpportunityId];
+           List<Opportunity> lstOpportunity = [select id,Account.acfCurrent_Loan_Amount__pc,acfLoan_Amount_c__c,acfPayment_Type__c ,stageName,Description,acfApproval_Conditions__c,
+                                               acfDate_Conditionally_Approved__c,acfDate_Formally_Approved__c,acfDate_Docs_Generated__c,acfExpected_Settlement_Date__c,
+                                               acf_Status__c,Account.acfCurrent_Rate__pc,Account.acfApproximately_how_much_is_your_house__pc,acfApproximately_how_much_is_your_house__c,
+                                               Account.acfWhat_is_your_current_payment_type__pc,acfTenure__c,Account.acfAsset_House_Worth__c,create_from_custom_clone_button__c
+                                               from opportunity where AccountId<>null and id=:OpportunityId];
            system.debug('---ashna @#%#$%lstOpportunity'+lstOpportunity);
            
-           if(lstOpportunity <> null && lstOpportunity.size()>0 && lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc <> null && lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc <> null)
+           if(lstOpportunity <> null && lstOpportunity.size()>0 && lstOpportunity[0].acfLoan_Amount_c__c <> null 
+              && lstOpportunity[0].acfApproximately_how_much_is_your_house__c <> null && lstOpportunity[0].create_from_custom_clone_button__c)
            {
                
-                if(IsValidDecimal(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc))
-                  if(lstOpportunity[0].Account.acfAsset_House_Worth__c <> null)
-                  {
-                  HouseValue = double.valueof(lstOpportunity[0].Account.acfAsset_House_Worth__c);
-                  }
-                    else{
-                      HouseValue = double.valueof(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc);
+                if(IsValidDecimal(lstOpportunity[0].acfApproximately_how_much_is_your_house__c))
+                    if(lstOpportunity[0].Account.acfAsset_House_Worth__c <> null)
+                    {
+                        HouseValue = double.valueof(lstOpportunity[0].Account.acfAsset_House_Worth__c);
                     }
-                   if (HouseValue <> null && HouseValue >0)
-                LVR =  ((lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc/HouseValue)* 100);
+                    else{
+                        HouseValue = double.valueof(lstOpportunity[0].acfApproximately_how_much_is_your_house__c);
+                    }
+                    if (HouseValue <> null && HouseValue >0)
+                        LVR =  ((lstOpportunity[0].acfLoan_Amount_c__c/HouseValue)* 100);
+                
+                system.debug('@#$%%'+LVR);
+                //Display Opportunity Products      
+                DisplayOpportunityLIProducts(OpportunityId,lstOpportunity[0].acfLoan_Amount_c__c,string.valueof(lstOpportunity[0].acfApproximately_how_much_is_your_house__c));
+               //Displaying Loan Products if Opportunity status is Application   
+               if(lstOpportunity[0].stageName  == 'Application Taken' /*Added by Sumit*/|| lstOpportunity[0].stageName == 'Appointed')
+               {
+                 strDescription = lstOpportunity[0].Description;
+                 strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c ;
+                 DisplayLoanProducts(OpportunityId,HouseValue,LVR,lstOpportunity[0].acfLoan_Amount_c__c,string.valueof(lstOpportunity[0].acfApproximately_how_much_is_your_house__c));
+                 IsApplication = true;
+               }
+               else if(lstOpportunity[0].stageName  == 'Approval')
+               {
+                  strDescription = lstOpportunity[0].Description;
+                  strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c;
+                  strCustomLabelValue = 'AcfApproval';
+                  if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
+                     DateConditionallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Conditionally_Approved__c);
+                  strConditionsOfApproval     =  lstOpportunity[0].acfApproval_Conditions__c;
+                  IsApproval = true;
+               }
+               else if(lstOpportunity[0].stageName  == 'Loan Document')
+               {
+                  strDescription = lstOpportunity[0].Description;
+                  strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c;
+                  strCustomLabelValue = 'acfLoanDocument';
+                  if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
+                    DateConditionallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Conditionally_Approved__c);
+                  if(lstOpportunity[0].acfDate_Formally_Approved__c <> null)
+                    DateFormallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Formally_Approved__c);
+                  if(lstOpportunity[0].acfDate_Docs_Generated__c <> null)
+                    DateDocsGenerated = ConvertDateToString(lstOpportunity[0].acfDate_Docs_Generated__c);       
+                  IsLoanDocument = true;
+               }  
+               else if(lstOpportunity[0].stageName  == 'Settlement' && lstOpportunity[0].acf_Status__c  == 'Approved and pending settlement')
+               {
+                    strDescription = lstOpportunity[0].Description;
+                    strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c;
+                    strCustomLabelValue = 'AcfSettlement';
+                    if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
+                        DateConditionallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Conditionally_Approved__c);
+                    if(lstOpportunity[0].acfDate_Formally_Approved__c <> null)
+                        DateFormallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Formally_Approved__c);
+                    if(lstOpportunity[0].acfDate_Docs_Generated__c <> null)
+                        DateDocsGenerated = ConvertDateToString(lstOpportunity[0].acfDate_Docs_Generated__c);
+                    if(lstOpportunity[0].acfExpected_Settlement_Date__c <> null)
+                        DateExpectedSettlement = ConvertDateToString(lstOpportunity[0].acfExpected_Settlement_Date__c); 
+                    IsSettlement = true;
+               }
+               else if(lstOpportunity[0].stageName  == 'Settled' && lstOpportunity[0].acf_Status__c  == 'Settled')
+               {
+                    strDescription = lstOpportunity[0].Description;
+                    strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c;
+                    strCustomLabelValue = 'acfLoan_Dashboard_Settled';
+                    if(lstOpportunity[0].acfDate_Conditionally_Approved__c <> null)
+                        DateConditionallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Conditionally_Approved__c);
+                    if(lstOpportunity[0].acfDate_Formally_Approved__c <> null)
+                        DateFormallyApproved = ConvertDateToString(lstOpportunity[0].acfDate_Formally_Approved__c);
+                    if(lstOpportunity[0].acfDate_Docs_Generated__c <> null)
+                        DateDocsGenerated = ConvertDateToString(lstOpportunity[0].acfDate_Docs_Generated__c);
+                    if(lstOpportunity[0].acfExpected_Settlement_Date__c <> null)
+                        DateExpectedSettlement = ConvertDateToString(lstOpportunity[0].acfExpected_Settlement_Date__c); 
+                    IsSettled = true;
+               }      
+            }
+            else if(lstOpportunity <> null && lstOpportunity.size()>0 && lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc<> null 
+                    && lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc <> null && lstOpportunity[0].create_from_custom_clone_button__c == false)
+            {
+                if(IsValidDecimal(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc))
+                    if(lstOpportunity[0].Account.acfAsset_House_Worth__c <> null)
+                     {
+                          HouseValue = double.valueof(lstOpportunity[0].Account.acfAsset_House_Worth__c);
+                     }
+                     else
+                     {
+                          HouseValue = double.valueof(lstOpportunity[0].Account.acfApproximately_how_much_is_your_house__pc);
+                     }
+                if (HouseValue <> null && HouseValue >0)
+                    LVR =  ((lstOpportunity[0].Account.acfCurrent_Loan_Amount__pc/HouseValue)* 100);
                 
                 system.debug('@#$%%'+LVR);
                 //Display Opportunity Products      
@@ -123,7 +205,7 @@ public class wlLoanDashboardController
                         DateExpectedSettlement = ConvertDateToString(lstOpportunity[0].acfExpected_Settlement_Date__c); 
                     IsSettlement = true;
                }
-               else if(lstOpportunity[0].stageName  == 'Settlement' && lstOpportunity[0].acf_Status__c  == 'Settled')
+               else if(lstOpportunity[0].stageName  == 'Settled' && lstOpportunity[0].acf_Status__c  == 'Settled')
                {
                     strDescription = lstOpportunity[0].Description;
                     strCurrentPaymentType = lstOpportunity[0].acfPayment_Type__c;
@@ -137,9 +219,30 @@ public class wlLoanDashboardController
                     if(lstOpportunity[0].acfExpected_Settlement_Date__c <> null)
                         DateExpectedSettlement = ConvertDateToString(lstOpportunity[0].acfExpected_Settlement_Date__c); 
                     IsSettled = true;
-               }      
-           }
+               }  
+            }
         }
+    }
+    Public wlLoanDashboardController() 
+    {
+        IsApplication = false;
+         IsApproval = false;
+         IsLoanDocument = false;
+         IsSettlement = false;
+         IsSettled = false;
+         isButtonvisible = true;
+         isPasswordReset = false;
+         lstWrapperProduct = new List<WrapperProducts>();
+         lstWrapperProductNotApplication = new List<WrapperProducts>();
+        //Created by lokesh on 15-12-2014
+        strRate = 0.00;
+        strComparsionRate = 0.00;
+        strMonthlyPayment = 0.00;
+        strLoanFees  = 0.00;
+        List<User> lstUser = [select id,acfIs_Password_Reset__c from User where id =: UserInfo.getuserId() AND IsActive =: true];
+        If(lstUser != null && lstUser.size()>0){
+           isPasswordReset = lstUser[0].acfIs_Password_Reset__c;
+        } 
     }
     // Display Data from Opportunity Product.
     public void DisplayOpportunityLIProducts(Id OpportunityId,decimal CurrentLoan,string PaymentType)
