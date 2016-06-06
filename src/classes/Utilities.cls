@@ -397,4 +397,20 @@ global class Utilities {
 		return pr.getContentAsPDF();
 	}
 
+  public static String increaseDuplicateCounter(String name) {
+    Pattern namePattern = Pattern.compile('[(][1-9][0-9]?[)]');
+    String[] nameParts = name.split('\\.');
+
+    if(namePattern.matcher(nameParts[0]).find()) {
+      String[] fileNames = nameParts[0].split('\\(');
+      String numPart = fileNames[1].substringBefore(')');
+      nameParts[0] = fileNames[0] + '(' + (Integer.valueOf(numPart) + 1) + ')';
+    } else {
+      nameParts[0] += ' (1)';
+    }
+    String ret = '';
+    for(String s : nameParts) ret += '.' + s;
+    return ret.substring(1);
+  }
+
 }

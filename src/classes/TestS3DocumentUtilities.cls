@@ -19,7 +19,13 @@ public with sharing class TestS3DocumentUtilities {
 	}
 
 	private static testMethod void testConstructFailureAsAttachment() {
-		List<Attachment> failList = S3DocumentUtilities.constructFailureAsAttachment(s3Docs, docMap);
+		List<S3DocumentModel.UploadRequest> uploadRequests = new List<S3DocumentModel.UploadRequest>();
+		for(String s : docMap.keySet()) {
+			uploadRequests.add(new S3DocumentModel.UploadRequest(s, docMap.get(s)));
+		}
+
+		List<Attachment> failList = S3DocumentUtilities.constructFailureAsAttachment(s3Docs, uploadRequests);
+
 		System.assertEquals(2, failList.size());
 		System.assertEquals(s3Docs.get(1).id, failList.get(0).parentId);
 		System.assertEquals(s3Docs.get(5).id, failList.get(1).parentId);

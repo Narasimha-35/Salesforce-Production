@@ -14,14 +14,16 @@ public with sharing class TestS3DocumentService {
       multimock.setStatusCode(200);
       Test.setMock(HttpCalloutMock.class, multimock);
 
-      String name = 'abc';
-      Blob data = Blob.valueOf('abc.pdf');
+      S3DocumentModel.UploadRequest uploadReq = new S3DocumentModel.UploadRequest();
+      uploadReq.name = 'abc';
+      uploadReq.data = Blob.valueOf('abc.pdf');
+      List<S3DocumentModel.UploadRequest> uploadRequests = new List<S3DocumentModel.UploadRequest>{uploadReq};
 
       Test.startTest();
-      S3Document__c doc = S3DocumentService.uploadDocument(new Map<String, Blob>{name => data}).get(0);
+      S3Document__c doc = S3DocumentService.uploadDocument(uploadRequests).get(0);
       Test.stopTest();
 
-      System.assertEquals(name, doc.name);
+      System.assertEquals(uploadReq.name, doc.name);
       System.assertEquals('f9c2b7e0-2863-11e6-80bb-bb4552b59e84', doc.objectKey__c);
       System.assertEquals('GCOWn09kbNBHPWuqmA5dLss9STLEb15s', doc.version__c);
    }
@@ -31,7 +33,7 @@ public with sharing class TestS3DocumentService {
 
    }
 
-   //TODO: 
+   //TODO:
    // public static testMethod void testUpdateDocumentSuccess() {
    //    multimock.setStatusCode(200);
    //    Test.setMock(HttpCalloutMock.class, multimock);

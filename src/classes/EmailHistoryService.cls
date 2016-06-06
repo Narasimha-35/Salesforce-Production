@@ -1,17 +1,17 @@
 public with sharing class EmailHistoryService {
 
-	public static void saveEmailHistory(List<String> recipants, List<String> ccRecipants, String emailSubject, String htmlBody, Map<String, Blob> docMap) {
+	public static void saveEmailHistory(List<String> recipants, List<String> ccRecipants, String emailSubject, String htmlBody, List<S3DocumentModel.UploadRequest> uploadRequests) {
 		//update doc to s3
 		List<S3Document__c> s3Docs;
 		try{
-			s3Docs = S3DocumentService.uploadDocument(docMap);
+			s3Docs = S3DocumentService.uploadDocument(uploadRequests);
 		} catch (CalloutException e) { //TODO: remove this Exception handle
 			// for demo use.
 			s3Docs = new List<S3Document__c>();
 
-			for(String name : docMap.keySet()) {
+			for(S3DocumentModel.UploadRequest req : uploadRequests) {
 				S3Document__c doc = new S3Document__c();
-				doc.name = name;
+				doc.name = req.name;
 				doc.objectKey__c = 'demo object key';
 				doc.version__c = 'demo object version';
 				s3Docs.add(doc);
@@ -31,7 +31,7 @@ public with sharing class EmailHistoryService {
 		}
 
 		insert s3Docs;
-		insert S3DocumentUtilities.constructFailureAsAttachment(s3Docs, docMap);
+		insert S3DocumentUtilities.constructFailureAsAttachment(s3Docs, uploadRequests);
 	}
 
 }

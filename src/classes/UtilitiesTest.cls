@@ -241,4 +241,15 @@ private class UtilitiesTest {
         ed = now.addDays(1).addMinutes(10);
         System.assertEquals(false, Utilities.isBussy(st, ed, e));
     }
+
+    private static testMethod void testIncreaseDuplicateCounter() {
+        String name1 = 'test.txt';
+        String name2 = 'test (1).txt';
+
+        String ret1 = Utilities.increaseDuplicateCounter(name1);
+        String ret2 = Utilities.increaseDuplicateCounter(name2);
+
+        System.assertEquals('test (1).txt', ret1);
+        System.assertEquals('test (2).txt', ret2);
+    }
 }

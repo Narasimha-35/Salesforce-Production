@@ -47,14 +47,14 @@ public with sharing class S3DocumentUtilities {
 		}
 	}
 
-	public static List<Attachment> constructFailureAsAttachment(List<S3Document__c> s3Docs, Map<String, Blob> docMap) {
+	public static List<Attachment> constructFailureAsAttachment(List<S3Document__c> s3Docs, List<S3DocumentModel.UploadRequest> uploadRequests) {
 		List<Attachment> errorList = new List<Attachment>();
-		for(S3Document__c doc : s3Docs) {
-			if(doc.version__c == S3DocumentService.FAILED_VERSION_ID) {
+		for(integer i = 0; i < s3Docs.size(); i++) {
+			if(s3Docs[i].isSuccess__c == false) {
 				Attachment attachment = new Attachment();
-				attachment.name = doc.name;
-				attachment.body = docMap.get(doc.name);
-				attachment.parentId = doc.id;
+				attachment.name = s3Docs[i].name;
+				attachment.body = uploadRequests[i].data;
+				attachment.parentId = s3Docs[i].id;
 				errorList.add(attachment);
 			}
 		}
