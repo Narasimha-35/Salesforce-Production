@@ -1,8 +1,9 @@
 <apex:component controller="WLDashboardDocumentController" allowDML="true" id="comp">
+<apex:attribute name="oppsId" type="String" assignTo="{!MyOpportunityIds}" description="Opportunity ID"/>
 <link rel="stylesheet" type="text/css" href="{!$Resource.FileUploadCSS}"/>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"/>
 <script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
-<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>    
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
 <script type="text/javascript"> 
 sforce.connection.sessionId = '{!$Api.Session_ID}'; 
 </script> 
@@ -68,10 +69,6 @@ sforce.connection.sessionId = '{!$Api.Session_ID}';
         margin-left: auto;
         margin-right: auto;
     }
-    .custom-file-input:hover::before, .custom-file-input.active::before, a.doc_btn_done:before {
-    background-color: #f98b02;
-    color: #fff;
-}
     </style>
     
     <script >
@@ -315,11 +312,6 @@ sforce.connection.sessionId = '{!$Api.Session_ID}';
     {
         content:'Upload More'!important
     }
-    
-    .downloadStyle:before
-    {
-        content:'Download'!important
-    }
     .VerifiOnlineStyle:before
     {
        content:'Verify Online'!important 
@@ -543,10 +535,11 @@ background-color:#fff!important;
     <script>
     var parentId;
     var fileindex;
+
     function UploadRequiredDocument(indexval,reqDocId)
       {   
            parentId = reqDocId;
-           fileindex = indexval;     
+           fileindex = indexval;    
       }
       function UploadDocument(indexval)
       {  
@@ -704,12 +697,11 @@ function ajaxindicatorstop()
                     
                };
                reader.readAsArrayBuffer(f);
-              // alert('fileindex'+fileindex);
-               WLDashboardDocumentController.uploadMultipleDoc(fileindex,function(result, event){}); 
+               alert('fileindex'+fileindex);
+               var oppid = '{!oppIds}';
+               WLDashboardDocumentController.uploadMultipleDoc(fileindex,oppid,function(result, event){}); 
               //WLDashboardDocumentController.uploadMultipleDoc(fileindex); 
-                         }
-          
-           
+             }
         }
         else
         {
@@ -740,14 +732,8 @@ function ajaxindicatorstop()
         $('#myModal5').modal('show');
    }
    
-   function fileDownload(url)
-   {
-    document.getElementById('my_iframe').src = url;
-     
-   }
-   
  </script>
-   <iframe id="my_iframe" style="display:none;"></iframe>
+ <apex:inputHidden id="inpthdn" value="{!OpportunityId}"/>  
 <apex:pageMessages ></apex:pageMessages>
 <apex:actionStatus startStyleClass="creat-loader" id="ProcessStatus"></apex:actionStatus>
 <apex:actionstatus id="ResetstatusId" starttext="Processing..." startStyleClass="color:red;">
@@ -757,10 +743,7 @@ function ajaxindicatorstop()
         </div>    
      </apex:facet>
 </apex:actionStatus>
-<apex:actionFunction name="resetPopup" action="{!ResetPopup1}" rerender="formId1"  /> 
-<apex:actionFunction name="downloadSelectedFile" action="{!downloadFile}" rerender="formId1" oncomplete="fileDownload('{!recDownloadid }')">
-    <apex:param id="recId" name="recName" value=""/>
-</apex:actionFunction>
+<apex:actionFunction name="resetPopup" action="{!ResetPopup1}" rerender="formId1" status="ResetstatusId"/> 
 <apex:actionFunction action="{!UploadDocumentsNotification}" name="UploadDocumentsNotification" status="ProcessStatus"/>
 <apex:actionFunction action="{!uploadDoc}" name="UploadDocuments" status="ProcessStatus" reRender="comp"/>
 <apex:actionFunction action="{!previewdoc}" name="previewdoc" reRender="previewPnlId" status="ResetstatusId" oncomplete="opnPreviewPopUp();"/>
@@ -787,7 +770,7 @@ function ajaxindicatorstop()
                     <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12 doc_btn_done active" style="margin-bottom:7px;">&nbsp;</span></a>
                     <a href="#"></a>
             </apex:outputPanel>
-            <apex:outputPanel rendered="{!if(AND(OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Awaited'),doc.objRequiredDocumnets.Is_Download_Doc__c == false),true,false)}">
+            <apex:outputPanel rendered="{!if(OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Awaited'),true,false)}">
                     <!--for bank statement-->
                     <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.click_Is_Uploaded__c == false),true,false)}">
                             <a href="#"><span class="custom-file-input col-md-8 col-xs-12 {!If(doc.objRequiredDocumnets.click_Is_Uploaded__c == false,'VerifiOnlineStyle','')}" onclick="opnIdBankstmtPopup('{!doc.objRequiredDocumnets.Id}');" style="margin-bottom:7px;">&nbsp;</span></a>
@@ -811,7 +794,7 @@ function ajaxindicatorstop()
                     <apex:outputPanel rendered="{!AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,doc.objRequiredDocumnets.click_Is_Uploaded__c ==false)}">
                             <a href="#"><span class="custom-file-input col-md-8 col-xs-12 VerifiOnlineStyle" onClick="opnIdBankstmtPopup('{!doc.objRequiredDocumnets.Id}');" style="margin-bottom:7px;" >&nbsp;</span></a>
                     </apex:outputPanel>
-                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false && doc.objRequiredDocumnets.Is_Download_Doc__c == false}">
+                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false}">
                             <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12" data-toggle="modal" data-target="#myModal2" onClick="UploadRequiredDocument('{!Count}','{!doc.objRequiredDocumnets.id}');">&nbsp;</span></a>
                      </apex:outputPanel>
                      
@@ -822,28 +805,7 @@ function ajaxindicatorstop()
                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c}">
                             <a href="#" onclick="addNotes('{!Count}','{!doc.objRequiredDocumnets.Name}')"><span class="custom-file-input col-md-8 col-xs-12 NotesStyle">&nbsp;</span></a>
                     </apex:outputPanel>           
-            </apex:outputPanel> 
-            <apex:outputPanel rendered="{!if(doc.objRequiredDocumnets.Is_Download_Doc__c,true,false)}">
-                  
-                <!--for bank statement-->
-                  <apex:outputPanel >
-                    
-                     <a href="{!doc.objRequiredDocumnets.acfDocument_Master__r.File_Address__c}"  download="file"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active downloadStyle" style="margin-bottom:7px;">&nbsp;</span></a>              
-                 </apex:outputPanel> 
-                 <p></p>
-                  <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Pending'}">
-                    <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12" data-toggle="modal" data-target="#myModal2" onClick="UploadRequiredDocument('{!Count}','{!doc.objRequiredDocumnets.id}');">&nbsp;</span></a>
-                    <a href="#"></a>
-                 </apex:outputPanel>
-                 
-                 <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Uploaded'}">
-                    <a href="#" class="col-md-8 col-xs-8 doc_btn_done active uploadMoreStyle" data-toggle="modal" data-target="#myModal2" onClick="UploadRequiredDocument('{!Count}','{!doc.objRequiredDocumnets.id}');"></a>
-                 </apex:outputPanel>
-                
-                <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Not Verified')),true,false)}">
-                    <a href="#" onclick="DocPreview('{!Count}');"><span class="upload_doc btnOnline {!if(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,'previewBtntop','')}">&nbsp;</span></a>              
-                </apex:outputPanel>     
-            </apex:outputPanel>                         
+            </apex:outputPanel>                        
         </div>
        <div class="cstm_border_btm dash_row_10">&nbsp;</div>                                
     </section>
@@ -902,7 +864,7 @@ function ajaxindicatorstop()
                                     <td><input type="file" multiple="true" id="inptFileUpload1" name="file"/></td>
                                     <td class="buttonTD">
                                      <input id="multiUploadButtonUId" type="button" title="Upload" class="btn" value=" Save" onClick="uploadFileNew();"/> 
-                                    </td>
+                                   <input id="clear" type="button" title="Clear" class="btn" value=" Clear "/>                                      </td>
                                 </tr>
                             </table>    
                             </div>  
@@ -986,7 +948,7 @@ function ajaxindicatorstop()
         <div class="modal-content popup_modalcontent cstm_pop_cont" id="pdivfaded">
         <div class="modal-header cstm_modal_header" id="idSetupBox">        
               <button type="button" class="close pop_close gray_col" data-dismiss="modal" aria-hidden="true" onclick="PopupReset1();">Ã—</button>
-          <apex:outputPanel id="note1">
+          <apex:outputPanel id="Ankit1">
           <!--    <h4 class="modal-title text-center" id="memLoginId">{!requiredDocName}</h4>    -->
                   <h4 class="modal-title text-center" ><div id="requirednotename"></div></h4>
           </apex:outputPanel>
@@ -999,7 +961,7 @@ function ajaxindicatorstop()
         <!-- <apex:outputPanel id="feedmsg" rendered="{!showMessage1}" style="color:red;text-align:center;"><p style="margin-bottom:10px;">{!strfeedmsg1}</p></apex:outputPanel> -->              
                         <div class="form-group cstm_form_grp">
                            <div class="col-md-8 col-md-offset-2">   
-                               <apex:outputPanel id="note2">                        
+                               <apex:outputPanel id="Ankit2">                        
                                 <apex:inputTextarea value="{!strPost1}" style="height:auto!important;" rows="4" styleClass="form-control cstm_input" onfocus="this.placeholder=''" onblur="this.placeholder='Please complete the info required here. Give us as much detail as possible, and don't worry - you can add to this later.'" html-placeholder="Please complete the info required here. Give us as much detail as possible, and don't worry - you can add to this later." id="inptxtarea" rendered="{!NOT(successMsg1)}" />                                                                  
                                </apex:outputPanel>
                             </div>

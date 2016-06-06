@@ -1,4 +1,5 @@
 <apex:component controller="WLWelcomeDashboard">
+    <apex:attribute assignTo="{!MyOpportunityIds}" name="oppId" type="String" description="Opportunity ID"/>
      <section class="row">
                 <div class="blog_box">
                     <hgroup class="blog_grp">
@@ -60,7 +61,7 @@
                                 <div class="row">
                                     <a>
                                     <apex:outputPanel rendered="{!If(isSettlement== true,true,false)}">
-                                        <img  src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/loan_stlmnt.png')}" class="dash_icon" alt="img" />
+                                        <img  src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/loan_stlmnt_orange.png')}" class="dash_icon" alt="img" />
                                         <span class="dash_text active">Settlement</span>
                                     </apex:outputPanel>
                                     <apex:outputPanel rendered="{!If(isSettlement== true,false,true)}">   

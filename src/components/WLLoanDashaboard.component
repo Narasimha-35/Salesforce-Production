@@ -1,4 +1,5 @@
 <apex:component controller="wlLoanDashboardController" >
+<apex:attribute name="oppId" type="String" assignTo="{!MyOpportunityId}" description="Opportunity ID"/>
 <html >
 <style>
     .displaynone{
@@ -129,7 +130,6 @@ padding:22px 0px 12px 0px;
                      <div class="col-sm-2 lon_orng_text">
                          <h5>${!pvar.decMonthlyPayment}</h5>
                          <p>Estimated monthly payment</p>
-                         <p> {!strCurrentPaymentType} </p>
                      </div>              
                 </apex:outputpanel>
 
@@ -156,7 +156,6 @@ padding:22px 0px 12px 0px;
                      <div class="col-sm-2 lon_orng_text">
                          <h5>${!pvar.decMonthlyPayment}</h5>
                          <p>Estimated monthly payment</p>
-                         <p> {!strCurrentPaymentType} </p>
                      </div>              
                 </apex:outputpanel>
 
@@ -184,7 +183,6 @@ padding:22px 0px 12px 0px;
                      <div class="col-sm-2 lon_orng_text">
                          <h5>${!pvar.decMonthlyPayment}</h5>
                          <p>Estimated monthly payment</p>
-                         <p> {!strCurrentPaymentType} </p>
                      </div>              
                 </apex:outputpanel>
                 <div class="clearfix"></div>
@@ -224,7 +222,7 @@ padding:22px 0px 12px 0px;
     
                <apex:outputPanel rendered="{!isCurrentLoanPanelDisplay}">
                   <!--   <apex:repeat value="{!lstWrapperProductNotApplication}" var="currentLoan">  -->
-                                                                                   
+                                                                                                
            
             <apex:variable value="{!1}" var="Count"/> 
      
@@ -252,8 +250,6 @@ padding:22px 0px 12px 0px;
                      <div class="col-sm-2 lon_orng_text">
                          <h5>${!currentLoan.decMonthlyPayment}</h5>
                          <p>Estimated monthly payment</p>
-                         <p> {!strCurrentPaymentType} </p>
-                       
                      </div>    
                               
                 </apex:outputpanel>

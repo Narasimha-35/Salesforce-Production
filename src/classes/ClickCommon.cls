@@ -164,29 +164,6 @@ public class ClickCommon
         }        
     }
     
-    public static string sendSMSTwillio(String recepientNumber, String message){
-        TwilioConfig__c tc = TwilioConfig__c.getOrgDefaults();
-
-        String ACCOUNT_SID = '';
-        String AUTH_TOKEN = '';
-        if(tc.AccountSid__c !=null){
-            ACCOUNT_SID = tc.AccountSid__c;
-        }
-        if(tc.AccountSid__c !=null){
-            AUTH_TOKEN = tc.AuthToken__c;
-        }
-        
-        TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
-
-        Map<String,String> properties = new Map<String,String>();
-        properties.put('To',recepientNumber);
-        properties.put('From','+61400738629');
-        properties.put('Body',message);
-        
-        TwilioMessage response = client.getAccount().getMessages().create(properties);
-        return string.valueOf(response);
-    }
-    
     
     /*
     * 
@@ -208,7 +185,7 @@ public class ClickCommon
     {
         return true;
         
-        String status;
+       /* String status;
         try{   
             HttpRequest req = new HttpRequest();
             HttpResponse res = new HttpResponse();
@@ -242,6 +219,7 @@ public class ClickCommon
         }catch(Exception e){
             return false;
         }
+*/
     }
     
     // -------------------------------------------------------------------------------------------
@@ -460,6 +438,25 @@ public class ClickCommon
         }
         return null;
     }
+    //====================================================================
+    //     Name             createdDate               Version
+    //====================================================================
+    //    Ankit Singh       23-05-2016                 1.0
+    //====================================================================
+    // This method is used to getConverted Opportunity Id for customerUser.
+    //=====================================================================
+    public static Id getConvertedOpportunityId(Id CurrentUserId)
+    {
+        List<user>lstUser = [select id,username,Name,contactId,accountId,contact.acf_lead__c,Email,firstName,lastName,MobilePhone from user where id=:CurrentUserId];
+        system.debug('====lstUser with Lead ID===='+lstUser);
+        if(lstUser.isEmpty() == false && lstUser[0].contact.acf_lead__c <> null)
+        {
+            List<Lead> lstLead = [select id,isconverted,convertedOpportunityid from Lead where id=:lstUser[0].contact.acf_lead__c];
+            if(!lstLead.isEmpty() && lstLead[0].isConverted && lstLead[0].convertedOpportunityid != null)
+                return lstLead[0].convertedOpportunityid;
+        }
+        return null;
+    }
     
     public static Id getCurrentLoggedInOpportunityId(Id CurrentUserId,string PrefixVal)
     {
@@ -665,7 +662,7 @@ public class ClickCommon
     //user redirect method
      public static string redirect(string currentUserId,string pagename,string strNetworkId)
      {
-       String oppId = getCurrentLoggedInOpportunityId(currentUserId,getCommunitySetup(strNetworkId).Click_Page_Prefix__c); 
+       String oppId = getConvertedOpportunityId(currentUserId); 
        string loggedInLeadId = getCurrentLoggedInLeadId(currentUserId);
        system.debug('loggedInLeadId*******'+loggedInLeadId +oppId );
        string retURL = '';
@@ -859,4 +856,324 @@ public class ClickCommon
           }
           return stampDuty;
        }
+       
+       //This method is use to send emial notification.
+       public static void sendEmailNotification(Set<Id> oppID){
+        
+            if(oppID != null){
+            List<Opportunity> lstOpp = [SELECT  StageName ,CurrentAssignedBroker__r.Email__c ,  CurrentAssignedBroker__r.Channel__c , Account.Recordtypeid  ,(SELECT Applicant_Email__c FROM Applicants__r) FROM Opportunity where id in :oppID ];
+            List<String> ccTo = new List<String>();
+             List<Messaging.SingleEmailMessage> mails =  new List<Messaging.SingleEmailMessage>();
+             if(lstOpp.size() > 0){
+                
+                     
+                 for(Opportunity oopObj : lstOpp){
+                     if(oopObj.StageName == 'Appliaction taken'){
+                         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+                                     for( click_Applicant__c  applicant  : oopObj.Applicants__r){
+                                         
+                                            
+                                            
+                                            List<String> sendTo = new List<String>();
+                                            if(applicant.Applicant_Email__c != null){
+                                            sendTo.add(applicant.Applicant_Email__c);   
+                                            }
+                                            
+                                            mail.setToAddresses(sendTo);
+                                            mail.setSenderDisplayName(Userinfo.getusername());
+        
+                                            
+                                           // mail.setCcAddresses(ccTo);
+                                            mail.setSubject('Subject');
+                                            String body = '';
+                                            mail.setHtmlBody(body);
+                                            List<Messaging.EmailFileAttachment> efa =  getEmailAttachment( oopObj);
+                                            if(efa.size() >0)
+                                            mail.setFileAttachments(efa);
+                                            
+                                        }
+                                if(oopObj.CurrentAssignedBroker__r.Email__c != null){
+                                      ccTo.add(oopObj.CurrentAssignedBroker__r.Email__c);
+                                      mail.setCcAddresses(ccTo);
+                                      
+                                }   
+                                    mails.add(mail);                        
+                            }
+                    }
+                
+             }
+             
+             if(mails.size() > 0){
+                 Messaging.sendEmail(mails);
+                 
+             }
+            
+            
+            }
+        
+        }    
+        // This method is use for getting email's attachment 
+       public static List<Messaging.EmailFileAttachment>  getEmailAttachment(Opportunity oopObj){
+             List<Messaging.EmailFileAttachment>  mailsAttachments = new List<Messaging.EmailFileAttachment> ();
+               /* String Channel =oopObj.CurrentAssignedBroker__r.Channel__c  == null ? '' : oopObj.CurrentAssignedBroker__r.Channel__c ;
+                 String AccountRecordtypeid =oopObj.Account.Recordtypeid   == null ? '' : oopObj.Account.Recordtypeid  ;
+                string ACFNewLoansId = ClickCommon.GetRecordTypeId('Account','ACF New Loans');
+                string ACFRefiId = ClickCommon.GetRecordTypeId('Account','ACF Refi');
+                string ClickNewLoansId = ClickCommon.GetRecordTypeId('Account','Click New Loans');
+                string ClickRefiId = ClickCommon.GetRecordTypeId('Account','Click Refi');
+                 if(Channel == 'Partner'){
+                     
+                     // 1 attachment
+                        PageReference CreditGuidePartner = page.CreditGuidePartner;
+                        CreditGuidePartner.getParameters().put('id',(String) oopObj.id);
+                        CreditGuidePartner.setRedirect(true);
+    
+                        Blob CreditGuidePartneObj= CreditGuidePartner.getContent();
+                        Messaging.EmailFileAttachment CreditGuidePartnerefa = new Messaging.EmailFileAttachment();
+                        CreditGuidePartnerefa.setFileName('CreditGuidePartner.pdf');
+                        CreditGuidePartnerefa.setBody(CreditGuidePartneObj);
+                        mailsAttachments.add(CreditGuidePartnerefa);
+                    // 2nd attachment       
+                        PageReference PreliminaryAssesmentPartner = page.PreliminaryAssesmentPartner;
+                        PreliminaryAssesmentPartner.getParameters().put('id',(String) oopObj.id);
+                        PreliminaryAssesmentPartner.setRedirect(true);
+    
+                        Blob PreliminaryAssesmentPartnerObj= PreliminaryAssesmentPartner.getContent();
+                        Messaging.EmailFileAttachment PreliminaryAssesmentPartnerefa = new Messaging.EmailFileAttachment();
+                        PreliminaryAssesmentPartnerefa.setFileName('PreliminaryAssesmentPartner.pdf');
+                        PreliminaryAssesmentPartnerefa.setBody(PreliminaryAssesmentPartnerObj);
+                        mailsAttachments.add(PreliminaryAssesmentPartnerefa);
+                    // 3rd attachment   
+                        PageReference CreditProposalDisclosureDocPartner = page.CreditProposalDisclosureDocPartner;
+                        CreditProposalDisclosureDocPartner.getParameters().put('id',(String) oopObj.id);
+                        CreditProposalDisclosureDocPartner.setRedirect(true);
+    
+                        Blob CreditProposalDisclosureDocPartnerObj= CreditProposalDisclosureDocPartner.getContent();
+                        Messaging.EmailFileAttachment CreditProposalDisclosureDocPartnerObjefa = new Messaging.EmailFileAttachment();
+                        CreditProposalDisclosureDocPartnerObjefa.setFileName('CreditProposalDisclosureDocPartner.pdf');
+                        CreditProposalDisclosureDocPartnerObjefa.setBody(CreditProposalDisclosureDocPartnerObj);
+                        mailsAttachments.add(CreditProposalDisclosureDocPartnerObjefa);
+                    
+                  }
+                  
+    
+                    if(  (AccountRecordtypeid == ACFNewLoansId  || AccountRecordtypeid == ACFRefiId ) &&  Channel == 'Employee'){
+                      // 1 attachment
+                        PageReference CreditProposalDisclosureACF = page.CreditProposalDisclosureACF;
+                        CreditProposalDisclosureACF.getParameters().put('id',(String) oopObj.id);
+                        CreditProposalDisclosureACF.setRedirect(true);
+    
+                        Blob CreditGuidePartneObj= CreditProposalDisclosureACF.getContent();
+                        Messaging.EmailFileAttachment CreditProposalDisclosureACFefa = new Messaging.EmailFileAttachment();
+                        CreditProposalDisclosureACFefa.setFileName('CreditProposalDisclosureACF.pdf');
+                        CreditProposalDisclosureACFefa.setBody(CreditGuidePartneObj);
+                        mailsAttachments.add(CreditProposalDisclosureACFefa);
+                    // 2nd attachment       
+                        PageReference PreliminaryAssesmentACF = page.PreliminaryAssesmentACF;
+                        PreliminaryAssesmentACF.getParameters().put('id',(String) oopObj.id);
+                        PreliminaryAssesmentACF.setRedirect(true);
+    
+                        Blob PreliminaryAssesmentACFObj= PreliminaryAssesmentACF.getContent();
+                        Messaging.EmailFileAttachment PreliminaryAssesmentACFefa = new Messaging.EmailFileAttachment();
+                        PreliminaryAssesmentACFefa.setFileName('PreliminaryAssesmentACF.pdf');
+                        PreliminaryAssesmentACFefa.setBody(PreliminaryAssesmentACFObj);
+                        mailsAttachments.add(PreliminaryAssesmentACFefa);
+                    // 3rd attachment   
+                        PageReference CreditGuideACF = page.CreditGuideACF;
+                        CreditGuideACF.getParameters().put('id',(String) oopObj.id);
+                        CreditGuideACF.setRedirect(true);
+    
+                        Blob CreditGuideACFObj= CreditGuideACF.getContent();
+                        Messaging.EmailFileAttachment CreditGuideACFObjefa = new Messaging.EmailFileAttachment();
+                        CreditGuideACFObjefa.setFileName('CreditGuideACF.pdf');
+                        CreditGuideACFObjefa.setBody(CreditGuideACFObj);
+                        mailsAttachments.add(CreditGuideACFObjefa);
+                    }
+                                 
+    
+                 if(  (AccountRecordtypeid == ClickNewLoansId  || AccountRecordtypeid == ClickRefiId ) &&  Channel == 'Employee'){
+                      // 1 attachment
+                        PageReference PreliminaryAssesmentClick = page.PreliminaryAssesmentClick;
+                        PreliminaryAssesmentClick.getParameters().put('id',(String) oopObj.id);
+                        PreliminaryAssesmentClick.setRedirect(true);
+    
+                        Blob PreliminaryAssesmentClickObj= PreliminaryAssesmentClick.getContent();
+                        Messaging.EmailFileAttachment PreliminaryAssesmentClickefa = new Messaging.EmailFileAttachment();
+                        PreliminaryAssesmentClickefa.setFileName('PreliminaryAssesmentClick.pdf');
+                        PreliminaryAssesmentClickefa.setBody(PreliminaryAssesmentClickObj);
+                        mailsAttachments.add(PreliminaryAssesmentClickefa);
+                    // 2nd attachment       
+                        PageReference CreditProposalDisclosureDocClick = page.CreditProposalDisclosureDocClick;
+                        CreditProposalDisclosureDocClick.getParameters().put('id',(String) oopObj.id);
+                        CreditProposalDisclosureDocClick.setRedirect(true);
+    
+                        Blob CreditProposalDisclosureDocClickObj= CreditProposalDisclosureDocClick.getContent();
+                        Messaging.EmailFileAttachment CreditProposalDisclosureDocClickefa = new Messaging.EmailFileAttachment();
+                        CreditProposalDisclosureDocClickefa.setFileName('CreditProposalDisclosureDocClick.pdf');
+                        CreditProposalDisclosureDocClickefa.setBody(CreditProposalDisclosureDocClickObj);
+                        mailsAttachments.add(CreditProposalDisclosureDocClickefa);
+                    // 3rd attachment   
+                        PageReference CreditGuideClick = page.CreditGuideClick;
+                        CreditGuideClick.getParameters().put('id',(String) oopObj.id);
+                        CreditGuideClick.setRedirect(true);
+    
+                        Blob CreditGuideClickObj= CreditGuideClick.getContent();
+                        Messaging.EmailFileAttachment CreditGuideClickefa = new Messaging.EmailFileAttachment();
+                        CreditGuideClickefa.setFileName('CreditGuideClick.pdf');
+                        CreditGuideClickefa.setBody(CreditGuideClickObj);
+                        mailsAttachments.add(CreditGuideClickefa);
+                    }   */
+                return mailsAttachments;
+            }   
+            //insert econsent required documents
+         /*   Public void createEconsentRequiredDocument(List<Id> LstApplicantId)
+            { 
+                 list<Document_Master__c> lstDocumentmaster = new list<Document_Master__c>();
+                    lstDocumentmaster = [select id,Name,acf_Source__c from Document_Master__c where acf_Source__c = 'E-consent'];
+                    List<Required_Document__c> lstRequireddoc = new List<Required_Document__c>();
+                 if(!lstDocumentmaster.isempty() && !LstApplicantId.IsEmpty())
+                 {
+                     integer Count = 1;
+                      for(Id objApplicantID :LstApplicantId)
+                      {
+                       Required_Document__c objRequiredDocument  =  new Required_Document__c();
+                       objRequiredDocument.Name                  =  lstDocumentmaster[0].Name + Count;
+                       objRequiredDocument.acfDocument_Master__c =  lstDocumentmaster[0].Id;
+                       objRequiredDocument.Click_Applicant__c    =  objApplicantID;
+                       objRequiredDocument.acfStatus__c          =  'Pending';
+                       objRequiredDocument.Click_Is_E_consent__c = true;
+                       lstRequireddoc.add(objRequiredDocument); 
+                       Count++;
+                      }
+                      Count = 1;
+                     
+                 }
+                 system.debug('lstRequireddoc---' +lstRequireddoc.size());
+               insert lstRequireddoc;   
+            }     
+            
+            Public static List<Required_Document__c>  createEconsentRequiredDocument1(List<Id> LstApplicantId)
+                { 
+                 list<Document_Master__c> lstDocumentmaster = new list<Document_Master__c>();
+                 List<Opportunity> lstOpportunity = new List<Opportunity>();
+                 lstOpportunity =[select id,name from Opportunity];
+                 List<Lead> lstLeadConverted = new List<Lead>();
+                 List<Lead> lstLeadNotConverted = new List<Lead>();
+                     lstLeadConverted = [select id,name,isconverted,Lead.ConvertedOpportunityId from Lead where isconverted=true];
+                     lstLeadNotConverted =[select id,isconverted from Lead where isconverted=false];
+                     
+                     
+                    lstDocumentmaster = [select id,Name,acf_Source__c from Document_Master__c where acf_Source__c = 'E-consent'];
+                    List<Required_Document__c> lstRequireddoc = new List<Required_Document__c>();
+                 if(!lstDocumentmaster.isempty() && !LstApplicantId.IsEmpty() && lstLeadNotConverted.size()>0 && lstOpportunity.size()==0)
+                 {    
+                     integer Count = 1;
+                      for(Id objApplicantID :LstApplicantId)
+                      {
+                       Required_Document__c objRequiredDocument  =  new Required_Document__c();
+                       objRequiredDocument.Name                  =  lstDocumentmaster[0].Name + Count;
+                       objRequiredDocument.acfDocument_Master__c =  lstDocumentmaster[0].Id;
+                       objRequiredDocument.Click_Applicant__c    =  objApplicantID;
+                       objRequiredDocument.acfStatus__c          =  'Pending';
+                       objRequiredDocument.Click_Is_E_consent__c = true;
+                       objRequiredDocument.Lead__c               = lstLeadNotConverted[0].Id;
+                       lstRequireddoc.add(objRequiredDocument); 
+                       Count++;
+                      }
+                      Count = 1;
+                     insert lstRequireddoc;
+                     return lstRequireddoc;
+                    system.debug('bhasin test on 30 may'+lstRequireddoc);
+                 }
+            
+             else if (!lstDocumentmaster.isempty() && !LstApplicantId.IsEmpty() && lstLeadConverted.size()>0 && !lstOpportunity.IsEmpty())
+                    { 
+                   
+                     integer Count = 1;
+                      for(Id objApplicantID :LstApplicantId)
+                      {
+                       Required_Document__c objRequiredDocument  =  new Required_Document__c();
+                       objRequiredDocument.Name                  =  lstDocumentmaster[0].Name + Count;
+                       objRequiredDocument.acfDocument_Master__c =  lstDocumentmaster[0].Id;
+                       objRequiredDocument.Click_Applicant__c    =  objApplicantID;
+                       objRequiredDocument.acfStatus__c          =  'Pending';
+                       objRequiredDocument.Click_Is_E_consent__c = true;
+                       objRequiredDocument.acfOpportunity__c     = lstOpportunity[0].Id;
+                       
+                       lstRequireddoc.add(objRequiredDocument); 
+                       Count++;
+                      }
+                      Count = 1;
+                     insert lstRequireddoc;
+                    } 
+                    system.debug('lstRequireddoc-----'+ lstRequireddoc);
+                return lstRequireddoc;
+              }   
+                
+                
+            //send E-Consent email & sms to applicants
+            public static boolean sendEconsentEmailSMS(Id applicantId)
+            {
+                list<click_Applicant__c> lstApplicants = [select id,acf_Applicant_Name__c,Applicant_Phone__c,Applicant_Email__c from click_Applicant__c where id=:applicantId];
+                try
+                {
+                    if(lstApplicants != null && !lstApplicants.isEmpty())
+                    {
+                        string econsentId='';
+                        string encodedDate=string.valueOf(System.currentTimeMillis());
+                        econsentId=encodedDate+'-'+lstApplicants[0].click_Account__c+'-'+lstApplicants[0].acf_Applicant_Name__c;
+                        EmailTemplate templateId =new EmailTemplate();                
+                        templateId = [select id,subject,body, name,HtmlValue from EmailTemplate where DeveloperName = 'EConsent' AND isActive=true];
+                        Blob cryptoKey = Blob.valueOf('380db410e8b11fa9');                    
+                        Blob data1 = Blob.valueOf(econsentId);
+                        Blob encryptedValue  =Crypto.encryptWithManagedIV('AES128', cryptoKey, data1);
+                        string Encryptdata=EncodingUtil.base64encode(encryptedValue);
+                        string finalData= EncodingUtil.urlEncode(Encryptdata, 'UTF-8');
+                        string body='';                            
+                        body=templateId.HtmlValue;
+                        body=body.replace('{!econsentid}',finalData);                                        
+                        body=body.replace('{!Account.Name}',lstApplicants[0].acf_Applicant_Name__c);
+                        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+                        String[] toaddress=new List<String>();
+                        toaddress.add(lstApplicants[0].Applicant_Email__c); 
+                        system.debug('###'+toaddress);                   
+                        mail.setToAddresses(toaddress);
+                        mail.setSubject(templateId.Subject);
+                        mail.setHtmlBody(body);
+                        Messaging.sendEmail(new Messaging.SingleEmailMessage[]{mail});
+                        string mobileMessage=Label.Applicant_E_consent_message;
+                        mobileMessage=mobileMessage.replace('{!econsentid}',finalData);             
+                        mobileMessage=mobileMessage.replace('{!Account.Name}',lstApplicants[0].acf_Applicant_Name__c);              
+                        acfCommon.SendSMSUsingFuture(lstApplicants[0].acf_Applicant_Name__c,lstApplicants[0].Applicant_Phone__c,mobileMessage,true);
+                    }
+                    return true;  
+                }catch(Exception Ex)
+                      {
+                          return false;
+                      }       
+            }  
+            */ 
+            public static string sendSMSTwillio(String recepientNumber, String message)
+            {
+                TwilioConfig__c tc = TwilioConfig__c.getOrgDefaults();
+        
+                String ACCOUNT_SID = '';
+                String AUTH_TOKEN = '';
+                if(tc.AccountSid__c !=null){
+                    ACCOUNT_SID = tc.AccountSid__c;
+                }
+                if(tc.AccountSid__c !=null){
+                    AUTH_TOKEN = tc.AuthToken__c;
+                }
+                
+                TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
+        
+                Map<String,String> properties = new Map<String,String>();
+                properties.put('To',recepientNumber);
+                properties.put('From','+61400738629');
+                properties.put('Body',message);
+                
+                TwilioMessage response = client.getAccount().getMessages().create(properties);
+                return string.valueOf(response);
+           }    
  }

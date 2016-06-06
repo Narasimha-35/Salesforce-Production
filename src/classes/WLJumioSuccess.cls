@@ -40,7 +40,15 @@ public class WLJumioSuccess
             String oppId = '';
             if(objCommunitySetUp.Click_Page_Prefix__c != null)
             {
-                oppId = ClickCommon.getCurrentLoggedInOpportunityId(UserInfo.getuserId(),objCommunitySetUp.Click_Page_Prefix__c);
+                String OppIds = Apexpages.currentpage().getparameters().get('id');
+                if(OppIds != null && OppIds != '')
+                {
+                    oppId = OppIds;               
+                }
+                else
+                {
+                    oppId = ClickCommon.getCurrentLoggedInOpportunityId(UserInfo.getuserId(),objCommunitySetUp.Click_Page_Prefix__c);
+                }
             }
             
             If(oppId != null && oppId <> '')
@@ -52,7 +60,9 @@ public class WLJumioSuccess
                List<Opportunity> lstOpportunity = new List<Opportunity>();
                if(ReqdocId <> null && ReqdocId <> '')
                {
+                   system.debug('%%%%%%%!@#'+oppId);
                    lstOpportunity = [select id,acfIs_Identity_Document_Submitted__c,(select id,Name,acfStatus__c from Required_Documents__r where acf_Is_Identity_Verification_Doc__c = true And id=:ReqdocId) from Opportunity where id =: oppId];
+                   system.debug('%%%%%%%!@#23456'+oppId);
                }
                else
                {
@@ -99,8 +109,15 @@ public class WLJumioSuccess
                     }
                 } 
             }
-             
-            retUrlPage =  ClickCommon.sendReturnUrl(strUserId,false,objCommunitySetUp.Click_Page_Prefix__c+'JumioSuccess', strNetworkId);
+            If(oppId != null && oppId <> '')
+            {
+                if(strNetworkId != null && strNetworkId != '') 
+                    retUrlPage = '/'+ClickCommon.getCommunitySetup(strNetworkId).Click_Page_Prefix__c+'Dashboard?id='+oppId;            
+            }
+            else
+            {
+                retUrlPage =  ClickCommon.sendReturnUrl(strUserId,false,objCommunitySetUp.Click_Page_Prefix__c+'JumioSuccess', strNetworkId);
+            }
             system.debug('@@@test'+retUrlPage);
         }
     }

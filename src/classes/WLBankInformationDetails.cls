@@ -25,6 +25,7 @@ global without sharing class WLBankInformationDetails
     private string strNetworkId;
     private Click_Community_Setup__c objCommunitySetUp;
     public boolean isOppExist {get;set;}
+    public string OppId{get;set;}
     //public string strUserCredentials;
     //Constructor
     public WLBankInformationDetails () 
@@ -46,6 +47,7 @@ global without sharing class WLBankInformationDetails
             system.debug('Hi Community'+ClickCommon.getCommunitySetup(Network.getNetworkId()).id);
             objCommunitySetUp = ClickCommon.getCommunitySetup(Network.getNetworkId());
         }
+        OppId = Apexpages.currentpage().getparameters().get('id');
         mapBankstepSequance = new Map <Integer,acfBank_Information__c>();
         lstUserCredentials = new list<string>();
         lstUserQuearyType = new list<string>();
@@ -303,13 +305,13 @@ global without sharing class WLBankInformationDetails
             {
                 list<Required_Document__c> lstRequiredDoc = new list<Required_Document__c>();
                 String ReqdocId = Apexpages.currentpage().getparameters().get('Docid');
-                if(ReqdocId <> null && ReqdocId <> '')
+                if(ReqdocId <> null && ReqdocId <> '' && OppId <> null && OppId <>'')
                 {
                     lstRequiredDoc = [select id,Name, acfStatus__c from Required_Document__c where acf_Bank_Statement_Doc__c = true AND id =: ReqdocId
-                                                                  AND acfOpportunity__c =:strParentId];
+                                                                  AND acfOpportunity__c =:OppId];   // strParentId
                 }else{
                         lstRequiredDoc = [select id,Name, acfStatus__c from Required_Document__c where acf_Bank_Statement_Doc__c = true
-                                                                  AND acfOpportunity__c =:strParentId];
+                                                                  AND acfOpportunity__c =:OppId];    // strParentId
                     }
                 if(lstRequiredDoc != null && lstRequiredDoc.size() > 0)
                 {
@@ -319,7 +321,7 @@ global without sharing class WLBankInformationDetails
                      update lstRequiredDoc[0]; 
                       
                      system.debug('!@#$strTaskSubject '+strTaskSubject );
-                     list<task> lstTask = [select id,subject,status,whatid from task where Subject =:strTaskSubject AND whatid =:strParentId limit 1];
+                     list<task> lstTask = [select id,subject,status,whatid from task where Subject =:strTaskSubject AND whatid =:OppId limit 1];  // strParentId
                      if(lstTask != null && lstTask.size()>0)
                      {
                         system.debug('!@#$lstTask'+lstTask);

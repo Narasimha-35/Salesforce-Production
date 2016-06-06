@@ -1,4 +1,5 @@
 <apex:component controller="WLDashboardDocumentController" allowDML="true" id="comp">
+<apex:attribute name="oppsId" type="String" assignTo="{!MyOpportunityIds}" description="Opportunity ID"/>
 <link rel="stylesheet" type="text/css" href="{!$Resource.FileUploadCSS}"/>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"/>
 <script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
@@ -700,8 +701,9 @@ function ajaxindicatorstop()
                     
                };
                reader.readAsArrayBuffer(f);
-              // alert('fileindex'+fileindex);
-               WLDashboardDocumentController.uploadMultipleDoc(fileindex,function(result, event){}); 
+           //  alert('fileindex'+'{!oppIds}');
+               var oppid = '{!oppIds}';
+               WLDashboardDocumentController.uploadMultipleDoc(fileindex,oppid,function(result, event){}); 
               //WLDashboardDocumentController.uploadMultipleDoc(fileindex); 
                          }
           
@@ -736,14 +738,8 @@ function ajaxindicatorstop()
         $('#myModal5').modal('show');
    }
    
-   function fileDownload(url)
-   {
-    document.getElementById('my_iframe').src = url;
-     
-   }
-   
  </script>
-   <iframe id="my_iframe" style="display:none;"></iframe>
+   
 <apex:pageMessages ></apex:pageMessages>
 <apex:actionStatus startStyleClass="creat-loader" id="ProcessStatus"></apex:actionStatus>
 <apex:actionstatus id="ResetstatusId" starttext="Processing..." startStyleClass="color:red;">
@@ -753,8 +749,8 @@ function ajaxindicatorstop()
         </div>    
      </apex:facet>
 </apex:actionStatus>
-<apex:actionFunction name="resetPopup" action="{!ResetPopup1}" rerender="formId1"  /> 
-<apex:actionFunction name="downloadSelectedFile" action="{!downloadFile}" rerender="formId1" oncomplete="fileDownload('{!recDownloadid }')">
+<apex:actionFunction name="resetPopup" action="{!ResetPopup1}" rerender="formId1" status="ResetstatusId"/> 
+<apex:actionFunction name="downloadSelectedFile" action="{!downloadFile}" rerender="formId1">
     <apex:param id="recId" name="recName" value=""/>
 </apex:actionFunction>
 <apex:actionFunction action="{!UploadDocumentsNotification}" name="UploadDocumentsNotification" status="ProcessStatus"/>
@@ -823,8 +819,7 @@ function ajaxindicatorstop()
                   
                 <!--for bank statement-->
                   <apex:outputPanel >
-                    
-                     <a href="{!doc.objRequiredDocumnets.acfDocument_Master__r.File_Address__c}"  download="file"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active downloadStyle" style="margin-bottom:7px;">&nbsp;</span></a>              
+                     <a href="#" onclick="downloadSelectedFile('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active downloadStyle" style="margin-bottom:7px;">&nbsp;</span></a>              
                  </apex:outputPanel> 
                  <p></p>
                   <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Pending'}">
@@ -897,8 +892,8 @@ function ajaxindicatorstop()
                                 <tr>
                                     <td><input type="file" multiple="true" id="inptFileUpload1" name="file"/></td>
                                     <td class="buttonTD">
-                                     <input id="multiUploadButtonUId" type="button" title="Upload" class="btn btn-primary btn-md" value=" Save" onClick="uploadFileNew();"/> 
-                                                                      </td>
+                                     <input id="multiUploadButtonUId" type="button" title="Upload" class="btn" value=" Save" onClick="uploadFileNew();"/> 
+                                   <input id="clear" type="button" title="Clear" class="btn" value=" Clear "/>                                      </td>
                                 </tr>
                             </table>    
                             </div>  

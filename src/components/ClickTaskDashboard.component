@@ -1,5 +1,5 @@
 <apex:component controller="WLTaskDashboard" >
-
+<apex:attribute name="oppId" type="String" assignTo="{!MyOpportunityIds}" description="Opportunity ID"/>
     <style type="text/css">
         .task_asign_sec .completeTask
         {
