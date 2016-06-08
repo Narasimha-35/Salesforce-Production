@@ -470,16 +470,7 @@ public without sharing class WLCustomerRegisterController
             }
            strOTPtxt = strOTPtxt.replace('<OTP>',OTP_PIN);
            system.debug('@@@otp test message'+strOTPtxt);
-           string response = '';
-           boolean isTwilio =  Twilio__c.getValues('Twilio').Twilio__c;
-           if(isTwilio == false){
-                response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPtxt , true) ;
-           }
-           else if(isTwilio){
-                response = Clickcommon.sendSMSTwillio(objLead.MobilePhone,strOTPtxt );
-           }
-           system.debug('##resp'+response);
-
+           string response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPtxt, true) ;
            system.debug('respone ======================= '+response);
            if(response <> null && response <> '' && response.contains('success'))
            {
@@ -527,23 +518,14 @@ public without sharing class WLCustomerRegisterController
                }
                strOTPmsg = strOTPmsg.replace('<OTP>',password);
                system.debug('@@@otp test message'+strOTPmsg);
-               string response = '';
-                boolean isTwilio =  Twilio__c.getValues('Twilio').Twilio__c;
-               if(isTwilio == false){
-                    response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPmsg, true) ;
-                }
-                else if(isTwilio){
-                    response = Clickcommon.sendSMSTwillio(objLead.MobilePhone,strOTPmsg);
-                }
-                system.debug('##resp'+response);
-
+               string response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, '+'+objLead.MobilePhone, strOTPmsg, true) ;//This will also be your first time password to log into ACF portal
                system.debug('respone ======================= '+response);
                response = 'success';
                //update lead and account if response success
                if(response <> null && response <> '' && response.contains('success'))
                {
                    system.debug('respone in ======================= '+response);
-                   list<User> lstUser = [select id,accountId,contactId from user where id=:userId];
+                   list<User> lstUser = [select id,accountId,contactId,Email,firstname from user where id=:userId];
                    Id currentAccountRecordTypeId;
                    if(IsNewHomeLoan <> null && IsNewHomeLoan.getvalue() == 'true')
                    {
@@ -563,7 +545,7 @@ public without sharing class WLCustomerRegisterController
                    }
                    if(lstUser != null && lstUser.size()>0 && objLead <> null)
                    {
-                       objAccount = new Account(id = lstUser[0].accountId);
+                       objAccount = [select personEmail,firstname,lastname from account where id=:lstUser[0].accountId];
                        ga_Accountid = lstUser[0].accountId;
                        objLead.acf_Contact__c = lstUser[0].ContactId;
                        objAccount.acf_Lead__pc = objLead.id;
@@ -713,9 +695,16 @@ public without sharing class WLCustomerRegisterController
                        objFirstApplicant.put('acfEmployment_Type__c',maptst.get('acfEmployment_Type__c'));
                    if(maptst.get('acfLast_2_years_Tax_Return_or_ATO_NOA__c') <> null)
                        objFirstApplicant.put('acfLast_2_years_Tax_Return_or_ATO_NOA__c',maptst.get('acfLast_2_years_Tax_Return_or_ATO_NOA__c'));
-                   objFirstApplicant.acf_Applicant_Name__c = ObjAccount.Name;
+                   if(ObjAccount.firstname <> null)
+                   {
+                       objFirstApplicant.acf_Applicant_Name__c = ObjAccount.firstname+' '+ObjAccount.lastname;
+                   }else{
+                       objFirstApplicant.acf_Applicant_Name__c = ObjAccount.lastname;
+                   }
                    objFirstApplicant.click_Account__c = ObjAccount.id;
                    objFirstApplicant.click_Applicant_Number__c = '1';
+                   objFirstApplicant.Applicant_Email__c = ObjAccount.PersonEmail;
+                   objFirstApplicant.Applicant_Phone__c = ObjAccount.PersonMobilePhone;
                    insert objFirstApplicant;      
                }       
             }             
@@ -873,11 +862,13 @@ public without sharing class WLCustomerRegisterController
     */
     Public PageReference RedirectToLandingPage() 
     {
+        string strHomePageURL = lstCommunity.click_Home_Page_URL__c;
+        if(strHomePageURL != null && strHomePageURL <> '')
+        {
+            pagereference pageRef = new pagereference(strHomePageURL);
+            return pageRef;
+        } 
         return null;
-           //PageReference p = page.ClickHome;
-           //p.setredirect(true);
-           //return p;
-           return Network.communitiesLanding();
     }
     
     Public PageReference redirect() 

@@ -196,6 +196,37 @@
                 padding: 0px;
                 margin-top: 30px;
                 }
+                
+                .plcholder_61:before {
+                top: 13px;
+                left: 31px;
+                font-weight: normal!important;
+                font-size: 1em;
+                color: #999;
+                font-family: 'open_sanslight';
+                }
+                
+                .app2_phone2, .app2_phone3 ,.app2_phone4 ,.app2_phone5, .app2_phone6{
+                  font-size:14px;
+                  padding-left:3em !important;
+                  border:1px solid #CCC;
+                }
+                
+                .post_slide_question2 .unit {
+                position: absolute;
+                color: #999;
+                top: 32%;
+                left: 1%;
+                font-size: 1.2em;
+                border-right: 1px #ccc solid;
+                padding-right: 0.2em; 
+                }
+                
+                .post_slide_question2 {
+                  position:relative;  
+                }
+                
+              
                 .top-tab ul li a{  padding: 0px 32px 0px 0px;   line-height: 32px;}
                 .quote_headaer {
                 padding: 35px 0px 20px 0px;
@@ -880,6 +911,8 @@
                                               google.maps.event.addListener(autocomplete, 'place_changed', function() {
                                                 fillInAddress();
                                               });
+                                                //$('[id$=appInfo]').css('display','none');
+                                                //$('[id$=consentInfo]').css('display','block');
                                             }
                                             
                                             // [START region_fillform]
@@ -923,6 +956,7 @@
                                             // [END region_geolocation]           
                                             $(document).ready(function () {
                                                 initialize();
+                                                displayActiveMasterQues();
                                             }); 
                                         </script>         
                                     </apex:outputPanel>
@@ -938,6 +972,12 @@
                                                               </div>    
                                                           </apex:facet>
                                                         </apex:actionStatus>
+                                                        
+                                                        <apex:actionstatus id="counterStatus" starttext="verifying">
+                                                            <apex:facet name="start">
+                                                                <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>
+                                                             </apex:facet>
+                                                        </apex:actionStatus>
                                                         <apex:actionFunction name="AssetsAndLiablities" status="AssetStatus" action="{!AssetLiablity}"  reRender="optStages,optStagesText,optErrormsg,optBackbtn" oncomplete="test();"/>
                                                         <div class="col-sm-12 col-md-12 question-slider">
                                                             <apex:outputPanel id="optErrormsg">
@@ -949,24 +989,47 @@
                                                                 <apex:inputhidden value="{!NoOfLeftSlide}" id="ipthdnLeftIndex"/>
                                                                 <apex:inputHidden value="{!IsSkipDependent}" id="ipthdnISDependentSkip"/>
                                                                 <apex:inputHidden value="{!MasterQuesNo}" id="idhdnMasterQues"/>
-                                                              
+                                                                <apex:inputhidden value="{!strNoOfApp}" id="ipthdnAppIndex"/>
+                                                                <apex:inputhidden value="{!isConsentDone}" id="theConsentDoneId"/>
                                                                 <apex:outputPanel rendered="{!if(strmsg != null && strmsg != '', true,false)}" style="color:red;margin-top:20px;text-align:center;">
                                                                     <p>{!strmsg}</p>
                                                                 </apex:outputPanel>
+                                                                
                                                             </apex:outputPanel>
                                                             <apex:outputPanel id="optBackbtn">
-                                                                <script>
-                                                                    function displayActiveMasterQues()
-                                                                    {
-                                                                      $("#myCarousel").carousel({!MasterQuesNo});
-                                                                    }
-                                                                    function test()
-                                                                    {
-                                                                       displayActiveMasterQues(); 
-                                                                    }
-                                                                </script>
-                                                            </apex:outputPanel>
-                                                            <div class="dateInlineClass">
+                                                            <script>
+                                                                function displayActiveMasterQues()
+                                                                {
+                                                                  $("#myCarousel").carousel({!MasterQuesNo});
+                                                                  
+                                                                     if($('[id$=theConsentDoneId]').val() == 'true'){
+                                                                      
+                                                                       console.log('hiii');
+                                                                        $('[id$=appInfo]').css('display','block');
+                                                                       $('[id$=consentInfo]').css('display','none');
+                                                                      
+                                                                     }
+                                                                     else{
+                                                                        $('[id$=appInfo]').css('display','none');
+                                                                       $('[id$=consentInfo]').css('display','block');
+                                                                     }
+                                                                                                                                    
+                                                                     for(i=2;i<=$('[id$=ipthdnAppIndex]').val();i++)
+                                                                     {
+                                                                          $('[id$=email'+i+']').css('display','block');
+                                                                          $('[id$=mobile'+i+']').css('display','block');
+                                                                          $('[id$=heading'+i+']').css('display','block');                                                                                                                                            
+                                                                     }
+                                                                    
+                                                                }
+                                                               
+                                                                function test()
+                                                                {
+                                                                   displayActiveMasterQues(); 
+                                                                }
+                                                          </script>
+                                                                  </apex:outputPanel>
+                                                            <div class="dateInlineClass"> 
                                                             </div>
                                                             <div class="dateClass"></div>
                                                             <div class="carousel slide" id="myCarousel" data-ride="carousel">
@@ -975,13 +1038,63 @@
                                                                    <apex:variable value="{!0}" var="i"/>
                                                                     <apex:repeat value="{!lstMasterWrapperQuestion}" var="ques">
                                                                         <li class="item" id="item{!i}">
-                                                                            <apex:outputPanel id="pnlNewNrac">
-                                                                                <h1 class="slide-heading relQues-margin text-center">{!ques.strApplicantNo}</h1>
-                                                                              
-                                                                                <h2 class="slide-heading relQues-margin text-center">
-                                                                                    <apex:outputtext value="{!ques.objWrapQuestion.acf_Question__c}" escape="false"/>
-                                                                                </h2>
-                                                                                <p class="slide-peregraph relQues-margin text-center">{!ques.objWrapQuestion.acf_Description__c}</p>
+                                                                          
+                                                                           <apex:outputPanel id="consentPanel" rendered="{!ques.isConsent}">
+                                                                                <apex:outputPanel id="consentInfo">
+                                                                                  <h2 class="slide-heading relQues-margin text-center">
+                                                                                      <apex:outputtext value="{!ques.objWrapQuestion.acf_Question__c}" escape="false"/>
+                                                                                  </h2>
+                                                                                  <p class="slide-peregraph relQues-margin text-center">{!ques.objWrapQuestion.acf_Description__c}</p> 
+
+                                                                                  <apex:outputPanel id="preloginButtonsConsent" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Button',true,false)}">
+                                                                                      <div class="btnresponsive-margin-div col-md-12">
+                                                                                          <!-- <apex:repeat value="{!ques.lstSelectOptions}" var="Answers">
+                                                                                            <apex:commandButton value="{!Answers.acf_Answer__c}" styleClass="btn-question" action="{!RelatedQuestions}" reRender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentPanel" status="counterStatus" oncomplete="slide();">
+                                                                                                <apex:param value="{!Answers.id}" assignTo="{!ques.strWrapAnswer}" name="QuesCount"/>
+                                                                                            </apex:commandButton>
+                                                                                        </apex:repeat>-->
+                                                                                         <apex:commandButton value="I Consent" styleClass="btn-question"  action="{!updateApplicant}" />
+                                                                                        <apex:commandButton value="Verify Online" styleClass="btn-question" rendered="{!!verifyClicked}" action="{!checkMailStatusSend}" rerender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentPanel" status="counterStatus"/>
+                                                                                        <apex:commandButton value="Verify Now" styleClass="btn-question" rendered="{!verifyClicked}" action="{!checkUserResponse}" />
+                                                                                      </div>
+                                                                                  </apex:outputPanel>
+                                                                                </apex:outputPanel>
+                                                                                <apex:outputPanel id="appInfo">
+                                                                                    
+                                                                                 <apex:variable value="{!2}" var="appCount"/>
+                                                                                        <apex:repeat value="{!ques.appDetailsWrapList}" var="appWrap">
+                                                                                            
+                                                                                            <h1 class="slide-heading relQues-margin text-center" id="heading{!appCount}" style="display:none;">{!appWrap.applicantNo} Applicant</h1>
+                                                                                            <div class="preloginDollar">
+                                                                                                <div class="post_slide_question2" id="email{!appCount}" style="display:none;">
+                                                                                                    <apex:input type="email" styleclass=" inputf drop_input_custom_30 post_w100 app2_email{!appWrap.applicantRecNo}" value="{!appWrap.appEmail}" onBlur="if (this.placeholder == '') {this.placeholder = 'Email Id';}" onFocus="if (this.placeholder == 'Email Id') {this.placeholder = '';}" html-placeholder="Email Id"/>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="preloginDollar">
+                                                                                                <div class="post_slide_question2" id="mobile{!appCount}" style="display:none;">
+                                                                                                    <div class="unit">+61</div> 
+                                                                                                   
+                                                                                                        <apex:input type="text" styleclass="inputf drop_input_custom_30 post_w100 app2_phone{!appWrap.applicantRecNo}" value="{!appWrap.appMobile}" onBlur="if (this.placeholder == '') {this.placeholder = 'Phone Number';}" onFocus="if (this.placeholder == 'Phone Number') {this.placeholder = '';}" html-placeholder="Phone Number"/>
+                                                                                                     
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            
+                                                                                           
+                                                                                            <apex:variable value="{!appCount+1}" var="appCount"/>
+                                                                                        </apex:repeat>
+                                                                                        <apex:commandButton value="Submit" styleClass="btn-question"  action="{!sendEmailAndSMS2}"/>
+                                                                                        <div class="col-md-12 col-xs-12 text-center post_log_goback">
+                                                                                        <!--<apex:commandLink action="{!previousQuestion}" value="Go back" reRender="optStages,optStagesText,optErrormsg,optBackbtn,consentScreenpnl"  status="counterStatusimg" oncomplete="Backslide();" id="goBackLinkId1"/>-->
+                                                                                        </div>
+                                                                                </apex:outputPanel>
+                                                                            </apex:outputPanel>
+                                                                            <apex:outputPanel id="pnlNewNrac" rendered="{!AND(ques.isConsent == false,isAppDetailDone)}">
+                                                                                   <h1 class="slide-heading relQues-margin text-center">{!ques.strApplicantNo}</h1>
+                                                                                
+                                                                                  <h2 class="slide-heading relQues-margin text-center">
+                                                                                      <apex:outputtext value="{!ques.objWrapQuestion.acf_Question__c}" escape="false"/>
+                                                                                  </h2>
+                                                                                  <p class="slide-peregraph relQues-margin text-center">{!ques.objWrapQuestion.acf_Description__c}</p> 
                                                                                 <apex:outputPanel id="preloginPicklist" rendered="{!if(ques.objWrapQuestion.acf_Type__c == 'Picklist',true,false)}">
                                                                                     <div class="post_slide_question2">
                                                                                         <apex:selectList value="{!ques.strWrapAnswer}" multiselect="false" size="1" style="font-weight:normal; color: #9e9d9d" styleClass="inputf drop_input_custom_30">
@@ -999,6 +1112,7 @@
                                                                                                 <apex:param value="{!Answers.id}" assignTo="{!ques.strWrapAnswer}" name="QuesCount"/>
                                                                                             </apex:commandButton>
                                                                                         </apex:repeat>
+                                                                                        <!--<apex:commandButton value="Verify Online" styleClass="btn-question" action="{!checkMailStatusSend}" rerender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn"/>-->
                                                                                     </div>
                                                                                 </apex:outputPanel>
                                                                                 <apex:outputPanel id="preloginText" rendered="{!if(OR(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Type__c == 'Number'),true,false)}">

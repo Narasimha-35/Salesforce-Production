@@ -7,6 +7,7 @@ public class acfIConsentController
     public string UserAccountId{get;set;}
     private string applicantNumber{get;set;} 
     public click_Applicant__c objAppToUpdate;
+    public string applicantId;
     //constructor
     public acfIConsentController ()
     {              
@@ -19,8 +20,13 @@ public class acfIConsentController
         long sessionTime=long.ValueOf(arrTest[0]);
         UserAccountId=arrTest[1];
         applicantNumber=arrTest[2];
+        system.debug('###values'+UserAccountId);
+        system.debug('###values'+applicantNumber);
         objAppToUpdate = new click_Applicant__c();   
-        list<Account> lstAccts = acfpostloginQuestionsController_partner.getlstusrAccounts(Id.valueof(UserAccountId));
+        list<Account> lstAccts = WLpostloginQuestionsController.getlstusrAccounts(Id.valueof(UserAccountId));
+        system.debug('###lst'+lstAccts);
+        applicantId = '';
+       
         if(lstAccts != null && lstAccts.size()>0)
         {
             for(click_Applicant__c objApplicant : lstAccts[0].Applicants__r)
@@ -29,7 +35,9 @@ public class acfIConsentController
                 {
                     objAppToUpdate = objApplicant;
                     if(objApplicant.acfEconsent__c == 'I Consent')
-                        isSubmited=true;                  
+                        isSubmited=true; 
+                     
+                     
                 }
             }
         }     
@@ -46,10 +54,22 @@ public class acfIConsentController
         {    
             if(objAppToUpdate <> null)
             {
+                String ipAddress = ApexPages.currentPage().getHeaders().get('X-Salesforce-SIP');
                 objAppToUpdate.acfEconsent__c = 'I Consent';
+                applicantId = objAppToUpdate.id; 
                 update objAppToUpdate;
                 isSubmited=true;
+                
+                List<E_Consent__c> eConsentList = [Select id,Consent_IP__c,Applicant__c FROM E_Consent__c where Applicant__c=:applicantId];
+                system.debug('##econs'+eConsentList);
+                if(eConsentList.size() > 0){
+                    eConsentList[0].Consent_IP__c = ipAddress;
+                    eConsentList[0].Consent_Method__c = 'Online Verify';
+                    update eConsentList;
+                }
             } 
+            
+            
         }
         catch(exception ex)
         {
