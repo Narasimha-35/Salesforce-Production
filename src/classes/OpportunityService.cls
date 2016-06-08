@@ -11,7 +11,7 @@ global with sharing class OpportunityService {
 	public static void sendComplianceDocsEmail(List<String> recipants, List<String> ccRecipants, List<PageReference> pageRefs) {
 		String emailSubject = 'Hello World! Compliance Docs';
 		String htmlBody = '<h1>Amazing HTML Body</h1>';
-		Map<String, Blob> docMap = new Map<String, Blob>();
+		List<S3DocumentModel.UploadRequest> uploadRequests = new List<S3DocumentModel.UploadRequest>();
 
 		Messaging.SingleEmailMessage mail = EmailUtilities.constructBasicSingleEmailMessage(recipants, ccRecipants, emailSubject, htmlBody);
 		List<Messaging.EmailFileAttachment> fileAttachments = new List<Messaging.EmailFileAttachment>();
@@ -20,13 +20,13 @@ global with sharing class OpportunityService {
 			//TODO: change the name
 			String fileName = 'Fantastic Document Name' + i++;
 			Blob content = Utilities.getPageAsPDF(pr);
-			docMap.put(fileName, content);
+			uploadRequests.add(new S3DocumentModel.UploadRequest(fileName, content));
 			fileAttachments.add(EmailUtilities.constructInlineEmailAttachmentAsPDF(fileName, content));
 		}
 		mail = EmailUtilities.addFileAttachment(mail, fileAttachments);
 
 		// Save history
-		EmailHistoryService.saveEmailHistory(recipants, ccRecipants, emailSubject, htmlBody, docMap);
+		EmailHistoryService.saveEmailHistory(recipants, ccRecipants, emailSubject, htmlBody, uploadRequests);
 		// Send Email
 		EmailUtilities.sendSingleEmail(mail);
 	}

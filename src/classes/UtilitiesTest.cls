@@ -252,4 +252,8 @@ private class UtilitiesTest {
         System.assertEquals('test (1).txt', ret1);
         System.assertEquals('test (2).txt', ret2);
     }
+
+    private static testMethod void testConstructPageRef() {
+        System.assertNotEquals('', Utilities.constructPageRef('Account', new Map<String, String>{'id' => 'aaaa'}).getURL());
+    }
 }

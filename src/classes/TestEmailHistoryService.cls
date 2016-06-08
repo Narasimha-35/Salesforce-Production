@@ -4,14 +4,16 @@ public with sharing class TestEmailHistoryService {
 	public static List<String> ccRecipants = new List<String>{'david.hyman@clickloans.com.au', 'martin.lam@creditandfinance.com.au'};
 	public static String subject = 'Awesome Subject';
 	public static String body = '<h1>This is AweSome</h1>';
-	public static Map<String, Blob> docMap;
+	public static List<S3DocumentModel.UploadRequest> uploadRequests;
 
 	public static S3Document__c testDoc = TestUtilities.createS3Document();
 	public static MultiStaticResourceCalloutMock multimock;
 	static {
-		docMap = new Map<String, Blob>();
-		docMap.put('doc1', Blob.valueOf('doc1'));
-		docMap.put('doc2', Blob.valueOf('doc2'));
+		uploadRequests = new List<S3DocumentModel.UploadRequest>();
+		S3DocumentModel.UploadRequest req1 = new S3DocumentModel.UploadRequest('doc1', Blob.valueOf('doc1'));
+		S3DocumentModel.UploadRequest req2 = new S3DocumentModel.UploadRequest('doc2', Blob.valueOf('doc2'));
+		uploadRequests.add(req1);
+		uploadRequests.add(req2);
 
 		insert new S3DocumentSetting__c(domain__c = 'www.lendi.com.au', token__c = '47847d52-8842-4055-b6e1-9cb71fe42f28');
 		multimock = new MultiStaticResourceCalloutMock();
@@ -24,7 +26,7 @@ public with sharing class TestEmailHistoryService {
 		multimock.setStatusCode(200);
 		Test.setMock(HttpCalloutMock.class, multimock);
 		Test.startTest();
-		EmailHistoryService.saveEmailHistory(recipants, ccRecipants, subject, body, docMap);
+		EmailHistoryService.saveEmailHistory(recipants, ccRecipants, subject, body, uploadRequests);
 		Test.stopTest();
 
 		List<EmailHistory__c> emailHistoryList = [SELECT id, ccRecipants__c, emailContent__c, recipants__c, subject__c FROM EmailHistory__c];

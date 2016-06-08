@@ -4,8 +4,8 @@ public with sharing class TestS3DocumentUtilities {
 	public static Map<String, Blob> docMap;
 	public static HttpRequestResponse httpRR;
 	static {
-		s3Docs.get(1).version__c = S3DocumentService.FAILED_VERSION_ID;
-		s3Docs.get(5).version__c = S3DocumentService.FAILED_VERSION_ID;
+		s3Docs.get(1).isSuccess__c = false;
+		s3Docs.get(5).isSuccess__c = false;
 		insert s3Docs;
 
 		docMap = new Map<String, Blob>();
