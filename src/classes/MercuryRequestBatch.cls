@@ -45,10 +45,14 @@ global class MercuryRequestBatch implements Database.Batchable<sObject>, Databas
 			counter++;
 		} catch (MercuryService.MercurySyncException re) {
 			scope[0].Failed__c = true;
-			// scope[0].ErrorMessage__c = '' + re.getStatusCode();
+			scope[0].ErrorMessage__c = '' + re.getErrorMessage();
 			update scope;
 			System.debug(LoggingLevel.DEBUG, '[MercuryRequestBatch] Mercury Sync Request Not Executed Successfully: ' + scope[0].id);
 			System.debug(LoggingLevel.DEBUG, '[MercuryRequestBatch] Error Message: ' + re.getMessage());
+		} catch (Exception e) {
+			scope[0].Failed__c = true;
+			scope[0].ErrorMessage__c = '' + e.getMessage();
+			update scope;
 		}
 	}
 

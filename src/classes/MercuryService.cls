@@ -276,6 +276,14 @@ global class MercuryService {
 		public List<Exception> getExceptions() {
 			return exceptionList;
 		}
+
+		public String getErrorMessage() {
+			String ret = '';
+			for(Exception e : exceptionList) {
+				ret += e.getMessage() + ' ';
+			}
+			return ret;
+		}
 	}
 
 }
