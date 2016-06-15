@@ -3,7 +3,7 @@
     =============================================================================
     Name                             Date                                version
     =============================================================================
-    Karthik Chekkilla               04/05/2016                              1.0
+    Karthik Chekkilla               04/05/2016                               1.0
     =============================================================================
 */
 public class ApplicantTriggerHandler extends TriggerHandler
@@ -14,11 +14,13 @@ public class ApplicantTriggerHandler extends TriggerHandler
     public override void afterInsert() 
     {
         insertIncomeExpenses();
+        createEconsentRecord();
     }
     public override void afterUpdate()
     {
         insertIncomeExpenses();
-        updateFinancialSources();
+        updateFinancialSources(); 
+        updateEconsentStatus();    
     }
     //create income and expense records
     public void insertIncomeExpenses()
@@ -31,6 +33,7 @@ public class ApplicantTriggerHandler extends TriggerHandler
         Id ExpenseRecTypeId = ClickCommon.GetRecordTypeId('Income_And_Expense__c','Expense');
         for(click_Applicant__c objApplicant : (List<click_Applicant__c>) Trigger.new) 
         {
+            if(objApplicant.acf_create_from_custom_clone_button__C == false){
             if((trigger.isInsert && objApplicant.get(strIncomeSelfEmployedAPI) != null) || (trigger.isUpdate && Trigger.oldmap.get(objApplicant.id).get(strIncomeSelfEmployedAPI) == null 
                 && objApplicant.get(strIncomeSelfEmployedAPI) != Trigger.oldmap.get(objApplicant.id).get(strIncomeSelfEmployedAPI)))
             {
@@ -76,6 +79,7 @@ public class ApplicantTriggerHandler extends TriggerHandler
                 lstIncomeExpense.add(objIncome);
             }
            system.debug('ExpenseAPI-------'+objApplicant.get(strExpenseAPI));
+            }
         }
         system.debug('!!@#$test'+lstIncomeExpense);
         if(lstIncomeExpense != null && lstIncomeExpense.size()>0)
@@ -217,4 +221,66 @@ public class ApplicantTriggerHandler extends TriggerHandler
             insert lstFSrcTobeInsert;
         }
     }
-}
+    //To create econsent record added by karthik on 03/06/2016
+    public void createEconsentRecord()
+    {
+        List<E_Consent__c> lstEconsentTobeInsert = new List<E_Consent__c>();
+        for(click_Applicant__c objApplicant : (List<click_Applicant__c>) Trigger.new) 
+        {
+            E_Consent__c objEconsent = new E_Consent__c();
+            objEconsent.Applicant__c = objApplicant.id;
+            lstEconsentTobeInsert.add(objEconsent);
+        }       
+        if(lstEconsentTobeInsert != null && !lstEconsentTobeInsert.isEmpty())
+            insert lstEconsentTobeInsert;  
+    }
+    //To update econsent record
+    public void updateEconsentStatus()
+    {
+        List<E_Consent__c> lstEconsentTobeUpdate = new List<E_Consent__c>();
+        Set<id> setAppIds = new Set<id>();
+        Set<id> setOppIds = new Set<id>();
+        for(click_Applicant__c objApplicant : (List<click_Applicant__c>) Trigger.new) 
+        {
+            if(objApplicant.acfEconsent__c != trigger.oldMap.get(objApplicant.id).get('acfEconsent__c') && objApplicant.acfEconsent__c == 'I Consent')  
+            {
+                setAppIds.add(objApplicant.id);
+                setOppIds.add(objApplicant.clickOpportunity__c);
+            }
+        } 
+        //Econsent record      
+        lstEconsentTobeUpdate = [select id,Consent_Completed__c,Applicant__c,Consent_Time_and_Date__c from E_Consent__c where Applicant__c IN:setAppIds];
+        if(lstEconsentTobeUpdate != null && !lstEconsentTobeUpdate.isEmpty())
+        {
+            for(E_Consent__c objEconsent : lstEconsentTobeUpdate)
+            {
+                objEconsent.Consent_Completed__c = true;
+                objEconsent.Consent_Time_and_Date__c = System.now();
+            }
+            update lstEconsentTobeUpdate;
+        }
+        //Required doc & task status       
+        list<Required_Document__c> lstRequiredDocsTobeUpdate = [select id,acfStatus__c,name,(select id,status from tasks__r limit 1)
+                                                                from Required_Document__c where Click_Applicant__c IN:setAppIds];
+        
+        list<Task> lstTaskTobeupdate = new list<Task>();
+        if(lstRequiredDocsTobeUpdate != null && !lstRequiredDocsTobeUpdate.isEmpty())
+        {
+            for(Required_Document__c objRequiredDoc : lstRequiredDocsTobeUpdate)
+            {
+                objRequiredDoc.acfStatus__c = 'Verified';
+                if(objRequiredDoc.tasks__r!= null && objRequiredDoc.tasks__r.size()>0)
+                {
+                   task objTask = new Task(id= objRequiredDoc.tasks__r[0].id);
+                   objTask.status = 'Completed';
+                   lstTaskTobeupdate.add(objTask);
+                }
+            }
+            update lstRequiredDocsTobeUpdate;
+            if(lstTaskTobeupdate != null && lstTaskTobeupdate.size()>0)
+            {
+                update lstTaskTobeupdate;
+            }
+        }
+    } 
+ }

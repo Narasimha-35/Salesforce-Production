@@ -733,6 +733,16 @@ function ajaxindicatorstop()
    }
    
  </script>
+ <script>
+  function Verifyeconsents(msg)
+   {
+        if(msg != '')
+        {
+            $('#myModal11').modal('toggle');
+            $('#myModal11').modal('show');
+        }
+   }
+  </script>
  <apex:inputHidden id="inpthdn" value="{!OpportunityId}"/>  
 <apex:pageMessages ></apex:pageMessages>
 <apex:actionStatus startStyleClass="creat-loader" id="ProcessStatus"></apex:actionStatus>
@@ -750,6 +760,12 @@ function ajaxindicatorstop()
 <apex:actionFunction action="{!fetchDocName}" name="fetchDocName" status="ResetstatusId" oncomplete="opnNotePopUp();" reRender="formId1"/>  
 <apex:actionFunction action="{!frameURL}" name="opnIdVerifyPopup" status="ResetstatusId" oncomplete="opnIdVerifysetPopup();" reRender="pnlJumioFrmeId">
     <apex:param value="" assignTo="{!RequiredDocumentId}" name="reqDocParam"/>
+</apex:actionFunction>
+<apex:actionFunction action="{!SendMailforEconsent}" name="sendSmsAndEmail" status="ResetstatusId" reRender="formId1">
+    <apex:param value="" name="ReqDocsId"/>
+</apex:actionFunction>
+<apex:actionFunction action="{!VerifyEconsent}" name="econsentVerified" oncomplete="Verifyeconsents('{!strmsg}');" status="ResetstatusId" reRender="formId1">
+    <apex:param value="" name="econsentReqDocsId"/>
 </apex:actionFunction>
 <apex:inputHidden id="hdnDocumentName" value="{!IndexNo}"/>
 
@@ -770,7 +786,7 @@ function ajaxindicatorstop()
                     <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12 doc_btn_done active" style="margin-bottom:7px;">&nbsp;</span></a>
                     <a href="#"></a>
             </apex:outputPanel>
-            <apex:outputPanel rendered="{!if(OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Awaited'),true,false)}">
+            <apex:outputPanel rendered="{!if(AND(OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Awaited'),doc.objRequiredDocumnets.Click_Is_E_consent__c == false),true,false)}">
                     <!--for bank statement-->
                     <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.click_Is_Uploaded__c == false),true,false)}">
                             <a href="#"><span class="custom-file-input col-md-8 col-xs-12 {!If(doc.objRequiredDocumnets.click_Is_Uploaded__c == false,'VerifiOnlineStyle','')}" onclick="opnIdBankstmtPopup('{!doc.objRequiredDocumnets.Id}');" style="margin-bottom:7px;">&nbsp;</span></a>
@@ -789,23 +805,34 @@ function ajaxindicatorstop()
             </apex:outputPanel>
             
             <apex:outputPanel rendered="{!if(OR(doc.objRequiredDocumnets.acfStatus__c == 'Pending',doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'),true,false)}">
-                    <!-- <a class="custom-file-input col-md-8 col-xs-12 btnOnline" href="#" data-toggle="modal" name="{!Count}"  onclick="UploadDocument();"  ></a>  -->
-                    <!--      <apex:inputFile value="{!attach.body}" fileName="{!attach.name}" contentType="{!attach.contentType}" styleclass="custom-file-input col-md-8 col-xs-12" id="inptFileUpload" onchange="UploadDocument('{!Count}');" > </apex:inputFile>    -->
-                    <apex:outputPanel rendered="{!AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,doc.objRequiredDocumnets.click_Is_Uploaded__c ==false)}">
+                    <apex:outputPanel rendered="{!AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,doc.objRequiredDocumnets.click_Is_Uploaded__c ==false,doc.objRequiredDocumnets.Click_Is_E_consent__c == false)}">
                             <a href="#"><span class="custom-file-input col-md-8 col-xs-12 VerifiOnlineStyle" onClick="opnIdBankstmtPopup('{!doc.objRequiredDocumnets.Id}');" style="margin-bottom:7px;" >&nbsp;</span></a>
                     </apex:outputPanel>
-                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false}">
+                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false && doc.objRequiredDocumnets.Click_Is_E_consent__c == false}">
                             <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12" data-toggle="modal" data-target="#myModal2" onClick="UploadRequiredDocument('{!Count}','{!doc.objRequiredDocumnets.id}');">&nbsp;</span></a>
                      </apex:outputPanel>
                      
-                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == true}">
+                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == true && doc.objRequiredDocumnets.Click_Is_E_consent__c == false}">
                             <a href="#"><span class="custom-file-input col-md-8 col-xs-12 VerifiOnlineStyle" onClick="opnIdVerifyPopup('{!doc.objRequiredDocumnets.Id}');">&nbsp;</span></a>
                      </apex:outputPanel>
         
-                    <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c}">
+                    <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c && doc.objRequiredDocumnets.Click_Is_E_consent__c == false}">
                             <a href="#" onclick="addNotes('{!Count}','{!doc.objRequiredDocumnets.Name}')"><span class="custom-file-input col-md-8 col-xs-12 NotesStyle">&nbsp;</span></a>
                     </apex:outputPanel>           
-            </apex:outputPanel>                        
+            </apex:outputPanel>    
+            <apex:outputPanel rendered="{!if(doc.objRequiredDocumnets.Click_Is_E_consent__c,true,false)}">
+                  <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Pending'}">
+                     <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifiOnlineStyle" style="margin-bottom:7px;">&nbsp;</span></a>              
+                  </apex:outputPanel> 
+                  <p></p>
+                  <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'}">
+                    <a href="#" onclick="econsentVerified('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyNow" style="margin-bottom:7px;">&nbsp;</span></a>
+                    <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyAgain" style="margin-bottom:7px;">&nbsp;</span></a>
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Verified'}">
+                    <a href="#"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active" style="margin-bottom:7px;">&nbsp;</span></a>
+                  </apex:outputPanel>   
+            </apex:outputPanel>                      
         </div>
        <div class="cstm_border_btm dash_row_10">&nbsp;</div>                                
     </section>
@@ -977,7 +1004,22 @@ function ajaxindicatorstop()
         </div>
        </div>                                              
      </div>            
- <!--Notes ends here-->               
+ <!--Notes ends here-->  
+  <!--   Econsent Pop up starts here -->  
+ <div id="myModal11" class="modal fade" role="dialog">
+           <div class="modal-dialog">                          
+            <div class="modal-content cstm_content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <b><h3 class="modal-title text-center">Please do e-consent via sms or email</h3></b>
+                  </div>
+                  <div class="modal-body">
+                    <!--<c:ClickJumioIntegration ></c:ClickJumioIntegration> -->
+                  </div>
+             </div> 
+          </div>                                                
+</div> 
+<!--   Econsent Pop up ends here -->               
 </body>  
 <!--Pop up close here-->
 </apex:component>

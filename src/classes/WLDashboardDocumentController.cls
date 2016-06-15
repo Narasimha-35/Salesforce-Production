@@ -4,6 +4,7 @@ global class WLDashboardDocumentController
    @TestVisible transient Attachment attach;
    @TestVisible transient Attachment docattach;
    public string strUseEmailID{get;set;}
+   public string recDownloadid{get;set;}
    public string strDocumentName{get;set;}
    public string IsPopupShow{get;set;}
    public boolean IsIdentificationCompleted{get;set;}
@@ -118,7 +119,7 @@ global class WLDashboardDocumentController
         lstWrapperDocumnets = new List<WrapperDocuments>();        
         system.debug('**OpportunityId'+OpportunityId);
         String PrefixUrls = ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c;
-        for(Required_Document__c objRequiredDoc:[select id,name,acfOpportunity__c,Click_Is_Note_Type__c,acfOpportunity__r.clickJumio_Status__c,
+        for(Required_Document__c objRequiredDoc:[select acfDocument_Master__r.File_Address__c,id,name,acfOpportunity__c,Click_Is_Note_Type__c,acfOpportunity__r.clickJumio_Status__c,
                                                 acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,
                                                 acf_Is_Identity_Verification_Doc__c,acfStatus__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c,
                                                 click_Is_Uploaded__c,Is_Download_Doc__c,(select id from Attachments) 
@@ -482,15 +483,19 @@ global class WLDashboardDocumentController
       return null;
    } 
    
-   public pagereference downloadFile(){
+  public void downloadFile(){
        string reqDocId = Apexpages.currentPage().getParameters().get('recName');
        system.debug('###reDoc'+reqDocId);
        if(String.isNotEmpty(reqDocId)){
            Required_Document__c reqDocObj = [Select Id,acfDocument_Master__r.File_Address__c From Required_Document__c where id=:reqDocId];
-           return new pagereference(reqDocObj.acfDocument_Master__r.File_Address__c);
+           if(reqDocObj != null && reqDocObj.acfDocument_Master__r.File_Address__c != null ){
+                recDownloadid = reqDocObj.acfDocument_Master__r.File_Address__c ;
+                System.debug(recDownloadid);
+           }
+           
        }
-       return null;
-   }   
+      
+   } 
    // Wrapper Class for Document.
    public class WrapperDocuments
    {

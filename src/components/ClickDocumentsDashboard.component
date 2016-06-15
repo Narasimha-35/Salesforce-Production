@@ -2,8 +2,8 @@
 <apex:attribute name="oppsId" type="String" assignTo="{!MyOpportunityIds}" description="Opportunity ID"/>
 <link rel="stylesheet" type="text/css" href="{!$Resource.FileUploadCSS}"/>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"/>
-<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
-<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>    
+<script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>    
 <script type="text/javascript"> 
 sforce.connection.sessionId = '{!$Api.Session_ID}'; 
 </script> 
@@ -329,6 +329,14 @@ sforce.connection.sessionId = '{!$Api.Session_ID}';
     {
        content:'Edit Notes'!important 
     }
+    .VerifyNow:before
+    {
+        content:'Verify Now'!important
+    }
+    .VerifyAgain:before
+    {
+        content:'Verify Again'!important
+    }
     .marginTopVerify
     {
         margin-top:7px;
@@ -568,7 +576,7 @@ background-color:#fff!important;
         {
             window.setTimeout(window.location.reload(), 5000);
         }
-     
+             
     var j$ = jQuery.noConflict();
     var byteChunkArray; 
     var files;
@@ -635,7 +643,7 @@ function ajaxindicatorstop()
     jQuery('body').css('cursor', 'default');
 }
    function uploadFileNew(){
-       // alert(parentId);
+       //alert(parentId);
         var input = document.getElementById('inptFileUpload1');
         var filesToUpload = input.files;
         var AttTemp = '';
@@ -643,12 +651,33 @@ function ajaxindicatorstop()
         if(filesToUpload[0] != null)
         {
            $("#loader-wrapper").show();
-           for(var i = 0, f; f = filesToUpload[i]; i++)
-           {
+           for(var i = 0 ; filesToUpload.length ;i++)
+           {    var f = filesToUpload[i];
                var reader = new FileReader();
                reader.file = f;
                var k = 0;
-               
+               reader.onerror = function(e) 
+        {
+            alert(e.target.error.code);
+            switch(e.target.error.code) 
+            {
+                case e.target.error.NOT_FOUND_ERR:
+                    alert('File Not Found!');
+                    break;
+                case e.target.error.NOT_READABLE_ERR:
+                    alert('File is not readable');
+                    break;
+                case e.target.error.ABORT_ERR:
+                    break; // noop
+                default:
+                    alert('An error occurred reading this file.');
+            };
+        };     
+
+        reader.onabort = function(e) 
+        {
+            alert('File read cancelled');
+        };
                reader.onload = function(e)
                {
                     k =  k + 1;
@@ -668,6 +697,8 @@ function ajaxindicatorstop()
 
                     sforce.connection.create([att], {
                         onSuccess : function(result, source) {
+                        // alert(source);
+// alert(result);                        
                             if (result[0].getBoolean("success")) {
                                
 
@@ -679,7 +710,7 @@ function ajaxindicatorstop()
                                    // ProcessUpload(result[0].id);
                                    setTimeout(function(){ 
                                     ajaxindicatorstop();
-                                            //alert("Successfully Uploaded.."); 
+                                            alert("Successfully Uploaded.."); 
                                            
                                    }, 200);
                                    return false;
@@ -692,7 +723,10 @@ function ajaxindicatorstop()
                             }
                         },
                         onFailure : function(error, source) {
-                           alert(error);
+                          alert('__________'+error);
+                           //alert(error.target.error.code)
+
+                          // alert('__________'+source);
                          ajaxindicatorstop();
 
                             console.log("an error has occurred " + error);
@@ -700,12 +734,14 @@ function ajaxindicatorstop()
                     });
                     
                };
+               
+               
                reader.readAsArrayBuffer(f);
-           //  alert('fileindex'+'{!oppIds}');
+         //   alert('fileindex'+'{!oppIds}');
                var oppid = '{!oppIds}';
                WLDashboardDocumentController.uploadMultipleDoc(fileindex,oppid,function(result, event){}); 
               //WLDashboardDocumentController.uploadMultipleDoc(fileindex); 
-                         }
+        }
           
            
         }
@@ -739,6 +775,16 @@ function ajaxindicatorstop()
    }
    
  </script>
+  <script>
+  function Verifyeconsents(msg)
+   {
+        if(msg != '')
+        {
+            $('#myModal11').modal('toggle');
+            $('#myModal11').modal('show');
+        }
+   }
+  </script>
    
 <apex:pageMessages ></apex:pageMessages>
 <apex:actionStatus startStyleClass="creat-loader" id="ProcessStatus"></apex:actionStatus>
@@ -760,6 +806,12 @@ function ajaxindicatorstop()
 <apex:actionFunction action="{!frameURL}" name="opnIdVerifyPopup" status="ResetstatusId" oncomplete="opnIdVerifysetPopup();" reRender="pnlJumioFrmeId">
     <apex:param value="" assignTo="{!RequiredDocumentId}" name="reqDocParam"/>
 </apex:actionFunction>
+<apex:actionFunction action="{!SendMailforEconsent}" name="sendSmsAndEmail" status="ResetstatusId" reRender="formId1">
+    <apex:param value="" name="ReqDocsId"/>
+</apex:actionFunction>
+<apex:actionFunction action="{!VerifyEconsent}" name="econsentVerified" oncomplete="Verifyeconsents('{!strmsg}');" status="ResetstatusId" reRender="formId1">
+    <apex:param value="" name="econsentReqDocsId"/>
+</apex:actionFunction>
 <apex:inputHidden id="hdnDocumentName" value="{!IndexNo}"/>
 
     <hgroup class="dash_tab_hdng">
@@ -772,50 +824,59 @@ function ajaxindicatorstop()
     <apex:repeat value="{!lstWrapperDocumnets}" var="doc"> 
      <section class="dash_doc">
         <div class="col-md-6 col-xs-12 h4">{!doc.objRequiredDocumnets.Name}</div>
-        <div class="col-md-6 col-xs-12">
+          <div class="col-md-6 col-xs-12">
             
             <!--for bank statement-->
+            <!--        =========================done BankStatement=====================================   -->
             <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.click_Is_Uploaded__c),true,false)}">
                     <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12 doc_btn_done active" style="margin-bottom:7px;">&nbsp;</span></a>
                     <a href="#"></a>
             </apex:outputPanel>
-            <apex:outputPanel rendered="{!if(AND(OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Awaited'),doc.objRequiredDocumnets.Is_Download_Doc__c == false),true,false)}">
+            
+            <apex:outputPanel rendered="{!if(AND(OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Awaited'),doc.objRequiredDocumnets.Is_Download_Doc__c == false,doc.objRequiredDocumnets.Click_Is_E_consent__c == false),true,false)}">
                     <!--for bank statement-->
                     <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.click_Is_Uploaded__c == false),true,false)}">
                             <a href="#"><span class="custom-file-input col-md-8 col-xs-12 {!If(doc.objRequiredDocumnets.click_Is_Uploaded__c == false,'VerifiOnlineStyle','')}" onclick="opnIdBankstmtPopup('{!doc.objRequiredDocumnets.Id}');" style="margin-bottom:7px;">&nbsp;</span></a>
                             <a href="#"></a>
                     </apex:outputPanel>
+                    
                     <!--for other docs-->
                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false}">
                         <a href="#" class="col-md-8 col-xs-8 doc_btn_done active {!If(doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,'uploadMoreStyle','')}" data-toggle="modal" data-target="{!If(doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,'#myModal2','')}" onClick="UploadRequiredDocument('{!Count}','{!doc.objRequiredDocumnets.id}');"></a>
                     </apex:outputPanel>
+                    
                     <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Not Verified')),true,false)}">
                         <a href="#" onclick="DocPreview('{!Count}');"><span class="upload_doc btnOnline {!if(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,'previewBtntop','')}">&nbsp;</span></a>              
                     </apex:outputPanel>        
             </apex:outputPanel>
+            
+            
+            
             <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.Click_Is_Note_Type__c,doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c == false,doc.objRequiredDocumnets.acfStatus__c == 'Note Added'),true,false)}">
                     <a href="#" onclick="addNotes('{!Count}','{!doc.objRequiredDocumnets.Name}')"><span class="custom-file-input col-md-8 col-xs-12 doc_btn_done active EditNotesStyle">&nbsp;</span></a>
             </apex:outputPanel>
             
+            
+            
             <apex:outputPanel rendered="{!if(OR(doc.objRequiredDocumnets.acfStatus__c == 'Pending',doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'),true,false)}">
-                    <!-- <a class="custom-file-input col-md-8 col-xs-12 btnOnline" href="#" data-toggle="modal" name="{!Count}"  onclick="UploadDocument();"  ></a>  -->
-                    <!--      <apex:inputFile value="{!attach.body}" fileName="{!attach.name}" contentType="{!attach.contentType}" styleclass="custom-file-input col-md-8 col-xs-12" id="inptFileUpload" onchange="UploadDocument('{!Count}');" > </apex:inputFile>    -->
-                    <apex:outputPanel rendered="{!AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,doc.objRequiredDocumnets.click_Is_Uploaded__c ==false)}">
+                    <apex:outputPanel rendered="{!AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,doc.objRequiredDocumnets.click_Is_Uploaded__c ==false,doc.objRequiredDocumnets.Click_Is_E_consent__c == false)}">
                             <a href="#"><span class="custom-file-input col-md-8 col-xs-12 VerifiOnlineStyle" onClick="opnIdBankstmtPopup('{!doc.objRequiredDocumnets.Id}');" style="margin-bottom:7px;" >&nbsp;</span></a>
                     </apex:outputPanel>
-                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false && doc.objRequiredDocumnets.Is_Download_Doc__c == false}">
-                            <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12" data-toggle="modal" data-target="#myModal2" onClick="UploadRequiredDocument('{!Count}','{!doc.objRequiredDocumnets.id}');">&nbsp;</span></a>
+                     <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,doc.objRequiredDocumnets.Is_Download_Doc__c == false,doc.objRequiredDocumnets.Click_Is_E_consent__c == false),true,false)}">
+                           <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12" data-toggle="modal" data-target="#myModal2" onClick="UploadRequiredDocument('{!Count}','{!doc.objRequiredDocumnets.id}');">&nbsp;</span></a>
                      </apex:outputPanel>
                      
-                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == true}">
+                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == true && doc.objRequiredDocumnets.Click_Is_E_consent__c == false}">
                             <a href="#"><span class="custom-file-input col-md-8 col-xs-12 VerifiOnlineStyle" onClick="opnIdVerifyPopup('{!doc.objRequiredDocumnets.Id}');">&nbsp;</span></a>
                      </apex:outputPanel>
         
-                    <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c}">
+                    <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c && doc.objRequiredDocumnets.Click_Is_E_consent__c == false}">
                             <a href="#" onclick="addNotes('{!Count}','{!doc.objRequiredDocumnets.Name}')"><span class="custom-file-input col-md-8 col-xs-12 NotesStyle">&nbsp;</span></a>
                     </apex:outputPanel>           
             </apex:outputPanel> 
-            <apex:outputPanel rendered="{!if(doc.objRequiredDocumnets.Is_Download_Doc__c,true,false)}">
+            
+            
+            <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.Is_Download_Doc__c,doc.objRequiredDocumnets.Click_Is_E_consent__c == false),true,false)}">
                   
                 <!--for bank statement-->
                   <apex:outputPanel >
@@ -834,7 +895,23 @@ function ajaxindicatorstop()
                 <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Not Verified')),true,false)}">
                     <a href="#" onclick="DocPreview('{!Count}');"><span class="upload_doc btnOnline {!if(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,'previewBtntop','')}">&nbsp;</span></a>              
                 </apex:outputPanel>     
-            </apex:outputPanel>                         
+            </apex:outputPanel>
+
+            <apex:outputPanel rendered="{!if(doc.objRequiredDocumnets.Click_Is_E_consent__c,true,false)}">
+                  
+                  <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Pending'}">
+                     <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifiOnlineStyle" style="margin-bottom:7px;">&nbsp;</span></a>              
+                 </apex:outputPanel> 
+                 <p></p>
+                  <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'}">
+                    <a href="#" onclick="econsentVerified('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyNow" style="margin-bottom:7px;">&nbsp;</span></a>
+                    <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyAgain" style="margin-bottom:7px;">&nbsp;</span></a>
+                 </apex:outputPanel>
+                 
+                 <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Verified'}">
+                    <a href="#"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active" style="margin-bottom:7px;">&nbsp;</span></a>
+                 </apex:outputPanel>   
+            </apex:outputPanel>         
         </div>
        <div class="cstm_border_btm dash_row_10">&nbsp;</div>                                
     </section>
@@ -1006,7 +1083,22 @@ function ajaxindicatorstop()
         </div>
        </div>                                              
      </div>            
- <!--Notes ends here-->               
+ <!--Notes ends here-->  
+ <!--   Econsent Pop up starts here -->  
+ <div id="myModal11" class="modal fade" role="dialog">
+           <div class="modal-dialog">                          
+            <div class="modal-content cstm_content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <b><h3 class="modal-title text-center">Please do e-consent via sms or email</h3></b>
+                  </div>
+                  <div class="modal-body">
+                    <!--<c:ClickJumioIntegration ></c:ClickJumioIntegration> -->
+                  </div>
+             </div> 
+          </div>                                                
+</div> 
+<!--   Econsent Pop up ends here -->           
 </body>  
 <!--Pop up close here-->
 </apex:component>
