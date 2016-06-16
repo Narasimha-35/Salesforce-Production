@@ -445,7 +445,7 @@ public with sharing class TestMercuryUtility {
         System.assertEquals(false, MercuryUtility.checkRecordFromResMap(resMap, 'account', 'abc'.toUpperCase()));
     }
 
-    private static testMethod void testGetLastNotSyncedOppoId() {
+    private static testMethod void testMergeWithLastNotSyncedOppo() {
         Account acc = TestUtilities.createAccount();
         insert acc;
         Opportunity oppo = TestUtilities.createOpportunity();
@@ -471,7 +471,7 @@ public with sharing class TestMercuryUtility {
         lastOppo.merc_current_status__c = 'something';
         update lastOppo;
 
-        System.assertEquals(oppoList.get(3).id, MercuryUtility.getLastNotSyncedOppoId(acc));
+        System.assertEquals(oppoList.get(3).id, MercuryUtility.mergeWithLastNotSyncedOppo(oppo, acc).id);
     }
 
 }

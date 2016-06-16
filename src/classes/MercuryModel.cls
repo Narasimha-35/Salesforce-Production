@@ -293,6 +293,7 @@ public without sharing class MercuryModel {
 			amount = oppo.current_Loan_Value__c;
 			company = branchId;
 			tranxType = oppo.transaction_Type__c;
+			if(oppo.currentAssignedBroker__c != null) agent = MercuryStaticValue.brokerMap.get(oppo.currentAssignedBroker__c).caid__c;
 			validateAndClean();
 		}
 
@@ -358,6 +359,7 @@ public without sharing class MercuryModel {
 			transactionType = transactionType != null ? transactionType : MercuryStaticValue.DEFAULT_TRANSACTION_TYPE;
 			leadSourceDisplay = leadSourceDisplay != null ? leadSourceDisplay : MercuryStaticValue.ACF_LEAD_SOURCE_DISPLAY;
 			leadSourceId = leadSourceId != null ? leadSourceId : MercuryStaticValue.ACF_LEAD_SOURCE_ID;
+			agent = agent != '' ? agent : null;
 		}
 
 	}

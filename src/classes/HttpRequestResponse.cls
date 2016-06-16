@@ -7,6 +7,13 @@ public with sharing class HttpRequestResponse {
 		this.res = res;
 	}
 
+	public void sendEmail(String projectName, String className, String methodName) {
+		ACFEmailList__c emaiSetting = ACFEmailList__c.getOrgDefaults();
+		List<String> recipients     = ((String) emaiSetting.get('Mercury_Email_Receiver__c')).split(',');
+		String body = MercuryUtility.generateHTMLEmailBody(projectName , className, methodName, MercuryUtility.generateDetailPart(req, res));
+		Utilities.sendEmail(recipients, 'Salesforce Debug', body);
+	}
+
 	public class HttpException extends Exception {
 		HttpRequestResponse httpRR;
 

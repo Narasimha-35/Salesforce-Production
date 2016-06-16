@@ -46,7 +46,8 @@ public without sharing class MercuryApiUtilities {
 	}
 
 	public static Opportunity createOppoInMercury(String oppoId, String branchId, Boolean testMode) {
-		Opportunity oppo = [Select Id, Current_Loan_Value__c, Sync_With_Mercury__c, Sync_With_Mercury_Success__c, Current_Assigned_Broker__c, Pre_Sales_Notes__c, Transaction_Type__c,  Name From Opportunity Where Id = : oppoId];
+		OpportunitySelector os = new OpportunitySelector();
+		Opportunity oppo = os.getById(oppoId);
 		return createOppoInMercury(oppo, branchId, testMode);
 	}
 

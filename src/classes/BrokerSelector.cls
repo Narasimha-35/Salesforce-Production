@@ -16,4 +16,8 @@ public with sharing class BrokerSelector extends SObjectSelector {
 		return (Broker__c) super.selectByIds(new List<Id>{rid})[0];
 	}
 
+	public List<Broker__c> getAllActiveBroker() {
+		return (List<Broker__c>) super.selectByOpenCondition('WHERE Active_Broker__c = true');
+	}
+
 }

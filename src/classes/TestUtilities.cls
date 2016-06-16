@@ -223,4 +223,26 @@ public class TestUtilities {
       return aal;
    }
 
+   public static S3Document__c createS3Document() {
+      return createS3Document('testDoc', 'f9c2b7e0-2863-11e6-80bb-bb4552b59e84', 'GCOWn09kbNBHPWuqmA5dLss9STLEb15s', S3StaticValue.PDF_MINE_TYPE);
+   }
+
+   public static S3Document__c createS3Document(String name, String objKey, String version, String contentType) {
+      S3Document__c doc = new S3Document__c();
+      doc.name = name;
+      doc.objectKey__c = objKey;
+      doc.version__c = version;
+      doc.isSuccess__c = true;
+      doc.contentType__c = contentType;
+      return doc;
+   }
+
+   public static List<S3Document__c> createS3Documents(Integer numOfRecords) {
+      List<S3Document__c> ret = new List<S3Document__c>();
+      for(Integer i = 0; i < numOfRecords; i++) {
+         ret.add(createS3Document('testDoc' + i, 'testObjectKey' + i, 'testVersionId' + i, S3StaticValue.PDF_MINE_TYPE));
+      }
+      return ret;
+   }
+
 }

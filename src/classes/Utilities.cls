@@ -384,4 +384,43 @@ global class Utilities {
     return false;
   }
 
+  public static PageReference constructPageRef(String pageName, Map<String, String> params) {
+		PageReference ret = new PageReference('/apex/' + pageName);
+		for(String k : params.keySet()) {
+			ret.getParameters().put(k, params.get(k));
+		}
+		return ret;
+	}
+
+	//could Throws VisualforceException
+	public static Blob getPageAsPDF(PageReference pr) {
+		return pr.getContentAsPDF();
+	}
+
+  public static String increaseDuplicateCounter(String name) {
+    Pattern namePattern = Pattern.compile('[(][1-9][0-9]?[)]');
+    String[] nameParts = name.split('\\.');
+
+    if(namePattern.matcher(nameParts[0]).find()) {
+      String[] fileNames = nameParts[0].split('\\(');
+      String numPart = fileNames[1].substringBefore(')');
+      nameParts[0] = fileNames[0] + '(' + (Integer.valueOf(numPart) + 1) + ')';
+    } else {
+      nameParts[0] += ' (1)';
+    }
+    String ret = '';
+    for(String s : nameParts) ret += '.' + s;
+    return ret.substring(1);
+  }
+
+  public static String generateRandomString(Integer len) {
+      final String chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+      String randStr = '';
+      while (randStr.length() < len) {
+         Integer idx = Math.mod(Math.abs(Crypto.getRandomInteger()), chars.length());
+         randStr += chars.substring(idx, idx + 1);
+      }
+      return randStr;
+  }
+
 }

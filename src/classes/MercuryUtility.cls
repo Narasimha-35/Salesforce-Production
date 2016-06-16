@@ -133,9 +133,13 @@ global without sharing class MercuryUtility {
 		return null;
 	}
 
-	public static Id getLastNotSyncedOppoId(Account acc) {
-		Opportunity oppo = [SELECT id FROM Opportunity WHERE accountId = :acc.id AND merc_current_status__c = null ORDER BY lastmodifieddate DESC LIMIT 1]; //not good for soql performance
-		return oppo.id;
+	public static Opportunity mergeWithLastNotSyncedOppo(Opportunity oppo, Account acc) {
+		Opportunity op = [SELECT id, stageName, closeDate, leadSource FROM Opportunity WHERE accountId = :acc.id AND merc_current_status__c = null ORDER BY lastmodifieddate DESC LIMIT 1]; //not good for soql performance
+		oppo.id = op.id;
+		oppo.leadSource = op.leadSource;
+		oppo.closeDate = op.closeDate;
+		oppo.stageName = op.stageName;
+		return oppo;
 	}
 
 	public static Account getApplicantAccount(MercuryModel.People applicant) {

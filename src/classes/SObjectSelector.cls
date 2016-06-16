@@ -41,7 +41,14 @@ public abstract class SObjectSelector {
 	public List<SObject> selectByIds(List<Id> ids) {
 		List<SObject> ret = new List<SObject>();
 		String queryString = getQueryPartOne() + 'WHERE id IN :ids LIMIT ' + RECORD_PER_SOQL;
-		System.debug(LoggingLevel.INFO, 'Select By Ids: ' + queryString);
+		// System.debug(LoggingLevel.INFO, 'Select By Ids: ' + queryString);
+		return Database.query(queryString);
+	}
+
+	public List<SObject> selectByRelationId(String fieldName, List<String> val) {
+		List<SObject> ret = new List<SObject>();
+		String queryString = getQueryPartOne() + 'WHERE ' +  fieldName + ' IN :val LIMIT ' + RECORD_PER_SOQL;
+		// System.debug(LoggingLevel.INFO, 'selectByRelationId: ' + queryString);
 		return Database.query(queryString);
 	}
 
@@ -55,7 +62,7 @@ public abstract class SObjectSelector {
 		String queryString = getQueryPartOne() + condition + ' LIMIT ';
  		if(lmt == 0) queryString += RECORD_PER_SOQL;
 		else queryString += lmt;
-		System.debug(LoggingLevel.INFO, 'Select By Open Condition: ' + queryString);
+		// System.debug(LoggingLevel.INFO, 'Select By Open Condition: ' + queryString);
 		return Database.query(queryString);
 	}
 
