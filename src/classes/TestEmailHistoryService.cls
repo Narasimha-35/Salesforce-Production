@@ -5,21 +5,26 @@ public with sharing class TestEmailHistoryService {
 	public static String subject = 'Awesome Subject';
 	public static String body = '<h1>This is AweSome</h1>';
 	public static List<S3DocumentModel.UploadRequest> uploadRequests;
+	public static final String END_POINT = 'www.lendi.com.au';
 
 	public static S3Document__c testDoc = TestUtilities.createS3Document();
 	public static MultiStaticResourceCalloutMock multimock;
 	static {
 		uploadRequests = new List<S3DocumentModel.UploadRequest>();
-		S3DocumentModel.UploadRequest req1 = new S3DocumentModel.UploadRequest('doc1', Blob.valueOf('doc1'));
-		S3DocumentModel.UploadRequest req2 = new S3DocumentModel.UploadRequest('doc2', Blob.valueOf('doc2'));
+		S3DocumentModel.UploadRequest req1 = new S3DocumentModel.UploadRequest('doc1', Blob.valueOf('doc1'), S3StaticValue.TEXT_MINE_TYPE);
+		S3DocumentModel.UploadRequest req2 = new S3DocumentModel.UploadRequest('doc2', Blob.valueOf('doc2'), S3StaticValue.TEXT_MINE_TYPE);
 		uploadRequests.add(req1);
 		uploadRequests.add(req2);
 
-		insert new S3DocumentSetting__c(domain__c = 'www.lendi.com.au', token__c = '47847d52-8842-4055-b6e1-9cb71fe42f28');
+		insert new S3DocumentSetting__c (
+		domain__c     = 'www.lendi.com.au',
+		token__c      = '47847d52-8842-4055-b6e1-9cb71fe42f28',
+		apiVersion__c = 'v1',
+		entrence__c   = 'api',
+		resources__c  = 'docs'
+		);
 		multimock = new MultiStaticResourceCalloutMock();
-		multimock.setStaticResource(S3DocumentService.SERVICE_DOMAIN + '/file/' + testDoc.objectKey__c + '/' + testDoc.version__c, 's3RetrieveSuccess');
-		multimock.setStaticResource(S3DocumentService.SERVICE_DOMAIN, 's3UploadSuccess');
-		multimock.setHeader('Content-Type', 'application/json');
+		multimock.setStaticResource(S3StaticValue.S3_SERVICE_ENDPOINT, 's3UploadSuccess');
 	}
 
 	private static testMethod void testSaveEmailHistory() {
@@ -30,7 +35,7 @@ public with sharing class TestEmailHistoryService {
 		Test.stopTest();
 
 		List<EmailHistory__c> emailHistoryList = [SELECT id, ccRecipants__c, emailContent__c, recipants__c, subject__c FROM EmailHistory__c];
-		List<S3Document__c> newDocList = [SELECT id, name, objectKey__c, version__c FROM S3Document__c];
+		List<S3Document__c> newDocList = [SELECT id, name, objectKey__c, version__c, contentType__c FROM S3Document__c];
 
 		System.debug('email history: ' + emailHistoryList);
 		System.debug('docs: ' + newDocList);
@@ -42,8 +47,9 @@ public with sharing class TestEmailHistoryService {
 		System.assertEquals(body, emailHistoryList[0].emailContent__c);
 
 		System.assertEquals(2, newDocList.size());
-		System.assertEquals('f9c2b7e0-2863-11e6-80bb-bb4552b59e84', newDocList[0].objectKey__c);
-		System.assertEquals('GCOWn09kbNBHPWuqmA5dLss9STLEb15s', newDocList[0].version__c);
+		System.assertEquals('ffab49ad-15de-4b08-9ff3-2e623153f9a5', newDocList[0].objectKey__c);
+		System.assertEquals('CK3pm4T6hCkbjsA8KE90wlxl8GX6OdXu', newDocList[0].version__c);
+		System.assertEquals(S3StaticValue.TEXT_MINE_TYPE, newDocList[0].contentType__c);
 	}
 
 }

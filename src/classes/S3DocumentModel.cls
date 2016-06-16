@@ -3,35 +3,35 @@ public with sharing class S3DocumentModel {
 	public class UploadRequest extends Model {
 		public String name;
 		public Blob data;
-		public Id docId;
+		public Id sf_s3DocumentId; //salesforce s3 document id
+		public String type;
+		public String objectKey;
 
 		public UploadRequest() {
 		}
 
-		public UploadRequest(String name, Blob data) {
+		public UploadRequest(String name, Blob data, String type) {
 			this.name = name;
 			this.data = data;
+			this.type = type;
 		}
 
-		public UploadRequest(Attachment att) {
+		public UploadRequest(Attachment att, String type) {
 			this.name = att.name;
 			this.data = att.body;
-			this.docId = att.parentId;
+			this.sf_s3DocumentId = att.parentId;
+			this.type = type;
 		}
-	}
 
-	public class GetResponse extends Model {
-		public String url;
-	}
-
-	public class PostResponse extends Model {
-		public String status;
-		public String file;
-		public String version;
+		public UploadRequest(S3Document__c s3Doc, Blob data) {
+			this.name = s3Doc.name;
+			this.data = data;
+			this.type = s3Doc.contentType__c;
+		}
 	}
 
 	public class Response extends Model {
-		public String statusCode;
+		public Integer statusCode;
 		public String error;
 		public String message;
 		public Meta meta;
@@ -44,11 +44,11 @@ public with sharing class S3DocumentModel {
 	}
 
 	public class Data extends Model {
-		public String original_name;
-		public String encoding;
-		public String mime_type;
-		public String filename;
-		public Integer size;
+		public List<S3DocumentModel.Document> documents;
+	}
+
+	public class Document extends Model {
+		public String key;
 		public String version;
 	}
 

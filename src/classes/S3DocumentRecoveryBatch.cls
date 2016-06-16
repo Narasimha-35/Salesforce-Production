@@ -4,7 +4,7 @@ global with sharing class S3DocumentRecoveryBatch implements Database.Batchable<
 	Integer successCounter;
 
 	global S3DocumentRecoveryBatch() {
-		query ='SELECT id FROM S3Document__c WHERE isSuccess__c = false';
+		query ='SELECT id, contentType__c FROM S3Document__c WHERE isSuccess__c = false';
 		totalCounter = 0;
 		successCounter = 0;
 	}
@@ -21,7 +21,7 @@ global with sharing class S3DocumentRecoveryBatch implements Database.Batchable<
 			if(doc.isSuccess__c) successList.add(doc);
 		}
 		successCounter += successList.size();
-		delete S3DocumentService.getRelatedAttachments(successList);
+		delete S3DocumentUtilities.getRelatedAttachments(successList);
 		update s3DocResList;
 	}
 

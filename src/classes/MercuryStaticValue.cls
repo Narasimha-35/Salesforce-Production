@@ -98,4 +98,7 @@ public with sharing class MercuryStaticValue {
 		param2.dateSearchType = 'Settlement';
 		param2.targetStatus = 'All';
 	}
+
+	public static BrokerSelector bkrSelector = new BrokerSelector();
+	public static Map<Id, Broker__c> brokerMap = new Map<Id, Broker__c>(bkrSelector.getAllActiveBroker());
 }

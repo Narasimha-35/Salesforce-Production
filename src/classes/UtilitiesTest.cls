@@ -256,4 +256,9 @@ private class UtilitiesTest {
     private static testMethod void testConstructPageRef() {
         System.assertNotEquals('', Utilities.constructPageRef('Account', new Map<String, String>{'id' => 'aaaa'}).getURL());
     }
+
+    private static testMethod void testGenerateRandomString() {
+        Integer num = 10;
+        System.assertEquals(num, ((String) Utilities.generateRandomString(num)).length());
+    }
 }

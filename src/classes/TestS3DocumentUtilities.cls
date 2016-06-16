@@ -21,9 +21,10 @@ public with sharing class TestS3DocumentUtilities {
 	private static testMethod void testConstructFailureAsAttachment() {
 		List<S3DocumentModel.UploadRequest> uploadRequests = new List<S3DocumentModel.UploadRequest>();
 		for(String s : docMap.keySet()) {
-			uploadRequests.add(new S3DocumentModel.UploadRequest(s, docMap.get(s)));
+			uploadRequests.add(new S3DocumentModel.UploadRequest(s, docMap.get(s), S3StaticValue.TEXT_MINE_TYPE));
 		}
 
+		System.debug('[TestS3DocumentUtilities]s3Docs: ' + s3Docs);
 		List<Attachment> failList = S3DocumentUtilities.constructFailureAsAttachment(s3Docs, uploadRequests);
 
 		System.assertEquals(2, failList.size());
@@ -65,8 +66,6 @@ public with sharing class TestS3DocumentUtilities {
 
 	private static testMethod void testBuildBasicRequest() {
 		HttpRequest req = S3DocumentUtilities.buildBasicRequest('test end point', 'POST');
-		System.assertEquals('application/json', req.getHeader('Content-Type'));
-		System.assertEquals('Bearer ' + S3DocumentService.TOKEN, req.getHeader('Authorization'));
 		System.assertEquals('test end point', req.getEndpoint());
 		System.assertEquals('POST', req.getMethod());
 	}

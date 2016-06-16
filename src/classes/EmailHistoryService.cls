@@ -14,6 +14,7 @@ public with sharing class EmailHistoryService {
 				doc.name = req.name;
 				doc.objectKey__c = 'demo object key';
 				doc.version__c = 'demo object version';
+				doc.contentType__c = S3StaticValue.PDF_MINE_TYPE;
 				s3Docs.add(doc);
 			}
 		}
@@ -25,13 +26,15 @@ public with sharing class EmailHistoryService {
 		eh.recipants__c = JSON.serialize(recipants);
 		eh.ccRecipants__c = JSON.serialize(ccRecipants);
 		insert eh;
+		System.debug(LoggingLevel.INFO, 'Create Email History success...');
 
 		for(S3Document__c doc : s3Docs) {
 			doc.EmailHistory__c = eh.id;
 		}
 
 		insert s3Docs;
-		insert S3DocumentUtilities.constructFailureAsAttachment(s3Docs, uploadRequests);
+		insert S3DocumentService.constructFailureAsAttachment(s3Docs, uploadRequests);
+		System.debug(LoggingLevel.INFO, 'Create S3 docs success...');
 	}
 
 }
