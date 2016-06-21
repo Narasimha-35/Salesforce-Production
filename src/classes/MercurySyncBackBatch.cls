@@ -2,9 +2,15 @@ global without sharing class MercurySyncBackBatch implements Database.Batchable<
 	Integer successCounter;
 	Integer totalLoanNum;
 	Integer method;
+	Set<String> merc_ids;
 
 	global MercurySyncBackBatch(Integer method) {
 		this.method = method;
+	}
+
+	global MercurySyncBackBatch(Integer method, Set<String> ids) {
+		this.method = method;
+		merc_ids = ids;
 	}
 
 	global Iterable<String> start(Database.BatchableContext info){
@@ -12,7 +18,9 @@ global without sharing class MercurySyncBackBatch implements Database.Batchable<
 		successCounter = 0;
 		Set<String> ids;
 
-		if(method == -1) {
+		if(method == -2) {
+			ids = merc_ids;
+		} else if(method == -1) {
 			System.debug(LoggingLevel.INFO, '[MercurySyncBackBatch] Sync Mercury Opportunity by Mismatches...');
 			ids = new Set<String>();
 			List<Mercury_Opportunity__c> mismatchList = [SELECT id, merc_uniqueId__c FROM Mercury_Opportunity__c];
