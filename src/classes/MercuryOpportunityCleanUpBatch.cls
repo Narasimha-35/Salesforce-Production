@@ -2,12 +2,18 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 	Integer totalSuccessCounter = 0;
 	Integer totalRequestHandled = 0;
 	final String SELF_GEN_ID = '50eee77a-4fd1-11e3-8721-00155d0a3619';
+	List<Mercury_Opportunity__c> merc_oppo_scopeList = null;
 
 	public MercuryOpportunityCleanUpBatch() {
 	}
 
+	public MercuryOpportunityCleanUpBatch(List<Mercury_Opportunity__c> merc_oppo_scopeList) {
+		this.merc_oppo_scopeList = merc_oppo_scopeList;
+	}
+
 	global List<Mercury_Opportunity__c> start(Database.BatchableContext info){
 		MercuryOpportunitySelector mos = new MercuryOpportunitySelector();
+		if(merc_oppo_scopeList != null) return merc_oppo_scopeList;
 		return mos.getAll(0);
 	}
 
