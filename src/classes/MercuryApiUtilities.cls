@@ -206,7 +206,7 @@ public without sharing class MercuryApiUtilities {
 		req.setEndPoint(endPoint);
 		system.debug(req.getEndpoint());
 		req.setMethod('GET');
-		System.debug(LoggingLevel.DEBUG, '[MercuryApiUtilities] Check DML Limit: ' + Limits.getLimitDMLStatements());
+		req.setTimeout(MercuryStaticValue.CALLOUT_GET_TIMEOUT);
 		res = http.send(req);
 		if(res.getStatusCode() != 200) {
 			system.debug(LoggingLevel.INFO, '[MercuryApiUtilities.sendGetRequest] Error: ' + res);
@@ -240,10 +240,11 @@ public without sharing class MercuryApiUtilities {
 		req.setEndPoint(endPoint);
 		system.debug(req.getEndpoint());
 		req.setMethod('GET');
+		req.setTimeout(MercuryStaticValue.CALLOUT_GET_TIMEOUT);
 		return new HttpRequestResponse(req, http.send(req));
 	}
 
-	public static HttpRequest buildRequest(String endPointTemplate, String method, Model mercModel) {
+	public static HttpRequest buildRequest(String endPointTemplate, String method, Model mercModel, Integer timeout) {
 		HttpRequest req = new HttpRequest();
 
 		String token = MercuryAuth.getInstance().getToken();
@@ -251,36 +252,67 @@ public without sharing class MercuryApiUtilities {
 		req.setHeader('Content-Type', 'application/json');
 		req.setEndPoint(endPointTemplate.replace(MercuryStaticValue.TOKEN_PLACEHOLDER, token).replace(MercuryStaticValue.RESOURCE_NAME_PLACEHOLDER, resourceName));
 		req.setMethod(method);
+		req.setTimeout(timeout);
 		String payload = JSON.serialize(mercModel);
 		if(mercModel.isContainsReservedName()) payload = payload.replace(Model.REMOVE_RESERVE_PATTEN, '');
 		req.setBody(payload);
 		return req;
 	}
 
+	public static HttpRequestResponse getAddress(MercuryModel.People people) {
+		String token = MercuryAuth.getInstance().getToken();
+		String endPoint = MercuryStaticValue.BASE_URL + token + '/address?personId=' + people.get('uniqueId') + '&parentType=person';
+
+		HttpRequest req = new HttpRequest();
+		HttpResponse res = new HttpResponse();
+		Http http = new Http();
+		req.setEndPoint(endPoint);
+		system.debug(req.getEndpoint());
+		req.setMethod('GET');
+		req.setTimeout(MercuryStaticValue.CALLOUT_GET_TIMEOUT);
+		return new HttpRequestResponse(req, http.send(req));
+	}
+
+	public static HttpRequestResponse deleteAddress(MercuryModel.Address address) {
+		String token = MercuryAuth.getInstance().getToken();
+		String endPoint = MercuryStaticValue.BASE_URL + token + '/address/' + address.get('uniqueId');
+
+		HttpRequest req = new HttpRequest();
+		HttpResponse res = new HttpResponse();
+		Http http = new Http();
+		req.setEndPoint(endPoint);
+		system.debug(req.getEndpoint());
+		req.setMethod('DELETE');
+		req.setTimeout(MercuryStaticValue.CALLOUT_GET_TIMEOUT);
+		return new HttpRequestResponse(req, http.send(req));
+	}
+
 	public static HttpRequestResponse sendGetRequest(Model mercModel) {
-		HttpRequest req = buildRequest(MercuryStaticValue.REQUEST_BASE_URL + '/' + mercModel.get('uniqueId'), 'GET', mercModel);
+		HttpRequest req = buildRequest(MercuryStaticValue.REQUEST_BASE_URL + '/' + mercModel.get('uniqueId'), 'GET', mercModel, MercuryStaticValue.CALLOUT_GET_TIMEOUT);
 		Http http = new Http();
 		return new HttpRequestResponse(req, http.send(req));
 	}
 
 	public static HttpRequestResponse insertMercuryRecord(Model mercModel) {
-		HttpRequest req = buildRequest(MercuryStaticValue.REQUEST_BASE_URL, 'POST', mercModel);
+		HttpRequest req = buildRequest(MercuryStaticValue.REQUEST_BASE_URL, 'POST', mercModel, MercuryStaticValue.CALLOUT_GET_TIMEOUT);
 		Http http = new Http();
 		return new HttpRequestResponse(req, http.send(req));
 	}
 
 	public static HttpRequestResponse updateMercuryRecord(Model mercModel) {
 		String endPointTemplate = MercuryStaticValue.REQUEST_BASE_URL + '/' + mercModel.get('uniqueId') + '?changes=' + MercuryUtility.getEncodedChangeList(mercModel);
-		HttpRequest req = buildRequest(endPointTemplate, 'PUT', mercModel);
+		HttpRequest req = buildRequest(endPointTemplate, 'PUT', mercModel, MercuryStaticValue.CALLOUT_GET_TIMEOUT);
 		Http http = new Http();
 		return new HttpRequestResponse(req, http.send(req));
 	}
 
-	public static Boolean handleResponse(HttpRequestResponse hs) {
+	public static Boolean handleResponse(HttpRequestResponse hs, String operation) {
 		if(hs.res.getStatusCode() != 200) {
+			System.debug(LoggingLevel.INFO, '[MercuryApiUtilities.handleResponse] ' + operation + ': Failed...');
 			System.debug(LoggingLevel.DEBUG, '[MercuryApiUtilities.handleResponse] Fail Response: ' + hs.res);
 			return false;
 		}
+		System.debug(LoggingLevel.INFO, '[MercuryApiUtilities.handleResponse] ' + operation + ': Successed...');
 		return true;
 	}
 
