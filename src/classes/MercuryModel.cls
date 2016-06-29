@@ -658,9 +658,13 @@ public without sharing class MercuryModel {
 		public String addrGeoLatitude;
 		public String addrGeoLongitude;
 
+		public Address() {
+		}
+
 		public Address(Account acc, String branchId) {
 			init();
 
+			uniqueId = acc.id;
 			parentType = 'person';
 			parentID = acc.mercury_People_ID__c != null && acc.mercury_People_ID__c != '' ? acc.mercury_People_ID__c : acc.id;
 			//TODO: fix mapping here currently we put everything in stree name because we can't spearate the address
@@ -686,6 +690,11 @@ public without sharing class MercuryModel {
 			addrGeoLatitude = addrGeoLatitude != null ? addrGeoLatitude : '0.0';
 			addrGeoLongitude = addrGeoLongitude != null ? addrGeoLongitude : '0.0';
 		}
+	}
+
+	public class AddressResponse extends Model {
+		public Boolean success;
+		public List<Address> addressList;
 	}
 
 	public class RealEstate extends Model {

@@ -1,4 +1,7 @@
 public with sharing class MercuryStaticValue {
+	public static final Integer CALLOUT_GET_TIMEOUT      = 120000;
+	public static final Integer CALLOUT_POST_TIMEOUT     = 120000;
+
 	public static final String API_USER_ID               = 'CA51708';
 	public static final String ENCODING_SCHEME           = 'UTF-8';
 	public static final String ACF_BRANCH_ID             = 'P200019';

@@ -128,18 +128,10 @@ global class MercuryService {
 		//update loan details
 		MercuryModel.Loan loan = new MercuryModel.Loan(oppo, branchId);
 		System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] start to update loan id: ' + loan.uniqueId);
-		if(updateLoan(loan)) {
-			System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] update loan Success: ' + loan.uniqueId);
-		} else {
-			System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] update loan Fail: ' + loan.uniqueId);
-		}
+		updateLoan(loan);
 		for(Asset_And_Liability__c aal : aalList) {
 			System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] start to create A&L id: ' + aal.id);
-			if(createAssetAndLiability(aal, loan, branchId)) {
-				System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] create A&L Success: ' + aal.id);
-			} else {
-				System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] create A&L Fail: ' + aal.id);
-			}
+			createAssetAndLiability(aal, loan, branchId);
 		}
 
 		//upsert applicant details
@@ -149,101 +141,81 @@ global class MercuryService {
 			if('1' == applicant.click_Applicant_Number__c) {
 				people = new MercuryModel.People(acc, branchId);
 				System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] start to update primary applicant: ' + people.uniqueId);
-				if(updatePeople(people)) {
-					System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] update applicant Success: ' + people.uniqueId);
-				} else {
-					System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] update applicant Fail: ' + people.uniqueId);
-				}
+				updatePeople(people);
 			} else {
 				people = new MercuryModel.People(applicant, branchId);
 				System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] start to create applicant: ' + people.uniqueId);
-				if(createPeople(people)) {
-					System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] create applicant Success: ' + people.uniqueId);
-				} else {
-					System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] create applicant Fail: ' + people.uniqueId);
-				}
-
+				createPeople(people);
 				System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] start to create loan people: ' + loan.uniqueId + '-' +  people.uniqueId);
-				if(createLoanPeople(people, loan)) {
-					System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] create loan people Success: ' + loan.uniqueId + '-' +  people.uniqueId);
-				} else {
-					System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] create loan people Fail: ' + loan.uniqueId + '-' +  people.uniqueId);
-				}
+				createLoanPeople(people, loan);
 			}
 
 			List<Income_And_Expense__c> iaeList = iaeSelector.getByApplicantId(applicant.id);
 			System.debug(LoggingLevel.DEBUG, '[MercuryService.updateApplication] Related Income and Expense list: ' + (new Map<Id, Income_And_Expense__c>(iaeList)).keySet());
 			for(Income_And_Expense__c iae : iaeList) {
 				System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] start to create Income and Expense id: ' + iae.id);
-				if(createIncomeAndExpense(iae, people, branchId)) {
-					System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] create Income and Expense Success: ' + iae.id);
-				} else {
-					System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] create Income and Expense Fail: ' + iae.id);
-				}
+				createIncomeAndExpense(iae, people, branchId);
 			}
 		}
 
 		System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] start to create Address for Account: ' + acc.id);
-		if(createAddress(acc, branchId)) {
-			System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] create Address for Account Success: ' + acc.id);
-		} else {
-			System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] to create Address for Account Fail: ' + acc.id);
-		}
+		upsertAddress(acc, branchId);
 
-		//update apply online
-		loan.nextGenId = getApplyOnlineId(loan, branchId);
-		System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] start to update loan id: ' + loan.uniqueId);
-		if(updateLoan(loan)) {
-			System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] update loan Success: ' + loan.uniqueId);
-		} else {
-			System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] update loan Fail: ' + loan.uniqueId);
-		}
+		//TODO: update apply online
+		// loan.nextGenId = getApplyOnlineId(loan, branchId);
+		// System.debug(LoggingLevel.INFO, '[MercuryService.updateApplication] start to update loan id: ' + loan.uniqueId);
+		// updateLoan(loan);
 	}
 
 	public static Boolean createLoan(MercuryModel.Loan loan) {
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(loan));
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(loan), 'createLoan ' + loan.uniqueId);
 	}
 
 	public static Boolean updateLoan(MercuryModel.Loan loan) {
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.updateMercuryRecord(loan));
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.updateMercuryRecord(loan), 'updateLoan ' + loan.uniqueId);
 	}
 
 	public static Boolean createPeople(MercuryModel.People people) {
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(people));
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(people), 'createPeople ' + people.uniqueId);
 	}
 
 	public static Boolean updatePeople(MercuryModel.People people) {
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.updateMercuryRecord(people));
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.updateMercuryRecord(people), 'updatePeople ' + people.uniqueId);
 	}
 
 	public static Boolean createLoanPeople(MercuryModel.People people, MercuryModel.Loan loan) {
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.createLoanPeopleInMercury(people, loan));
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.createLoanPeopleInMercury(people, loan), 'createLoanPeople ' + loan.uniqueId + '-' +  people.uniqueId);
 	}
 
 	public static Boolean createAsset(MercuryModel.Asset asset) {
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(asset));
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(asset), 'createAsset ' + asset.uniqueId);
 	}
 
 	public static Boolean createLiability(MercuryModel.Liability liability) {
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(liability));
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(liability), 'createLiability ' + liability.uniqueId);
 	}
 
 	public static Boolean createIncome(MercuryModel.Income income) {
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(income));
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(income), 'createIncome ' + income.uniqueId);
 	}
 
 	public static Boolean createExpense(MercuryModel.Expense expense) {
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(expense));
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(expense), 'createExpense ' + expense.uniqueId);
 	}
 
-	public static Boolean createAddress(Account acc, String branchId) {
+	public static Boolean upsertAddress(Account acc, String branchId) {
 		MercuryModel.Address addr = new MercuryModel.Address(acc, branchId);
-		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(addr));
+		return MercuryApiUtilities.handleResponse(MercuryApiUtilities.insertMercuryRecord(addr), 'upsertAddress ' + acc.id);
 	}
 
 	public static String getApplyOnlineId(MercuryModel.Loan loan, String branchId) {
 		MercuryModel.LodgeLoanResponse response = (MercuryModel.LodgeLoanResponse) JSON.deserialize(MercuryApiUtilities.lodgeLoan(loan, branchId).res.getBody(), MercuryModel.LodgeLoanResponse.class);
 		return response.result;
+	}
+
+	public static List<MercuryModel.Address> getAddress(MercuryModel.People people) {
+		HttpRequestResponse rr = MercuryApiUtilities.getAddress(people);
+		return ((MercuryModel.AddressResponse) JSON.deserialize(rr.res.getBody(), MercuryModel.AddressResponse.class)).addressList;
 	}
 
 	public static Boolean createIncomeAndExpense(Income_And_Expense__c iae, MercuryModel.People people, String branchId) {
