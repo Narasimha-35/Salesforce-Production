@@ -2,12 +2,18 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 	Integer totalSuccessCounter = 0;
 	Integer totalRequestHandled = 0;
 	final String SELF_GEN_ID = '50eee77a-4fd1-11e3-8721-00155d0a3619';
+	List<Mercury_Opportunity__c> merc_oppo_scopeList = null;
 
 	public MercuryOpportunityCleanUpBatch() {
 	}
 
+	public MercuryOpportunityCleanUpBatch(List<Mercury_Opportunity__c> merc_oppo_scopeList) {
+		this.merc_oppo_scopeList = merc_oppo_scopeList;
+	}
+
 	global List<Mercury_Opportunity__c> start(Database.BatchableContext info){
 		MercuryOpportunitySelector mos = new MercuryOpportunitySelector();
+		if(merc_oppo_scopeList != null) return merc_oppo_scopeList;
 		return mos.getAll(0);
 	}
 
@@ -38,10 +44,19 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 				System.debug(LoggingLevel.INFO, '[MercuryOpportunityCleanUpBatch] The applicant Account is: ' + applicantAcc);
 				if(applicantAcc == null) continue;
 
-				//make sure no account is get created
-				if(applicantAcc.id == null && merc_oppo.merc_lead_source__c != SELF_GEN_ID) continue;
-				//merge and update the last not synced oppo for given acc
-				if(applicantAcc.id != null) oppo = MercuryUtility.mergeWithLastNotSyncedOppo(oppo, applicantAcc);
+				if(applicantAcc.id == null) {
+					//make sure no account is get created
+					if(merc_oppo.merc_lead_source__c != SELF_GEN_ID) continue;
+				} else {
+					//merge and update the last not synced oppo for given acc
+					try {
+						oppo = MercuryUtility.mergeWithLastNotSyncedOppo(oppo, applicantAcc);
+					} catch (QueryException e) {
+						merc_oppo.account__c = applicantAcc.id;
+						update merc_oppo;
+						continue;
+					}
+				}
 
 				if(MercuryUtility.removeMercuryOpportunityAndCreateOpportunity(applicantAcc, oppo, merc_oppo)) totalSuccessCounter++;
 			} catch (Exception e) {
