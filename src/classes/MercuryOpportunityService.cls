@@ -103,7 +103,11 @@ global with sharing class MercuryOpportunityService {
 		return ret;
 	}
 
-	public static Boolean cleanMercuryOpportunity(Mercury_Opportunity__c merc_oppo) {
+	webservice static Boolean manuallyClean(Id merc_oppo_id) {
+		MercuryOpportunitySelector selector = new MercuryOpportunitySelector();
+		Mercury_Opportunity__c merc_oppo = selector.getById(merc_oppo_id);
+		if(merc_oppo.account__c == null) return false;
+
 		MercuryModel.People applicant = null;
 		Opportunity oppo = null;
 		Account applicantAcc = null;
@@ -122,9 +126,8 @@ global with sharing class MercuryOpportunityService {
 		oppo = MercuryUtility.constructOpportunityFromMercuryOpp(merc_oppo);
 		System.debug(LoggingLevel.INFO, '[MercuryOpportunityService] Complete Cast Loan: ' + oppo);
 
-		applicantAcc = MercuryUtility.getApplicantAccount(applicant);
+		applicantAcc = new Account(id = merc_oppo.account__c);
 		System.debug(LoggingLevel.INFO, '[MercuryOpportunityService] The applicant Account is: ' + applicantAcc);
-		if(applicantAcc == null) return false;
 
 		if(MercuryUtility.removeMercuryOpportunityAndCreateOpportunity(applicantAcc, oppo, merc_oppo)) return true;
 		return false;

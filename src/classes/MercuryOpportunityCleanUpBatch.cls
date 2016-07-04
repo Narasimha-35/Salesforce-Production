@@ -44,10 +44,19 @@ global without sharing class MercuryOpportunityCleanUpBatch implements Database.
 				System.debug(LoggingLevel.INFO, '[MercuryOpportunityCleanUpBatch] The applicant Account is: ' + applicantAcc);
 				if(applicantAcc == null) continue;
 
-				//make sure no account is get created
-				if(applicantAcc.id == null && merc_oppo.merc_lead_source__c != SELF_GEN_ID) continue;
-				//merge and update the last not synced oppo for given acc
-				if(applicantAcc.id != null) oppo = MercuryUtility.mergeWithLastNotSyncedOppo(oppo, applicantAcc);
+				if(applicantAcc.id == null) {
+					//make sure no account is get created
+					if(merc_oppo.merc_lead_source__c != SELF_GEN_ID) continue;
+				} else {
+					//merge and update the last not synced oppo for given acc
+					try {
+						oppo = MercuryUtility.mergeWithLastNotSyncedOppo(oppo, applicantAcc);
+					} catch (QueryException e) {
+						merc_oppo.account__c = applicantAcc.id;
+						update merc_oppo;
+						continue;
+					}
+				}
 
 				if(MercuryUtility.removeMercuryOpportunityAndCreateOpportunity(applicantAcc, oppo, merc_oppo)) totalSuccessCounter++;
 			} catch (Exception e) {
