@@ -4,12 +4,13 @@ trigger AddCallFileToLead on Lead (before insert, before update) {
 	//	LeadToCallFileUtilities.selectRightCallFileForLead(lead);
 	//}
 	List<LeadToCallFileRule__c> rules = LeadToCallFileDAO.getAllActiveLeadToCallFileRules();
-	Map<Id, Datetime> getPardotLastActivityFromOld = new Map<Id, Datetime>();
-	Map<Id, String> oldLastPardotFormHandler = new Map<Id, String>();
+	// Map<Id, Datetime> getPardotLastActivityFromOld = new Map<Id, Datetime>();
+	// Map<Id, String> oldLastPardotFormHandler = new Map<Id, String>();
 	for (Lead lead : trigger.new ) {
 		LeadToCallFileUtilities.selectRightCallFileForLead(lead, rules);
 		Utilities.updateTimezoneOnLead(lead);
 	}
+	/*
 	if (Trigger.isUpdate) {
 		Set<Id> leadIds = new Set<Id>();
 		for (Lead lead : trigger.old) {
@@ -41,4 +42,5 @@ trigger AddCallFileToLead on Lead (before insert, before update) {
 			}
 		}
 	}
+	*/
 }
