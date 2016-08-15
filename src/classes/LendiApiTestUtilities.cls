@@ -8,7 +8,8 @@ public with sharing class LendiApiTestUtilities {
 			apiVersion__c = 'v1',
 			apiToken1__c = 'to',
 			apiToken2__c = 'ken',
-			apiAuth__c = 'auth'
+			apiAuth__c = 'auth',
+			apiDocs__c = 'docs'
 		);
 		insert settings;
 	}

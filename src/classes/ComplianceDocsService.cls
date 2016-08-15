@@ -11,7 +11,7 @@ public with sharing class ComplianceDocsService {
 			PageReference pr = pageRefsMap.get(name);
 			String fileName = name;
 			Blob content = Utilities.getPageAsPDF(pr);
-			uploadRequests.add(new S3DocumentModel.UploadRequest(fileName, content, S3StaticValue.PDF_MINE_TYPE));
+			uploadRequests.add(new S3DocumentModel.UploadRequest(fileName, content, LendiApiStaticValue.PDF_MINE_TYPE));
 			fileAttachments.add(EmailUtilities.constructInlineEmailAttachmentAsPDF(fileName, content));
 		}
 		mail = EmailUtilities.addFileAttachment(mail, fileAttachments);
