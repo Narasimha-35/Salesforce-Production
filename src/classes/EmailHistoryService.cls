@@ -14,7 +14,7 @@ public with sharing class EmailHistoryService {
 				doc.name = req.name;
 				doc.objectKey__c = 'demo object key';
 				doc.version__c = 'demo object version';
-				doc.contentType__c = S3StaticValue.PDF_MINE_TYPE;
+				doc.contentType__c = LendiApiStaticValue.PDF_MINE_TYPE;
 				s3Docs.add(doc);
 			}
 		}

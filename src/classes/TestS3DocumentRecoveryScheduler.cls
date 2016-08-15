@@ -1,5 +1,5 @@
 @isTest
-public with sharing class TestS3DocumentRecoveryScheduler {
+public with sharing class TestDocumentRecoveryScheduler {
 	public static MultiStaticResourceCalloutMock multimock;
 	static {
 		insert new S3DocumentSetting__c (
@@ -10,7 +10,7 @@ public with sharing class TestS3DocumentRecoveryScheduler {
 		resources__c  = 'docs'
 		);
 		multimock = new MultiStaticResourceCalloutMock();
-		multimock.setStaticResource(S3StaticValue.S3_SERVICE_ENDPOINT, 's3UploadSuccess');
+		multimock.setStaticResource(LendiApiStaticValue.DOC_SERVICE_ENDPOINT, 's3UploadSuccess');
 		multimock.setHeader('Content-Type', 'application/json');
 	}
 

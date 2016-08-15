@@ -1,21 +1,14 @@
 @isTest
-public with sharing class TestS3DocumentService {
+public with sharing class TestDocumentService {
    public static S3Document__c testDoc = TestUtilities.createS3Document();
    public static MultiStaticResourceCalloutMock multimock;
    static {
-      insert new S3DocumentSetting__c (
-         domain__c     = 'www.lendi.com.au',
-         token__c      = '47847d52-8842-4055-b6e1-9cb71fe42f28',
-         token2__c     = '47847d52-8842-4055-b6e1-9cb71fe42f28',
-         apiVersion__c = 'v1',
-         entrence__c   = 'api',
-         resources__c  = 'docs'
-      );
+      LendiApiTestUtilities.setLendiApiCustomSetting();
       multimock = new MultiStaticResourceCalloutMock();
-      multimock.setStaticResource(S3StaticValue.S3_SERVICE_ENDPOINT, 's3UploadSuccess');
-      System.debug('[TestS3DocumentService] end point: ' + S3StaticValue.S3_SERVICE_ENDPOINT);
+      multimock.setStaticResource(LendiApiStaticValue.DOC_SERVICE_ENDPOINT, 's3UploadSuccess');
+      System.debug('[TestS3DocumentService] end point: ' + LendiApiStaticValue.DOC_SERVICE_ENDPOINT);
       System.debug('[TestS3DocumentService] static resources: ' + 's3UploadSuccess');
-      multimock.setHeader('Content-Type', 'multipart/form-data; boundary=' + S3StaticValue.MULTIPART_BOUNDARY);
+      multimock.setHeader('Content-Type', 'multipart/form-data; boundary=' + LendiApiStaticValue.MULTIPART_BOUNDARY);
    }
 
    public static testMethod void testUploadDocumentSuccess() {
