@@ -20,16 +20,16 @@ public with sharing class S3DocumentService {
 				doc.version__c = res.data.documents[0].version;
 				doc.isSuccess__c = true;
 
-				System.debug(LoggingLevel.INFO, 'File is successfully created in S3: ' + doc.objectKey__c);
+				System.debug(LoggingLevel.INFO, '[S3DocumentService] File is successfully created in S3: ' + doc.objectKey__c);
 			} catch (HttpRequestResponse.HttpException e) {
 				// handle API specific Exception
 				doc.isSuccess__c = false;
-				System.debug(LoggingLevel.INFO, 'File is fail to created in S3' + doc.name);
+				System.debug(LoggingLevel.INFO, '[S3DocumentService] File is fail to created in S3: ' + doc.name);
 				System.debug('[S3DocumentService] HttpRequestResponse.HttpException: ' + e.getMessage());
 			} catch (Exception e) {
 				// handle UnexpectedException
 				doc.isSuccess__c = false;
-				System.debug(LoggingLevel.INFO, 'File is fail to created in S3' + doc.name);
+				System.debug(LoggingLevel.INFO, '[S3DocumentService] File is fail to created in S3: ' + doc.name);
 				System.debug('[S3DocumentService] UnexpectedException: ' + e.getMessage());
 			}
 			ret.add(doc);

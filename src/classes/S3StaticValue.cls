@@ -1,6 +1,7 @@
 public with sharing class S3StaticValue {
 	public static final String S3_SERVICE_DOMAIN   = S3DocumentSetting__c.getOrgDefaults().domain__c;
-	public static final String TOKEN               = S3DocumentSetting__c.getOrgDefaults().token__c;
+	public static final String TOKEN1              = S3DocumentSetting__c.getOrgDefaults().token__c;
+	public static final String TOKEN2              = S3DocumentSetting__c.getOrgDefaults().token2__c;
 	public static final String API_VERSION         = S3DocumentSetting__c.getOrgDefaults().apiVersion__c;
 	public static final String ENTRENCE            = S3DocumentSetting__c.getOrgDefaults().entrence__c;
 	public static final String RESOURCE            = S3DocumentSetting__c.getOrgDefaults().resources__c;
