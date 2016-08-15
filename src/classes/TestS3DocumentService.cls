@@ -6,6 +6,7 @@ public with sharing class TestS3DocumentService {
       insert new S3DocumentSetting__c (
          domain__c     = 'www.lendi.com.au',
          token__c      = '47847d52-8842-4055-b6e1-9cb71fe42f28',
+         token2__c     = '47847d52-8842-4055-b6e1-9cb71fe42f28',
          apiVersion__c = 'v1',
          entrence__c   = 'api',
          resources__c  = 'docs'
@@ -14,7 +15,7 @@ public with sharing class TestS3DocumentService {
       multimock.setStaticResource(S3StaticValue.S3_SERVICE_ENDPOINT, 's3UploadSuccess');
       System.debug('[TestS3DocumentService] end point: ' + S3StaticValue.S3_SERVICE_ENDPOINT);
       System.debug('[TestS3DocumentService] static resources: ' + 's3UploadSuccess');
-      multimock.setHeader('Content-Type', 'multipart/form-data; MULTIPART_BOUNDARY=' + S3StaticValue.MULTIPART_BOUNDARY);
+      multimock.setHeader('Content-Type', 'multipart/form-data; boundary=' + S3StaticValue.MULTIPART_BOUNDARY);
    }
 
    public static testMethod void testUploadDocumentSuccess() {
