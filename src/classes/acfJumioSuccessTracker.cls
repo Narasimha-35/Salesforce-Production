@@ -1,4 +1,4 @@
-@isTest(SeeAllData = true)
+@isTest
 private class acfJumioSuccessTracker 
 {
     private static User lstUser;

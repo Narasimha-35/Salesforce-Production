@@ -1,4 +1,4 @@
-@isTest(seeAlldata=true)
+@isTest
 private class WLTaskDashboardTracker {
     private static user objUser;
     private static acfTask_Master__c objTask;
@@ -8,9 +8,14 @@ private class WLTaskDashboardTracker {
 
     static testMethod void validateWLTaskDashboard() 
     {
+         
         LoadData();
         
-        System.runAs(objuser){
+        WLTaskDashboard wltdash=new WLTaskDashboard();
+        wltdash.setMyOpportunityIds(objOpportunity.id);
+        wltdash.getMyOpportunityIds();
+        System.runAs(objuser)
+        {
         List<Task> tasks = new List<Task>();
         Task objtsk = new Task();
         objtsk.ActivityDate = Date.today().addDays(1);
@@ -32,16 +37,10 @@ private class WLTaskDashboardTracker {
     
     private static void LoadData()
     {   
-        
         createUser();
         createOpportunity();
         createTask();
-        
-    }
-    
-    
-
-    
+    } 
     static void createuser()
     {
         objLead=acfCommonTrackerClass.createLeadForPortal();
@@ -50,15 +49,17 @@ private class WLTaskDashboardTracker {
         objAccount=acfCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
         objuser=acfCommonTrackerClass.CreatePortalUser(objAccount.id);
         system.debug(objuser.AccountId+'------------------------------------');
-   
-
-    }
+  }
     
     static void createOpportunity()
     {
         objOpportunity = new Opportunity();
         //objOpportunity.AccountId =objAccount.Id;
+        
         objOpportunity = acfCommonTrackerClass.createOpportunity(objOpportunity,objuser);
+        objOpportunity.acfBankdetailStatus__c='Completed';
+        objOpportunity.clickJumio_Status__c='Attempted';
+        update objOpportunity;
         system.debug(objOpportunity+'------------------------------------');
     }
     

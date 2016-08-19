@@ -5,7 +5,7 @@ public  class acfTriggerOnRequiredDocumnetHandler
 {
     public set<id> setoppIds;
     
-    public void onAfterUpdate(List<Required_Document__c>triggerNew,Map<Id,Required_Document__c> triggerOld)
+    public void onAfterUpdate(List<Required_Document__c> triggerNew,Map<Id,Required_Document__c> triggerOld)
     {
         InsertTaskOfRequiredDocumentForSelectedOpportunity(triggerNew,triggerOld);
         setOppIds = new set<id>();
@@ -45,7 +45,7 @@ public  class acfTriggerOnRequiredDocumnetHandler
         for(Required_Document__c objReqDoc:triggerNew){
             if(!docMasterId.contains(objReqDoc.acfDocument_Master__c)){
                 docMasterId.add(objReqDoc.acfDocument_Master__c);
-            }
+            }  
         }
         
 
@@ -53,12 +53,12 @@ public  class acfTriggerOnRequiredDocumnetHandler
         
         List<Document_Schema__c> docSchemaList = new List<Document_Schema__c>();
         
-        
+         
         docSchemaList = [Select id,Click_Loans_Document_Master__c,Name,
                                 Click_Loans_Required_Document__c,Field_Display_Name__c,Field_Value__c 
                                 FROM Document_Schema__c where Click_Loans_Document_Master__c IN:docMasterId];
         system.debug('###docSchema'+docSchemaList);
-                                
+                        
         for(Document_Schema__c dSchema:docSchemaList){
             if(!docSchemaMasterMap.containsKey(dSchema.Click_Loans_Document_Master__c)){
                 docSchemaMasterMap.put(dSchema.Click_Loans_Document_Master__c,new List<Document_Schema__c>());
@@ -67,7 +67,7 @@ public  class acfTriggerOnRequiredDocumnetHandler
         }
         
         docSchemaList.clear();
-        
+       
         for(Required_Document__c objReqDoc:triggerNew)
         {
             if(objReqDoc.acfDocument_Master__c <> null && docSchemaMasterMap <> null && docSchemaMasterMap.size() > 0
@@ -96,23 +96,77 @@ public  class acfTriggerOnRequiredDocumnetHandler
     {
         List<Task>lstTaskToInsert = new List<Task>();
         set<Id>setOpportunityId = new set<Id>();
+        set<Id>setApplicantId = new set<Id>();
         set<string>setTaskName = new set<string>();
+        
+        for(Required_Document__c objRequiredDoc:triggerNew)
+        {
+            if((objRequiredDoc.acfOpportunity__c <> null && triggerOld <> null && triggerOld.get(objRequiredDoc.id) <> null && triggerOld.get(objRequiredDoc.id).acfOpportunity__c == null)||
+                (objRequiredDoc.acfOpportunity__c <> null && triggerOld == null))
+            { 
+                if(objRequiredDoc.Click_Applicant__c != null)
+                  {
+                      system.debug('objRequiredDoc.Click_Applicant__c@@@@@@@@@@@@@@@@@@@@@@@@'+objRequiredDoc.Click_Applicant__c);
+                      setApplicantId.add(objRequiredDoc.Click_Applicant__c);
+                      system.debug('setApplicantId'+objRequiredDoc.Click_Applicant__c);
+                  }
+            }
+         }
+         map<id,string> mapAppIdToEconsent = new map<id,string>();
+         List<click_Applicant__c> lstApp = [select id,acfEconsent__c from click_Applicant__c where id=:setApplicantId];
+         if(!lstApp.isEmpty() && lstApp.size() > 0)
+         {
+             for(click_Applicant__c objApp : lstApp)
+             {
+                 if(string.isNotEmpty(objApp.acfEconsent__c) && objApp.acfEconsent__c == 'I Consent')
+                     mapAppIdToEconsent.put(objApp.Id,objApp.acfEconsent__c);
+             }
+         }
 
         for(Required_Document__c objRequiredDoc:triggerNew)
         {
+            system.debug('@#$%12345'+objRequiredDoc);
             //system.debug('***triggerOld.get(objRequiredDoc.id).acfOpportunity__c'+triggerOld.get(objRequiredDoc.id).acfOpportunity__c);
             if((objRequiredDoc.acfOpportunity__c <> null && triggerOld <> null && triggerOld.get(objRequiredDoc.id) <> null && triggerOld.get(objRequiredDoc.id).acfOpportunity__c == null)||
                 (objRequiredDoc.acfOpportunity__c <> null && triggerOld == null))
             {   
+                system.debug('Task**************************'+objRequiredDoc.acfOpportunity__c+'%%%%%Oppo%%%%'+triggerOld);
                 Task objTask                    =   new Task();
-                objTask.Description             =   'Upload '+objRequiredDoc.Name;
+                if(objRequiredDoc.Click_Is_E_consent__c)
+                {
+                    objTask.Description             =   'Verify '+objRequiredDoc.Name;
+                }
+                else
+                {
+                    objTask.Description             =   'Upload '+objRequiredDoc.Name;
+                }
                 objTask.WhatId                  =   objRequiredDoc.acfOpportunity__c;
                 system.debug('@@@@karthik@@'+objRequiredDoc.acfOpportunity__r.acfBankdetailStatus__c+'==='+objRequiredDoc.acfOpportunity__r.clickJumio_Status__c );
-                objTask.Status                  =   'open';
+                system.debug('objRequiredDoc!@#$%^***********'+objRequiredDoc.Click_Applicant__c+'%%%%%Oppo%%%%'+objRequiredDoc.Click_Applicant__r.acfEconsent__c);
+                system.debug('objRequiredDoc!@#$%^***********'+objRequiredDoc.Click_Applicant__r.acfEconsent__c);
+                if(objRequiredDoc.Click_Applicant__c != null && !mapAppIdToEconsent.isempty() && mapAppIdToEconsent.size() > 0
+                   && mapAppIdToEconsent.get(objRequiredDoc.Click_Applicant__c) != null && mapAppIdToEconsent.get(objRequiredDoc.Click_Applicant__c) != ''
+                   && mapAppIdToEconsent.get(objRequiredDoc.Click_Applicant__c) == 'I Consent')
+                  {
+                      system.debug('Completed*******');
+                      objTask.Status                  = 'Completed';
+                  }
+                  else
+                  {
+                      objTask.Status                  =   'open';
+                  }
                 objTask.Priority                =   'Normal';
                 objTask.ActivityDate            =   system.Today();
                 objTask.IsVisibleInSelfService  =   true;
-                objTask.subject                 =   'Upload '+objRequiredDoc.Name;
+                objTask.acfRequired_Document__c = objRequiredDoc.id;
+                if(objRequiredDoc.Click_Is_E_consent__c)
+                {
+                    objTask.subject                 =   'Verify '+objRequiredDoc.Name;
+                }
+                else
+                {
+                    objTask.subject                 =   'Upload '+objRequiredDoc.Name;
+                }
                 objTask.acf_Is_Upload_Identity_Verification__c = false;
                 objTask.acf_Is_Upload_Bank_Stmt__c   = false;
                 if(objRequiredDoc.acf_Is_Identity_Verification_Doc__c)
@@ -158,6 +212,7 @@ public  class acfTriggerOnRequiredDocumnetHandler
         }
         if(lstTaskToInsert <> null && lstTaskToInsert.size()>0)
         {
+            system.debug('@#$%lstTaskToInsert'+lstTaskToInsert);
             insert lstTaskToInsert;
         }
     }
@@ -190,6 +245,46 @@ public  class acfTriggerOnRequiredDocumnetHandler
       
       public void updateDownloadLinkonRequiredDocument(List<Required_Document__c> triggerNew)
       {
+         // changes done by Ankit 
+         // added GUID functionality.
+         if(triggerNew != null && triggerNew.size() > 0)
+          {
+              map<id,id> mapReqDocIdToOppId = new map<id,id>();
+              string strCommName = System.label.Lendi; 
+              set<Id> setOfOppId = new set<Id>();
+              Id lendiRecordTypeId = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get(strCommName).getRecordTypeId();
+              for(Required_Document__c objRequiredDocs : triggerNew)
+              {
+                  if(objRequiredDocs.acfOpportunity__c != null)
+                      mapReqDocIdToOppId.put(objRequiredDocs.id,objRequiredDocs.acfOpportunity__c);
+              }
+              
+              List<Opportunity> lstOpp = new List<Opportunity>();
+              if(mapReqDocIdToOppId != null && !mapReqDocIdToOppId.isempty() && mapReqDocIdToOppId.values() != null && string.isNotempty(strCommName) && lendiRecordTypeId != null)
+                  lstOpp =[select id,RecordTypeId,Community_Setup__c,Community_Setup__r.Name from Opportunity where id=:mapReqDocIdToOppId.values() 
+                           and Community_Setup__c != null and Community_Setup__r.Name =: strCommName and RecordTypeId =:lendiRecordTypeId];
+              if(lstOpp != null && !lstOpp.isempty())
+              {
+                  for(Opportunity objOpp : lstOpp)
+                  {
+                      setOfOppId.add(objOpp.Id);
+                  }
+              }
+              for(Required_Document__c objRequiredDocs : triggerNew)
+              {
+                  system.debug('mapReqDocIdToOppId ************'+mapReqDocIdToOppId+'%^&*'+ mapReqDocIdToOppId.get(objRequiredDocs.Id));
+                  system.debug('setOfOppId************'+setOfOppId+'%^&*'+ setOfOppId.contains(objRequiredDocs.acfOpportunity__c));
+                  if(mapReqDocIdToOppId != null && !mapReqDocIdToOppId.isempty() && mapReqDocIdToOppId.get(objRequiredDocs.Id) != null && setOfOppId != null
+                     && setOfOppId.size() > 0 && setOfOppId.contains(objRequiredDocs.acfOpportunity__c) && string.isEmpty(objRequiredDocs.Lendi_Required_Document_uuid__c))
+                  {
+                      List<string> lstGuid = new List<string>();
+                      lstGuid = Utilities.NewGuid();
+                      if(lstGuid != null && !lstGuid.isEmpty())
+                          objRequiredDocs.Lendi_Required_Document_uuid__c = lstGuid[0];
+                  }
+              }
+          }
+           
           map<id,string> mapIdToSource = new map<id,string>();
           set<id> setOfDocId = new set<id>();
           for(Required_Document__c objRequiredDocs : triggerNew)

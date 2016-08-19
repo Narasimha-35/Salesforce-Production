@@ -256,7 +256,8 @@ public without sharing class WLCustomerRegisterController
                     {
                         Schema.RecordTypeInfo rtLead =  rtCick_Refi.get(lstCommunity.Click_Page_Prefix__c+' New Loans');
                         system.debug('@@@click refi lead record type@@ =========== '+rtLead); 
-                        leadRecordTypeId = rtLead.getRecordTypeId();
+                        if(rtLead <> null)
+                            leadRecordTypeId = rtLead.getRecordTypeId();
                     }
             }
             else
@@ -265,6 +266,7 @@ public without sharing class WLCustomerRegisterController
                         {
                             Schema.RecordTypeInfo rt_Lead =  rtCick_Refi.get(lstCommunity.Click_Page_Prefix__c+' Refi');
                             system.debug('@@@click refi lead record type@@ =========== '+rt_Lead); 
+                            if(rt_Lead <> null)
                             leadRecordTypeId = rt_Lead.getRecordTypeId();
                         }
             }
@@ -296,7 +298,7 @@ public without sharing class WLCustomerRegisterController
                                 List<Lead> lstLead;
                                     objLead.Community__c = lstCommunity.id;
                                     lstLead = [select id,firstname,lastname,acfIsCreatedViaRequestCall__c,acfIs_User_Registered__c from lead where Email =:username.trim() AND Community__c =: lstCommunity.id ];
-                                
+                                system.debug('aaaaa12'+lstLead);
                                 If(lstLead != null && lstLead.size()>0){ 
                                     If(lstLead[0].acfIs_User_Registered__c == false){
                                         objLead = new Lead(id=lstLead[0].id,lastname=lstLead[0].lastname,firstname=lstLead[0].firstname);
@@ -427,29 +429,29 @@ public without sharing class WLCustomerRegisterController
                        }
                 }catch(Exception Ex) 
                  {
-                   system.debug('Exception==========='+Ex.getmessage());
-                   if(userId == null)
-                   {
-                      if(objLead != null && objLead.id <> null)
-                      {
-                          if(!test.isRunningTest()) 
-                           delete objLead;
-                      }
-                      strmsg = 'acfRegistrationFailedMsg';
-                      system.debug('!@#$%%%^'+Ex.getmessage());
-                        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-                        string strSubject = 'Click Leads Issue';
-                        string strContent = 'Lead Name:'+username+'\n'+'Mobile:'+mobile+'\n Exception:'+Ex.getmessage();
-                        list<string> lstToaddress = new list<string>();
-                       
-                        lstToaddress.add('karthik.chekkila@saasfocus.com');
-                        if(lstToaddress <> null && lstToaddress.size()>0)
-                            email.setToAddresses(lstToaddress);   
-                        email.setSubject(strSubject);
-                        email.setSenderDisplayName('ACF Support');
-                        email.setPlainTextBody(strContent);
-                        Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
-                   }
+                       system.debug('Exception==========='+Ex.getmessage());
+                       if(userId == null)
+                       {
+                          if(objLead != null && objLead.id <> null)
+                          {
+                              if(!test.isRunningTest()) 
+                               delete objLead;
+                          }
+                          strmsg = 'acfRegistrationFailedMsg';
+                          system.debug('!@#$%%%^'+Ex.getmessage());
+                            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+                            string strSubject = 'Click Leads Issue';
+                            string strContent = 'Lead Name:'+username+'\n'+'Mobile:'+mobile+'\n Exception:'+Ex.getmessage();
+                            list<string> lstToaddress = new list<string>();
+                           
+                            lstToaddress.add('karthik.chekkila@saasfocus.com');
+                            if(lstToaddress <> null && lstToaddress.size()>0)
+                                email.setToAddresses(lstToaddress);   
+                            email.setSubject(strSubject);
+                            email.setSenderDisplayName('ACF Support');
+                            email.setPlainTextBody(strContent);
+                            Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+                       }
                  }               
         }  
         else
@@ -470,27 +472,35 @@ public without sharing class WLCustomerRegisterController
             }
            strOTPtxt = strOTPtxt.replace('<OTP>',OTP_PIN);
            system.debug('@@@otp test message'+strOTPtxt);
-           string response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPtxt, true) ;
-           system.debug('respone ======================= '+response);
-           if(response <> null && response <> '' && response.contains('success'))
-           {
-               system.debug('respone in ======================= '+response);
-               objLead.acf_Contact__c =  [select id from contact where accountId =: ObjAccount.id].id;
-               objLead.acfOneTimePassword__c = OTP_PIN;
-               ObjAccount.acfPassword__c = OTP_PIN;
-               update ObjAccount; 
-               update objLead;
-               //PageReference chngpass = Site.changePassword(OTP_PIN,OTP_PIN,password);
-               //system.debug('chngpass ======================= '+chngpass);
-               if(objLead.MobilePhone <>  null && objLead.MobilePhone != ''){
-                    mobile_num = objLead.MobilePhone.replace('+61','');
-               }
-               strmsg = '';
-               mob_verify = true;           // open popup box for taking otp
-               mob_email_verify = false;    // close popup box for email and mobile  
-                                                                      
+           //added by karthik on 14/06/2016
+           string response = '';
+           boolean isTwilio =  Twilio__c.getValues('Twilio').Twilio__c;
+           if(isTwilio == false){
+                response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPtxt , true) ;
            }
-         
+           else if(isTwilio){
+                response = Clickcommon.sendSMSTwillio(objLead.MobilePhone,strOTPtxt );
+           }
+           system.debug('##resp'+response);
+           system.debug('respone ======================= '+response);
+           if(response <> null && response <> '' && response.contains('failed'))
+           {
+                response = Clickcommon.sendSMSTwillio(objLead.MobilePhone,strOTPtxt );
+           }
+           system.debug('respone in ======================= '+response);
+           objLead.acf_Contact__c =  [select id from contact where accountId =: ObjAccount.id].id;
+           objLead.acfOneTimePassword__c = OTP_PIN;
+           ObjAccount.acfPassword__c = OTP_PIN;
+           update ObjAccount; 
+           update objLead;
+           //PageReference chngpass = Site.changePassword(OTP_PIN,OTP_PIN,password);
+           //system.debug('chngpass ======================= '+chngpass);
+           if(objLead.MobilePhone <>  null && objLead.MobilePhone != ''){
+                mobile_num = objLead.MobilePhone.replace('+61','');
+           }
+           strmsg = '';
+           mob_verify = true;           // open popup box for taking otp
+           mob_email_verify = false;    // close popup box for email and mobile                                                                          
         }      
         return null;
     }
@@ -500,12 +510,10 @@ public without sharing class WLCustomerRegisterController
     {
         Cookie IsNewHomeLoan = ApexPages.currentPage().getCookies().get('IsNewHomeLoan');
         system.debug('!@#$%^'+IsNewHomeLoan);
-        try
-        {
             if (userId != null) 
             {
                CurrentUserId = userId;
-               String strOTPmsg;
+               String strOTPmsg = '';
               
                if(lstCommunity.Click_Page_Prefix__c != null)
                {
@@ -516,74 +524,25 @@ public without sharing class WLCustomerRegisterController
                    strOTPmsg = String.valueOf(output.value);
                    system.debug('======strOTPtxt =========='+strOTPmsg);                  
                }
+               system.debug('======strOTPtxt =========='+strOTPmsg); 
                strOTPmsg = strOTPmsg.replace('<OTP>',password);
                system.debug('@@@otp test message'+strOTPmsg);
-               string response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, '+'+objLead.MobilePhone, strOTPmsg, true) ;//This will also be your first time password to log into ACF portal
+               //added by karthik on 14/06/2015
+               string response = '';
+               boolean isTwilio =  Twilio__c.getValues('Twilio').Twilio__c;
+               if(isTwilio == false){
+                    response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPmsg , true) ;
+               }
+               else if(isTwilio){
+                    response = Clickcommon.sendSMSTwillio(objLead.MobilePhone,strOTPmsg);
+               }
+               system.debug('##resp'+response);
+               
                system.debug('respone ======================= '+response);
-               response = 'success';
-               //update lead and account if response success
-               if(response <> null && response <> '' && response.contains('success'))
+               
+               if(response <> null && response <> '' && response.contains('failed'))
                {
-                   system.debug('respone in ======================= '+response);
-                   list<User> lstUser = [select id,accountId,contactId,Email,firstname from user where id=:userId];
-                   Id currentAccountRecordTypeId;
-                   if(IsNewHomeLoan <> null && IsNewHomeLoan.getvalue() == 'true')
-                   {
-                       if(lstCommunity.Click_Page_Prefix__c != null )
-                       {
-                           currentAccountRecordTypeId = ClickCommon.GetRecordTypeId('Account',lstCommunity.Click_Page_Prefix__c+' New Loans');
-                           system.debug('currentAccountRecordTypeId ======================= '+currentAccountRecordTypeId );
-                       }
-                   }
-                   else
-                   {
-                       if(lstCommunity.Click_Page_Prefix__c != null )
-                       {
-                           currentAccountRecordTypeId = ClickCommon.GetRecordTypeId('Account',lstCommunity.Click_Page_Prefix__c+' Refi');
-                           system.debug('currentAccountRecordTypeId 88888======================= '+currentAccountRecordTypeId );
-                       }
-                   }
-                   if(lstUser != null && lstUser.size()>0 && objLead <> null)
-                   {
-                       objAccount = [select personEmail,firstname,lastname from account where id=:lstUser[0].accountId];
-                       ga_Accountid = lstUser[0].accountId;
-                       objLead.acf_Contact__c = lstUser[0].ContactId;
-                       objAccount.acf_Lead__pc = objLead.id;
-                       if(maptst != null && maptst.size()>0 && maptst.get('acfApproximately_how_much_is_your_house__c') <> null)
-                           ObjAccount.acfAsset_House_Worth__c = decimal.valueof(maptst.get('acfApproximately_how_much_is_your_house__c'));
-                       objLead.acf_partner_account__c = lstUser[0].accountId;
-                       if(password <> null)
-                       {
-                           objLead.acfOneTimePassword__c = password;
-                           ObjAccount.acfPassword__c = password;
-                       }
-                       if(tempMobile <> null)
-                       {
-                           ObjAccount.PersonMobilePhone = tempMobile;
-                           objLead.MobilePhone = tempMobile;
-                       }
-                       if(currentAccountRecordTypeId <> null)
-                           objAccount.RecordTypeId = currentAccountRecordTypeId;
-                       if(lstCommunity <> null)
-                           objAccount.Click_Community_Setup__c = lstCommunity.id;                                        
-                       update objLead;
-                       update ObjAccount;
-                   }                   
-                   if(objLead.MobilePhone <>  null && objLead.MobilePhone != ''){
-                       mobile_num = objLead.MobilePhone.replace('+61','');
-                   }                  
-                   strmsg = '';
-                   mob_verify = true;           // open popup box for taking otp
-                   mob_email_verify = false;    // close popup box for email and mobile    
-                   objRegHeaderCMS = mapSectionToCMS.get('OTP Popup');                                                     
-                }
-                else
-                {
-                  // strmsg = response;
-                 //  objRegHeaderCMS = mapSectionToCMS.get('OTP Popup');
-                //   mob_verify = true;
-                 //  mob_email_verify = false;
-
+                    response = Clickcommon.sendSMSTwillio(objLead.MobilePhone,strOTPmsg);
                     Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
                     string strSubject = 'Click Leads SMS Issue';
                     string strContent = 'Lead Name:'+username+'\n'+'Mobile:'+mobile+'\n SMS Response:'+response;
@@ -595,12 +554,68 @@ public without sharing class WLCustomerRegisterController
                     email.setSenderDisplayName('ACF Support');
                     email.setPlainTextBody(strContent);
                     Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
-                }
+               }       
+               //update lead and account if response success
+               system.debug('respone in ======================= '+response);
+               list<User> lstUser = [select id,accountId,contactId,Email,firstname from user where id=:userId];
+               Id currentAccountRecordTypeId;
+               if(IsNewHomeLoan <> null && IsNewHomeLoan.getvalue() == 'true')
+               {
+                   if(lstCommunity.Click_Page_Prefix__c != null )
+                   {
+                       currentAccountRecordTypeId = ClickCommon.GetRecordTypeId('Account',lstCommunity.Click_Page_Prefix__c+' New Loans');
+                       system.debug('currentAccountRecordTypeId ======================= '+currentAccountRecordTypeId );
+                   }
+               }
+               else
+               {
+                   if(lstCommunity.Click_Page_Prefix__c != null )
+                   {
+                       currentAccountRecordTypeId = ClickCommon.GetRecordTypeId('Account',lstCommunity.Click_Page_Prefix__c+' Refi');
+                       system.debug('currentAccountRecordTypeId 88888======================= '+currentAccountRecordTypeId );
+                   }
+               }
+               if(lstUser != null && lstUser.size()>0 && objLead <> null)
+               {
+                   objAccount = [select personEmail,firstname,lastname from account where id=:lstUser[0].accountId];
+                   ga_Accountid = lstUser[0].accountId;
+                   objLead.acf_Contact__c = lstUser[0].ContactId;
+                   objAccount.acf_Lead__pc = objLead.id;
+                   if(maptst != null && maptst.size()>0 && maptst.get('acfApproximately_how_much_is_your_house__c') <> null)
+                       ObjAccount.acfAsset_House_Worth__c = decimal.valueof(maptst.get('acfApproximately_how_much_is_your_house__c'));
+                   objLead.acf_partner_account__c = lstUser[0].accountId;
+                   if(password <> null)
+                   {
+                       objLead.acfOneTimePassword__c = password;
+                       ObjAccount.acfPassword__c = password;
+                   }
+                   if(tempMobile <> null)
+                   {
+                       ObjAccount.PersonMobilePhone = tempMobile;
+                       objLead.MobilePhone = tempMobile;
+                   }
+                   if(currentAccountRecordTypeId <> null)
+                       objAccount.RecordTypeId = currentAccountRecordTypeId;
+                   if(lstCommunity <> null)
+                       objAccount.Click_Community_Setup__c = lstCommunity.id;                                        
+                   update objLead;
+                   update ObjAccount;
+               }                   
+               if(objLead.MobilePhone <>  null && objLead.MobilePhone != ''){
+                   mobile_num = objLead.MobilePhone.replace('+61','');
+               }                  
+               strmsg = '';
+               mob_verify = true;           // open popup box for taking otp
+               mob_email_verify = false;    // close popup box for email and mobile    
+               objRegHeaderCMS = mapSectionToCMS.get('OTP Popup'); 
+               try
+               {
                 //Added by Lokesh on 6-12-2014 to
                 //Add Required Documents based on Answers
                 Cookie requiredDocumentAnswers = ApexPages.currentPage().getCookies().get('ACFRA');
-                system.debug('::::LOKESH:::::'+requiredDocumentAnswers.getValue());
+               
                 if(requiredDocumentAnswers <> null && requiredDocumentAnswers.getValue() <> '')
+                 system.debug('::::LOKESH:::::'+requiredDocumentAnswers.getValue());
                 {
                    for(string strAnswers:requiredDocumentAnswers.getValue().split('--,--'))
                    {
@@ -706,32 +721,31 @@ public without sharing class WLCustomerRegisterController
                    objFirstApplicant.Applicant_Email__c = ObjAccount.PersonEmail;
                    objFirstApplicant.Applicant_Phone__c = ObjAccount.PersonMobilePhone;
                    insert objFirstApplicant;      
-               }       
-            }             
-        }catch(Exception Ex)
-            {
-                system.debug('!@#$%%%^'+Ex.getmessage());
-                Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-                string strSubject = 'Click Leads Issue';
-                string strContent = 'Lead Name:'+username+'\n'+'Mobile:'+mobile+'\n Exception:'+Ex.getmessage();
-                list<string> lstToaddress = new list<string>();
-                lstToaddress.add('chen@creditandfinance.com.au');
-                lstToaddress.add('karthik.chekkila@saasfocus.com');
-                if(lstToaddress <> null && lstToaddress.size()>0)
-                    email.setToAddresses(lstToaddress);   
-                email.setSubject(strSubject);
-                email.setSenderDisplayName('ACF Support');
-                email.setPlainTextBody(strContent);
-                Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
-            }               
+                }       
+               }catch(Exception Ex)
+                {
+                    system.debug('!@#$%%%^'+Ex.getmessage());
+                    Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+                    string strSubject = 'Click Leads Issue';
+                    string strContent = 'Lead Name:'+username+'\n'+'Mobile:'+mobile+'\n Exception:'+Ex.getmessage();
+                    list<string> lstToaddress = new list<string>();
+                    lstToaddress.add('chen@creditandfinance.com.au');
+                    lstToaddress.add('karthik.chekkila@saasfocus.com');
+                    if(lstToaddress <> null && lstToaddress.size()>0)
+                        email.setToAddresses(lstToaddress);   
+                    email.setSubject(strSubject);
+                    email.setSenderDisplayName('ACF Support');
+                    email.setPlainTextBody(strContent);
+                    Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+                }   
+            }                         
     }
     
         /*
     **  this method responsible for verify OTP
     */    
     public PageReference verifyOTP()
-    {
-        
+    { 
         strmsg = '';    
         system.debug('mobile_otp'+mobile_otp);    
         //system.debug('objLead.acfOneTimePassword__c'+objLead.acfOneTimePassword__c);
@@ -759,8 +773,7 @@ public without sharing class WLCustomerRegisterController
     **
     */
     public PageReference resendOTP(){
-        strmsg = '';
-        
+        strmsg = '';   
         //mobile_otp = 'OTP';
         If(mobile_num.contains('+61') == false && mobile_num != null && mobile_num <> '' && mobile_num != 'Mobile No.'){
                 String OTP_PIN = String.valueOf(system.now().getTime()).substring(String.valueOf(system.now().getTime()).length() - 6);
@@ -771,18 +784,12 @@ public without sharing class WLCustomerRegisterController
                 }else{
                     objLead.MobilePhone = '+61'+mobile_num;
                 }
-               
                   objLead.acfOneTimePassword__c = OTP_PIN;
                   ObjAccount.acfPassword__c = OTP_PIN;
                   ObjAccount.PersonMobilePhone = objLead.MobilePhone;
                 // ===================== call SendSMS for sending msg ==================================
-                // String strOTPtxt = System.Label.acfOTP_Text;
-               // strOTPtxt = strOTPtxt.replace('<OTP>',OTP_PIN);
-               // system.debug('@@@otp test message'+strOTPtxt);
-                // string response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPtxt, true) ;
-                // For Testing
                //  changes done by Ankit
-                  String strOTPmsg;
+                  String strOTPmsg = '';
                   if(lstCommunity.Click_Page_Prefix__c != null)
                   {
                        string OTPLabelName = lstCommunity.Click_Page_Prefix__c +'OTP_Text' ;
@@ -792,23 +799,30 @@ public without sharing class WLCustomerRegisterController
                        strOTPmsg = String.valueOf(output.value);
                        system.debug('======strOTPtxt =========='+strOTPmsg);       
                   }
-                 strOTPmsg = strOTPmsg.replace('<OTP>',OTP_PIN);
-                 system.debug('@@@otp test message'+strOTPmsg);
-                 string response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPmsg, true) ;
-                if(response <> null && response <> '' && response.contains('success'))
+                strOTPmsg = strOTPmsg.replace('<OTP>',OTP_PIN);
+                system.debug('@@@otp test message'+strOTPmsg);
+                //string response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPmsg, true) ;
+               boolean isTwilio =  Twilio__c.getValues('Twilio').Twilio__c;
+               string response = '';
+               if(isTwilio == false){
+                    response = ClickCommon.sendSMS(objLead.FirstName +' '+objLead.lastName, objLead.MobilePhone, strOTPmsg , true) ;
+               }
+               else if(isTwilio){
+                    response = Clickcommon.sendSMSTwillio(objLead.MobilePhone,strOTPmsg);
+               }
+               system.debug('##resp'+response);
+                 
+                if(response <> null && response <> '' && response.contains('failed'))
                 {
-                  // PageReference chngpass = Site.changePassword(OTP_PIN,OTP_PIN,password);
-                  // system.debug('chngpass ======================= '+chngpass);
-                   system.setpassword(currentuserid,OTP_PIN); //added by karthik on 29-01-2015
-                   password = OTP_PIN;
-                    update ObjAccount;
-                    update objLead;
-                    showMsgPopup =  true;
-                   // mob_verify = false; 
-                    showResendfrm = false;               
-                }else{
-                    strmsg = response;
+                    response = Clickcommon.sendSMSTwillio(objLead.MobilePhone,strOTPmsg);
+                    //strmsg = response;
                 }
+                system.setpassword(currentuserid,OTP_PIN); //added by karthik on 29-01-2015
+                password = OTP_PIN;
+                update ObjAccount;
+                update objLead;
+                showMsgPopup =  true;
+                showResendfrm = false;               
         }else{
            strmsg = 'ACF_MobileNoValidation';
          }
@@ -832,6 +846,7 @@ public without sharing class WLCustomerRegisterController
     Public static void generateReqDocs(String WLLeadId,Click_Community_Setup__c CommSetup)
     {
         List<Document_Master__c> List_DocMaster = [select id,Name,acfActive__c,acfDescription__c,acf_Source__c,Click_Community_Setup__c from Document_Master__c where acfActive__c=true AND Click_Community_Setup__c =: CommSetup.id ];
+        system.debug('ashnatest'+List_DocMaster );
         List<Required_Document__c> List_reqDocs = new List<Required_Document__c>();
         If(!List_DocMaster.isEmpty())
         {
@@ -1067,11 +1082,11 @@ public without sharing class WLCustomerRegisterController
                         objWrapVariableProduct.strProdName =  objLVRRate.acfProduct__r.name;                                 
                         objWrapVariableProduct.decMonthlyPayment   = 0;
                         objWrapVariableProduct.strBnkImgURL = system.label.site_URL+objLVRRate.acfProduct__r.Click_Loans_Bank_Detail__r.acfImage_URL__c;
-                         acfLoanDashboardController objLoanDashboardController = new acfLoanDashboardController();
+                       //  acfLoanDashboardController objLoanDashboardController = new acfLoanDashboardController();
                              //objWrapVariableProduct.EstimatedMonthlySaving = objLoanDashboardController.DisplayEstimatedSaving(lstLead[0].acfCurrentRate__c,objLVRRate.acfRate__c,lstLead[0].acfLoan_Amount__c,lstLead[0].acfWhat_is_your_current_payment_type__c,objLVRRate.acfProduct__r.acfvarTenure_In_Years__c);
                               Integer intTenureMonths = 0;
                               decimal decMonthlySavings = 0;
-                              acfLoanDashboardController objLoanDashboard = new acfLoanDashboardController();
+                        //      acfLoanDashboardController objLoanDashboard = new acfLoanDashboardController();
                               If(objLVRRate.acfProduct__r.Recordtype.Name == 'Fixed')
                               {
                                   objWrapVariableProduct.decRate = objLVRRate.clickFixed_Interest_Rate__c;

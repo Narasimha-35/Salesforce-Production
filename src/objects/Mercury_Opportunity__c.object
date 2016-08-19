@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>to hold the opportunity cant be synced back to salesforce</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Manual_Check__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This is for manual checking</description>
+        <externalId>false</externalId>
+        <label>Manual Check</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Notes_on_Mismatch_analysis__c</fullName>
+        <externalId>false</externalId>
+        <label>Notes on Mismatch analysis</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Mercury Mismatch Queue</relationshipLabel>
+        <relationshipName>Mercury_Mismatch_Queue</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>merc_admin__c</fullName>
+        <externalId>false</externalId>
+        <label>merc admin</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_apply_online_id__c</fullName>
+        <externalId>false</externalId>
+        <label>merc apply online id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_branch__c</fullName>
+        <externalId>false</externalId>
+        <label>merc branch</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_campagin__c</fullName>
+        <externalId>false</externalId>
+        <label>merc campagin</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_categories__c</fullName>
+        <externalId>false</externalId>
+        <label>merc categories</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>merc_current_status__c</fullName>
+        <externalId>false</externalId>
+        <label>merc current status</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_deposit_due_date__c</fullName>
+        <externalId>false</externalId>
+        <label>merc deposit due date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>merc_existing_amount__c</fullName>
+        <externalId>false</externalId>
+        <label>merc existing amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_finance_date__c</fullName>
+        <externalId>false</externalId>
+        <label>merc finance date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>merc_first_sync_time__c</fullName>
+        <externalId>false</externalId>
+        <label>merc first sync time</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>merc_fixed_rate_expiry__c</fullName>
+        <externalId>false</externalId>
+        <label>merc fixed rate expiry</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>merc_interest_only_expiry__c</fullName>
+        <externalId>false</externalId>
+        <label>merc interest only expiry</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>merc_internal_reference__c</fullName>
+        <externalId>false</externalId>
+        <label>merc internal reference</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_last_sync_time__c</fullName>
+        <externalId>false</externalId>
+        <label>merc last sync time</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>merc_lead_source__c</fullName>
+        <externalId>false</externalId>
+        <label>merc lead source</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_lender__c</fullName>
+        <externalId>false</externalId>
+        <label>merc lender</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_lender_reference__c</fullName>
+        <externalId>false</externalId>
+        <label>merc lender reference</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_lmi__c</fullName>
+        <externalId>false</externalId>
+        <label>merc lmi</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_loanPeople__c</fullName>
+        <externalId>false</externalId>
+        <label>merc loan people</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>merc_loan_amount__c</fullName>
+        <externalId>false</externalId>
+        <label>merc loan amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_loan_value_ratio__c</fullName>
+        <externalId>false</externalId>
+        <formula>merc_loan_amount__c / merc_security_value__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>merc loan value ratio</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>merc_loan_writer__c</fullName>
+        <externalId>false</externalId>
+        <label>merc loan writer</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_opportunity_type__c</fullName>
+        <externalId>false</externalId>
+        <label>merc opportunity type</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_people__c</fullName>
+        <externalId>false</externalId>
+        <label>merc people</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>merc_security_value__c</fullName>
+        <externalId>false</externalId>
+        <label>merc security value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_settlement_date__c</fullName>
+        <externalId>false</externalId>
+        <label>merc settlement date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>merc_status_notes__c</fullName>
+        <externalId>false</externalId>
+        <label>merc status notes</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>merc_supervisor__c</fullName>
+        <externalId>false</externalId>
+        <label>merc supervisor</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_transaction_name__c</fullName>
+        <externalId>false</externalId>
+        <label>merc transaction name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_transaction_type__c</fullName>
+        <externalId>false</externalId>
+        <label>merc transaction type</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_uniqueId__c</fullName>
+        <externalId>false</externalId>
+        <label>merc uniqueId</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Mercury Mismatch Queue</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Manual_Check__c</columns>
+        <columns>NAME</columns>
+        <columns>account__c</columns>
+        <columns>merc_uniqueId__c</columns>
+        <columns>Notes_on_Mismatch_analysis__c</columns>
+        <columns>merc_lead_source__c</columns>
+        <columns>merc_transaction_name__c</columns>
+        <columns>merc_current_status__c</columns>
+        <columns>merc_loan_writer__c</columns>
+        <columns>merc_loan_amount__c</columns>
+        <columns>merc_first_sync_time__c</columns>
+        <columns>merc_last_sync_time__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Non_Self_Gen_OLP</fullName>
+        <columns>Manual_Check__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>merc_first_sync_time__c</columns>
+        <columns>NAME</columns>
+        <columns>account__c</columns>
+        <columns>Notes_on_Mismatch_analysis__c</columns>
+        <columns>merc_current_status__c</columns>
+        <columns>merc_transaction_name__c</columns>
+        <columns>merc_lead_source__c</columns>
+        <columns>merc_loan_writer__c</columns>
+        <columns>merc_loan_amount__c</columns>
+        <columns>merc_uniqueId__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>merc_lead_source__c</field>
+            <operation>notContain</operation>
+            <value>self</value>
+        </filters>
+        <filters>
+            <field>merc_lead_source__c</field>
+            <operation>contains</operation>
+            <value>acf online,click</value>
+        </filters>
+        <label>Non Self Gen OLP</label>
+    </listViews>
+    <listViews>
+        <fullName>Non_Self_Gen_non_Commercial</fullName>
+        <columns>Manual_Check__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>NAME</columns>
+        <columns>account__c</columns>
+        <columns>Notes_on_Mismatch_analysis__c</columns>
+        <columns>merc_loan_writer__c</columns>
+        <columns>merc_current_status__c</columns>
+        <columns>merc_transaction_name__c</columns>
+        <columns>merc_lead_source__c</columns>
+        <columns>merc_uniqueId__c</columns>
+        <columns>merc_loan_amount__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>merc_lead_source__c</field>
+            <operation>notContain</operation>
+            <value>self</value>
+        </filters>
+        <filters>
+            <field>merc_loan_writer__c</field>
+            <operation>notContain</operation>
+            <value>,andrew jackson,Brent Wedesweiler</value>
+        </filters>
+        <label>Non Self Gen non Commercial</label>
+    </listViews>
+    <listViews>
+        <fullName>Self_Gen</fullName>
+        <columns>CREATED_DATE</columns>
+        <columns>NAME</columns>
+        <columns>account__c</columns>
+        <columns>Notes_on_Mismatch_analysis__c</columns>
+        <columns>merc_current_status__c</columns>
+        <columns>merc_transaction_name__c</columns>
+        <columns>merc_lead_source__c</columns>
+        <columns>merc_loan_writer__c</columns>
+        <columns>merc_loan_amount__c</columns>
+        <columns>merc_uniqueId__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>merc_lead_source__c</field>
+            <operation>contains</operation>
+            <value>self</value>
+        </filters>
+        <label>Self Gen</label>
+    </listViews>
+    <nameField>
+        <label>Mercury Opportunity Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Mercury Mismatch Queue</pluralLabel>
+    <searchLayouts>
+        <listViewButtons>clean</listViewButtons>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Manually_Clean</fullName>
+        <availability>online</availability>
+        <description>to create a new opportunity on Account, Account must have value before doing this</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Manually Clean</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/29.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/29.0/apex.js&quot;)} 
+var result = sforce.apex.execute(&quot;MercuryOpportunityService&quot;,&quot;manuallyClean&quot;,{merc_oppo_id:&quot;{!Mercury_Opportunity__c.Id}&quot;}); 
+window.location.reload();</url>
+    </webLinks>
+    <webLinks>
+        <fullName>clean</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Clean</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/29.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/29.0/apex.js&quot;)} 
+sforce.apex.execute(&quot;MercuryService&quot;,&quot;cleanMercuryOpportunity&quot;,{input: null}); 
+window.location.reload();</url>
+    </webLinks>
+</CustomObject>

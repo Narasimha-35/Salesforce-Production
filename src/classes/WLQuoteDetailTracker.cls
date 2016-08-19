@@ -1,227 +1,109 @@
-@isTest(SeeAllData = true)
-private class WLQuoteDetailTracker 
-{   
+@isTest
+private class WLQuoteDetailTracker
+{
     private static Lead objLead ;
     private static User objUser;
+    private static Click_Community_Setup__c objcommunity;
+    private static account accperson;
+    private static account objAccount;
     private static Contact objContact;
-    private static Account objAccount;
     private static Opportunity objOpportunity;
+    private static acfSuggested_Product__c objSuggestedProduct;
+    private static acfBank_Detail__c objBankDatail;
+    private static product2 objProduct;
+    private static product2 objProducts;
+    private static LVR_Rate__c objLvrRate;
+    private static Script__c scobj;
+    private static Click_Loans_Bank__c objClickLoanBankDetail;
+    private static Question__c  objQuestion;
+    
 
-    
-    static testMethod void validate() 
+    static testMethod void validate1()
     {
-      LoadData();
-      
-  //      RecordType objRT=[select id, name, SObjectType From RecordType Where SObjectType= 'product2' AND name= 'Variable'];
-        product2 objPro = new product2();
-        objPro.ACF_Comparison_Rate__c = 10;
-        objPro.IsActive = true;
-        objPro.acfType__c = 'Variable';
- //       objPro.Recordtype.Name = 'Variable';
-        objPro.acfTenure_in_Years__c = '2'; 
-        objPro.acfvarTenure_In_Years__c = 10;
-        //objPro.clickLoan_Type__c =  'Basic';
-        objPro.acfOffset_Account__c = false;
-        objPro.Name = 'test';
-     //   objPro.acfRating__c = '1';
-        insert objPro;
-      
-        LVR_Rate__c objLVR = new LVR_Rate__c();
-        objLVR.acfLVR__c = 120000.25;
-        objLVR.acfRate__c = 10.25;
-        objLVR.acfProduct__c = objPro.id;
-        objLVR.acfLoan_Size__c = 10000.20;
-        objLVR.ACF_Comparison_Rate__c = 10.00; 
-        objLVR.clickFixed_Interest_Rate__c = 9.00;
-        objLVR.clickLoan_Size_From__c = 50.50;
-        objLVR.clickLVR_From__c = 1.2;
-        objLVR.acfApplication_Fee__c = 5000; 
-        insert objLVR; 
-      
-      
-       Script__c objScript = new Script__c();
-       objScript.acf_Type__c = 'Pre-Login';
-       objScript.acf_Sequence_no__c = 1;
-       insert objScript; 
-      
-        Question__c objQuestion = new Question__c ();
-        objQuestion.acf_Question__c = 'Who is your current lender?';
-        objQuestion.acf_Active__c = true;
-        objQuestion.acf_Sequence_No__c = 2.0;
-        objQuestion.acf_Type__c = 'Button';
-        objQuestion.acfRefinance_Sequence_No__c = 1;
-        objQuestion.acfIs_refinance__c = true;
-        objQuestion.acf_Script__c = objScript.id;
-        insert objQuestion;
-        
-        Click_Community_Setup__c commsetup = new Click_Community_Setup__c();
-        commsetup.Name = 'test';
-        insert commsetup;
-        WLQuoteDetailTracker QuoteDetailObj = new WLQuoteDetailTracker();
-        Network networkobj = [select id from Network limit 1];
-        
-      System.runAs(objuser) 
+        LoadData();            
+        PageReference pageRef =Page.ClickPostloginQuestionnaires;
+        Test.setCurrentPage(pageRef);
+        system.runas(objUser)
         {
-            
-      PageReference pageRef = new PageReference('http://www.google.com');
-      Test.setCurrentPage(pageRef);
-      ClickQuoteDetail.intWidth = 10;
-      ClickQuoteDetail.setProgressBarWidth(10,10,'ClickPostloginQuestionnaires');
-      WLQuoteDetail objclick = new WLQuoteDetail ();
-      objclick.strLoanPurpose = 'test';
-      objclick.decCurrLoanAmt = 10.01;
-      objclick.decEstPropVal = 10.01;
-      objclick.decBestRate = 10.01;
-      objclick.decComparison = 10.01;
-      objclick.decMonthlyPayment = 10;
-      objclick.pge_name = 'test';
-     }
+            WLQuoteDetail wlobj=new WLQuoteDetail ();
+            wlobj.pge_name='ClickPostloginQuestionnaires';
+            WLQuoteDetail.setProgressBarWidth(11,22,'ClickPostloginQuestionnaires','test');
+        }      
+    }
+    static testMethod void validate2()
+    {
+        LoadData();
+        PageReference pageRef = Page.ClickBankInfoDetails;
+        Test.setCurrentPage(pageRef);
+        system.runas(objUser)
+        {
+            WLQuoteDetail wlobj=new WLQuoteDetail ();
+            wlobj.pge_name='ClickBankInfoDetails';
+            WLQuoteDetail.setProgressBarWidth(11,22,'ClickBankInfoDetails','test');
+        }
     }
     
-        
-    static testMethod void validate1() 
+    static testMethod void validate3()
     {
-      LoadData();
-      
-  //      RecordType objRT=[select id, name, SObjectType From RecordType Where SObjectType= 'product2' AND name= 'Variable'];
-        product2 objPro = new product2();
-        objPro.ACF_Comparison_Rate__c = 10;
-        objPro.IsActive = true;
-        objPro.acfType__c = 'Variable';
- //       objPro.Recordtype.Name = 'Variable';
-        objPro.acfTenure_in_Years__c = '2'; 
-        objPro.acfvarTenure_In_Years__c = 10;
-      //  objPro.clickLoan_Type__c =  'Basic';
-        objPro.acfOffset_Account__c = false;
-        objPro.Name = 'test';
-    //    objPro.acfRating__c = '1';
-        insert objPro;
-      
-        LVR_Rate__c objLVR = new LVR_Rate__c();
-        objLVR.acfLVR__c = 120000.25;
-        objLVR.acfRate__c = 10.25;
-        objLVR.acfProduct__c = objPro.id;
-        objLVR.acfLoan_Size__c = 10000.20;
-        objLVR.ACF_Comparison_Rate__c = 10.00; 
-        objLVR.clickFixed_Interest_Rate__c = 9.00;
-        objLVR.clickLoan_Size_From__c = 50.50;
-        objLVR.clickLVR_From__c = 1.2;
-        objLVR.acfApplication_Fee__c = 5000; 
-        insert objLVR; 
-      
-      
-       Script__c objScript = new Script__c();
-       objScript.acf_Type__c = 'Pre-Login';
-       objScript.acf_Sequence_no__c = 1;
-       insert objScript;          
-      
-        Question__c objQuestion = new Question__c ();
-        objQuestion.acf_Question__c = 'Who is your current lender?';
-        objQuestion.acf_Active__c = true;
-        objQuestion.acf_Sequence_No__c = 2.0;
-        objQuestion.acf_Type__c = 'Button';
-        objQuestion.acfRefinance_Sequence_No__c = 1;
-        objQuestion.acfIs_refinance__c = true;
-        objQuestion.acf_Script__c = objScript.id;
-        insert objQuestion; 
-        
-      System.runAs(objuser) 
+        LoadData();
+        PageReference pageRef = Page.ClickPreLoginQuestions;
+        Test.setCurrentPage(pageRef);
+        system.runas(objUser)
         {
-            
-      PageReference pageRef = new PageReference('http://www.google.com');
-      Test.setCurrentPage(pageRef);
-      ClickQuoteDetail.intWidth = 10;
-      ClickQuoteDetail.setProgressBarWidth(10,10,'ClickBankInfoDetails');
-      WLQuoteDetail objclick = new WLQuoteDetail ();
-      objclick.strLoanPurpose = 'test';
-      objclick.decCurrLoanAmt = 10.01;
-      objclick.decEstPropVal = 10.01;
-      objclick.decBestRate = 10.01;
-      objclick.decComparison = 10.01;
-      objclick.decMonthlyPayment = 10;
-      objclick.pge_name = 'test';
-     }
+            WLQuoteDetail wlobj=new WLQuoteDetail ();
+            wlobj.pge_name='ClickPreLoginQuestions';
+            WLQuoteDetail.setProgressBarWidth(11,22,'ClickPreLoginQuestions','test');
+        }
     }
     
-    
-      static testMethod void validate2() 
+    static testMethod void validate4()
     {
-      LoadData();
-      
-  //      RecordType objRT=[select id, name, SObjectType From RecordType Where SObjectType= 'product2' AND name= 'Variable'];
-        product2 objPro = new product2();
-        objPro.ACF_Comparison_Rate__c = 10;
-        objPro.IsActive = true;
-        objPro.acfType__c = 'Variable';
- //       objPro.Recordtype.Name = 'Variable';
-        objPro.acfTenure_in_Years__c = '2'; 
-        objPro.acfvarTenure_In_Years__c = 10;
-     //   objPro.clickLoan_Type__c =  'Basic';
-        objPro.acfOffset_Account__c = false;
-        objPro.Name = 'test';
-    //    objPro.acfRating__c = '1';
-        insert objPro;
-      
-        LVR_Rate__c objLVR = new LVR_Rate__c();
-        objLVR.acfLVR__c = 120000.25;
-        objLVR.acfRate__c = 10.25;
-        objLVR.acfProduct__c = objPro.id;
-        objLVR.acfLoan_Size__c = 10000.20;
-        objLVR.ACF_Comparison_Rate__c = 10.00; 
-        objLVR.clickFixed_Interest_Rate__c = 9.00;
-        objLVR.clickLoan_Size_From__c = 50.50;
-        objLVR.clickLVR_From__c = 1.2;
-        objLVR.acfApplication_Fee__c = 5000; 
-        insert objLVR; 
-      
-      
-/*       Script__c objScript = new Script__c();
-       objScript.acf_Type__c = 'Pre-Login';
-       objScript.acf_Sequence_no__c = 1;
-       insert objScript;        */
-      
-/*        Question__c objQuestion = new Question__c ();
-        objQuestion.acf_Question__c = 'Who is your current lender?';
-        objQuestion.acf_Active__c = true;
-        objQuestion.acf_Sequence_No__c = 2.0;
-        objQuestion.acf_Type__c = 'Button';
-        objQuestion.acfRefinance_Sequence_No__c = 1;
-        objQuestion.acfIs_refinance__c = true;
-        objQuestion.acf_Script__c = objScript.id;
-        insert objQuestion; */
-        
-      System.runAs(objuser) 
+        LoadData1();            
+        PageReference pageRef =Page.ClickPostloginQuestionnaires;
+        Test.setCurrentPage(pageRef);
+        system.runas(objUser)
         {
-            
-      PageReference pageRef = new PageReference('http://www.google.com');
-      Test.setCurrentPage(pageRef);
-      ClickQuoteDetail.intWidth = 10;
-     // ClickQuoteDetail.setProgressBarWidth(10,10,'Clickid_verification');
-      WLQuoteDetail objclick = new WLQuoteDetail ();
-      objclick.strLoanPurpose = 'test';
-      objclick.decCurrLoanAmt = 10.01;
-      objclick.decEstPropVal = 10.01;
-      objclick.decBestRate = 10.01;
-      objclick.decComparison = 10.01;
-      objclick.decMonthlyPayment = 10;
-      objclick.pge_name = 'test';
-     }
+            WLQuoteDetail wlobj=new WLQuoteDetail ();
+            wlobj.pge_name='ClickPostloginQuestionnaires';
+        }      
     }
     
     private static void LoadData()
     {
-        createLead();
-        createAccount();
+        createclickCommunitySetup();
+        createLead(); 
+        CreatePersonAccount();      
         createContact();
         createUser();
-        createOpportunity();
-
+        createProducts();
+        createProduct();
+        createsuggestedProducts();
+        createbankDetails();
+        createLvrRate();
+        createScript();
+        createQuestion();
+        createClickLoanBankDetails();
+        createOpportunity1();
+        
     }
     
+    private static void LoadData1()
+    {
+        createLead1(); 
+        CreatePersonAccount1(); 
+        createclickCommunitySetup();
+        createContact();
+        createUser();
+        createProducts();
+        createProduct();
+        createsuggestedProducts(); 
+        createOpportunity1();   
+    }
+   
     static void createLead()
     {
         objLead = new Lead();
-        Id recorsTypeId  = acfCommon.GetRecordTypeId('Lead','Click Refi');
+        Id recorsTypeId  = ClickCommon.GetRecordTypeId('Lead','Click Refi');
         objLead.FirstName = '+619654922845';
         objLead.LastName = '+619654922845';
         objLead.Email = 'swati.sharma@saasfocus.com';
@@ -232,25 +114,31 @@ private class WLQuoteDetailTracker
         objLead.acfApproximately_how_much_is_your_house__c = 100.01;
         objLead.acfLoan_Amount__c = 100.20;
         objLead.acfIs_Bank_Statement_Submitted__c = true;
-        //objLead.acfIs_Identity_Document_Submitted__c = true;
         objLead.acfIs_Post_Login_Ques_Attempted__c =true;
-        //objLead.acfIs_Identity_Document_Submitted__c =true;
         insert objLead;
-        recorsTypeId  = acfCommon.GetRecordTypeId('Lead','Click New Loans');
-        objLead.RecordTypeId = recorsTypeId;
-        update objLead;
- //   objLead = acfCommonTrackerClass.createLeadForPortal();
     }
-    static void createAccount()
+
+    static void createLead1()
     {
-        objAccount = new Account();
-        objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
+        objLead = new Lead();
+        Id recorsTypeId  = ClickCommon.GetRecordTypeId('Lead','Click New Loans');
+        objLead.FirstName = '+619654922845';
+        objLead.LastName = '+619654922845';
+        objLead.Email = 'swati.sharma@saasfocus.com';
+        objLead.MobilePhone = '+619654922845';
+        objLead.Status = 'Open';
+        objLead.RecordTypeId = recorsTypeId;
+        objLead.acfOneTimePassword__c = '724715';
+        objLead.acfApproximately_how_much_is_your_house__c = 100.01;
+        objLead.acfLoan_Amount__c = 100.20;
+        objLead.acfIs_Bank_Statement_Submitted__c = true;
+        objLead.acfIs_Post_Login_Ques_Attempted__c =true;
+        insert objLead;
     }
+
     
     static void createContact()
     {
-
-      
         objContact = new Contact();
         objContact.acf_lead__c = objLead.id;
         objContact = WLCommontrackerClass.createContact(objContact,objAccount);
@@ -258,17 +146,94 @@ private class WLQuoteDetailTracker
     
     static void createuser()
     {
-        objUser = new User();
-        objUser = WLCommonTrackerClass.CreatePortalUser(objAccount.id);
+         objUser = new User();
+         objUser = WLCommonTrackerClass.CreatePortalUser(accperson.id);
     }
     
-    static void createOpportunity()
+    static void createOpportunity1()
     {
-      objOpportunity = new Opportunity();
-      objOpportunity.acfBankdetailStatus__c = 'Skipped';
-      objOpportunity = WLCommontrackerClass.createOpportunity(objOpportunity,objUser);
+        objOpportunity = new Opportunity();
+        objOpportunity.acfBankdetailStatus__c = 'Skipped';
+        objOpportunity = WLCommontrackerClass.createOpportunity(objOpportunity,objUser);
     }
     
-
+   static void CreatePersonAccount()
+   {
+        accperson=new account();
+        accperson=WLCommontrackerClass.CreatePersonAccount('test','test','test','test@gmail.com',objLead.id);
+        accperson.acfAsset_House_Worth__c=44;
+        update accperson;
+        objLead.acf_partner_account__c=accperson.id;
+        update objLead;
+   }
     
+    static void CreatePersonAccount1()
+    {
+       accperson=new account();
+       accperson=WLCommontrackerClass.CreatePersonAccount('test','test','test','test@gmail.com',objLead.id);
+       update accperson;
+       objLead.acf_partner_account__c=accperson.id;
+       update objLead;
+    }
+    
+     static void createclickCommunitySetup() 
+    {
+        objcommunity = new Click_Community_Setup__c();
+        objcommunity = WLCommontrackerClass.createcommunitysetup();
+    }
+    
+    static void createsuggestedProducts() 
+    {
+         objSuggestedProduct               = new acfSuggested_Product__c();
+         objSuggestedProduct.acfLead__c    = objLead.Id;
+         objSuggestedProduct.acfProduct__c = objProduct.id;
+         objSuggestedProduct = WLCommontrackerClass.createSuggestedProduct();
+    }
+    
+    static void createbankDetails() 
+    {
+         objBankDatail =new acfBank_Detail__c();
+         objBankDatail = WLCommontrackerClass.createBankDetail();
+    }
+    
+    static void createProducts() 
+    {
+         objProduct = new product2();
+         objProduct = WLCommontrackerClass.createProduct(objProduct);
+    }
+    
+    static void createProduct() 
+    {
+         objProducts = new product2();
+         objProducts = WLCommontrackerClass.createProduct(objProducts);
+    }
+    
+    static void createLvrRate() 
+    {
+         objLvrRate = new LVR_Rate__c();
+         objLvrRate= WLCommontrackerClass.createLvrRate(objProduct);
+    }
+    
+    static void createScript() 
+    {
+        scobj = new Script__c();
+        scobj.recordtypeid = Schema.SObjectType.Script__c.getRecordTypeInfosByName().get('Post-Login').getRecordTypeId();
+        scobj.acf_Type__c          = 'Post-Login';
+        scobj.acf_Sequence_no__c   = 1;
+        scobj.acf_Question_Type__c = 'Applicant Details';
+        scobj.Click_Community_Setup__c = ClickCommon.getCommunitySetup('testNetworkId').Id;
+        insert scobj;
+    }
+    
+    static void createClickLoanBankDetails() 
+    {
+         objClickLoanBankDetail = new Click_Loans_Bank__c();
+         objClickLoanBankDetail = WLCommontrackerClass.createClickloan(objBankDatail,objcommunity);
+    }
+    
+    static void createQuestion() 
+    {
+         objQuestion = new Question__c();
+         objQuestion = WLCommontrackerClass.CreatePostLoginQuestions('Who is your current Lender',2,'Post-Login',true,true,scobj.id,'acfApproximately_how_much_is_your_house__c','Question__c',false,'acfAsset_House_Worth__c',true,true);
+    }
 }

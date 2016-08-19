@@ -1,0 +1,47 @@
+<apex:page controller="ACFNewDealIQRuleController">
+    <apex:form id="theForm">
+        <style>
+            .preloader
+            {
+               top:40%;
+               left:50%;
+               position:absolute;
+               //margin-right:80%;
+            }
+            
+        </style>
+        
+        
+        <apex:outputPanel id="thePanel">
+            <apex:pageBlock id="theBlock">
+                <apex:pageBlockButtons >
+                    <apex:commandButton value="New" action="/apex/ClickGlobalConditionsRuleSet"></apex:commandButton>
+                </apex:pageBlockButtons>
+                <apex:pageBlockTable id="theTable" value="{!DealIQRuleListDetail}" var="deall">
+                   <apex:column >
+                        <apex:facet name="header" >Delete</apex:facet>
+                        
+                        <apex:commandLink action="{!deleteCondition}"  rerender="theTable" status="counterStatus" >
+                           
+                            <apex:image value="{!$Resource.deleteimage}" height="30" width="30" />
+                       <apex:param name="dealId"  value="{!deall.id}" assignTo="{!dealId}"/>
+                        </apex:commandLink>
+                   </apex:column>
+                   <apex:column >
+                       <apex:facet name="header">Name</apex:facet>
+                       <apex:commandLink value="{!deall.Name}" action="{!navigateToPage}" >
+                           <apex:param name="dealId"  value="{!deall.id}" assignTo="{!dealId}"/>
+                       </apex:commandLink>
+                   </apex:column>
+                   <apex:column value="{!deall.Active__c}"/>
+                </apex:pageBlockTable>
+                <apex:actionstatus id="counterStatus" starttext="verifying">
+                    <apex:facet name="start">
+                        <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>
+                    </apex:facet>
+                </apex:actionStatus>
+             
+            </apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

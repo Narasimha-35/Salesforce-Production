@@ -1,0 +1,74 @@
+<apex:page controller="ClsDemo">
+    <apex:form >
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlock title="Enter property Address" >
+            <apex:pageBlockSection columns="4">
+                Street Number     
+                <apex:inputText value="{!StreetNumber}" />
+                Street Name      
+                <apex:inputText value="{!StreetName }"/>
+                Street Type      
+                <apex:inputText value="{!StreetType }"/>
+                City              
+                <apex:inputText value="{!City }"/>
+                State              
+                <apex:inputText value="{!State }"/>
+                Post code          
+                <apex:inputText value="{!Postcode }"/>
+            </apex:pageBlockSection>
+            <apex:commandButton value="Get propert Id" action="{!GetPropertyId}" reRender="idblock"/>
+        </apex:pageBlock>
+        <apex:outputPanel id="idblock" >
+        <apex:pageBlock title="Set Avm details"  rendered="{!showAvmpanel1 }">
+            <apex:pageBlockSection columns="4" >
+                propertId  
+                <apex:outputText value="{!propertId }"/>
+                bathrooms 
+                <apex:inputText value="{!bathrooms}" />
+                bedrooms 
+                <apex:inputText value="{!bedrooms}" />
+                carSpaces 
+                <apex:inputText value="{!carSpaces}" />
+                craftsmanshipQuality 
+                <apex:inputText value="{!craftsmanshipQuality}" />
+                floorAreaM2 
+                <apex:inputText value="{!floorAreaM2}" />
+                landAreaM2 
+                <apex:inputText value="{!landAreaM2}" />
+                landAreaM2 
+                <apex:inputText value="{!landAreaM2}" />
+                saleDate 
+                <apex:inputText value="{!saleDate}" />
+                salePrice 
+                <apex:inputText value="{!salePrice}" />
+                valuationDate 
+                <apex:inputText value="{!valuationDate}" />
+                yearBuilt 
+                <apex:inputText value="{!yearBuilt}" />
+            </apex:pageBlockSection>
+            <apex:commandButton value="Get Avm details" action="{!getAvmdetails}" reRender="avmdetails"/>
+        </apex:pageBlock>
+        </apex:outputPanel>
+        <apex:outputPanel id="avmdetails">
+        <apex:pageBlock rendered="{!showAvmpanel2}">
+            <apex:pageBlockSection >
+                <h1>  Avm Request Body-- </h1>
+                {!debuglog}
+            </apex:pageBlockSection>
+            <apex:pageBlockSection >
+                <h1> Estimate Confidence:</h1>
+                <apex:outputText >{!avmFaresDetails  .faresScore}</apex:outputText>
+                <br/>
+                <h1>Estimate Value:</h1>
+                <apex:outputText >{!avmFaresDetails  .faresValueEstimate}</apex:outputText>
+                <br/>
+                <h1> Estimate Value Range:</h1>
+                <apex:outputText > {!avmFaresDetails.faresValueLow} -- {!avmFaresDetails.faresValueHigh}</apex:outputText>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection >
+                <pre> {!StateMessgae }  </pre>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

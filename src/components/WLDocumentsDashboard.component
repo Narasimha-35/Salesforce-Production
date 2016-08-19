@@ -69,11 +69,17 @@ sforce.connection.sessionId = '{!$Api.Session_ID}';
         margin-left: auto;
         margin-right: auto;
     }
+    
+  .custom-file-input:hover::before, .custom-file-input.active::before, a.doc_btn_done:before {
+    background-color: #f98b02;
+    color: #fff;
+   }  
     </style>
     
     <script >
         var j$ = jQuery.noConflict();
     j$(document).ready(function() {
+        j$('[data-toggle="tooltip"]').tooltip();
         //Event listener for click of Upload button
         j$("#uploadButton").click(function(){
           
@@ -316,6 +322,21 @@ sforce.connection.sessionId = '{!$Api.Session_ID}';
     {
        content:'Verify Online'!important 
     }
+     .VerifyEmailStyle:before
+    {
+       content:'Verify via Email And SMS'!important;
+       text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap; 
+    } 
+    
+    
+  
+    
+    
+    .red-tooltip + .tooltip > .tooltip-inner {background-color: #f98b02;}
+    .red-tooltip + .tooltip > .tooltip-arrow { border-bottom-color:#f00!important; }
+
     .NotesStyle:before
     {
        content:'Add Notes'!important 
@@ -324,6 +345,21 @@ sforce.connection.sessionId = '{!$Api.Session_ID}';
     {
        content:'Edit Notes'!important 
     }
+    .VerifyNow:before
+    {
+        content:'Verifying'!important
+    }
+    .VerifyAgain:before
+    {
+        content:'Verify Again'!important
+    }
+    
+    .downloadStyle:before
+    {
+        content:'Download' !important
+        
+    }
+   
     .marginTopVerify
     {
         margin-top:7px;
@@ -338,7 +374,7 @@ sforce.connection.sessionId = '{!$Api.Session_ID}';
         background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}"); 
     }
     .button{
-        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 28px no-repeat;
+        background:#f98b02url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 28px no-repeat;
     }
     .button.getstarted{
         background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 20px no-repeat;
@@ -363,10 +399,10 @@ sforce.connection.sessionId = '{!$Api.Session_ID}';
         background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
     }
     .button.getstarted{
-        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
+        background:#f98b02 url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
     }
     .button.question{
-        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
+        background:#f98b02 url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
     }
     .baner-colum span.anzbank:before,
     .baner-colum span.westpack:before,
@@ -697,7 +733,6 @@ function ajaxindicatorstop()
                     
                };
                reader.readAsArrayBuffer(f);
-               alert('fileindex'+fileindex);
                var oppid = '{!oppIds}';
                WLDashboardDocumentController.uploadMultipleDoc(fileindex,oppid,function(result, event){}); 
               //WLDashboardDocumentController.uploadMultipleDoc(fileindex); 
@@ -782,6 +817,7 @@ function ajaxindicatorstop()
         <div class="col-md-6 col-xs-12">
             
             <!--for bank statement-->
+           
             <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.click_Is_Uploaded__c),true,false)}">
                     <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12 doc_btn_done active" style="margin-bottom:7px;">&nbsp;</span></a>
                     <a href="#"></a>
@@ -800,6 +836,13 @@ function ajaxindicatorstop()
                         <a href="#" onclick="DocPreview('{!Count}');"><span class="upload_doc btnOnline {!if(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,'previewBtntop','')}">&nbsp;</span></a>              
                     </apex:outputPanel>        
             </apex:outputPanel>
+            <apex:outputPanel rendered="{!if(doc.objRequiredDocumnets.Is_Download_Doc__c,true,false)}">
+                  
+                <!--for bank statement-->
+                  <apex:outputPanel > 
+                    <a href="{!doc.objRequiredDocumnets.acfDocument_Master__r.File_Address__c}"  download="file"><span class="custom-file-input col-md-8 col-xs-8 downloadStyle" style="margin-bottom:7px;">&nbsp;</span></a>         
+                 </apex:outputPanel>
+            </apex:outputPanel>  
             <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.Click_Is_Note_Type__c,doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c == false,doc.objRequiredDocumnets.acfStatus__c == 'Note Added'),true,false)}">
                     <a href="#" onclick="addNotes('{!Count}','{!doc.objRequiredDocumnets.Name}')"><span class="custom-file-input col-md-8 col-xs-12 doc_btn_done active EditNotesStyle">&nbsp;</span></a>
             </apex:outputPanel>
@@ -822,15 +865,20 @@ function ajaxindicatorstop()
             </apex:outputPanel>    
             <apex:outputPanel rendered="{!if(doc.objRequiredDocumnets.Click_Is_E_consent__c,true,false)}">
                   <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Pending'}">
-                     <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifiOnlineStyle" style="margin-bottom:7px;">&nbsp;</span></a>              
+                     <script>
+                    $(document).ready(function(){
+                    $('[data-toggle="tooltip"]').tooltip();
+                    });
+                    </script>
+                     <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-12 VerifyEmailStyle red-tooltip" style="margin-bottom:7px;"  data-toggle="tooltip" title="Verify via Email And SMS">&nbsp;</span></a>              
                   </apex:outputPanel> 
                   <p></p>
                   <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'}">
-                    <a href="#" onclick="econsentVerified('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyNow" style="margin-bottom:7px;">&nbsp;</span></a>
-                    <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyAgain" style="margin-bottom:7px;">&nbsp;</span></a>
+                    <a href="#" onclick="econsentVerified('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8  VerifyNow" style="margin-bottom:7px;">&nbsp;</span></a>
+                    <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8  VerifyAgain" style="margin-bottom:7px;">&nbsp;</span></a>
                   </apex:outputPanel>
                   <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Verified'}">
-                    <a href="#"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active" style="margin-bottom:7px;">&nbsp;</span></a>
+                    <a href="#"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active x" style="margin-bottom:7px;">&nbsp;</span></a>
                   </apex:outputPanel>   
             </apex:outputPanel>                      
         </div>
@@ -1019,6 +1067,7 @@ function ajaxindicatorstop()
              </div> 
           </div>                                                
 </div> 
+
 <!--   Econsent Pop up ends here -->               
 </body>  
 <!--Pop up close here-->

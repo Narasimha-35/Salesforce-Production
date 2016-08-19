@@ -1,7 +1,7 @@
 /*====================================================
                 WHITE LABEL
 ========================================================*/
-public class WLpostloginQuestionsController
+public without sharing class WLpostloginQuestionsController
 {
     public String strNRAC { get; set; }
     public integer intQuoteWidth {get;set;}
@@ -70,8 +70,10 @@ public class WLpostloginQuestionsController
     public WLpostloginQuestionsController()
     {
         try
-        {
+        {    if(!test.isRunningtest())
             strNetworkId = Network.getNetworkId();
+        else
+          strNetworkId='test';   
             isConsentDone = false;
             showEconsent2 = false;
             objCommSetup = new Click_Community_Setup__c();
@@ -131,6 +133,7 @@ public class WLpostloginQuestionsController
             LoggedInLeadId  = ClickCommon.getCurrentLoggedInLeadId(UserInfo.getUserId());  
             system.debug('____@@@@____'+LoggedInContact);
             list<Account> lstAccts = getlstusrAccounts(strCurrentLoggedInAccount); //modified by karthik on 22-03-2016
+            System.debug('==lstAccts=='+lstAccts);
             if(lstAccts != null && lstAccts.size()>0)
             {
                 for(click_Applicant__c objApplicant : lstAccts[0].Applicants__r)
@@ -178,7 +181,9 @@ public class WLpostloginQuestionsController
                                             acfAppEmployment_Type__c,acfIs_Applicant_Question__c,acf_Question__c,acf_Script__c,acfEmployment_Type__c,acf_Dependents__c,acf_Postal_Code__c,acf_Type__c,acf_Stage_Name__c,acf_Sequence_No__c ,acfBubble_Text__c,acfWatermark_Text__c,
                                             acfComponent_Type__c,(select id,acf_Answer__c,acf_Question__c,acf_Related_Question__c,acfSequence_No__c from Answer__r order by acfSequence_No__c) from Question__c
                                            where ((acf_Master_Question__r.acf_Script__c in: setScriptId or acf_Script__c in:setScriptId) and acf_Active__c = true and Click_Is_Broker_Question__c = false) order by acf_Sequence_No__c asc ])  
-                {                                      
+                {         
+                                                   System.debug('======objQuestion.click_is_EConsent__c == true====ashish'+objQuestion.click_is_EConsent__c );
+
                     mapQuestionIdToQuestion.put(objQuestion.id,objQuestion);
                     
                     if(objQuestion.acf_Script__c <> null)
@@ -204,6 +209,7 @@ public class WLpostloginQuestionsController
                             }
                        }
                   }
+                     system.debug('Map:::_____----'+mapScriptIdToListOfQuestions);
                   intTotalQuestions++;
                 }
                 If(setQuesLeadAPInames != null && setQuesLeadAPInames.size()>0)
@@ -228,10 +234,11 @@ public class WLpostloginQuestionsController
                     {
                         strApplicaneQues = strApplicaneQues+strApiname+',';
                     }
+                      
                 }
                 mapDependentQuestoValue.putAll(getDependentApiNameToValue(strleadQues,setQuesLeadAPInames,'Lead'));
                 mapDependentQuestoValue.putAll(getDependentApiNameToValue(strAccQues,setQuesAccountAPInames,'Contact'));
-                mapDependentQuestoValue.putAll(getDependentApiNameToValue(strApplicaneQues,setQuesApplicantAPInames,'click_Applicant__c'));
+               mapDependentQuestoValue.putAll(getDependentApiNameToValue(strApplicaneQues,setQuesApplicantAPInames,'click_Applicant__c'));
              
                 //for multiple applicants
                 map<integer,string> mapDecTostring = new map<integer,string>();
@@ -259,6 +266,7 @@ public class WLpostloginQuestionsController
                         objWrapScript.IsSkipQuestions = false;
                         objWrapScript.isEmploymentTypeExist = false;
                         objWrapScript.lstScriptMasterQuestions = new List<WrapperQuestions>();
+                        System.debug('==mapScriptIdToListOfQuestions=='+mapScriptIdToListOfQuestions);
                         if(mapScriptIdToListOfQuestions.get(objScript.id) <> null)
                         {
                             for(Question__c objQuestion: mapScriptIdToListOfQuestions.get(objScript.id))
@@ -271,7 +279,8 @@ public class WLpostloginQuestionsController
                                 objMasterQuestion.lstCheckBoxAnswer  = new List<string>();
                                 objMasterQuestion.IsApplicant2Question = false;
                                 objMasterQuestion.lstRelatedQuestion    = new List<WrapperQuestions>();
-                                objMasterQuestion.isConsent=false;  
+                                objMasterQuestion.isConsent=false; 
+                                System.debug('======objQuestion.click_is_EConsent__c == true===='+objQuestion.click_is_EConsent__c );
                                 if(objQuestion.click_is_EConsent__c == true)
                                 {
                                     objMasterQuestion.isConsent=true;
@@ -335,6 +344,7 @@ public class WLpostloginQuestionsController
                                 lstMasterWrapperQuestion.add(objMasterQuestion);                            
                                 objWrapScript.lstScriptMasterQuestions.add(objMasterQuestion);
                             }
+                            System.debug('==lstMasterWrapperQuestion@#$%ashish'+lstMasterWrapperQuestion);
                             // For Applicant Detail script.
                             if(objWrapScript.objScript.clickAsk_for_every_applicant__c == true && intNoOfApplicants <> null)
                             {
@@ -492,7 +502,7 @@ public class WLpostloginQuestionsController
                                    IsExitfromLoop = true;
                                    break;
                                 }
-                                else if(objQuestions.IsApplicant2Question && mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acf_ApiName__c)==null)
+                                else if(objQuestions.IsApplicant2Question &&mapApplicantAPINameToSelectedAnswer.get(objQuestions.strApplicantRecNo+objQuestions.objWrapQuestion.acf_ApiName__c)==null)
                                 {
                                    IsExitfromLoop = true;
                                    break;
@@ -806,25 +816,31 @@ public class WLpostloginQuestionsController
         }
         
         Click_Community_Setup__c objCommunity = ClickCommon.getCommunitySetup(Network.getNetWorkId());
-        PageReference pg = new PageReference(URL.getSalesforceBaseUrl().toExternalForm()+'/'+objCommunity.Click_Page_Prefix__c+'PostloginQuestionnaires');
+        PageReference pg = new PageReference(objCommunity.Click_URL__c+'/'+objCommunity.Click_Page_Prefix__c+'PostloginQuestionnaires');
         pg.setRedirect(true);
         return pg;    
     }
         
     public PageReference sendEmailAndSMS2() {
+        System.debug('@#$%^MasterQuesNo@@ashish'+MasterQuesNo);
+        System.debug('@#$%^lstMasterWrapperQuestion@@ashish'+lstMasterWrapperQuestion.size());
         string encodedDate=string.valueOf(System.currentTimeMillis());
         List<click_Applicant__c> lstApp = new List<click_Applicant__c>(); 
         string econsentId='';
         strmsg = '';
+        EmailTemplate templateId =new EmailTemplate();
+        Click_Community_Setup__c objCommunity = ClickCommon.getCommunitySetup(Network.getNetWorkId());
         
         boolean isValidFields=true;
-        EmailTemplate templateId =new EmailTemplate();                
+        
         templateId = [select id,subject,body, name,HtmlValue from EmailTemplate where DeveloperName = 'GenericEConsent' AND isActive=true];
+                        
         List<Messaging.SingleEmailMessage> lstMail = new List<Messaging.SingleEmailMessage>(); 
+        
         if(MasterQuesNo < lstMasterWrapperQuestion.size())
         {
             system.debug('MasterQuesNo -->>>'+MasterQuesNo);
-            Click_Community_Setup__c objCommunity = ClickCommon.getCommunitySetup(Network.getNetWorkId());
+            
             WrapperQuestions objQuestion =  lstMasterWrapperQuestion[MasterQuesNo];
             for(ApplicantDetailsWrapper aWrapper:objQuestion.appDetailsWrapList)
             {
@@ -883,7 +899,7 @@ public class WLpostloginQuestionsController
                         system.debug('###check1'+mapAppNoToApp.get(string.valueof(aWrapper.applicantRecNo)).acf_Applicant_Name__c);
                         body=body.replace('{!Account.Name}',mapAppNoToApp.get(string.valueof(aWrapper.applicantRecNo)).acf_Applicant_Name__c);
                         body = body.replace('{!Site.Label}',objCommunity.Name); 
-                        body = body.replace('baseurl',URL.getSalesforceBaseUrl().toExternalForm());
+                        body = body.replace('baseurl',objCommunity.Click_URL__c);
                         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
                         String[] toaddress=new List<String>();
                         toaddress.add(aWrapper.appEmail); 
@@ -891,13 +907,20 @@ public class WLpostloginQuestionsController
                         mail.setToAddresses(toaddress);
                         mail.setSubject(templateId.Subject);
                         mail.setHtmlBody(body);
+                        string mobileMessage = '';
                         
                         lstMail.add(mail);
-                        string mobileMessage=Label.Applicant_E_consent_message;
+                        if(objCommunity.Click_Page_Prefix__c == 'ACF'){
+                             mobileMessage=Label.Applicant_Econsent_Message_ACF; 
+                        }
+                        else 
+                        {
+                            mobileMessage=Label.Applicant_E_consent_message;
+                        } 
                         mobileMessage=mobileMessage.replace('{!econsentid}',finalData);
                         mobileMessage=mobileMessage.replace('{!Account.Name}',mapAppNoToApp.get(string.valueof(aWrapper.applicantRecNo)).acf_Applicant_Name__c);
-                        acfCommon.SendSMSUsingFuture(mapAppNoToApp.get(string.valueof(aWrapper.applicantRecNo)).acf_Applicant_Name__c,aWrapper.appMobile,mobileMessage,true);
-                        system.debug('mail Sent');
+                        acfCommon.SendSMSUsingFutureEconsent(mapAppNoToApp.get(string.valueof(aWrapper.applicantRecNo)).acf_Applicant_Name__c,aWrapper.appMobile,mobileMessage,true,objCommunity.Click_Page_Prefix__c);
+                        system.debug('SMS Sent');
                         isAppDetailDone = true;
                         
                     }
@@ -905,8 +928,9 @@ public class WLpostloginQuestionsController
             } 
             if(isValidFields == true){
                 Messaging.sendEmail(lstMail);
-                update lstApp;  
-                PageReference pg = new PageReference(URL.getSalesforceBaseUrl().toExternalForm()+'/'+objCommunity.Click_Page_Prefix__c+'PostloginQuestionnaires');
+                update lstApp; 
+                
+                PageReference pg = new PageReference(objCommunity.Click_URL__c+'/'+objCommunity.Click_Page_Prefix__c+'PostloginQuestionnaires');
                 pg.setRedirect(true);
                 return pg;    
                 //NextQuestion();
@@ -935,13 +959,14 @@ public class WLpostloginQuestionsController
     }
     
     public pagereference checkUserResponse(){
-        PageReference pg = new PageReference('/ClickPostloginQuestionnaires');
+         Click_Community_Setup__c objCommunity = ClickCommon.getCommunitySetup(Network.getNetWorkId());
+         PageReference pg = new PageReference(objCommunity.Click_URL__c+'/'+objCommunity.Click_Page_Prefix__c+'PostloginQuestionnaires');
         pg.setRedirect(true);
-        return pg;    
+        return pg;       
     }
 
     
-    Public pagereference redirect(){
+    Public pagereference redirect(){ 
      
       if(objCommSetup != null && strNetworkId != null)
       {
@@ -1882,14 +1907,17 @@ public class WLpostloginQuestionsController
     }
     
     
-    public void insertConsentRequired(String leadId){
+   /* public void insertConsentRequired(String leadId){
         List<Required_Document__c> lstRequireddoc = new List<Required_Document__c>();
         list<Document_Master__c> lstDocumentmaster = new list<Document_Master__c>();
         list<Account> lstAccts = getlstusrAccounts(strCurrentLoggedInAccount); 
         string econsent = system.Label.acfEConsent;
-        lstDocumentmaster = [select id,Name,acf_Source__c,acfActive__c from Document_Master__c where acf_Source__c = :econsent And acfActive__c = true];
+        system.debug('###123'+Network.getNetworkId());
+        Click_Community_Setup__c objCommunity = ClickCommon.getCommunitySetup(Network.getNetWorkId());
+        lstDocumentmaster = [select id,Name,acf_Source__c,acfActive__c from Document_Master__c where acf_Source__c = :econsent And acfActive__c = true AND Click_Community_Setup__c =:objCommunity.id];
+        system.debug('@@@'+lstDocumentmaster);
         
-        if(lstAccts != null && lstAccts.size()>0){
+        if(lstAccts != null && lstAccts.size()>0 &&lstDocumentmaster.size() >0){
             for(click_Applicant__c objApplicant : lstAccts[0].Applicants__r){
                 Required_Document__c objRequiredDocument  =  new Required_Document__c();
                 objRequiredDocument.Name                  =  lstDocumentmaster[0].Name +' ' +objApplicant.click_Applicant_Number__c;
@@ -1908,12 +1936,12 @@ public class WLpostloginQuestionsController
         } 
         if(!lstRequireddoc.IsEmpty())
             insert lstRequireddoc;
-    } 
+    } */
     //Inserting Required Documents and Suggested Documents
     public void InsertRequiredDocuments(Id LeadID,List<WrapperQuestions>lstWrapperQuestion)
     {
         set<string>setSelectedAnswer = new set<string>();
-        insertConsentRequired(LeadID);
+        //insertConsentRequired(LeadID);
         //Inserting Required Documents based on Answer selected.
         for(WrapperQuestions objQuestions:lstWrapperQuestion)
         {

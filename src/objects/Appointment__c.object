@@ -111,6 +111,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Account_Mercury_Id__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Account.Mercury_People_ID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Mercury Id</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Account_Name_Text__c</fullName>
         <externalId>false</externalId>
         <formula>Opportunity__r.Account.FirstName &amp; &quot; &quot; &amp; Opportunity__r.Account.LastName</formula>
@@ -317,6 +329,18 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>BrokerChannel__c</fullName>
+        <description>this field is for separate phone and f2f broker in potential deal report</description>
+        <externalId>false</externalId>
+        <formula>TEXT(Broker__r.Channel__c)</formula>
+        <label>Broker Channel</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Broker_Email_2__c</fullName>
         <externalId>false</externalId>
         <label>Broker Email 2</label>
@@ -443,6 +467,67 @@ Please check which Broker you&apos;re allocating to this Appointment</errorMessa
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Cancellation_Notes__c</fullName>
+        <description>Notes for why an appointment has been cancelled.</description>
+        <externalId>false</externalId>
+        <label>Cancellation Notes</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Cancellation_Reasons__c</fullName>
+        <description>Reasons why an appointment was cancelled by customer or acf initiated.</description>
+        <externalId>false</externalId>
+        <label>Cancellation Reasons</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Construction not Complete</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lack of Commitment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lack of Deposit</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Out of Area</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Recently Refinanced</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Serviceability - Employment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Serviceability - Income</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Serviceability - LVR</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unable to reach customer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
     </fields>
     <fields>
         <fullName>Cancelled_Unable_to_reach_customer__c</fullName>
@@ -697,6 +782,28 @@ Built so EOD report works</description>
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>Manager_Contact_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Manager Contact Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Manager_Contact_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Manager Contact Notes</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Market_Region__c</fullName>
         <externalId>false</externalId>
         <formula>Text (Market__r.Market_Region__c)</formula>
@@ -836,6 +943,16 @@ Built so EOD report works</description>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Potential_Deal__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Potential Deal</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Pre_Sales_Notes__c</fullName>
         <externalId>false</externalId>
         <label>Pre Sales Notes</label>
@@ -935,14 +1052,53 @@ Built so EOD report works</description>
         <visibleLines>6</visibleLines>
     </fields>
     <fields>
+        <fullName>Retraining_Actions__c</fullName>
+        <description>Notes fo retraining pre-sales. Related to appointments which were not successful.</description>
+        <externalId>false</externalId>
+        <label>Retraining Actions</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Retraining_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Use this box when pre-sales retraining has been completed. Related to the EOD report.</description>
+        <externalId>false</externalId>
+        <label>Retraining Complete</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Retraining_Required__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Dose the pre-sales agent require retraining post unsuccessful appointment</description>
+        <externalId>false</externalId>
+        <label>Retraining Required</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>STP_Forecast_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>STP Forecast Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>Speciality_Skills__c</fullName>
         <externalId>false</externalId>
         <label>Speciality Skills</label>
         <picklist>
-            <picklistValues>
-                <fullName>Commercial</fullName>
-                <default>false</default>
-            </picklistValues>
             <picklistValues>
                 <fullName>Complex Investments</fullName>
                 <default>false</default>
@@ -956,7 +1112,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Specialty Lending</fullName>
+                <fullName>SK-Commercial</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SK-Specialty Lending</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -964,43 +1124,39 @@ Built so EOD report works</description>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Pot 1</fullName>
+                <fullName>Pod 1</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Pot 2</fullName>
+                <fullName>Pod 2</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Pot 3</fullName>
+                <fullName>Pod 3</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Pot 4</fullName>
+                <fullName>Pod 4</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Pot 5</fullName>
+                <fullName>Pod 5</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Pot 6</fullName>
+                <fullName>Pod 6</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Pot 7</fullName>
+                <fullName>Pod 7</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Pot 8</fullName>
+                <fullName>Pod 8</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Sasha Anitei</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Alex Nassar</fullName>
+                <fullName>Alex Papadimitriou</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1008,11 +1164,15 @@ Built so EOD report works</description>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Andrew Perry</fullName>
+                <fullName>Andy Rajpurohit</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Andy Rajpurohit</fullName>
+                <fullName>Anthony Arida</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Ben Murray</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1020,15 +1180,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Cameron Langton</fullName>
+                <fullName>Chris Rayner</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Craig Thompson</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>David Learn</fullName>
+                <fullName>Damien Mckay</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1036,15 +1192,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Gerry Bruno</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Graeme Chapman</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Henry Giguere</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Jacqui Gray</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1052,43 +1204,27 @@ Built so EOD report works</description>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>James Wu</fullName>
+                <fullName>Joseph Eichenblatt</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Nick Devai</fullName>
+                <fullName>Tim McKenzie</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Nick O&apos;sullivan</fullName>
+                <fullName>Aaron Plumridge</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Robert Gallacher</fullName>
+                <fullName>Andre Spaapen</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Sherrill Ng</fullName>
+                <fullName>Christopher Coombes</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Tsum Li Lo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tzuri Avila</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Uday Dhir</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Valan Redmond</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Zachary Bombardieri</fullName>
+                <fullName>Sulaiman Underabi</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -1225,23 +1361,11 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Adelaide Appointments Due Next 7 Days</label>
-    </listViews>
-    <listViews>
-        <fullName>All</fullName>
-        <columns>RECORDTYPE</columns>
-        <columns>NAME</columns>
-        <columns>Appointment_Date_and_Time__c</columns>
-        <columns>Appointment_Type__c</columns>
-        <columns>Appointment_Status__c</columns>
-        <columns>Broker__c</columns>
-        <columns>Market__c</columns>
-        <columns>CREATEDBY_USER</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>UPDATEDBY_USER</columns>
-        <columns>LAST_UPDATE</columns>
-        <columns>Opportunity__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>All</label>
+        <sharedTo>
+            <portalRole>ACFPartnerManager</portalRole>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Allocation_NSW</fullName>
@@ -1285,7 +1409,7 @@ Built so EOD report works</description>
         <sharedTo>
             <role>Back_Office_Team</role>
             <role>Executive_Team</role>
-            <role>Production_Leader</role>
+            <role>Production_Management</role>
             <role>Production_Team</role>
         </sharedTo>
     </listViews>
@@ -1331,7 +1455,8 @@ Built so EOD report works</description>
         <sharedTo>
             <role>Back_Office_Team</role>
             <role>Executive_Team</role>
-            <role>Production_Leader</role>
+            <role>Phone_Broker_Management</role>
+            <role>Production_Management</role>
             <role>Production_Team</role>
         </sharedTo>
     </listViews>
@@ -1377,7 +1502,8 @@ Built so EOD report works</description>
         <sharedTo>
             <role>Back_Office_Team</role>
             <role>Executive_Team</role>
-            <role>Production_Leader</role>
+            <role>Partner_Broker_Management</role>
+            <role>Production_Management</role>
             <role>Production_Team</role>
         </sharedTo>
     </listViews>
@@ -1423,7 +1549,7 @@ Built so EOD report works</description>
         <sharedTo>
             <role>Back_Office_Team</role>
             <role>Executive_Team</role>
-            <role>Production_Leader</role>
+            <role>Production_Management</role>
             <role>Production_Team</role>
         </sharedTo>
     </listViews>
@@ -1469,7 +1595,7 @@ Built so EOD report works</description>
         <sharedTo>
             <role>Back_Office_Team</role>
             <role>Executive_Team</role>
-            <role>Production_Leader</role>
+            <role>Production_Management</role>
             <role>Production_Team</role>
         </sharedTo>
     </listViews>
@@ -1515,7 +1641,63 @@ Built so EOD report works</description>
         <sharedTo>
             <role>Back_Office_Team</role>
             <role>Executive_Team</role>
-            <role>Production_Leader</role>
+            <role>Production_Management</role>
+            <role>Production_Team</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Ane_Gross_Appointments</fullName>
+        <columns>NAME</columns>
+        <columns>Account_Name__c</columns>
+        <columns>Broker__c</columns>
+        <columns>Appointment_Status__c</columns>
+        <columns>Appointment_Date_and_Time__c</columns>
+        <columns>Market__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Pre_Sales_User__c</field>
+            <operation>equals</operation>
+            <value>Ane Latavao</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>LAST_N_DAYS:8</value>
+        </filters>
+        <label>Ane - Gross Appts</label>
+        <sharedTo>
+            <role>Presales_Team</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Appointments_Cancelled_or_No_Show_Today</fullName>
+        <columns>RECORDTYPE</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Market__c</columns>
+        <columns>Brokers_in_Market__c</columns>
+        <columns>Broker__c</columns>
+        <columns>Appointment_Date_and_Time__c</columns>
+        <columns>NAME</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>Appointment_Status__c</columns>
+        <columns>Appointment_Type__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LAST_UPDATE</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <filters>
+            <field>Appointment_Status__c</field>
+            <operation>equals</operation>
+            <value>Cancelled,No Show</value>
+        </filters>
+        <label>Appointments Cancelled or No Show Today</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+            <role>Production_Management</role>
             <role>Production_Team</role>
         </sharedTo>
     </listViews>
@@ -1552,6 +1734,10 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Brisbane Appointments Due Next 7 Days</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Broker_liason_list</fullName>
@@ -1588,9 +1774,9 @@ Built so EOD report works</description>
         <label>Broker Liason List</label>
         <sharedTo>
             <role>Executive_Team</role>
-            <role>Presales_Leader</role>
+            <role>Presales_Management</role>
             <role>Presales_Team</role>
-            <role>Production_Leader</role>
+            <role>Production_Management</role>
             <role>Production_Team</role>
         </sharedTo>
     </listViews>
@@ -1627,6 +1813,10 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Canberra Appointment Due 7 Days</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Central_Coast_Appointment_Due_Next_7Days</fullName>
@@ -1661,6 +1851,12 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Central Coast Appointment Due Next 7Days</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+            <role>Production_Management</role>
+            <role>Production_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Gold_Coast_Appointment_Due_Next_7Days</fullName>
@@ -1695,6 +1891,12 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Gold Coast Appointment Due Next 7 Days</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+            <role>Production_Management</role>
+            <role>Production_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Illawarra_Appointment_Due_Next_7Days</fullName>
@@ -1729,27 +1931,11 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Illawarra Appointment Due Next 7 Days</label>
-    </listViews>
-    <listViews>
-        <fullName>Lead_Per_Broker</fullName>
-        <columns>NAME</columns>
-        <columns>Amount__c</columns>
-        <columns>Appointment_Date_and_Time__c</columns>
-        <columns>Broker__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Appointment_Time_and_Date_Adj__c</field>
-            <operation>greaterOrEqual</operation>
-            <value>3/1/2015 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>Market__c</field>
-            <operation>equals</operation>
-            <value>Phone Broker Market</value>
-        </filters>
-        <label>Lead Per Broker</label>
         <sharedTo>
-            <roleAndSubordinates>Cars_Leader</roleAndSubordinates>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+            <role>Production_Management</role>
+            <role>Production_Team</role>
         </sharedTo>
     </listViews>
     <listViews>
@@ -1785,15 +1971,22 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Melbourne Appointments Due Next 7 Days</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+            <role>Production_Management</role>
+            <role>Production_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>My_Appointments_Due_Today</fullName>
         <columns>NAME</columns>
+        <columns>Appointment_Call_Status__c</columns>
         <columns>Appointment_Status__c</columns>
         <columns>Appointment_Type__c</columns>
+        <columns>Appointment_Date_and_Time__c</columns>
         <columns>Account_Name__c</columns>
         <columns>Broker__c</columns>
-        <columns>Broker_Mobile__c</columns>
         <filterScope>Mine</filterScope>
         <filters>
             <field>RECORDTYPE</field>
@@ -1801,42 +1994,18 @@ Built so EOD report works</description>
             <value>Appointment__c.Confirmed_Appointment</value>
         </filters>
         <filters>
-            <field>Broker__c</field>
-            <operation>notEqual</operation>
-            <value>Unallocated Broker</value>
-        </filters>
-        <filters>
             <field>Appointment_Date_and_Time__c</field>
             <operation>equals</operation>
             <value>TODAY</value>
         </filters>
+        <filters>
+            <field>Appointment_Type__c</field>
+            <operation>equals</operation>
+            <value>Phone Appointment</value>
+        </filters>
         <label>*My Appointments Due Today</label>
         <sharedTo>
             <role>Executive_Team</role>
-            <roleAndSubordinates>Presales_Leader</roleAndSubordinates>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>My_Appointments_Review</fullName>
-        <columns>NAME</columns>
-        <columns>LAST_UPDATE</columns>
-        <columns>Account_Name__c</columns>
-        <columns>Pre_Sales_User__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Date_Time_Confirmed__c</field>
-            <operation>greaterOrEqual</operation>
-            <value>6/1/2014 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>Broker__c</field>
-            <operation>equals</operation>
-            <value>Adam McDowell</value>
-        </filters>
-        <label>My Appointments Review</label>
-        <sharedTo>
-            <role>Executive_Team</role>
-            <role>Phone_Broker_Team</role>
         </sharedTo>
     </listViews>
     <listViews>
@@ -1866,7 +2035,6 @@ Built so EOD report works</description>
         <label>*My Appointments Yesterday</label>
         <sharedTo>
             <role>Executive_Team</role>
-            <roleAndSubordinates>Presales_Leader</roleAndSubordinates>
         </sharedTo>
     </listViews>
     <listViews>
@@ -1884,38 +2052,65 @@ Built so EOD report works</description>
             <value>Appointment__c.Closed_Appointment</value>
         </filters>
         <label>*My Closed Appointments</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>My_Confirmed_Appointments</fullName>
         <columns>NAME</columns>
         <columns>Appointment_Call_Status__c</columns>
         <columns>RECORDTYPE</columns>
+        <columns>Appointment_Date_and_Time__c</columns>
         <columns>Appointment_Status__c</columns>
         <columns>Account_Name__c</columns>
         <columns>Broker__c</columns>
-        <columns>Appointment_Date_and_Time__c</columns>
-        <filterScope>Everything</filterScope>
+        <filterScope>Mine</filterScope>
         <filters>
-            <field>Market__c</field>
+            <field>Appointment_Type__c</field>
             <operation>equals</operation>
-            <value>phone broker market</value>
+            <value>Phone Appointment</value>
         </filters>
         <filters>
             <field>Appointment_Status__c</field>
             <operation>equals</operation>
-            <value>Allocated</value>
+            <value>New,Allocated</value>
         </filters>
         <filters>
             <field>Appointment_Date_and_Time__c</field>
-            <operation>lessOrEqual</operation>
+            <operation>equals</operation>
             <value>TODAY</value>
         </filters>
+        <label>*My Confirmed Appointments</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>My_Gross_Appointments</fullName>
+        <columns>NAME</columns>
+        <columns>Account_Name__c</columns>
+        <columns>Broker__c</columns>
+        <columns>Pre_Sales_User__c</columns>
+        <columns>Market__c</columns>
+        <columns>Appointment_Date_and_Time__c</columns>
+        <columns>Appointment_Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATEDBY_USER</field>
+            <operation>equals</operation>
+            <value>Daniel Jagelman</value>
+        </filters>
         <filters>
             <field>Appointment_Date_and_Time__c</field>
-            <operation>greaterThan</operation>
-            <value>8/1/2015 12:00 AM</value>
+            <operation>equals</operation>
+            <value>LAST_N_DAYS:8</value>
         </filters>
-        <label>*My Confirmed Appointments</label>
+        <label>PreSales - Gross Appts</label>
+        <sharedTo>
+            <role>Presales_Management</role>
+            <role>Presales_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>My_New_Appointments</fullName>
@@ -1932,6 +2127,37 @@ Built so EOD report works</description>
             <value>Appointment__c.New_Appointment</value>
         </filters>
         <label>*My New Appointments (unconfirmed)</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>NSW_ACT_Brokers</fullName>
+        <columns>NAME</columns>
+        <columns>STP_Forecast_Date__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Broker_Name__c</columns>
+        <columns>Manager_Contact_Notes__c</columns>
+        <columns>Manager_Contact_Date__c</columns>
+        <columns>Potential_Deal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>State__c</field>
+            <operation>equals</operation>
+            <value>New South Wales,Australian Capital Territory</value>
+        </filters>
+        <filters>
+            <field>Potential_Deal__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Appointment__c.Closed_Appointment</value>
+        </filters>
+        <label>NSW / ACT Brokers</label>
     </listViews>
     <listViews>
         <fullName>Newcastle_Appointments_Due_Next_7_Days</fullName>
@@ -1966,6 +2192,12 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Newcastle Appointments Due Next 7 Days</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+            <role>Production_Management</role>
+            <role>Production_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>No_Shows</fullName>
@@ -1987,16 +2219,54 @@ Built so EOD report works</description>
         <filters>
             <field>Appointment_Date_and_Time__c</field>
             <operation>lessThan</operation>
-            <value>12/1/2014 12:00 AM</value>
+            <value>10/30/2015 12:00 AM</value>
         </filters>
         <filters>
             <field>Appointment_Date_and_Time__c</field>
             <operation>greaterThan</operation>
-            <value>11/1/2014 12:00 AM</value>
+            <value>10/1/2015 12:00 AM</value>
         </filters>
         <label>No Shows</label>
         <sharedTo>
-            <roleAndSubordinatesInternal>Executive_Team</roleAndSubordinatesInternal>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+            <role>Phone_Broker_Management</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>No_Shows_sw</fullName>
+        <columns>NAME</columns>
+        <columns>Broker__c</columns>
+        <columns>Account_Name__c</columns>
+        <columns>Appointment_Call_Status__c</columns>
+        <columns>Appointment_Status__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Appointment_Status__c</field>
+            <operation>equals</operation>
+            <value>No Show</value>
+        </filters>
+        <filters>
+            <field>Appointment_Date_and_Time__c</field>
+            <operation>lessThan</operation>
+            <value>10/30/2015 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>Appointment_Date_and_Time__c</field>
+            <operation>greaterThan</operation>
+            <value>10/1/2015 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>Appointment_Type__c</field>
+            <operation>equals</operation>
+            <value>Phone Appointment</value>
+        </filters>
+        <label>No Shows sw</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+            <role>Phone_Broker_Management</role>
         </sharedTo>
     </listViews>
     <listViews>
@@ -2017,8 +2287,8 @@ Built so EOD report works</description>
             <value>TODAY</value>
         </filters>
         <filters>
-            <field>Market_Region__c</field>
-            <operation>equals</operation>
+            <field>Region__c</field>
+            <operation>contains</operation>
             <value>Perth</value>
         </filters>
         <filters>
@@ -2032,6 +2302,12 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Perth Appointments Due Next 7 Days</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+            <role>Production_Management</role>
+            <role>Production_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>PhoneBroker_Appointments_Due_Next_7_Days</fullName>
@@ -2066,6 +2342,10 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>PhoneBroker Appointments Due Next 7 Das</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Phone_Broker_Management</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>PhoneBroker_Appointments_Due_past</fullName>
@@ -2102,43 +2382,115 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>PhoneBroker Appointments In the past</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Phone_Broker_Management</role>
+        </sharedTo>
     </listViews>
     <listViews>
-        <fullName>Sarahs_Appointments</fullName>
+        <fullName>Phone_Broker_Allocated</fullName>
         <columns>NAME</columns>
-        <columns>Appointment_Call_Status__c</columns>
-        <columns>RECORDTYPE</columns>
-        <columns>Appointment_Status__c</columns>
-        <columns>Account_Name__c</columns>
-        <columns>Broker__c</columns>
-        <columns>Appointment_Date_and_Time__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Market__c</field>
-            <operation>equals</operation>
-            <value>phone broker market</value>
-        </filters>
+        <columns>STP_Forecast_Date__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Broker_Name__c</columns>
+        <columns>Manager_Contact_Notes__c</columns>
+        <columns>Manager_Contact_Date__c</columns>
+        <columns>Potential_Deal__c</columns>
+        <filterScope>Mine</filterScope>
         <filters>
             <field>Appointment_Status__c</field>
             <operation>equals</operation>
             <value>Allocated</value>
         </filters>
+        <label>Phone Broker Allocated</label>
+    </listViews>
+    <listViews>
+        <fullName>Phone_Brokers</fullName>
+        <columns>NAME</columns>
+        <columns>STP_Forecast_Date__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Broker_Name__c</columns>
+        <columns>Manager_Contact_Notes__c</columns>
+        <columns>Manager_Contact_Date__c</columns>
+        <columns>Potential_Deal__c</columns>
+        <filterScope>Everything</filterScope>
         <filters>
-            <field>Appointment_Date_and_Time__c</field>
-            <operation>lessOrEqual</operation>
-            <value>TODAY</value>
-        </filters>
-        <filters>
-            <field>Appointment_Date_and_Time__c</field>
-            <operation>greaterThan</operation>
-            <value>8/1/2015 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>CREATEDBY_USER</field>
+            <field>Appointment_Type__c</field>
             <operation>equals</operation>
-            <value>Sarah Moore</value>
+            <value>Phone Appointment</value>
         </filters>
-        <label>Sarah&apos;s Appointments</label>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Appointment__c.Closed_Appointment</value>
+        </filters>
+        <filters>
+            <field>Potential_Deal__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Phone Brokers</label>
+    </listViews>
+    <listViews>
+        <fullName>PreSales_Vetting_Group</fullName>
+        <columns>NAME</columns>
+        <columns>Appointment_Date_and_Time__c</columns>
+        <columns>Market_Region__c</columns>
+        <columns>Broker__c</columns>
+        <columns>Broker_Mobile__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Pre_Sales_User__c</field>
+            <operation>equals</operation>
+            <value>Daniel Watkins</value>
+        </filters>
+        <filters>
+            <field>UPDATEDBY_USER</field>
+            <operation>notEqual</operation>
+            <value>Mike Oconnor,Bianca Simpson,Luke Tran</value>
+        </filters>
+        <label>PreSales Vetting Group</label>
+        <sharedTo>
+            <role>Broker_Liaison</role>
+            <role>Presales_Management</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>QLD_Brokers</fullName>
+        <columns>NAME</columns>
+        <columns>STP_Forecast_Date__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Broker_Name__c</columns>
+        <columns>Manager_Contact_Notes__c</columns>
+        <columns>Manager_Contact_Date__c</columns>
+        <columns>Potential_Deal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>State__c</field>
+            <operation>equals</operation>
+            <value>Queensland</value>
+        </filters>
+        <filters>
+            <field>Potential_Deal__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Appointment__c.Closed_Appointment</value>
+        </filters>
+        <filters>
+            <field>Appointment_Type__c</field>
+            <operation>notEqual</operation>
+            <value>Phone Appointment</value>
+        </filters>
+        <label>QLD Brokers</label>
     </listViews>
     <listViews>
         <fullName>Sunshine_Coast_Appointment_Due_7_Days</fullName>
@@ -2173,6 +2525,10 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Sunshine Coast Appointment Due 7 Days</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Sydney_Appointments_Due_Next_7_Days</fullName>
@@ -2207,6 +2563,10 @@ Built so EOD report works</description>
             <value>New,Allocated</value>
         </filters>
         <label>Sydney Appointments Due Next 7 Days</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Partner_Broker_Management</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Unallocated_Broker</fullName>
@@ -2246,131 +2606,111 @@ Built so EOD report works</description>
         </filters>
         <label>Unallocated Broker</label>
         <sharedTo>
-            <roleAndSubordinatesInternal>Broker_Leader</roleAndSubordinatesInternal>
-            <roleAndSubordinatesInternal>Executive_Team</roleAndSubordinatesInternal>
-            <roleAndSubordinatesInternal>Presales_Leader</roleAndSubordinatesInternal>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>appt_allocated_test</fullName>
-        <booleanFilter>1 AND 2 AND 3</booleanFilter>
-        <columns>NAME</columns>
-        <columns>Broker__c</columns>
-        <columns>Account_Name__c</columns>
-        <columns>Current_Lender__c</columns>
-        <columns>Mobile__c</columns>
-        <columns>Market__c</columns>
-        <columns>Opportunity__c</columns>
-        <columns>Appointment_Status__c</columns>
-        <columns>CREATEDBY_USER</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Appointment_Status__c</field>
-            <operation>equals</operation>
-            <value>Allocated</value>
-        </filters>
-        <filters>
-            <field>Appointment_Date_and_Time__c</field>
-            <operation>lessThan</operation>
-            <value>3/21/2015 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>Appointment_Date_and_Time__c</field>
-            <operation>greaterThan</operation>
-            <value>3/15/2015 12:00 AM</value>
-        </filters>
-        <label>Appt Allocated test</label>
-    </listViews>
-    <listViews>
-        <fullName>baley_future_view</fullName>
-        <columns>Appointment_Date_and_Time__c</columns>
-        <columns>Market__c</columns>
-        <columns>Broker__c</columns>
-        <columns>LAST_UPDATE</columns>
-        <columns>CREATEDBY_USER</columns>
-        <columns>Current_Loan_Value__c</columns>
-        <columns>City__c</columns>
-        <columns>State__c</columns>
-        <columns>Transaction_Type__c</columns>
-        <columns>NAME</columns>
-        <columns>Opportunity__c</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>Appointment_Status__c</columns>
-        <columns>RECORDTYPE</columns>
-        <columns>Appointment_Type__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>Appointment__c.Confirmed_Appointment</value>
-        </filters>
-        <filters>
-            <field>CREATED_DATE</field>
-            <operation>greaterThan</operation>
-            <value>5/19/2014 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>Appointment_Status__c</field>
-            <operation>equals</operation>
-            <value>Allocated</value>
-        </filters>
-        <filters>
-            <field>Appointment_Date_and_Time__c</field>
-            <operation>greaterOrEqual</operation>
-            <value>4/1/2015 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>Appointment_Date_and_Time__c</field>
-            <operation>lessOrEqual</operation>
-            <value>4/10/2015 12:00 AM</value>
-        </filters>
-        <label>Baley&apos;s Future View - Allocated</label>
-        <sharedTo>
             <role>Executive_Team</role>
-            <role>Presales_Leader</role>
-            <role>Production_Leader</role>
+            <role>Phone_Broker_Management</role>
+            <role>Presales_Management</role>
+            <role>Production_Management</role>
             <role>Production_Team</role>
         </sharedTo>
     </listViews>
     <listViews>
-        <fullName>chen_test</fullName>
+        <fullName>Unallocated_Broker_Phone</fullName>
         <columns>NAME</columns>
-        <columns>Appointment_Date_and_Time__c</columns>
-        <columns>Market_Region__c</columns>
-        <columns>Market__c</columns>
-        <columns>City__c</columns>
         <columns>Broker__c</columns>
+        <columns>Appointment_Date_and_Time__c</columns>
         <columns>Current_Loan_Value__c</columns>
-        <columns>CREATEDBY_USER</columns>
-        <columns>Date_Time_Confirmed__c</columns>
-        <columns>Appointment_Type__c</columns>
+        <columns>Market__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>Pre_Sales_User__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>Appointment__c.Confirmed_Appointment</value>
+            <field>Broker__c</field>
+            <operation>contains</operation>
+            <value>Unallocated</value>
         </filters>
         <filters>
-            <field>CREATED_DATE</field>
-            <operation>greaterThan</operation>
-            <value>4/1/2015 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>Appointment_Type__c</field>
-            <operation>equals</operation>
-            <value>First Appointment,Phone Appointment</value>
+            <field>Appointment_Date_and_Time__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>TODAY</value>
         </filters>
         <filters>
             <field>Appointment_Status__c</field>
+            <operation>notEqual</operation>
+            <value>Rescheduled,Cancelled</value>
+        </filters>
+        <label>Unallocated Broker - Phone</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Phone_Broker_Management</role>
+            <role>Presales_Management</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>VIC_Brokers</fullName>
+        <columns>NAME</columns>
+        <columns>STP_Forecast_Date__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Broker_Name__c</columns>
+        <columns>Manager_Contact_Notes__c</columns>
+        <columns>Manager_Contact_Date__c</columns>
+        <columns>Potential_Deal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>State__c</field>
             <operation>equals</operation>
-            <value>New</value>
+            <value>Victoria</value>
         </filters>
         <filters>
-            <field>Market_Region__c</field>
+            <field>Potential_Deal__c</field>
             <operation>equals</operation>
-            <value>Sydney,Canberra,Illawarra,Central Coast / Newcastle</value>
+            <value>1</value>
         </filters>
-        <label>chen test</label>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Appointment__c.Closed_Appointment</value>
+        </filters>
+        <filters>
+            <field>BrokerChannel__c</field>
+            <operation>equals</operation>
+            <value>Partner</value>
+        </filters>
+        <label>VIC Brokers</label>
+    </listViews>
+    <listViews>
+        <fullName>WA_SA_Brokers</fullName>
+        <columns>NAME</columns>
+        <columns>STP_Forecast_Date__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Broker_Name__c</columns>
+        <columns>Manager_Contact_Notes__c</columns>
+        <columns>Manager_Contact_Date__c</columns>
+        <columns>Potential_Deal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>State__c</field>
+            <operation>equals</operation>
+            <value>Western Australia,South Australia</value>
+        </filters>
+        <filters>
+            <field>Potential_Deal__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Appointment__c.Closed_Appointment</value>
+        </filters>
+        <filters>
+            <field>Appointment_Type__c</field>
+            <operation>notEqual</operation>
+            <value>Phone Appointment</value>
+        </filters>
+        <label>WA / SA Brokers</label>
     </listViews>
     <nameField>
         <displayFormat>APPT-{YYYY}{MM}{DD}-{0}</displayFormat>
@@ -2463,6 +2803,41 @@ Built so EOD report works</description>
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Cancellation_Reasons__c</picklist>
+            <values>
+                <fullName>Construction not Complete</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lack of Commitment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lack of Deposit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Out of Area</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Recently Refinanced</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Serviceability - Employment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Serviceability - Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Serviceability - LVR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Required_Documents__c</picklist>
             <values>
                 <fullName>ATO Notice of Assessment</fullName>
@@ -2492,7 +2867,15 @@ Built so EOD report works</description>
         <picklistValues>
             <picklist>Speciality_Skills__c</picklist>
             <values>
-                <fullName>Alex Nassar</fullName>
+                <fullName>Aaron Plumridge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Alex Papadimitriou</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Andre Spaapen</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2500,11 +2883,15 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Andrew Perry</fullName>
+                <fullName>Andy Rajpurohit</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Andy Rajpurohit</fullName>
+                <fullName>Anthony Arida</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ben Murray</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2512,11 +2899,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cameron Langton</fullName>
+                <fullName>Chris Rayner</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Commercial</fullName>
+                <fullName>Christopher Coombes</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2524,23 +2911,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Craig Thompson</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>David Learn</fullName>
+                <fullName>Damien Mckay</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Dorian Loupis</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Gerry Bruno</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Graeme Chapman</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2552,51 +2927,47 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
+                <fullName>Jacqui Gray</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>James Blanche</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>James Wu</fullName>
+                <fullName>Joseph Eichenblatt</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Nick Devai</fullName>
+                <fullName>Pod 1</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Nick O%27sullivan</fullName>
+                <fullName>Pod 2</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 1</fullName>
+                <fullName>Pod 3</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 2</fullName>
+                <fullName>Pod 4</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 3</fullName>
+                <fullName>Pod 5</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 4</fullName>
+                <fullName>Pod 6</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 5</fullName>
+                <fullName>Pod 7</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 6</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pot 7</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pot 8</fullName>
+                <fullName>Pod 8</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2604,11 +2975,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Robert Gallacher</fullName>
+                <fullName>SK-Commercial</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Sasha Anitei</fullName>
+                <fullName>SK-Specialty Lending</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2616,31 +2987,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Sherrill Ng</fullName>
+                <fullName>Sulaiman Underabi</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Specialty Lending</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tsum Li Lo</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tzuri Avila</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Uday Dhir</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Valan Redmond</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Zachary Bombardieri</fullName>
+                <fullName>Tim McKenzie</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -2770,6 +3121,41 @@ Built so EOD report works</description>
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Cancellation_Reasons__c</picklist>
+            <values>
+                <fullName>Construction not Complete</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lack of Commitment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lack of Deposit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Out of Area</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Recently Refinanced</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Serviceability - Employment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Serviceability - Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Serviceability - LVR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Required_Documents__c</picklist>
             <values>
                 <fullName>ATO Notice of Assessment</fullName>
@@ -2799,7 +3185,15 @@ Built so EOD report works</description>
         <picklistValues>
             <picklist>Speciality_Skills__c</picklist>
             <values>
-                <fullName>Alex Nassar</fullName>
+                <fullName>Aaron Plumridge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Alex Papadimitriou</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Andre Spaapen</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2807,11 +3201,15 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Andrew Perry</fullName>
+                <fullName>Andy Rajpurohit</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Andy Rajpurohit</fullName>
+                <fullName>Anthony Arida</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ben Murray</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2819,11 +3217,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cameron Langton</fullName>
+                <fullName>Chris Rayner</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Commercial</fullName>
+                <fullName>Christopher Coombes</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2831,23 +3229,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Craig Thompson</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>David Learn</fullName>
+                <fullName>Damien Mckay</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Dorian Loupis</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Gerry Bruno</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Graeme Chapman</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2859,51 +3245,47 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
+                <fullName>Jacqui Gray</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>James Blanche</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>James Wu</fullName>
+                <fullName>Joseph Eichenblatt</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Nick Devai</fullName>
+                <fullName>Pod 1</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Nick O%27sullivan</fullName>
+                <fullName>Pod 2</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 1</fullName>
+                <fullName>Pod 3</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 2</fullName>
+                <fullName>Pod 4</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 3</fullName>
+                <fullName>Pod 5</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 4</fullName>
+                <fullName>Pod 6</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 5</fullName>
+                <fullName>Pod 7</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 6</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pot 7</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pot 8</fullName>
+                <fullName>Pod 8</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2911,11 +3293,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Robert Gallacher</fullName>
+                <fullName>SK-Commercial</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Sasha Anitei</fullName>
+                <fullName>SK-Specialty Lending</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2923,31 +3305,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Sherrill Ng</fullName>
+                <fullName>Sulaiman Underabi</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Specialty Lending</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tsum Li Lo</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tzuri Avila</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Uday Dhir</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Valan Redmond</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Zachary Bombardieri</fullName>
+                <fullName>Tim McKenzie</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -3077,6 +3439,41 @@ Built so EOD report works</description>
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Cancellation_Reasons__c</picklist>
+            <values>
+                <fullName>Construction not Complete</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lack of Commitment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lack of Deposit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Out of Area</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Recently Refinanced</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Serviceability - Employment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Serviceability - Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Serviceability - LVR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Required_Documents__c</picklist>
             <values>
                 <fullName>ATO Notice of Assessment</fullName>
@@ -3106,7 +3503,15 @@ Built so EOD report works</description>
         <picklistValues>
             <picklist>Speciality_Skills__c</picklist>
             <values>
-                <fullName>Alex Nassar</fullName>
+                <fullName>Aaron Plumridge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Alex Papadimitriou</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Andre Spaapen</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -3114,11 +3519,15 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Andrew Perry</fullName>
+                <fullName>Andy Rajpurohit</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Andy Rajpurohit</fullName>
+                <fullName>Anthony Arida</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ben Murray</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -3126,11 +3535,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cameron Langton</fullName>
+                <fullName>Chris Rayner</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Commercial</fullName>
+                <fullName>Christopher Coombes</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -3138,23 +3547,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Craig Thompson</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>David Learn</fullName>
+                <fullName>Damien Mckay</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Dorian Loupis</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Gerry Bruno</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Graeme Chapman</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -3166,51 +3563,47 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
+                <fullName>Jacqui Gray</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>James Blanche</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>James Wu</fullName>
+                <fullName>Joseph Eichenblatt</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Nick Devai</fullName>
+                <fullName>Pod 1</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Nick O%27sullivan</fullName>
+                <fullName>Pod 2</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 1</fullName>
+                <fullName>Pod 3</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 2</fullName>
+                <fullName>Pod 4</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 3</fullName>
+                <fullName>Pod 5</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 4</fullName>
+                <fullName>Pod 6</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 5</fullName>
+                <fullName>Pod 7</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Pot 6</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pot 7</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pot 8</fullName>
+                <fullName>Pod 8</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -3218,11 +3611,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Robert Gallacher</fullName>
+                <fullName>SK-Commercial</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Sasha Anitei</fullName>
+                <fullName>SK-Specialty Lending</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -3230,31 +3623,11 @@ Built so EOD report works</description>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Sherrill Ng</fullName>
+                <fullName>Sulaiman Underabi</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Specialty Lending</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tsum Li Lo</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tzuri Avila</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Uday Dhir</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Valan Redmond</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Zachary Bombardieri</fullName>
+                <fullName>Tim McKenzie</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -3365,10 +3738,28 @@ Phone and Mobile Numbers must be entered as +61xxxxxxxxx</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Lock_datetime_once_confirmed</fullName>
-        <active>true</active>
+        <active>false</active>
         <description>Locks appointment time when confirmed</description>
         <errorConditionFormula>AND(ISCHANGED(Appointment_Date_and_Time__c),  RecordType.Name &lt;&gt; &quot;New&quot;)</errorConditionFormula>
         <errorMessage>You cannot change an appointment date and time once it is confirmed</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>No_Book_Appointment_5_Business_Days_Out</fullName>
+        <active>true</active>
+        <errorConditionFormula>(CASE(MOD( TODAY() - DATE(1985,6,24),7), 
+
+0 , CASE( MOD( DATEVALUE(Appointment_Date_and_Time__c) - TODAY() ,7),1,2,2,3,3,4,4,5,5,5,6,5,1), 
+1 , CASE( MOD( DATEVALUE(Appointment_Date_and_Time__c) - TODAY() ,7),1,2,2,3,3,4,4,4,5,4,6,5,1), 
+2 , CASE( MOD( DATEVALUE(Appointment_Date_and_Time__c) - TODAY() ,7),1,2,2,3,3,3,4,3,5,4,6,5,1), 
+3 , CASE( MOD( DATEVALUE(Appointment_Date_and_Time__c) - TODAY() ,7),1,2,2,2,3,2,4,3,5,4,6,5,1), 
+4 , CASE( MOD( DATEVALUE(Appointment_Date_and_Time__c) - TODAY() ,7),1,1,2,1,3,2,4,3,5,4,6,5,1), 
+5 , CASE( MOD( DATEVALUE(Appointment_Date_and_Time__c) - TODAY() ,7),1,0,2,1,3,2,4,3,5,4,6,5,0), 
+6 , CASE( MOD( DATEVALUE(Appointment_Date_and_Time__c) - TODAY() ,7),1,1,2,2,3,3,4,4,5,5,6,5,0), 
+999) 
++ 
+(FLOOR(( DATEVALUE(Appointment_Date_and_Time__c) - TODAY() )/7)*5) - 1 ) &gt; 5 &amp;&amp; !( OR($User.Email == &apos;bianca.simpson@creditandfinance.com.au&apos;, $User.Email == &apos;jamie.ceralvo@creditandfinance.com.au&apos;, $User.Email == &apos;joss.foley@creditandfinance.com.au&apos;, $User.Email == &apos;robeckah.davies@creditandfinance.com.au&apos;, $User.Email == &apos;	julia.nguyen@creditandfinance.com.au&apos;))</errorConditionFormula>
+        <errorDisplayField>Appointment_Date_and_Time__c</errorDisplayField>
+        <errorMessage>Cant book appointment more than 5 business days</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Phone_Broker_Warning</fullName>
@@ -3387,6 +3778,51 @@ Phone and Mobile Numbers must be entered as +61xxxxxxxxx</errorMessage>
         <openType>replace</openType>
         <protected>false</protected>
         <url>/apex/SaaSFocus_Allocate_Appointment?id={!Appointment__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Appt_Held_No_Show</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Appt Held (No Show)</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/19.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/14.0/apex.js&quot;)} 
+
+var today = new Date(); 
+
+function fixTime(time){ 
+if(time &lt; 10) {time = &quot;0&quot; + time}; 
+return time; 
+} 
+
+function fixDate(date){ 
+var Month = fixTime(date.getMonth() + 1); 
+var Day = fixTime(date.getDate()); 
+var UTC = date.toUTCString(); 
+var Time = UTC.substring(UTC.indexOf(&apos;:&apos;)-2, UTC.indexOf(&apos;:&apos;)+6); 
+var Minutes = fixTime(date.getMinutes()); 
+var Seconds = fixTime(date.getSeconds()); 
+return date.getFullYear() + &quot;-&quot; + Month + &quot;-&quot; + Day + &quot;T&quot; + Time; 
+} 
+
+var a = new sforce.SObject(&quot;Appointment__c&quot;); 
+a.id = &quot;{!Appointment__c.Id}&quot;;
+var apptId = a.id;
+//alert(apptId);
+a.Appointment_Status__c = &quot;Appointment Held&quot;; 
+//alert(fixDate(today)); 
+a.Appointment_Date_and_Time__c = fixDate(today);
+var resultA = sforce.apex.execute(&quot;CustomButtonUtilities&quot;, &quot;changeBroker&quot;,{appointmentId : apptId});
+//alert(resultA);
+if (resultA == &apos;true&apos;) {
+    result = sforce.connection.update([a]);
+window.location.reload();
+} else {
+    alert(&apos;Broker does not exist for current user&apos;);
+}
+//alert(result);</url>
     </webLinks>
     <webLinks>
         <fullName>Cancel_Appointment</fullName>
@@ -3523,6 +3959,29 @@ location.reload(true);
 catch(e){
 alert(&apos;An Error has Occured. Error: &apos; + e);
 }</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Change_Appointment</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Change Broker</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/Saasfocus_ChangeAppointment?id={!Appointment__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Confirm_Appointment_M</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Confirm Appointment M</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/apex/SaaSFocus_Allocate_Appointment_beta?id={!Appointment__c.Id}</url>
     </webLinks>
     <webLinks>
         <fullName>Confirm_Appointment_Removed</fullName>

@@ -52,6 +52,36 @@
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
+        <fullName>Click_Community_Setup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Community Setup</label>
+        <referenceTo>Click_Community_Setup__c</referenceTo>
+        <relationshipLabel>Document Master</relationshipLabel>
+        <relationshipName>Document_Master</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>External_File_URL__c</fullName>
+        <externalId>false</externalId>
+        <label>External File URL</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>File_Address__c</fullName>
+        <externalId>false</externalId>
+        <label>File Address</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
         <fullName>acfActive__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Click Loans</description>
@@ -71,6 +101,16 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
+        <fullName>acfFile_Address__c</fullName>
+        <externalId>false</externalId>
+        <formula>File_Address__c</formula>
+        <label>File Address</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>acf_Source__c</fullName>
         <description>Click Loans</description>
         <externalId>false</externalId>
@@ -86,6 +126,18 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Others</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Note</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Downloadable</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>E-Consent</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -135,6 +187,7 @@
         <columns>acfActive__c</columns>
         <columns>acfDescription__c</columns>
         <columns>acf_Source__c</columns>
+        <columns>Click_Community_Setup__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>

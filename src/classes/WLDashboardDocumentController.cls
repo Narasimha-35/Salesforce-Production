@@ -5,6 +5,7 @@ global class WLDashboardDocumentController
    @TestVisible transient Attachment docattach;
    public string strUseEmailID{get;set;}
    public string recDownloadid{get;set;}
+ 
    public string strDocumentName{get;set;}
    public string IsPopupShow{get;set;}
    public boolean IsIdentificationCompleted{get;set;}
@@ -36,6 +37,7 @@ global class WLDashboardDocumentController
    //added by karthik on 24-02-2016
    public string strBankFrameURl {get;set;}
    public string strJumioFrameUrl {get;set;}
+   public string strmsg{get;set;}
    public Attachment getattach() 
    {
     if(attach == null)
@@ -53,20 +55,21 @@ global class WLDashboardDocumentController
     public String MyOpportunityIds;
     public void setMyOpportunityIds(String oppsId)
     {
-        if(oppsId != null)
+        if(oppsId != null && oppsId != '')
         {
             MyOpportunityIds = oppsId; 
             oppIds = Id.valueof(oppsId);
             system.debug('oppIds!@#$%^*******************************'+oppIds);
             DashboardDocument();
         }
+ 
     } 
     
     public String getMyOpportunityIds()
     {
        return MyOpportunityIds; 
     }
-
+ 
     
    //public  Attachment docattach{get;set;} 
    public void DashboardDocument()
@@ -121,7 +124,7 @@ global class WLDashboardDocumentController
         String PrefixUrls = ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c;
         for(Required_Document__c objRequiredDoc:[select acfDocument_Master__r.File_Address__c,id,name,acfOpportunity__c,Click_Is_Note_Type__c,acfOpportunity__r.clickJumio_Status__c,
                                                 acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,
-                                                acf_Is_Identity_Verification_Doc__c,acfStatus__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c,
+                                                acf_Is_Identity_Verification_Doc__c,acfStatus__c,Click_Is_E_consent__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c,
                                                 click_Is_Uploaded__c,Is_Download_Doc__c,(select id from Attachments) 
                                                 from Required_Document__c where acfOpportunity__c=:OppId order by createddate ASC])
         { 
@@ -188,13 +191,16 @@ global class WLDashboardDocumentController
            List<Attachment> lstAtt = new List<Attachment>();
            if(objWrapDoc.attachId <> null)
            lstAtt = [select id,ParentId from Attachment where id=:objWrapDoc.attachId];
+ 
            if(lstAtt != null && lstAtt.size() > 0)
            {
+ 
               lstUploadDocs = [select id,Click_Loans_Required_Document__c,click_Is_deleted__c,
                                  Click_Loans_Required_Document__r.acfOpportunity__c
                                  from Click_Uploaded_Documents__c where 
                                  Click_Loans_Required_Document__c =: lstAtt[0].ParentId
                                  AND click_Is_deleted__c = false];
+ 
                   if(lstUploadDocs != null && lstUploadDocs.size() > 0)  
                   {
                   }
@@ -412,7 +418,7 @@ global class WLDashboardDocumentController
         }
     }
     //To add notes
-
+ 
     public pagereference addNotes()
     {   
         system.debug('str message'+strPost1);
@@ -422,6 +428,7 @@ global class WLDashboardDocumentController
             if(IndexNo  <> null)
            {
                WrapperDocuments objWrapDoc = lstWrapperDocumnets[IndexNo];
+ 
                 if(objWrapDoc <> null && strPost1 != null && strPost1 <> '')
                 {
                        List<Note> noteLst = [select id,Body,Title,ParentId from Note where ParentId =:objWrapDoc.objRequiredDocumnets.id];
@@ -471,7 +478,7 @@ global class WLDashboardDocumentController
            }    
        return null;
     }
-
+ 
    // For Setting one Time document popup
    public pageReference UploadDocumentsNotification()
    {
@@ -488,10 +495,15 @@ global class WLDashboardDocumentController
        system.debug('###reDoc'+reqDocId);
        if(String.isNotEmpty(reqDocId)){
            Required_Document__c reqDocObj = [Select Id,acfDocument_Master__r.File_Address__c From Required_Document__c where id=:reqDocId];
+ 
            if(reqDocObj != null && reqDocObj.acfDocument_Master__r.File_Address__c != null ){
                 recDownloadid = reqDocObj.acfDocument_Master__r.File_Address__c ;
                 System.debug(recDownloadid);
+ 
+ 
+ 
            }
+ 
            
        }
       
@@ -556,13 +568,75 @@ global class WLDashboardDocumentController
        BindWrapperDocument(OpportunityId);    
        return (new Pagereference(ClickCommon.URLPrefix + ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c +'Dashboard&id='+MyOpportunityIds));       
    }
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+     public pagereference SendMailforEconsent()
+   {
+        string reqDocId = Apexpages.currentPage().getParameters().get('ReqDocsId');
+        Set<Id> setOfAppId = new Set<Id>();
+        if(reqDocId != null && reqDocId != '')
+        {
+           List<Required_Document__c> lstReqDoc = [Select Id,Click_Applicant__c,acfStatus__c From Required_Document__c where id=:reqDocId];
+           if(!lstReqDoc.isEmpty())
+           {
+               if(lstReqDoc[0].acfStatus__c == 'Pending' || lstReqDoc[0].acfStatus__c == 'Not Verified')
+               {
+                   setOfAppId.add(lstReqDoc[0].Click_Applicant__c);
+                   if(!setOfAppId.isEmpty())
+                       ClickCommon.sendEconsentEmailSMS(setOfAppId);
+                   Required_Document__c reqDocObj = lstReqDoc[0];
+                   reqDocObj.acfStatus__c = 'Not Verified';
+                   update reqDocObj;
+                   //string retUrl = '';
+                   return new pagereference(ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c+'/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'Dashboard?id='+MyOpportunityIds);
+               }
+           } 
+        }
+        return null;
+   }
+   
+   public pagereference VerifyEconsent()
+   {
+        string reqDocId = Apexpages.currentPage().getParameters().get('econsentReqDocsId');
+        strmsg = '';
+        if(reqDocId != null && reqDocId != '')
+        {
+           List<Required_Document__c> lstReqDoc = [Select Id,acfStatus__c,Click_Applicant__c,click_Applicant__r.click_Applicant_Number__c,acfOpportunity__c
+                                                   From Required_Document__c where id=:reqDocId];
+                                                   system.debug('testlstReqDoc'+lstReqDoc );
+            system.debug('testlstReqDoc'+lstReqDoc );
+           if(!lstReqDoc.isEmpty())
+           {
+               if(lstReqDoc[0].acfStatus__c == 'Not Verified')
+               {
+                     system.debug('testAnkit');
+                     strmsg = 'Please do e-consent via sms or email';
+                     system.debug('testAnkit************************'+strmsg);
+                     return null;
+               }
+               else
+               {      
+                   return new pagereference(ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c+'/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'Dashboard?id='+MyOpportunityIds);
+               }
+           } 
+        }
+        return null;
+   }
+ 
    public pagereference frameURL()
    {
         strBankFrameURl =ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c+'/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'BankInfoDetails?Docid='+RequiredDocumentId+'&id='+MyOpportunityIds;
         strJumioFrameUrl =ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c+'/'+ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_Page_Prefix__c+'JumioIntegration?Docid='+RequiredDocumentId+'&id='+MyOpportunityIds;
         return null;
    }
+ 
+ 
    public class wrapAttachDocs
    {
     public string strDocName{get;set;}

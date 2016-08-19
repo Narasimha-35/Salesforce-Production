@@ -1,121 +1,145 @@
-@isTest(SeeAllData = true)
-private class acfJumioIntegrationbrokerTracker
+@isTest
+public class acfJumioIntegrationbrokerTracker
 {
-    private static User objUser;
-    private static Contact objContact;
-    private static Account objAccount;
-    private static Opportunity objOpportunity;
 
-    
-    static testMethod void validate() 
-    {  
-        Lead objLead = new Lead();
-        objLead.FirstName = '+619654922845';
-        objLead.LastName = '+619654922845';
-        objLead.Email = 'swati.sharma@saasfocus.com';
-        objLead.MobilePhone = '+619654922845';
-        objLead.Status = 'Open';
-        objLead.acfOneTimePassword__c = '724715';
-        insert objLead;
+        private static User objUser;
+        private static Contact objContact;
+        private static Account objAccount;
+        private static Account objpersonAccount;
+        private static Opportunity objOpp;
+        private static Lead objLead;
+        private static Id objid;
+        private static Jumio_Credentials__c objJum;
+        private static Required_Document__c objre;
+        private static Document_Master__c objmas;
+        private static Click_Community_Setup__c objclcmm;
         
-       LoadData();
-       Jumio_Credentials__c objJumioCredential = Jumio_Credentials__c.getValues('Credential');
-       String strUserName = objJumioCredential.Merchant_API_token__c;
-       String strPassword = objJumioCredential.Active_API_secret__c;    
-       String strEndPoint = objJumioCredential.EndPoint__c;
-       String strAuthorizationHeader = 'Basic ' + EncodingUtil.base64Encode(Blob.valueOf(strUserName + ':' + strPassword));
-       
-      
-       
-       acfJumioIntegration_broker.RootObject objcls = new  acfJumioIntegration_broker.RootObject();
-       objcls.timestamp = 'test';
-       objcls.authorizationToken = 'test';
-       objcls.clientRedirectUrl = 'test';
-       objcls.jumioIdScanReference = 'test';
-       
-      
-       Account acc = [select id from account where acf_Lead__pc != null limit 1];
-       ApexPages.currentPage().getParameters().put('cid',acc.id);
-      
-       
-       acfJumioIntegration_broker obj = new    acfJumioIntegration_broker();
-       obj.strIframeURL = 'test';
-       obj.strLeadId = string.valueof(objLead.id);
-        Test.startTest();
-       Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator1());
-       try
+        
+        static testMethod void validate1()
        {
-       obj.CallToJumio();
-       }
-       catch(Exception e)
-       {
-       
-       }
-       obj.redirectToNextPage();
-       Test.stopTest();
-       acfJumioIntegration_broker.parse('{"var":"data"}');
-    }
     
+        LoadData();
+         Apexpages.currentpage().getparameters().put('cid',objpersonAccount.Id);
+         acfJumioIntegration_broker clsObj = new acfJumioIntegration_broker();
+         
+         acfJumioIntegration_broker.RootObject objWrapCls = new  acfJumioIntegration_broker.RootObject();
+       objWrapCls .timestamp = 'test';
+       objWrapCls .authorizationToken = 'test';
+       objWrapCls .clientRedirectUrl = 'test';
+       objWrapCls .jumioIdScanReference = 'test';
+         
+         Test.startTest();
+       Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerators12());
+     //  try
+     //  {
+       clsObj.CallToJumio();
+    //   }
+     //  catch(Exception e)
+     //  {
+       
+      // }
+       Test.stopTest();
+         }
+         
+          static testMethod void validate2()
+       {
+    
+        LoadData();
+         Apexpages.currentpage().getparameters().put('cid',objpersonAccount.Id);
+         acfJumioIntegration_broker clsObj = new acfJumioIntegration_broker();
+          clsObj.redirectToNextPage();
+        
+         }
+         
     private static void LoadData()
-    {
+      {
+        createLead();
         createAccount();
         createContact();
-        createUser();
+        createmasterdoc();
+        createPersonAccount();
+        createJumiocred();
+        createclickCommunitySetup();
+        createPortalUser();
+        createCurrentLoggedInLeadId();
         createOpportunity();
-    }
+        createrequireddoc();
+      }
     
     static void createAccount()
     {
         objAccount = new Account();
-        //objAccount.recordtype.name='Business Account';
-        objAccount.name='testname';
-        insert objAccount;
+        objAccount = WLCommonTrackerClass.createAccount(objAccount);
     }
     
+    static void createLead()
+    {
+        objLead = new Lead();
+        objLead = WLCommonTrackerClass.createLead(objLead);
+    }
+    
+    static void createJumiocred()
+    {
+     objJum=new Jumio_Credentials__c();
+     objJum.name='Credential';
+     objJum.Merchant_API_token__c='test';
+     objJum.Active_API_secret__c='test';
+     objJum.EndPoint__c='test';
+     insert objJum;
+    
+    }
+    
+    static void createclickCommunitySetup() 
+    {
+        objclcmm= new Click_Community_Setup__c();
+        objclcmm= ClickCommon.getCommunitySetup('');
+    }
+    
+     static void createCurrentLoggedInLeadId()
+     {
+     objid=ClickCommon.getCurrentLoggedInLeadId(objUser.Id);
+     }
+      
     static void createContact()
     {
         objContact = new Contact();
-        //objContact.AccountId = objAccount.id;
-        //objContact.acf_lead__c = objLead.id;
-        objContact = acfCommontrackerClass.createPartnerContact(objContact,objAccount);
-        
+        objContact = WLCommonTrackerClass.createContact(objContact,objAccount);
     }
     
-    static void createuser()
+    static void createPersonAccount()
     {
-       objUser = new User();
-        objUser.MobilePhone='+611234567890';
-        
-        objUser.contactId=objContact.Id;
-         List<Profile> lstCommUserProfile = [select id,name from profile where name='Customize Partner User' limit 1];
-            //List<Account>lstPersonContact = [select id,PersonContactId from Account where id=:ContactId];
-            //User objUser = new User();
-            objUser.FirstName = 'test';
-            objUser.LastName = 'test';
-            objUser.Alias  = ('test'+String.valueof(Math.random())).substring(0,5);
-            objUser.LocaleSidKey = 'en_AU';
-            objUser.LanguageLocaleKey = 'en_US';
-            objUser.MobilePhone = '+6145678904';
-            objUser.Username = 'test@fakeEmail.com'+objUser.Alias;
-            objUser.Email = 'test@fakeEmail.com';
-            objUser.ProfileId = lstCommUserProfile[0].id;
-            //objUser.ContactId = lstPersonContact[0].PersonContactId;
-            objuser.EmailEncodingKey = 'UTF-8';
-            objUser.CommunityNickname = String.valueof(Math.random()+DateTime.now().year()+DateTime.now().month()+DateTime.now().day()+DateTime.now().hour()+DateTime.now().minute()+DateTime.now().second());
-            objUser.TimeZoneSidKey = 'Australia/Brisbane';
-            objUser.acfIs_Password_Reset__c = true;
-            Database.DMLOptions dlo = new Database.DMLOptions();
-            dlo.EmailHeader.triggerUserEmail = false;
-            objUser.setOptions(dlo);
-            insert(objUser);
+        objpersonAccount= new Account();
+        objpersonAccount=WLCommonTrackerClass.CreatePersonAccount('Fname','LName','strPhone','strLead12Email@gmail.com',objLead.Id);
+    }
+    static void createPortalUser()
+    {
+        objUser = new User();
+        objUser.ContactId = objContact.id;
+        objUser = WLCommonTrackerClass.CreatePortalUser(objpersonAccount.id);
+    
     }
     
     static void createOpportunity()
     {
-      objOpportunity = new Opportunity();
-      objOpportunity.acfBankdetailStatus__c = 'Skipped';
-      objOpportunity = acfCommontrackerClass.createOpportunity(objOpportunity,objUser);
+        objOpp= new Opportunity();
+        objOpp.AccountId =objuser.AccountId;
+        String recordtypeid =Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Click Refi').getRecordTypeId();
+        objOpp.recordtypeid =recordtypeid;
+        objOpp.name = 'test';
+        objOpp.Stagename = 'Settlement';
+        objOpp.CloseDate = System.today();
+        objOpp=WLCommonTrackerClass.createOpportunity(objOpp,objUser);
+    }
+     static void createmasterdoc()
+    {
+        objmas= new Document_Master__c(); 
+        objmas= WLCommonTrackerClass.createDocumentMaster(objmas);
+    }
+    
+    static void createrequireddoc()
+    {
+        objre= new Required_Document__c();
+        objre= WLCommonTrackerClass.createRequiredDocument(objre,objmas,objOpp);
     }
 
-    
-}
+ }

@@ -9,6 +9,12 @@
         {
             cursor:pointer;
         }
+
+  
+.task_asign_sec ul li a span.task_uncheck:before{
+background-position:-180px -64px;   
+}
+              
     </style>
     
     <div class="clearfix"></div>

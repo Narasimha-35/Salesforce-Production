@@ -61,7 +61,7 @@
       </div>
   </apex:repeat> -->
 <div id="tabs">
-	{!IF(attachInfos.size == 0,"<h1>There is no file can be previewed</h1>", "")}
+    {!IF(attachInfos.size == 0,"<h1>There is no file can be previewed</h1>", "")}
     <div style="float:left;">
     <ul>
         <apex:repeat value="{!attachInfos}" var="attachment">
@@ -76,6 +76,7 @@
             Required Doc Name : {!attachment.requiredDocName}<br/>
             Document Size : {! attachment.docSize } KB<br/>
             <div><embed src="{!URLFOR($Action.Attachment.Download, attachment.attchmentId)}" style="width:100%; height:950px;"></embed></div>
+            <!--<div><embed src="/servlet/servlet.FileDownload?file={!attachment.attchmentId}" style="width:50%; height:500px;" type="application/pdf"></embed></div>-->
         </div>
     </apex:repeat>
 </div>

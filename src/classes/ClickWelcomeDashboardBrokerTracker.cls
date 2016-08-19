@@ -94,7 +94,7 @@ private class ClickWelcomeDashboardBrokerTracker
         
         PageReference pageRef = new PageReference('http://www.google.com');
         Test.setCurrentPage(pageRef);
-        ClickWelcomeDashboard obj = new ClickWelcomeDashboard();
+        ClickWelcomeDashboardclone obj = new ClickWelcomeDashboardclone();
         
 
     }

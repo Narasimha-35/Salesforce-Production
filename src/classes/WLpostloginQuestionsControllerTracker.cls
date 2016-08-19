@@ -1,286 +1,298 @@
-@isTest(SeeAllData = true)
-private without sharing class WLpostloginQuestionsControllerTracker 
+@isTest
+public class WLpostloginQuestionsControllerTracker
 {
-    private static User objuser;
-    private static Opportunity objOpportunity;
-    private static Account objAccount;
+private static Lead objLead ;
+    private static User objUser;
+    private static Click_Community_Setup__c objcommunity;
+    private static account accperson;
+    private static account objAccount;
     private static Contact objContact;
-    private static Script__c objScript;
-    private static Answer__c objAnswer;
-    private static Answer__c objRelatedQuestionAnswer;
-    private static Answer__c objRelatedQuestionAnswer1;
-    private static Question__c objQuestion;
-    private static Question__c objRelatedQuestion;
-    private static Question__c objRelatedQuestion1;
-    private static Lead objLead;
-    private static User thisuser;
-    //Constructor
-    static testMethod void validateWLpostloginQuestionsController() 
-    { 
-        objLead       = WLCommonTrackerClass.createLeadForPortal();
-        objAccount    = WLCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
-        objuser       = WLCommonTrackerClass.CreatePortalUser(objAccount.id); 
-        objScript     = WLCommonTrackerClass.createScript('Post-Login');
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,objScript.id,'acfApplicant2_Name__c','Contact',false,'',false);
-        objAnswer     = WLCommonTrackerClass.createAnswer(objQuestion.id, null,'Westpac Bank');   
-        System.runAs(objuser) 
+    private static Opportunity objOpportunity;
+
+static testMethod void validate()
+{
+LoadData();
+ System.runAs(objuser) 
         {
-            WLpostloginQuestionsController objacfpostloginQuestionsController = new WLpostloginQuestionsController();
-            objacfpostloginQuestionsController.QuesNo = 0;
-            objacfpostloginQuestionsController.MasterQuesNo = 0;
-  //          objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-            objacfpostloginQuestionsController.redirect();
- //           objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-      //      objacfpostloginQuestionsController.RelatedQuestions();
-            objacfpostloginQuestionsController.AddingRelatedQuestion();
-      //      objacfpostloginQuestionsController.NextQuestion();
-            objacfpostloginQuestionsController.PreviousQuestion();
-            objacfpostloginQuestionsController.AssetLiablity();
-            objacfpostloginQuestionsController.assetaddMethodNRAC();
-            objacfpostloginQuestionsController.IsValidDate(string.valueof(system.today()));
-            objacfpostloginQuestionsController.CreateDateFromString(string.valueof(system.today()));
-        }
-    } 
-    //Constructor
-    static testMethod void validateWLpostloginQuestionsController0() 
-    { 
-        objLead = WLCommonTrackerClass.createLeadForPortal();
-        objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
-        objAccount.acf_Applicant_Name__pc = '2';
-        update objAccount;
-        objuser    =  WLCommonTrackerClass.CreatePortalUser(objAccount.id); 
-        objScript     = WLCommonTrackerClass.createScript('Post-Login');
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Contact',true,'acfApplicant2_Name__c',true);
-        objRelatedQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,null,'acfApplicant2_Marital_Status__c','lead',true,'acfApplicant2_Monthly_Salary__c',true);
+        click_Applicant__c obj=new click_Applicant__c();
+       // obj.name='test';
+        obj.click_Applicant_Number__c='1';
+        obj.acfEconsent__c='I Consent';
+        obj.click_Account__c=accperson.id;
+        insert obj;
         
-        objAnswer     = WLCommonTrackerClass.createAnswer(objQuestion.id, null,'2');  
-//        System.runAs(objuser) 
-//        {
-            WLpostloginQuestionsController objacfpostloginQuestionsController = new WLpostloginQuestionsController();
-            objacfpostloginQuestionsController.QuesNo = 0;
-            objacfpostloginQuestionsController.MasterQuesNo = 0;
-  //          objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-            objacfpostloginQuestionsController.redirect();
-  //          objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-            objacfpostloginQuestionsController.RelatedQuestions();
-            objacfpostloginQuestionsController.AddingRelatedQuestion();
-            objacfpostloginQuestionsController.NextQuestion();
-            objacfpostloginQuestionsController.PreviousQuestion();
-            objacfpostloginQuestionsController.AssetLiablity();
-            objacfpostloginQuestionsController.assetaddMethodNRAC();
-            objacfpostloginQuestionsController.InsertRequiredDocuments(objLead.id,objacfpostloginQuestionsController.lstMasterWrapperQuestion);
-//        }
-    } 
-    //Constructor
-    static testMethod void validateWLpostloginQuestionsController4() 
-    { 
-        objLead = WLCommonTrackerClass.createLeadForPortal();
-        objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
-        objAccount.acf_Applicant_Name__pc = 'PAYG';
-        update objAccount;
-        objuser    =  WLCommonTrackerClass.CreatePortalUser(objAccount.id); 
-        objScript     = WLCommonTrackerClass.createScript('Post-Login');
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Contact',true,'acfApplicant2_Name__c',false);
-        objQuestion.acfAppEmployment_Type__c = 'PAYG';
-        objQuestion.acfEmployment_Type__c = true;
-        objQuestion.acf_Dependents__c = false;
-        update objQuestion;
-        objRelatedQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,null,'acfApplicant2_Marital_Status__c','lead',true,'acfApplicant2_Monthly_Salary__c',true);
-        objRelatedQuestion.acfEmployment_Type__c = true;
-        objRelatedQuestion.acfAppEmployment_Type__c = 'PAYG';
-        objRelatedQuestion.acfDependent_Object_Name__c = null;
-        objRelatedQuestion.acfDependent_Field_Name__c = null;
-        objRelatedQuestion.acf_Dependents__c = false;
-        update objRelatedQuestion;
-        objAnswer     = WLCommonTrackerClass.createAnswer(objQuestion.id, null,'PAYG');  
-        objRelatedQuestionAnswer     = WLCommonTrackerClass.createAnswer(objRelatedQuestion.id, null,'PAYG');
-//        System.runAs(objuser) 
-//        {
-            WLpostloginQuestionsController objacfpostloginQuestionsController = new WLpostloginQuestionsController();
-            objacfpostloginQuestionsController.QuesNo = 0;
-            objacfpostloginQuestionsController.MasterQuesNo = 0;
-     //       objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-            objacfpostloginQuestionsController.redirect();
-   //         objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-            objacfpostloginQuestionsController.RelatedQuestions();
-            
-            objacfpostloginQuestionsController.AddingRelatedQuestion();
-            objacfpostloginQuestionsController.NextQuestion();
-            objacfpostloginQuestionsController.PreviousQuestion();
-            objacfpostloginQuestionsController.AssetLiablity();
-            objacfpostloginQuestionsController.assetaddMethodNRAC();
-            objacfpostloginQuestionsController.InsertRequiredDocuments(objLead.id,objacfpostloginQuestionsController.lstMasterWrapperQuestion);
-//        }
-    }
-      
-    //For Adding Related Method
-    static testMethod void validateWLpostloginQuestionsController1() 
-    { 
-        objLead = WLCommonTrackerClass.createLeadForPortal();
-        objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
-        objuser    =  WLCommonTrackerClass.CreatePortalUser(objAccount.id); 
-        objScript     = WLCommonTrackerClass.createScript('Post-Login');
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
-       // objQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,objScript.id,'acfApplicant2_Name__c','Contact');
-        objRelatedQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,null,null,null,false,'',false);
-        objRelatedQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,null,'acfApplicant2_Marital_Status__c','lead',true,'acfApplicant2_Monthly_Salary__c',true);
-        objRelatedQuestion.acfDependent_Object_Name__c = null;
-        objRelatedQuestion.acfDependent_Field_Name__c = null;
-        objRelatedQuestion.acf_Dependents__c = false;
-        update objRelatedQuestion;   
-        objRelatedQuestion1   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,null,null,null,false,'',false);
+        Script__c scobj=new Script__c();
+        scobj.acf_Type__c='Post-Login';
+        scobj.Click_Community_Setup__c=objcommunity.id;
+        scobj.clickAsk_for_every_applicant__c=false;
+        insert scobj;
+        
+        Question__c queobj=new Question__c();
+        queobj.acf_Active__c=true;
+        queobj.Click_Is_Broker_Question__c=false;
+        queobj.acfEmployment_Type__c=true;
+        queobj.acf_ApiName__c='test';
+        insert queobj;
+        
+        Question__c queobj1=new Question__c();
+        queobj1.acf_Active__c=true;
+        queobj1.Click_Is_Broker_Question__c=false;
+        queobj1.acf_Script__c=scobj.id;
+        queobj1.acfDependent_Field_Name__c='test';
+        queobj1.click_is_EConsent__c=true;
+        queobj1.acfDependent_Object_Name__c='Contact';
+        insert queobj1;  
+              
+        
+       
+        
+        Answer__c ansobj=new Answer__c();
+        ansobj.acf_Question__c=queobj.id;
+        insert ansobj;
+        queobj.acf_Master_Question__c=queobj1.id;
+        update queobj;
+       /* WLpostloginQuestionsController.ApplicantDetailsWrapper objwrap=new  WLpostloginQuestionsController.ApplicantDetailsWrapper();
+        objwrap.applicantNo='23';
+        objwrap.applicantRecNo=10;
+        objwrap.appEmail='test@gmail.com';
+        objwrap.appMobile='12121212';*/
+       
+        
+       
+        WLpostloginQuestionsController wlobj=new WLpostloginQuestionsController();
+        }
+        }
 
-        objAnswer     = WLCommonTrackerClass.createAnswer(objQuestion.id, objRelatedQuestion.id,'test'); 
-        objRelatedQuestionAnswer = WLCommonTrackerClass.createAnswer(objRelatedQuestion.id, objRelatedQuestion1.id ,'test');
-        objRelatedQuestionAnswer1 = WLCommonTrackerClass.createAnswer(objRelatedQuestion1.id, null ,'test');       
-          
-//        System.runAs(objuser) 
-//        {
-            WLpostloginQuestionsController objacfpostloginQuestionsController = new WLpostloginQuestionsController();
-            objacfpostloginQuestionsController.QuesNo = 0;
-            objacfpostloginQuestionsController.MasterQuesNo = 0;
- //           objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-            objacfpostloginQuestionsController.redirect();
- //           objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-            
-            objacfpostloginQuestionsController.RelatedQuestions();
-           // objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].lstRelatedQuestion[0].strWrapAnswer = objRelatedQuestionAnswer.id;
-            objacfpostloginQuestionsController.AddingRelatedQuestion();
-            //objacfpostloginQuestionsController.QuesNo = 0;
-            //objacfpostloginQuestionsController.MasterQuesNo = 0;
-            objacfpostloginQuestionsController.NextQuestion();
-            objacfpostloginQuestionsController.PreviousQuestion();
-            objacfpostloginQuestionsController.AssetLiablity();
-            objacfpostloginQuestionsController.assetaddMethodNRAC();
-            objacfpostloginQuestionsController.InsertRequiredDocuments(objLead.id,objacfpostloginQuestionsController.lstMasterWrapperQuestion);
-//        }
-    }
-    
-    //For Adding Related Method
-    static testMethod void ValidateAddingRelatedMethod() 
-    { 
-        objLead = WLCommonTrackerClass.createLeadForPortal();
-        objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
-        objuser    =  wlCommonTrackerClass.CreatePortalUser(objAccount.id); 
-        objScript     = WLCommonTrackerClass.createScript('Post-Login');
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Checkbox',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,objScript.id,'acfApplicant2_Name__c','Contact',false,'',false);
-        objRelatedQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,null,null,null,false,'',false);
-        objRelatedQuestion1   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,null,null,null,false,'',false);
-
-        objAnswer     = WLCommonTrackerClass.createAnswer(objQuestion.id, objRelatedQuestion.id,'test'); 
-        objRelatedQuestionAnswer = WLCommonTrackerClass.createAnswer(objRelatedQuestion.id, objRelatedQuestion1.id ,'test');
-        objRelatedQuestionAnswer1 = WLCommonTrackerClass.createAnswer(objRelatedQuestion1.id, null ,'test');       
-//        System.runAs(objuser) 
-//        {
-            WLpostloginQuestionsController objacfpostloginQuestionsController = new WLpostloginQuestionsController();
-            objacfpostloginQuestionsController.QuesNo = 0;
-            objacfpostloginQuestionsController.MasterQuesNo = 0;
-            if(objacfpostloginQuestionsController.lstMasterWrapperQuestion != null &&   objacfpostloginQuestionsController.lstMasterWrapperQuestion.size()>0)
-            {
-                objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;  
-                objacfpostloginQuestionsController.redirect();
-                objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id; 
-            }  
-       //     objacfpostloginQuestionsController.RelatedQuestions();
-            //objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].lstRelatedQuestion[0].strWrapAnswer = objRelatedQuestionAnswer1.id;
-            objacfpostloginQuestionsController.AddingRelatedQuestion();
-      //      objacfpostloginQuestionsController.NextQuestion();
-            objacfpostloginQuestionsController.PreviousQuestion();
-            objacfpostloginQuestionsController.AssetLiablity();
-            objacfpostloginQuestionsController.assetaddMethodNRAC();
-            objacfpostloginQuestionsController.InsertRequiredDocuments(objLead.id,objacfpostloginQuestionsController.lstMasterWrapperQuestion);
+static testMethod void validate1()
+{
+LoadData();
+ System.runAs(objuser) 
+        {
+        click_Applicant__c obj=new click_Applicant__c();
+       // obj.name='test';
+        obj.click_Applicant_Number__c='4';
+        obj.acfEconsent__c='I Consent';
+        obj.click_Account__c=accperson.id;
+        insert obj;
+        
+         Script__c scobj=new Script__c();
+        scobj.acf_Type__c='Post-Login';
+        scobj.Click_Community_Setup__c=objcommunity.id;
+        scobj.clickAsk_for_every_applicant__c =true;
+        insert scobj;
+        
+        Question__c queobj1=new Question__c();
+        queobj1.acf_Active__c=true;
+        queobj1.Click_Is_Broker_Question__c=false;
+        queobj1.acf_Script__c=scobj.id;
+        queobj1.acfDependent_Field_Name__c='test';
+        queobj1.acfDependent_Object_Name__c='Lead';
+        queobj1.acfEmployment_Type__c=true;
+        insert queobj1;  
+              
+        Question__c queobj=new Question__c();
+        queobj.acf_Active__c=true;
+        queobj.Click_Is_Broker_Question__c=false;
+        insert queobj;
+               
+        Answer__c ansobj=new Answer__c();
+        ansobj.acf_Question__c=queobj.id;
+        insert ansobj;
+        queobj.acf_Master_Question__c=queobj1.id;
+        update queobj;
+        
+        WLpostloginQuestionsController wlobj=new WLpostloginQuestionsController();
+     }
        }
-//    }
-    
-     //For Adding Related Method
-    static testMethod void ValidateAddingRelatedMethod1() 
-    { 
-        objLead = WLCommonTrackerClass.createLeadForPortal();
-        objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
-        objuser    =  WLCommonTrackerClass.CreatePortalUser(objAccount.id); 
-        objScript     = WLCommonTrackerClass.createScript('Post-Login');
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Checkbox',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
-        objQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,objScript.id,'acfApplicant2_Name__c','Contact',false,'',false);
-        objRelatedQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,null,null,null,false,'',false);
-        objRelatedQuestion1   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,null,null,null,false,'',false);
-
-        objAnswer     = WLCommonTrackerClass.createAnswer(objQuestion.id, objRelatedQuestion.id,'test'); 
-        objRelatedQuestionAnswer = WLCommonTrackerClass.createAnswer(objRelatedQuestion.id, objRelatedQuestion1.id ,'test');
-        objRelatedQuestionAnswer1 = WLCommonTrackerClass.createAnswer(objRelatedQuestion1.id, null ,'test');       
-//        System.runAs(objuser) 
-//       {
-            WLpostloginQuestionsController objacfpostloginQuestionsController = new WLpostloginQuestionsController();
-            objacfpostloginQuestionsController.QuesNo = 0;
-            objacfpostloginQuestionsController.MasterQuesNo = 0;
-            if(objacfpostloginQuestionsController.lstMasterWrapperQuestion != null && objacfpostloginQuestionsController.lstMasterWrapperQuestion.size()>0)
-            {
-            objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-            objacfpostloginQuestionsController.redirect();
-            objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-            }
-      //      objacfpostloginQuestionsController.RelatedQuestions();
-             //objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].lstRelatedQuestion[0].strWrapAnswer = objRelatedQuestionAnswer1.id;
-            objacfpostloginQuestionsController.AddingRelatedQuestion();
-    //        objacfpostloginQuestionsController.NextQuestion();
-            objacfpostloginQuestionsController.PreviousQuestion();
-            objacfpostloginQuestionsController.AssetLiablity();
-            objacfpostloginQuestionsController.assetaddMethodNRAC();
-            objacfpostloginQuestionsController.InsertRequiredDocuments(objLead.id,objacfpostloginQuestionsController.lstMasterWrapperQuestion);
-//        }
+       static testMethod void validate2()
+{
+LoadData();
+ System.runAs(objuser) 
+        {
+        click_Applicant__c obj=new click_Applicant__c();
+       // obj.name='test';
+        obj.click_Applicant_Number__c='4';
+        obj.acfEconsent__c='I Consent';
+        obj.click_Account__c=accperson.id;
+        insert obj;
+        
+         Script__c scobj=new Script__c();
+        scobj.acf_Type__c='Post-Login';
+        scobj.Click_Community_Setup__c=objcommunity.id;
+        scobj.clickAsk_for_every_applicant__c =true;
+        insert scobj;
+        
+        Question__c queobj1=new Question__c();
+        queobj1.acf_Active__c=true;
+        queobj1.Click_Is_Broker_Question__c=false;
+        queobj1.acf_Script__c=scobj.id;
+        queobj1.acfDependent_Field_Name__c='test';
+        queobj1.acfDependent_Object_Name__c='click_Applicant__c';
+        queobj1.acfEmployment_Type__c=true;
+        insert queobj1;  
+              
+        Question__c queobj=new Question__c();
+        queobj.acf_Active__c=true;
+        queobj.Click_Is_Broker_Question__c=false;
+        
+        insert queobj;
+       
+        
+        Answer__c ansobj=new Answer__c();
+        ansobj.acf_Question__c=queobj.id;
+        insert ansobj;
+        queobj.acf_Master_Question__c=queobj1.id;
+        update queobj;
+        
+        WLpostloginQuestionsController wlobj=new WLpostloginQuestionsController();
+     }
+       }
+        static testMethod void validate3()
+{
+LoadData();
+ System.runAs(objuser) 
+        {
+        click_Applicant__c obj=new click_Applicant__c();
+       // obj.name='test';
+        obj.click_Applicant_Number__c='4';
+        obj.acfEconsent__c='I Consent';
+        obj.click_Account__c=accperson.id;
+        insert obj;
+        
+         Script__c scobj=new Script__c();
+        scobj.acf_Type__c='Post-Login';
+        scobj.Click_Community_Setup__c=objcommunity.id;
+        insert scobj;
+        
+        Question__c queobj1=new Question__c();
+        queobj1.acf_Active__c=true;
+        queobj1.Click_Is_Broker_Question__c=false;
+        queobj1.acf_Script__c=scobj.id;
+        queobj1.acfDependent_Field_Name__c='test';
+        queobj1.acfDependent_Object_Name__c='Applicant';
+        insert queobj1;  
+              
+        Question__c queobj=new Question__c();
+        queobj.acf_Active__c=true;
+        queobj.Click_Is_Broker_Question__c=false;
+        
+        insert queobj;
+       
+        
+        Answer__c ansobj=new Answer__c();
+        ansobj.acf_Question__c=queobj.id;
+        insert ansobj;
+        queobj.acf_Master_Question__c=queobj1.id;
+        update queobj;
+        
+        WLpostloginQuestionsController wlobj=new WLpostloginQuestionsController();
+     }
+       }
+   private static void LoadData()
+    {
+        createLead(); 
+        createAccount();
+        CreatePersonAccount(); 
+        createclickCommunitySetup();
+        createContact();
+        createUser();
+        createOpportunity1();
     }
     
-    //For Assets and Liabilities
-    static testMethod void validateWLpostloginQuestionsController11() 
-    { 
-        objLead = WLCommonTrackerClass.createLeadForPortal();
-        objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
-        objuser    =  WLCommonTrackerClass.CreatePortalUser(objAccount.id); 
-        objScript     = WLCommonTrackerClass.createScript('Post-Login');
-        objQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,objScript.id,'acf_Applicant_Name__c','Lead',false,'',false);
-       // objQuestion   = acfCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,objScript.id,'acfApplicant2_Name__c','Contact');
-        objRelatedQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,null,null,null,false,'',false);
-        objRelatedQuestion   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Button',false,true,null,'acfApplicant2_Marital_Status__c','lead',true,'acfApplicant2_Monthly_Salary__c',true);
-        objRelatedQuestion.acfDependent_Object_Name__c = null;
-        objRelatedQuestion.acfDependent_Field_Name__c = null;
-        objRelatedQuestion.acf_Dependents__c = false;
-        update objRelatedQuestion;   
-        objRelatedQuestion1   = WLCommonTrackerClass.CreatePostLoginQuestions('Who is your current lender?',1,'Text',true,false,null,null,null,false,'',false);
+   
+   
+    static void createLead()
+    {
+       objLead = new Lead();
+       
+        Id recorsTypeId  = acfCommon.GetRecordTypeId('Lead','Click Refi');
+        objLead.FirstName = '+619654922845';
+        objLead.LastName = '+619654922845';
+        
+        objLead.Email = 'swati.sharma@saasfocus.com';
+        objLead.MobilePhone = '+619654922845';
+        objLead.Status = 'Open';
+        objLead.RecordTypeId = recorsTypeId;
+        objLead.acfOneTimePassword__c = '724715';
+        objLead.acfApproximately_how_much_is_your_house__c = 100.01;
+        objLead.acfLoan_Amount__c = 100.20;
+        objLead.acfIs_Bank_Statement_Submitted__c = true;
+        //objLead.acfIs_Identity_Document_Submitted__c = true;
+        objLead.acfIs_Post_Login_Ques_Attempted__c =true;
+        //objLead.acfIs_Identity_Document_Submitted__c =true;
+        insert objLead;
+        
+ //   objLead = acfCommonTrackerClass.createLeadForPortal();
+    }
 
-        objAnswer     = WLCommonTrackerClass.createAnswer(objQuestion.id, objRelatedQuestion.id,'test'); 
-        objRelatedQuestionAnswer = WLCommonTrackerClass.createAnswer(objRelatedQuestion.id, objRelatedQuestion1.id ,'test');
-        objRelatedQuestionAnswer1 = WLCommonTrackerClass.createAnswer(objRelatedQuestion1.id, null ,'test');       
-          
-//        System.runAs(objuser) 
-//        {
-            WLpostloginQuestionsController objacfpostloginQuestionsController = new WLpostloginQuestionsController();
-            objacfpostloginQuestionsController.QuesNo = 0;
-            objacfpostloginQuestionsController.MasterQuesNo = 0;
-            if(objacfpostloginQuestionsController.lstMasterWrapperQuestion != null && objacfpostloginQuestionsController.lstMasterWrapperQuestion.size()>0)
-            {
-                objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-                objacfpostloginQuestionsController.redirect();
-                objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].strWrapAnswer = objAnswer.id;
-            }
-            objacfpostloginQuestionsController.RelatedQuestions();
-            //objacfpostloginQuestionsController.lstMasterWrapperQuestion[0].lstRelatedQuestion[0].strWrapAnswer = objRelatedQuestionAnswer.id;
-            objacfpostloginQuestionsController.AddingRelatedQuestion();
-            //objacfpostloginQuestionsController.QuesNo = 0;
-            //objacfpostloginQuestionsController.MasterQuesNo = 0;
- //           objacfpostloginQuestionsController.NextQuestion();
-            //objacfpostloginQuestionsController.PreviousQuestion();
-            objacfpostloginQuestionsController.MasterQuesNo = 1;
-      //      objacfpostloginQuestionsController.AssetLiablity();
-            objacfpostloginQuestionsController.PreviousQuestion();
-            objacfpostloginQuestionsController.assetaddMethodNRAC();
-            objacfpostloginQuestionsController.InsertRequiredDocuments(objLead.id,objacfpostloginQuestionsController.lstMasterWrapperQuestion);
-//        }
+    static void createLead1()
+    {
+        objLead = new Lead();
+        Id recorsTypeId  = acfCommon.GetRecordTypeId('Lead','Click New Loans');
+        objLead.FirstName = '+619654922845';
+        objLead.LastName = '+619654922845';
+        objLead.Email = 'swati.sharma@saasfocus.com';
+        objLead.MobilePhone = '+619654922845';
+        objLead.Status = 'Open';
+        objLead.RecordTypeId = recorsTypeId;
+        objLead.acfOneTimePassword__c = '724715';
+        objLead.acfApproximately_how_much_is_your_house__c = 100.01;
+        objLead.acfLoan_Amount__c = 100.20;
+        objLead.acfIs_Bank_Statement_Submitted__c = true;
+        //objLead.acfIs_Identity_Document_Submitted__c = true;
+        objLead.acfIs_Post_Login_Ques_Attempted__c =true;
+        //objLead.acfIs_Identity_Document_Submitted__c =true;
+        insert objLead;
+    }
+
+    
+    static void createContact()
+    {
+        objContact = new Contact();
+        objContact.acf_lead__c = objLead.id;
+        objContact = WLCommontrackerClass.createContact(objContact,objAccount);
     }
     
+    static void createuser()
+    {
+         objUser = new User();
+         objUser = WLCommonTrackerClass.CreatePortalUser(accperson.id);
+    }
+    
+    static void createOpportunity1()
+    {
+      objOpportunity = new Opportunity();
+      objOpportunity.acfBankdetailStatus__c = 'Skipped';
+      objOpportunity = WLCommontrackerClass.createOpportunity(objOpportunity,objUser);
+    }
+     static void  createAccount()
+     {
+     objAccount =new account();
+     objAccount=WLCommontrackerClass.createAccount(objAccount);
+     }
+     
+   static void CreatePersonAccount()
+   {
+       accperson=new account();
+       accperson=WLCommontrackerClass.CreatePersonAccount('test','test','test','test@gmail.com',objLead.id);
+       accperson.acfAsset_House_Worth__c=44;
+       update accperson;
+       objLead.acf_partner_account__c=accperson.id;
+       update objLead;
+   }
+    
+    static void CreatePersonAccount1()
+    {
+       accperson=new account();
+       accperson=WLCommontrackerClass.CreatePersonAccount('test','test','test','test@gmail.com',objLead.id);
+    // accperson.acfAsset_House_Worth__c=44;
+       update accperson;
+       objLead.acf_partner_account__c=accperson.id;
+       update objLead;
+    }
+     static void createclickCommunitySetup() 
+    {
+        objcommunity = new Click_Community_Setup__c();
+        objcommunity = WLCommontrackerClass.createcommunitysetup();
+    }
 }

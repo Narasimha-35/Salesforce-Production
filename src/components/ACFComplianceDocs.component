@@ -1,0 +1,323 @@
+<apex:component id="cmpOrderForm" controller="sendEmailTemplateOnOppController" access="global">   
+    <apex:attribute name="paramOppId" description="Passes the ID of the opportunity to the custom controller" type="Id" assignTo="{!accId}"/>   
+    <html>
+        <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!--[if !mso]><!-- -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Click Loans Application</title>
+        <style type="text/css">
+            @media only screen and (max-width: 640px)  {    
+            .deviceWidth { width: 440px !important; padding: 0; }
+            .hideForMobile { display: none !important; }
+            .removePaddingForMobile { padding: 0 !important; }
+            .navPaddingForMobile { padding: 20px !important; }
+            .titlePaddingForMobile { padding: 15px 20px 0 20px !important; }
+            .textPaddingForMobile { padding: 15px 20px 15px 20px !important; }
+            .toppaddingformobile {padding-top:15px !important}
+            .nosidepadding {padding-right:0px !important; padding-left:0px !important}
+            .leftpadding10 {padding-left:10px !important}
+            .whiteBackgroundForMobile { background-color: #ffffff !important; }
+            }            
+            @media only screen and (max-width: 479px) {   
+            .deviceWidth { width: 280px !important; padding: 0; }
+            .deviceWidth2 { width: 300px !important; padding: 0; }
+
+            .hideForMobile { display: none !important; }
+
+            .removePaddingForMobile { padding: 0 !important; }
+            .navPaddingForMobile { padding: 20px !important; }
+            .titlePaddingForMobile { padding: 15px 20px 0 20px !important; }
+            .textPaddingForMobile { padding: 15px 20px 15px 20px !important; }
+            .whiteBackgroundForMobile { background-color: #ffffff !important; }
+
+            }
+            .ReadMsgBody { width: 100%; background-color: #f6f7fb; }
+            .ExternalClass { width: 100%; background-color: #f6f7fb; }
+
+            body { 
+            width: 100%; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #ffffff;
+            font-family: Arial, sans-serif; 
+            mso-line-height-rule: exactly;
+            -webkit-font-smoothing: antialiased; 
+            -ms-text-size-adjust: none !important;
+            }
+
+            table { border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0; mso-table-rspace: 0; }
+            table td { border-collapse: collapse; mso-table-lspace: 0; mso-table-rspace: 0; }
+
+            img style="display:block" { border: 0; -ms-interpolation-mode: bicubic; }
+
+
+            /** Content and link styling **/
+
+            .nav { 
+            font-family: Arial, sans-serif; 
+            font-size: 14px; 
+            color: #272727; 
+            font-weight: normal; 
+            line-height: 14px; 
+            mso-line-height-rule: exactly;
+            text-align: center; 
+            vertical-align: top; 
+            }
+
+            .nav a { color: #272727; text-decoration: none; } 
+
+
+            .heading { 
+            font-family: Arial, sans-serif; 
+            font-size: 26px; 
+            color: #45b1e2; 
+            font-weight: bold; 
+            line-height: 26px; 
+            mso-line-height-rule: exactly; 
+            text-align: center; 
+            vertical-align: top; 
+            }
+
+            .heading a { color: #45b1e2; text-decoration: none; }
+
+
+            .title { 
+            font-family: Arial, sans-serif; 
+            font-size: 20px;
+            color: #20a2dc; 
+            font-weight: bold; 
+            line-height: 24px; 
+            mso-line-height-rule: exactly; 
+            text-align: left; 
+            vertical-align: top; 
+            }
+
+            .title a { color: #20a2dc; text-decoration: none; } 
+
+
+            .rssTitle { 
+            font-family: Arial, sans-serif; 
+            font-size: 16px; 
+            color: #20a2dc; 
+            font-weight: bold; 
+            line-height: 20px; 
+            mso-line-height-rule: exactly; 
+            text-align: left; 
+            vertical-align: top;
+            }
+
+            .rssTitle a { color: #20a2dc; text-decoration: none; }
+
+
+            .bodyText { color: #222222; }
+            .bodyText a { color: #20a2dc; font-weight: bold; }  
+
+            .bodyText, .bodyText a { 
+            font-family: Arial, sans-serif; 
+            font-size: 14px; 
+            line-height: 20px; 
+            mso-line-height-rule: exactly; 
+            vertical-align: top; 
+            text-decoration: none; 
+            }
+
+
+            .footerText { 
+            font-family: Arial, sans-serif; 
+            font-size: 12px; 
+            color: #999999; 
+            font-weight: bold; 
+            line-height: 18px; 
+            mso-line-height-rule: exactly; 
+            text-align: center; 
+            vertical-align: top; 
+            }
+
+            .footerText a { color: #999999; text-decoration: none; } 
+
+
+            /** Button styling **/
+
+            .button1 { background-color: #45b1e2; }
+
+            .button1 a {
+            display: block;
+            border: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: bold;
+            line-height: 16px;
+            text-decoration: none; 
+            text-align: center; 
+            background: #45b1e2; 
+            border: 1px solid #45b1e2; 
+            -moz-border-radius: 4px; 
+            -webkit-border-radius: 4px; 
+            border-radius: 4px;
+            }
+
+
+            .button2 { background-color: #999999; } 
+
+            .button2 a {
+            display: block;
+            border: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: bold;
+            line-height: 16px;
+            text-decoration: none; 
+            text-align: center; 
+            background: #999999; 
+            border: 1px solid #999999; 
+            -moz-border-radius: 4px; 
+            -webkit-border-radius: 4px; 
+            border-radius: 4px;
+            } 
+
+            .button1, .button2 { 
+            -moz-border-radius: 4px; 
+            -webkit-border-radius: 4px;
+            border-radius: 4px; 
+            word-break: break-word; 
+            word-wrap: break-word; 
+            }
+        </style>
+        </head>
+        <body bgcolor="#ffffff"  class="deviceWidth" style="margin:0 auto">
+        <table width="580" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#ffffff"  class="deviceWidth">
+          <tbody>
+            <tr>
+              <td style="padding:5px 0px 0px 0px">
+        <table width="200" border="0" align="center" cellpadding="0" cellspacing="0"  class="deviceWidth">
+          <tbody>
+            <tr>
+              <td class="deviceWidth"><a title="Click Loans Logo" href="http://ClickLoansApplication.com.au/life-insurance-calculator/?utm_source=Salesforce&amp;utm_medium=email&amp;utm_term=ApplicationSent&amp;utm_campaign=ClickLoansApplication" target="_blank"><br /><img style="margin: 35px auto 31px; display: block; width: 150px;" src="https://c940564.ssl.cf2.rackcdn.com/australiancreditandf/1465346389278677/d4abd75ade1e6f0bdb6ea6d379c63c0c.png" alt="logo" width="150" /></a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        </td>
+            </tr>
+          </tbody>
+        </table>
+        <table width="600" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#ffffff"  class="deviceWidth">
+          <tbody>
+            <tr>
+              <td style="padding:10px 10px 10px 10px; border-width:1px; border-color:#cccccc; border-style:solid; border-bottom-color:#cccccc !important"><table width="540" border="0" align="center" cellpadding="0" cellspacing="0"  class="deviceWidth">
+                <tbody>
+                  <tr>
+                    <td style="padding:10px 0px 10px 0px;font-family:arial; font-size:14px; color:#414042">
+                    <span style="color: #000000; font-size: 26px; font-weight: bold;">Your application has progressed
+                    <br />
+                      &nbsp;</span>
+                      <br /> 
+                      Hi  {!objWrapOppInfo.strAccName} ,<br/>
+                      <br/>
+                      I am pleased to let you know that your application to {!strLender} is progressing through the queue, we
+
+        expect to get an initial response in the next few days and will be in contact if we required anything more
+
+        to receive conditional approval.
+
+                      <br/>
+                      <br/>
+                      Sometimes conditional approval will happen instantly depending on the lender and the details of the
+
+        loan pack submitted however most of the time it will need to be looked at by an assessor. <br/>
+        <br/>
+        Once we
+
+        receive information back from the lender that your loan pack has been conditionally approved we will
+
+        send you another update to ensure you know exactly where the process is at.<br/>
+        <br/>   <br/>
+        At this time we do require some additional information from yourself: <br/>
+         <!-- Pending Document Section starts Here -->
+             <table border="0" style="color: #6D6D6D;">
+                <tr>
+                   <th style="text-align: left;">Document Name</th>
+                   <th style="text-align: left;">Status</th>
+                </tr>
+                <apex:repeat var="reqDoc" value="{!lstReqDocs}">                           
+                    <tr>
+                        <td>{!reqDoc.Name}</td>
+                        <td>{!reqDoc.acfStatus__c}</td>
+                    </tr>                                  
+                </apex:repeat>                 
+              </table>
+         <!-- Pending Document Section ends Here -->               
+        <br/>
+        If you have any further questions do not hesitate to give me a call.
+
+
+        <br/>
+        <br/>
+        For your reference, an electronic copy of the Credit Guide and Credit Proposal Disclosure have been attached to this email.</td>
+                  </tr>
+      <tr>
+      <td>
+      <div class="manager" style="margin-top: 37px;">
+            <div style="font-size: 13px; line-height: 20px;">
+                <span style="display: block; font-weight: bold;"> {!objWrapOppInfo.strOwnerName} <br /> {!objWrapOppInfo.strOwnerTitle} <br/></span>
+                P: 1300 737 557 | F: 1300 735 173<br/>E: <a href="mailto: {!objWrapOppInfo.strOwnerEmail}" style="text-decoration:none; color:#1f8acb"> {!objWrapOppInfo.strOwnerEmail}</a><br/>
+        
+                W: <a href="http://www.creditandfinance.com.au" style="text-decoration:none; color:#1f8acb">http://www.creditandfinance.com.au </a>
+            </div>
+     
+        <div class="content" style="font-family: Arial, sans-serif; padding-right: 20px;">&nbsp;</div>
+
+        </div></td></tr>
+                </tbody>
+            </table> 
+             
+              
+              <table width="580" border="0" cellspacing="0" cellpadding="0"  class="deviceWidth">
+                <tbody>
+                  <tr>
+                    <td style="padding:10px 0px 10px 0px">
+                      
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              
+              
+              
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    
+      <table width="580" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#ffffff"  class="deviceWidth">
+            <tbody>
+                <tr>
+                    <td style="padding:5px 0px 0px 0px">
+                        <table width="200" border="0" align="center" cellpadding="0" cellspacing="0"  class="deviceWidth">
+                            <tbody>
+                                <tr>
+                                    <td class="deviceWidth"><a title="Click Loans Logo" href="http://Clickloans.com.au?utm_source=Salesforce&amp;utm_medium=email&amp;utm_term=ApplicationSent&amp;utm_campaign=ClickLoansApplication" target="_blank"><br /><img style="margin: 15px auto 15px; display: block;  width: 150px;" src="https://c940564.ssl.cf2.rackcdn.com/australiancreditandf/1465346389278677/d4abd75ade1e6f0bdb6ea6d379c63c0c.png" alt="logo" width="150"  /></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table> 
+        <table width="600" border="0" align="center" cellpadding="0" cellspacing="0"  class="deviceWidth">
+            <tbody>
+                <tr>
+                    <td style="padding:10px 0px 10px 0px;font-family:arial; font-size:11px; color:#888888">Australian Credit and Finance was created to provide Aussies with both a great home loan and an excellent customer experience. If you have any feedback, positive or otherwise on a product, services or a member of our team, we welcome your communication with the founders our the business at talktous@creditandfinance.com.au . Your feedback is very important to us and helps us become a better business. We appreciate you taking the time to do so.</td>
+                </tr>
+            </tbody>
+        </table>
+        </body>
+</html>
+</apex:component>

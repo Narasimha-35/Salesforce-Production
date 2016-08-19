@@ -321,6 +321,18 @@ sforce.connection.sessionId = '{!$Api.Session_ID}';
     {
        content:'Verify Online'!important 
     }
+    
+     .VerifyEmailStyle:before
+    {
+       content:'Verify via Email And SMS'!important;
+       text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap; 
+    } 
+    
+    .red-tooltip + .tooltip > .tooltip-inner {background-color: #1f8acb;}
+    .red-tooltip + .tooltip > .tooltip-arrow { border-bottom-color:#1f8acb!important; }
+    
     .NotesStyle:before
     {
        content:'Add Notes'!important 
@@ -331,7 +343,7 @@ sforce.connection.sessionId = '{!$Api.Session_ID}';
     }
     .VerifyNow:before
     {
-        content:'Verify Now'!important
+        content:'Verifying'!important
     }
     .VerifyAgain:before
     {
@@ -880,7 +892,7 @@ function ajaxindicatorstop()
                   
                 <!--for bank statement-->
                   <apex:outputPanel >
-                     <a href="#" onclick="downloadSelectedFile('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active downloadStyle" style="margin-bottom:7px;">&nbsp;</span></a>              
+                     <a href="{!doc.objRequiredDocumnets.acfDocument_Master__r.File_Address__c}" download="file"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active downloadStyle" style="margin-bottom:7px;">&nbsp;</span></a>              
                  </apex:outputPanel> 
                  <p></p>
                   <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Pending'}">
@@ -900,7 +912,13 @@ function ajaxindicatorstop()
             <apex:outputPanel rendered="{!if(doc.objRequiredDocumnets.Click_Is_E_consent__c,true,false)}">
                   
                   <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Pending'}">
-                     <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifiOnlineStyle" style="margin-bottom:7px;">&nbsp;</span></a>              
+                       <script>
+                    $(document).ready(function(){
+                    $('[data-toggle="tooltip"]').tooltip();
+                    });
+                    </script>
+                     <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyEmailStyle red-tooltip" style="margin-bottom:7px;"  data-toggle="tooltip" title="Verify via Email And SMS">&nbsp;</span></a>              
+                     <!--<a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyEmailStyle" style="margin-bottom:7px;">&nbsp;</span></a>-->            
                  </apex:outputPanel> 
                  <p></p>
                   <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'}">

@@ -1,84 +1,68 @@
-@isTest(seeAllData=true)
-private class WLPostquestionControllerTracker{
-    private static User objUser;
-    private static Contact objContact;
-    private static Account objAccount;
-    private static Opportunity objOpportunity;
+@isTest
+public class WLPostquestionControllerTracker
+{
+private static User objUser;
+    public static lead objLead ;
+    public static Contact objContact;
+    public static Account objAccount;
+    public static Opportunity objOpportunity;
+    public static Click_Community_Setup__c objclcmm;
     
-    static testMethod void validateController(){
-            LoadData();
-            WLPostquestionController objpost = new WLPostquestionController();
-            objpost.isError = true;
-            objpost.ResetPopup();
-            objpost.postQuery();
-         }     
-         
-    static testMethod void validateController2(){
-            LoadData();
-            WLPostquestionController objpost = new WLPostquestionController();
-            objpost.isError = true;       
-            objpost.ResetPopup();
-            objpost.strPost = null;
-            objpost.postQuery();
+    static testMethod void validate()
+    {  
+        LoadData();
+        system.runas(objUser)
+        {
+            WLPostquestionController obj = new WLPostquestionController();
+            obj.ResetPopup();
+            obj.postQuery();
         }
-    
-    private static void LoadData(){
-            createAccount();
-  //          createContact();
-            createUser();
-            createOpportunity();
     }
     
-    static void createAccount(){
-            objAccount = new Account();
-            objAccount = acfCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',null);
+    static testMethod void validate1()
+    {  
+        LoadData();
+        system.runas(objUser)
+        {
+            WLPostquestionController obj = new WLPostquestionController();
+            obj.isError = false;
+            obj.strPost = null;
+            obj.ResetPopup();
+            obj.postQuery();
+        }
+    }
+      public static void LoadData()
+    {
+        createLead();
+        createAccount();
+        createContact();
+        createuser();
     }
     
-    static void createContact(){
-            objContact = new Contact();
-            objContact = WLCommontrackerClass.createContact(objContact,objAccount);
+    static void createLead()
+    {
+        objLead = new Lead();
+        objLead = WLCommonTrackerClass.createLead(objLead);
     }
     
-    static void createUser(){
-            objUser = new User();
-  //          objUser.Contactid = objContact.id;
-            objUser = WLCommontrackerClass.CreatePortalUser(objAccount.id);
+    static void createAccount()
+    {
+        objAccount = new Account();
+        objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','66666666','test@gmail.com',objLead.id);
     }
     
-    static void createOpportunity(){
-            objOpportunity = new Opportunity();
-            objOpportunity.acfBankdetailStatus__c = 'Skipped';
-            objOpportunity = WLCommontrackerClass.createOpportunity(objOpportunity,objUser);
+    static void createContact()
+    {
+        objContact = new Contact();
+        objContact.acf_lead__c = objLead.id;
+        objContact = WLCommonTrackerClass.createContact(objContact,objAccount);
     }
-/*        acfCMS_Page__c obj = new acfCMS_Page__c ();
-        obj .Name ='ClickFAQ';
-        obj .acfDescription__c = 'Ankit Singh';
-        obj .acfHeading__c = 'abcd';
-        insert obj ;
-        
-        list<acfFAQ__c>  lstacf = new list<acfFAQ__c>(); 
-        acfFAQ__c objf = new acfFAQ__c();
-        objf.acfAnswer__c  = 'test';
-        objf.acfCMSPage__c = obj.id;
-        objf.acfFAQType__c = 'Applying for a Loan';
-        objf.acfQuestion__c = 'test';
-        lstacf.add(objf);
-        
-        acfFAQ.wrapperFAQType wrap = new acfFAQ.wrapperFAQType();
-        acfFAQ.WrapperFAQ wrp = new acfFAQ.WrapperFAQ();
-        wrp.id = '1234';
-        
-        acfFAQ  objFAQ = new acfFAQ();
-        objFAQ.strUserName = 'test';
-        objFAQ.strUserPhone = 'test';
-        objFAQ.strUserEmail = 'test@test.com';
-        objFAQ.strQuestion = 'test';
-        objFAQ.strErrorMsg = 'test';
-        objFAQ.lstacfFAQ = lstacf; 
-        objFAQ.submitCase();
-        
     
-    }*/
-
-
+    static void createuser()
+    {
+        objUser = new User();
+        objUser = WLCommonTrackerClass.CreatePortalUser(objAccount.id);
+    }
+    
+    
 }

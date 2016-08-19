@@ -52,6 +52,18 @@
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
+        <fullName>Click_Community_Setup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Community Setup</label>
+        <referenceTo>Click_Community_Setup__c</referenceTo>
+        <relationshipLabel>CMS Page</relationshipLabel>
+        <relationshipName>CMS_Page</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>acfAttachment_Id__c</fullName>
         <description>Click Loans</description>
         <externalId>false</externalId>

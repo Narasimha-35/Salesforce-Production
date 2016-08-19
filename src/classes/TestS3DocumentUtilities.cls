@@ -21,7 +21,7 @@ public with sharing class TestS3DocumentUtilities {
 	private static testMethod void testConstructFailureAsAttachment() {
 		List<S3DocumentModel.UploadRequest> uploadRequests = new List<S3DocumentModel.UploadRequest>();
 		for(String s : docMap.keySet()) {
-			uploadRequests.add(new S3DocumentModel.UploadRequest(s, docMap.get(s), LendiApiStaticValue.TEXT_MINE_TYPE));
+			uploadRequests.add(new S3DocumentModel.UploadRequest(s, docMap.get(s), S3StaticValue.TEXT_MINE_TYPE));
 		}
 
 		System.debug('[TestS3DocumentUtilities]s3Docs: ' + s3Docs);

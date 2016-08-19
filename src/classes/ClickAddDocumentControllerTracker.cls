@@ -1,4 +1,4 @@
-@isTest(SeeAllData = true)
+@isTest
 private class ClickAddDocumentControllerTracker 
 {
     private static Lead objLead;
@@ -34,7 +34,7 @@ private class ClickAddDocumentControllerTracker
             objClickAddDoc.strerrMsg = 'test';
             objClickAddDoc.isDocAdded = true;
             objClickAddDoc.docMasterId = string.valueof(objDocumentMaster.Id);
-            objClickAddDoc.getObjAccount();
+            //objClickAddDoc.getObjAccount();
             objClickAddDoc.insertReqDocument();
             objClickAddDoc.reqDocCancel();
             objClickAddDoc.resetReqDocPopup();

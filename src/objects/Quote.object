@@ -62,43 +62,43 @@
         <picklist>
             <picklistValues>
                 <fullName>Draft</fullName>
-                <allowEmail>true</allowEmail>
                 <default>true</default>
+                <allowEmail>true</allowEmail>
             </picklistValues>
             <picklistValues>
                 <fullName>Needs Review</fullName>
-                <allowEmail>true</allowEmail>
                 <default>false</default>
+                <allowEmail>true</allowEmail>
             </picklistValues>
             <picklistValues>
                 <fullName>In Review</fullName>
-                <allowEmail>true</allowEmail>
                 <default>false</default>
+                <allowEmail>true</allowEmail>
             </picklistValues>
             <picklistValues>
                 <fullName>Approved</fullName>
-                <allowEmail>true</allowEmail>
                 <default>false</default>
+                <allowEmail>true</allowEmail>
             </picklistValues>
             <picklistValues>
                 <fullName>Rejected</fullName>
-                <allowEmail>true</allowEmail>
                 <default>false</default>
+                <allowEmail>true</allowEmail>
             </picklistValues>
             <picklistValues>
                 <fullName>Presented</fullName>
-                <allowEmail>true</allowEmail>
                 <default>false</default>
+                <allowEmail>true</allowEmail>
             </picklistValues>
             <picklistValues>
                 <fullName>Accepted</fullName>
-                <allowEmail>true</allowEmail>
                 <default>false</default>
+                <allowEmail>true</allowEmail>
             </picklistValues>
             <picklistValues>
                 <fullName>Denied</fullName>
-                <allowEmail>true</allowEmail>
                 <default>false</default>
+                <allowEmail>true</allowEmail>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>

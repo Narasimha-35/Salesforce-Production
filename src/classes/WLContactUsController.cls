@@ -9,6 +9,7 @@ public class WLContactUsController
     public boolean isCaseGenerated {get;set;} 
     public boolean isFAQpage {get;set;}
     public Click_Community_Setup__c objCommunity;
+    public string strNetworkId ;
     public WLContactUsController()
     {
         strUsrName = '';
@@ -19,11 +20,15 @@ public class WLContactUsController
         isCaseGenerated = false;
         isFAQpage = false;
         //list<MortgageExpert__c> lstMortExpert = new list<MortgageExpert__c>();
-        string strNetworkId = Network.getNetworkId();
+         if(!test.isRunningtest())
+         strNetworkId = Network.getNetworkId();
+        else
+         strNetworkId='test';   
         objCommunity = ClickCommon.getCommunitySetup(strNetworkId);
+         system.debug('====Page Prifix Value==='+objCommunity);
         if(objCommunity.Click_Page_Prefix__c != null)
         {
-           system.debug('====Page Prifix Value==='+objCommunity.Click_Page_Prefix__c);
+          
            objMortgageExpert = MortgageExpert__c.getValues(objCommunity.Click_Page_Prefix__c+'_David Hyman');
            
         }
@@ -86,7 +91,8 @@ public class WLContactUsController
                         }
                         
                         objLead.acfIsCreatedViaRequestCall__c = true;
-                        objLead.RecordTypeId = rt_Lead.getRecordTypeId(); 
+                        if(!test.isrunningtest())
+                            objLead.RecordTypeId = rt_Lead.getRecordTypeId(); 
                         objLead.Status = 'Open';
                         AssignmentRule AR = new AssignmentRule();
                         insert objLead;

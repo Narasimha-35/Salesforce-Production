@@ -3,20 +3,36 @@
     =============================================================================
     Name                             Date                                version
     =============================================================================
-    Karthik Chekkilla               05/05/2016                            1.0
+    Karthik Chekkilla               05/05/2016                               1.0
     =============================================================================
 */
 public class IncomeExpenseTriggerHandler extends TriggerHandler
 {
+    // changes done by Ankit 
+    // added GUID functionality.
+    public override void BeforeInsert() 
+    {
+        for(Income_And_Expense__c  objIncome : (List<Income_And_Expense__c>) Trigger.new) 
+        {
+            if(string.isEmpty(objIncome.Lendi_Income_And_Expense_uuid__c))
+            {
+                List<string> lstGuid = new List<string>();
+                lstGuid = Utilities.NewGuid();
+                if(lstGuid != null && !lstGuid.isEmpty())
+                    objIncome.Lendi_Income_And_Expense_uuid__c = lstGuid[0];
+            }
+        }
+    }
+    
     public override void afterInsert() 
     {
         list<Financials_Source__c> lstFinancialSource = new list<Financials_Source__c>();
-        list<string> lstUserIds = new list<string>();
-        for(Income_And_Expense__c objIncome : (List<Income_And_Expense__c>) trigger.new)
+        list<id> tempUserId = new list<id>();
+        for(Income_And_Expense__c  objIncome : (list<Income_And_Expense__c>)trigger.new)
         {
-            lstUserIds.add(objIncome.createdbyid);
+            tempUserId.add(objIncome.CreatedById);
         }
-        map<string,string> mapUsrIdToUsrInputType = ClickCommon.mapUserInputType(lstUserIds);
+        map<String,String> mapUser  =ClickCommon.mapUserInputType(tempUserId);
         string strUserType = '';
         //create financial records
         for(Income_And_Expense__c objIncome : (List<Income_And_Expense__c>) trigger.new)
@@ -24,9 +40,9 @@ public class IncomeExpenseTriggerHandler extends TriggerHandler
             Financials_Source__c objFinance = new Financials_Source__c();
             objFinance.Amount__c = objIncome.Amount__c;
             objFinance.Income_And_Expense__c = objIncome.id;
-            if(mapUsrIdToUsrInputType != null && mapUsrIdToUsrInputType.size()>0)
+            if(mapUser != null && mapUser.size()>0)
             {
-                strUserType = mapUsrIdToUsrInputType.get(objIncome.createdById);
+                strUserType = mapUser.get(objIncome.createdById);
                 if(strUserType <> null && strUserType <> '')
                 {
                     objFinance.Source__c = strUserType;

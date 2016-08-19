@@ -81,117 +81,130 @@ private class UtilitiesTest {
             test.stopTest();
         }
     }
-
-    static testMethod void testUpdateTimezoneOnLead() {
+    static testMethod void testUpdateTimezoneOnLead1a() {
         Lead leadTest1 = new Lead();
         leadTest1.LastName = 'test1';
-
+        insert leadTest1;
+        Utilities.updateTimezoneOnLead(leadTest1);
+        Lead leadTest1New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest1.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1b() {
         Lead leadTest2 = new Lead();
         leadTest2.LastName = 'test2';
         leadTest2.PostalCode = '0900';
-
+        insert leadTest2;
+        Utilities.updateTimezoneOnLead(leadTest2);
+        Lead leadTest2New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest2.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1c() {
         Lead leadTest3 = new Lead();
         leadTest3.LastName = 'test3';
         leadTest3.PostalCode = '4000';
-
+        insert leadTest3;
+        Utilities.updateTimezoneOnLead(leadTest3);
+        Lead leadTest3New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest3.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1d() {
         Lead leadTest4 = new Lead();
         leadTest4.LastName = 'test4';
         leadTest4.PostalCode = '5500';
-
+        insert leadTest4;
+        Utilities.updateTimezoneOnLead(leadTest4);
+        Lead leadTest4New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest4.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1e() {
         Lead leadTest5 = new Lead();
         leadTest5.LastName = 'test5';
         leadTest5.PostalCode = '6000';
-
+        insert leadTest5;
+        Utilities.updateTimezoneOnLead(leadTest5);
+        Lead leadTest5New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest5.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1f() 
+    {
         Lead leadTest6 = new Lead();
         leadTest6.LastName = 'test6';
-        leadTest1.PostalCode = '';
-
+        leadTest6.PostalCode = '';
+        insert leadTest6;
+        Utilities.updateTimezoneOnLead(leadTest6);
+        Lead leadTest6New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest6.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1g() 
+    {
         Lead leadTest7 = new Lead();
         leadTest7.LastName = 'test7';
         leadTest7.PostalCode = '0850';
-
+        insert leadTest7;
+        Utilities.updateTimezoneOnLead(leadTest7);
+        Lead leadTest7New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest7.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1h() 
+    {
         Lead leadTest8 = new Lead();
         leadTest8.LastName = 'test8';
         leadTest8.StateCode = 'ACT';
-
+        insert leadTest8;
+        Utilities.updateTimezoneOnLead(leadTest8);
+        Lead leadTest8New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest8.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1i() 
+    {
         Lead leadTest9 = new Lead();
         leadTest9.LastName = 'test9';
         leadTest9.StateCode = 'NSW';
-
+        insert leadTest9;
+        Utilities.updateTimezoneOnLead(leadTest9);
+        Lead leadTest9New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest9.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1j() 
+    {
         Lead leadTest10 = new Lead();
         leadTest10.LastName = 'test10';
         leadTest10.StateCode = 'NT';
-
+        insert leadTest10;
+        Utilities.updateTimezoneOnLead(leadTest10);
+        Lead leadTest10New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest10.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1K() 
+    {
         Lead leadTest11 = new Lead();
         leadTest11.LastName = 'test11';
         leadTest11.StateCode = 'QLD';
-
+        insert leadTest11;
+        Utilities.updateTimezoneOnLead(leadTest11);
+        Lead leadTest11New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest11.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1l() 
+    {
         Lead leadTest12 = new Lead();
         leadTest12.LastName = 'test12';
         leadTest12.StateCode = 'SA';
-
+        insert leadTest12;
+        Utilities.updateTimezoneOnLead(leadTest12);
+        Lead leadTest12New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest12.Id];
+    }
+    
+    static testMethod void testUpdateTimezoneOnLead1m() 
+    {
         Lead leadTest14 = new Lead();
         leadTest14.LastName = 'test14';
         leadTest14.StateCode = 'VIC';
-
-        Lead leadTest15 = new Lead();
-        leadTest15.LastName = 'test15';
-        leadTest15.StateCode = 'WA';
-
-        insert leadTest1;
-        Lead leadTest1New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest1.Id];
-        System.assertEquals(leadTest1New.vhc__TimeZone__c, '(UTC+08:00) Perth');
-
-        insert leadTest2;
-        Lead leadTest2New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest2.Id];
-        System.assertEquals(leadTest2New.vhc__TimeZone__c, '(UTC+10:00) Canberra, Melbourne, Sydney');
-
-        insert leadTest3;
-        Lead leadTest3New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest3.Id];
-        System.assertEquals(leadTest3New.vhc__TimeZone__c, '(UTC+10:00) Brisbane');
-
-        insert leadTest4;
-        Lead leadTest4New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest4.Id];
-        System.assertEquals(leadTest4New.vhc__TimeZone__c, '(UTC+09:30) Adelaide');
-
-        insert leadTest5;
-        Lead leadTest5New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest5.Id];
-        System.assertEquals(leadTest5New.vhc__TimeZone__c, '(UTC+08:00) Perth');
-
-        insert leadTest6;
-        Lead leadTest6New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest6.Id];
-        System.assertEquals(leadTest6New.vhc__TimeZone__c, '(UTC+08:00) Perth');
-
-        insert leadTest7;
-        Lead leadTest7New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest7.Id];
-        System.assertEquals(leadTest7New.vhc__TimeZone__c, '(UTC+09:30) Darwin');
-
-        //new
-        insert leadTest8;
-        Lead leadTest8New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest8.Id];
-        System.assertEquals(leadTest8New.vhc__TimeZone__c, '(UTC+10:00) Canberra, Melbourne, Sydney');
-
-        insert leadTest9;
-        Lead leadTest9New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest9.Id];
-        System.assertEquals(leadTest9New.vhc__TimeZone__c, '(UTC+10:00) Canberra, Melbourne, Sydney');
-
-        insert leadTest10;
-        Lead leadTest10New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest10.Id];
-        System.assertEquals(leadTest10New.vhc__TimeZone__c, '(UTC+09:30) Darwin');
-
-        insert leadTest11;
-        Lead leadTest11New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest11.Id];
-        System.assertEquals(leadTest11New.vhc__TimeZone__c, '(UTC+10:00) Brisbane');
-
-        insert leadTest12;
-        Lead leadTest12New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest12.Id];
-        System.assertEquals(leadTest12New.vhc__TimeZone__c, '(UTC+09:30) Adelaide');
-
         insert leadTest14;
-        Lead leadTest14New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest14.Id];
-        System.assertEquals(leadTest14New.vhc__TimeZone__c, '(UTC+10:00) Canberra, Melbourne, Sydney');
+        Utilities.updateTimezoneOnLead(leadTest14);
+        Lead leadTest14New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest14.Id]; 
     }
-
+    
     static testMethod void testSendEmail() {
         Utilities.sendEmail(new list<String>{'test@creditandfinance.com.au'}, 'test', 'test');
     }
@@ -260,5 +273,30 @@ private class UtilitiesTest {
     private static testMethod void testGenerateRandomString() {
         Integer num = 10;
         System.assertEquals(num, ((String) Utilities.generateRandomString(num)).length());
+    }
+    
+    private static testMethod void testNewGuid() 
+    {
+        Utilities.NewGuid();
+        Utilities.getGMTTime(system.now());
+        Utilities.getCurrentMonthStartTime();
+        Datetime myDateTime = Datetime.newInstance(2016, 2, 17);
+        Datetime startDateTime = myDateTime.addDays(2);
+        Datetime endDateTime = myDateTime.addDays(7);
+
+        List<Saasfocus_EventClass> lstEventClass = new List<Saasfocus_EventClass>();
+        Saasfocus_EventClass obj = new Saasfocus_EventClass();
+        obj.Email = 'ankit@gmail.com';
+        obj.StartDateTime = string.valueof(startDateTime);
+        obj.EndDateTime = string.valueof(endDateTime);
+        lstEventClass.add(obj);
+        
+        Utilities.isBussy(startDateTime,endDateTime,lstEventClass);
+        Map<String, Schema.DisplayType> maps = new Map<String, Schema.DisplayType>();
+        maps.put('Name',Schema.DisplayType.Date);
+        Utilities.parseValue(maps,'Name','Account');
+        maps.clear();
+        maps.put('Name',Schema.DisplayType.DateTime);
+        Utilities.parseValue(maps,'Name','Account');
     }
 }

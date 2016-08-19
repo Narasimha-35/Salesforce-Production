@@ -27,7 +27,7 @@ public class FromBankstatementWrapper{
         public String maxBalance;   //1603.32
         public cls_dayEndBalances[] dayEndBalances;
         public String minDayEndBalance; //-3518.36
-        public Integer daysInNegative;  //80
+        public Double daysInNegative;  //80
         public String errorMessage; //
         public cls_analysis analysis;
     }
@@ -43,7 +43,7 @@ public class FromBankstatementWrapper{
     }
     public class cls_strDateObj {
         public String strDate; //2015-12-26 10:36:15.000000
-        public Integer timezone_type;   //3
+        public Double timezone_type;   //3
         public String timezone; //Australia/Sydney
     }
 //    public class cls_notes {
@@ -77,12 +77,12 @@ public class FromBankstatementWrapper{
         public cls_Interest Interest;
     }
     public class cls_total {
-        public Integer transactionCount;    //10
+        public Double transactionCount;    //10
         public Double totalValue;   //2912.25
         public Double monthAvg; //416.03571428571
     }
     public class cls_Wages {
-        public Integer transactionCount;    //14
+        public Double transactionCount;    //14
         public Double totalValue;   //3106.53
         public Double monthAvg; //443.79
         public String minValue; //12.79
@@ -105,7 +105,7 @@ public class FromBankstatementWrapper{
     }
     public class cls_Rent {
         public cls_Rent Rent;
-        public Integer transactionCount;    //18
+        public Double transactionCount;    //18
         public Double totalValue;   //4318.72
         public Double monthAvg; //616.96
         public String minValue; //9.47
@@ -121,7 +121,7 @@ public class FromBankstatementWrapper{
     public class cls_lastTransaction {
     }
     public class cls_Interest {
-        public Integer transactionCount;    //1
+        public Double transactionCount;    //1
         public Double totalValue;   //2.45
         public Double monthAvg; //0.35
         public String minValue; //2.45
@@ -147,11 +147,11 @@ public class FromBankstatementWrapper{
         public cls_Other Other;
     }
     public class cls_MaternityPayment {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -159,11 +159,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_FamilyBenefits {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -171,11 +171,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_SchoolkidsBonus {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -183,11 +183,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_ParentingPayment {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -195,11 +195,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CarersBenefits {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -207,11 +207,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_YouthAllowance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -219,7 +219,7 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Newstart {
-        public Integer transactionCount;    //17
+        public Double transactionCount;    //17
         public Double totalValue;   //3078.63
         public Double monthAvg; //439.80428571429
         public String minValue; //14.36
@@ -231,11 +231,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Pension {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -243,7 +243,7 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_AusStudy {
-        public Integer transactionCount;    //15
+        public Double transactionCount;    //15
         public Double totalValue;   //4178.95
         public Double monthAvg; //596.99285714286
         public String minValue; //25.75
@@ -255,7 +255,7 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Medicare {
-        public Integer transactionCount;    //17
+        public Double transactionCount;    //17
         public Double totalValue;   //5201.02
         public Double monthAvg; //743.00285714286
         public String minValue; //49.67
@@ -267,11 +267,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Other {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -286,11 +286,11 @@ public class FromBankstatementWrapper{
         public cls_Reversal Reversal;
     }
     public class cls_Overdrawn {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -298,7 +298,7 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Dishonour {
-        public Integer transactionCount;    //19
+        public Double transactionCount;    //19
         public Double totalValue;   //1303.4
         public Double monthAvg; //186.2
         public String minValue; //68.60
@@ -310,11 +310,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Return {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -322,11 +322,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Reversal {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -422,11 +422,11 @@ public class FromBankstatementWrapper{
         public cls_Generic Generic;
     }
     public class cls_AmazingLoans {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -434,11 +434,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_AMXMoney {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -446,11 +446,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_AusFinancial {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -458,11 +458,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Aussie {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -470,11 +470,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_AussieCash {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -482,11 +482,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Baycorp {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -494,11 +494,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CannonFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -506,11 +506,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashAdvance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -518,11 +518,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashConverters {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -530,11 +530,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashDoctors {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -542,11 +542,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashFirst {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -554,11 +554,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashinaFlash {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -566,11 +566,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashMoney {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -578,11 +578,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashNow {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -590,11 +590,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashOz {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -602,11 +602,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashSolutions {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -614,11 +614,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashSmart {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -626,11 +626,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashStop {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -638,11 +638,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashToday {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -650,11 +650,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CashTrain {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -662,11 +662,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CenterOne {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -674,11 +674,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_ChampionLoans {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -686,11 +686,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_ChampionMoney {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -698,11 +698,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CityFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -710,11 +710,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_ClearCash {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -722,11 +722,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Credit24 {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -734,11 +734,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CreditCorp {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -746,11 +746,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_DebtFix {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -758,11 +758,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_DollarsDirect {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -770,11 +770,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_EasyFinancing {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -782,11 +782,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_FairGoFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -794,11 +794,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Ferratum {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -806,11 +806,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_FirstStopMoney {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -818,11 +818,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_FoxSymes {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -830,11 +830,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_FundCo {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -842,11 +842,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_JacarandaFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -854,11 +854,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_JetLending {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -866,11 +866,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_JPCreditline {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -878,11 +878,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_K24 {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -890,11 +890,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_KangarooPayday {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -902,11 +902,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Kreditech {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -914,11 +914,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_KwikFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -926,11 +926,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_LionFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -938,11 +938,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_LoansbyPhone {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -950,11 +950,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_LoanRanger {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -962,11 +962,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_MaxFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -974,11 +974,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_MaxFunding {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -986,11 +986,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_MoneyCentre {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -998,11 +998,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_MoneyMe {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1010,11 +1010,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_MoneyNow {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1022,11 +1022,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_MoneyPlus {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1034,11 +1034,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Money3 {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1046,11 +1046,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_MoneyStart {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1058,11 +1058,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_MorganFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1070,11 +1070,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_MyBudget {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1082,11 +1082,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_NeedyMoney {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1094,11 +1094,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Nimble {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1106,11 +1106,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_OKMoney {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1118,11 +1118,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_PaydayKing {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1130,11 +1130,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_PaydayLand {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1142,11 +1142,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_PaydayMate {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1154,11 +1154,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Payday247 {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1166,11 +1166,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_PerfectPayday {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1178,11 +1178,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_PersonalFinanceCo {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1190,11 +1190,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_PrimeLenders {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1202,11 +1202,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_RapidLoans {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1214,11 +1214,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_SecureFunding {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1226,11 +1226,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_SpeedyFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1238,11 +1238,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_SpeedyMoney {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1250,11 +1250,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_SpotLoans {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1262,11 +1262,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_SRGFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1274,11 +1274,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_StressLess {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1286,7 +1286,7 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_SunshineLoans {
-        public Integer transactionCount;    //6
+        public Double transactionCount;    //6
         public Double totalValue;   //411.6
         public Double monthAvg; //58.8
         public String minValue; //68.60
@@ -1298,11 +1298,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_SwooshFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1310,11 +1310,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_TeleLoans {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1322,11 +1322,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Thorn {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1334,11 +1334,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_VictoryFunding {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1346,11 +1346,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_WebMoneyline {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1358,11 +1358,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_YesLoans {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1370,11 +1370,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CollectionHouse {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1382,7 +1382,7 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_ToyotaFinance {
-        public Integer transactionCount;    //5
+        public Double transactionCount;    //5
         public Double totalValue;   //1309.09
         public Double monthAvg; //187.01285714286
         public String minValue; //92.87
@@ -1394,7 +1394,7 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_ImpactFinancial {
-        public Integer transactionCount;    //5
+        public Double transactionCount;    //5
         public Double totalValue;   //1083.77
         public Double monthAvg; //154.82428571429
         public String minValue; //6.67
@@ -1406,11 +1406,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_YamahaMotorFinance {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1418,11 +1418,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_HomeLoan {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1430,7 +1430,7 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Generic {
-        public Integer transactionCount;    //7
+        public Double transactionCount;    //7
         public Double totalValue;   //1846.02
         public Double monthAvg; //263.71714285714
         public String minValue; //2.20
@@ -1474,11 +1474,11 @@ public class FromBankstatementWrapper{
         public cls_Lottery Lottery;
     }
     public class cls_10Bet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1486,11 +1486,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_AusBet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1498,11 +1498,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Bet365 {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1510,11 +1510,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_BetFair {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1522,11 +1522,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_BetStar {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1534,11 +1534,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Bookmaker {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1546,11 +1546,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Centrebet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1558,11 +1558,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_ClassicBet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1570,11 +1570,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_CrownBet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1582,11 +1582,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_DigiMedia {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1594,11 +1594,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Ladbrokes {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1606,11 +1606,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_LeoVegas {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1618,11 +1618,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Luxbet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1630,11 +1630,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_OzBet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1642,11 +1642,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Palmerbet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1654,11 +1654,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Punters {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1666,11 +1666,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Pokerstars {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1678,11 +1678,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_RoxyPalace {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1690,11 +1690,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Sportsbet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1702,11 +1702,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Sportsbetting {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1714,11 +1714,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Sportingbet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1726,11 +1726,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_TABTouch {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1738,11 +1738,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Tatts {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1750,11 +1750,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_TomWaterhouse {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1762,11 +1762,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_UBET {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1774,11 +1774,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Unibet {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1786,11 +1786,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_WilliamHill {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1798,11 +1798,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Casino {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1810,11 +1810,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Lottery {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1828,11 +1828,11 @@ public class FromBankstatementWrapper{
         public cls_Certegy Certegy;
     }
     public class cls_PaygatePayments {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0
@@ -1840,7 +1840,7 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_SPER {
-        public Integer transactionCount;    //10
+        public Double transactionCount;    //10
         public Double totalValue;   //2912.25
         public Double monthAvg; //416.03571428571
         public String minValue; //53.20
@@ -1852,11 +1852,11 @@ public class FromBankstatementWrapper{
         public cls_transactions[] transactions;
     }
     public class cls_Certegy {
-        public Integer transactionCount;    //0
-        public Integer totalValue;  //0
-        public Integer monthAvg;    //0
-        public Integer minValue;    //0
-        public Integer maxValue;    //0
+        public Double transactionCount;    //0
+        public Double totalValue;  //0
+        public Double monthAvg;    //0
+        public Double minValue;    //0
+        public Double maxValue;    //0
         public String firstTransaction;
         public String lastTransaction;
         public Double period;  //0

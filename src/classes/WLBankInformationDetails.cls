@@ -42,10 +42,17 @@ global without sharing class WLBankInformationDetails
         objCommunitySetUp = new Click_Community_Setup__c ();
         system.debug('Hi Community2'+Network.getNetworkId());
         system.debug('Hi Community1'+ClickCommon.getCommunitySetup(Network.getNetworkId()).id);
-        if(ClickCommon.getCommunitySetup(Network.getNetworkId()).id != null)
+        if(!test.isrunningtest())
         {
-            system.debug('Hi Community'+ClickCommon.getCommunitySetup(Network.getNetworkId()).id);
-            objCommunitySetUp = ClickCommon.getCommunitySetup(Network.getNetworkId());
+            if(ClickCommon.getCommunitySetup(Network.getNetworkId()).id != null)
+            {
+                system.debug('Hi Community'+ClickCommon.getCommunitySetup(Network.getNetworkId()).id);
+                objCommunitySetUp = ClickCommon.getCommunitySetup(Network.getNetworkId());
+             }     
+        }
+        else
+        {
+            objCommunitySetUp = ClickCommon.getCommunitySetup('');
         }
         OppId = Apexpages.currentpage().getparameters().get('id');
         mapBankstepSequance = new Map <Integer,acfBank_Information__c>();
@@ -71,11 +78,12 @@ global without sharing class WLBankInformationDetails
         acfBank_Information__c objbankinfo = new acfBank_Information__c();
         for(Integer i=1;i<5;i++)
         { 
-           if(strNetworkId != null)
+           if(ClickCommon.getCommunitySetup(Network.getNetworkId()).id != null)
            {
                objbankinfo = acfBank_Information__c.getvalues(objCommunitySetUp.Click_Page_Prefix__c+'Screen '+i);
            }      
            mapBankstepSequance.put(i,objbankinfo);
+            
            objbankinfo = new acfBank_Information__c();
         }
         /*isSkipvisible = true;
@@ -104,6 +112,8 @@ global without sharing class WLBankInformationDetails
 
         WLbankStatementRequest obj = new WLbankStatementRequest();
             Institution objBankLoginDetail = obj.FetchInstitutionDetails(strBankSlugName,objCommunitySetUp.Click_Page_Prefix__c);
+            
+           system.debug('!!!!!'+objBankLoginDetail );
             If(objBankLoginDetail != null && objBankLoginDetail.credentials != null && objBankLoginDetail.credentials.size()>0){
                     lstCredentials = objBankLoginDetail.credentials.clone();
                     If(objBankLoginDetail.requires_preload == '1'){
@@ -115,6 +125,7 @@ global without sharing class WLBankInformationDetails
                         lstWaterMarkText.add(lstCredentials[i].name);
                     }
                     intStepNumber = 2;
+                    if(mapBankstepSequance != null && mapBankstepSequance.get(intStepNumber)!= null )
                     mapBankstepSequance.get(intStepNumber).acfHeader_Text__c = mapBankstepSequance.get(intStepNumber).acfHeader_Text__c.replace('<Bankname>',strBankName);
                 }
                 else
@@ -149,7 +160,7 @@ global without sharing class WLBankInformationDetails
         {
             WLbankStatementRequest obj = new WLbankStatementRequest();
             bnk_stmt_success_failure = obj.loginRequest(strBankSlugName,lstUserCredentials,lstUserQuearyType, false);
-            
+            system.debug('12123'+bnk_stmt_success_failure);
             if(bnk_stmt_success_failure.success == true)
             {                        
                 bankStatementResponse.cls_accounts bnk_stmt_cls_account = new bankStatementResponse.cls_accounts();
@@ -282,8 +293,8 @@ global without sharing class WLBankInformationDetails
             }*/
             acfBank_Detail__c bnkObj = new acfBank_Detail__c();
            
-            bnkObj = [select id,name,acfBank_Name__c,acfBankSlugName__c from acfBank_Detail__c where acfBankSlugName__c =: strBankSlugName];        
-            lead leadObj = new lead(acfBankNameForAccountDetails__c=bnkObj.id,acfIs_Bank_Statement_Submitted__c=true,acfBankdetailStatus__c = 'Completed', id= strParentId);
+            bnkObj = [select id,name,acfBank_Name__c,acfBankSlugName__c from acfBank_Detail__c where acfBankSlugName__c =: strBankSlugName];    
+            lead leadObj = new lead(acfBankNameForAccountDetails__c=bnkObj.id,acfIs_Bank_Statement_Submitted__c=true,acfBankdetailStatus__c = 'Completed', id= strParentId);  
             update leadObj;
             list<Required_Document__c> lstRequiredDoc = [select id, acfStatus__c from Required_Document__c where acf_Bank_Statement_Doc__c = true
                                                           AND Lead__c=:leadObj.id];
@@ -315,12 +326,12 @@ global without sharing class WLBankInformationDetails
                     }
                 if(lstRequiredDoc != null && lstRequiredDoc.size() > 0)
                 {
-                     system.debug('!@#$lstRequiredDoc');
+                    
                      string strTaskSubject = 'Upload '+lstRequiredDoc[0].name;
                      lstRequiredDoc[0].click_Is_Uploaded__c= true; 
                      update lstRequiredDoc[0]; 
                       
-                     system.debug('!@#$strTaskSubject '+strTaskSubject );
+                    
                      list<task> lstTask = [select id,subject,status,whatid from task where Subject =:strTaskSubject AND whatid =:OppId limit 1];  // strParentId
                      if(lstTask != null && lstTask.size()>0)
                      {

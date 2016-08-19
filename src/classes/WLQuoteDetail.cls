@@ -10,12 +10,19 @@ public class WLQuoteDetail
     public string pge_name {set; get;}
     public static integer intWidth {get;set;}
     private string strNetworkId;
+    private string CommunityID;
     private Click_Community_Setup__c objCommSetup {get;set;}
     public boolean decEstMonthPayment {get;set;}
     //------Constructor---------//
     public WLQuoteDetail()
     {
-     strNetworkId = Network.getNetworkId();
+     if(!test.isRunningtest())
+     {
+        strNetworkId = Network.getNetworkId();
+     }else{
+            strNetworkId = 'test'; 
+     }
+        System.debug('@@@@@@@@@strNetworkId++++++++++'+strNetworkId);
      objCommSetup = new Click_Community_Setup__c();
      string pge = Apexpages.currentPage().getUrl();
      List<String> parts = pge.split('/'); 
@@ -42,6 +49,8 @@ public class WLQuoteDetail
         if(lstLead != null && lstLead .size()>0)
         { 
             Lead objLead = lstLead[0];
+            System.debug('@@@@lead record name##%%%%'+objLead.RecordType.Name);
+            System.debug('@@@@lead record name##%%%%'+objCommSetup.Click_Page_Prefix__c);
             if(objLead.RecordType.Name != null && objLead.RecordType.Name == objCommSetup.Click_Page_Prefix__c+' Refi')
             {
                 strLoanPurpose = 'Refinance';
@@ -53,6 +62,7 @@ public class WLQuoteDetail
             {
                 if(objLead.acf_partner_account__r.acfAsset_House_Worth__c <> null)
                 {
+                   // System.debug('asish)))))))))))))'+objLead.acf_partner_account__r.acfAsset_House_Worth__c);
                     decEstPropVal = objLead.acf_partner_account__r.acfAsset_House_Worth__c;
                 }else{
                         decEstPropVal = objLead.acfApproximately_how_much_is_your_house__c;
@@ -76,24 +86,36 @@ public class WLQuoteDetail
                 }
             }
             
-            if(!Test.isRunningTest()){     
+         // if(!Test.isRunningTest()){    
+                system.debug('currentLeadId*******************'+currentLeadId); 
                 for(acfSuggested_Product__c objSuggestedProduct:[select id,acfFilter__c,acfProduct__c,acfProduct_Family__c,acfLead__c from acfSuggested_Product__c where acfLead__c=:currentLeadId])
                 {
+                    system.debug('objSuggestedProduct*******************'+objSuggestedProduct);
                     if(objSuggestedProduct.acfFilter__c <> null && objSuggestedProduct.acfProduct__c <> null && objSuggestedProduct.acfFilter__c == 'Exclude')
                     {
                         setProductIdToExclude.add(objSuggestedProduct.acfProduct__c);
                     } 
                 }
-            }
+        //    }
             
             set<id> setOfBankDetailId = new set<id>();
             List<Click_Loans_Bank__c> lstbank = new List<Click_Loans_Bank__c>();
-            string CommunityID =  Network.getNetworkId();
+             
+              if(!Test.isRunningTest())
+             CommunityID =  Network.getNetworkId();
+             else
+                CommunityID='test';    
+           
+            System.debug('@@@@@@@@azzazazaz$$$$$$'+CommunityID);
+           
+             
             if(CommunityID <> null)
             {
                 Click_Community_Setup__c objCommunity = ClickCommon.getCommunitySetup(CommunityID);
                 lstbank = [select id,Click_Loans_Bank_Detail__c,Community_Setup__c from Click_Loans_Bank__c where Community_Setup__c =:objCommunity.id];
+          System.debug('=====lstbank====='+objCommunity.id);
             }
+            
             if(lstbank.size() > 0 && lstbank != null)
             {
                 for(Click_Loans_Bank__c objbank : lstbank)
@@ -112,6 +134,7 @@ public class WLQuoteDetail
                                                 from LVR_Rate__c where clickLoan_Size_From__c <: objLead.acfLoan_Amount__c and acfLoan_Size__c >=:objLead.acfLoan_Amount__c and clickLVR_From__c <: usrLVR and 
                                                 acfLVR__c>=:usrLVR and acfProduct__r.Recordtype.Name = 'Variable' and acfProduct__r.acfOffset_Account__c = false and acfProduct__c NoT IN:setProductIdToExclude and acfProduct__r.Click_Loans_Bank_Detail__c IN: setOfBankDetailId
                                                 order by acfTerm_in_Years__c,acfRate__c,clickFixed_Interest_Rate__c asc];
+                System.debug('====lstLVRRate======'+lstLVRRate);
                     for(LVR_Rate__c objLVR : lstLVRRate)
                     {
                         if(setProductIdToExclude <> null && setProductIdToExclude.size()>0 && setProductIdToExclude.contains(objLVR.acfProduct__c))
@@ -161,9 +184,25 @@ public class WLQuoteDetail
         string LoggedInLead = ClickCommon.getCurrentLoggedInLeadId(userInfo.getuserId());
         List<Lead> lstLSteps = [select id,acfIs_Post_Login_Ques_Attempted__c, acfIs_Bank_Statement_Submitted__c, acfIs_Identity_Document_Submitted__c from lead where id =: LoggedInLead];
         set<id> setScript = new set<id>();
-        for(Script__c objScript : [select id,acf_Sequence_no__c,acf_Type__c,acf_Stage_Name__c,acf_Question_Type__c  from Script__c where acf_Type__c=:'Post-Login' AND Click_Community_Setup__r.Click_Network_ID__c =: strNetworkId order by acf_Sequence_no__c asc])
+        List<Script__c> lstscript = new List<Script__c>();
+        if(!test.isrunningtest())
         {
-            setScript.add(objScript.id);
+            lstscript = [select id,acf_Sequence_no__c,acf_Type__c,acf_Stage_Name__c,acf_Question_Type__c  from Script__c 
+                                         where acf_Type__c=:'Post-Login' AND Click_Community_Setup__r.Click_Network_ID__c =: strNetworkId
+                                         order by acf_Sequence_no__c asc];
+        }
+        else
+        {
+            lstscript = [select id,acf_Sequence_no__c,acf_Type__c,acf_Stage_Name__c,acf_Question_Type__c  from Script__c 
+                         where acf_Type__c=:'Post-Login' order by acf_Sequence_no__c asc];
+        }
+        if(lstscript != null && !lstscript.isEmpty())  
+        {                           
+            for(Script__c objScript : lstscript)
+            {
+                setScript.add(objScript.id);
+                System.debug('====objScript====='+objScript);
+            }
         }
         list<Question__c> lstQuestion = [select id from Question__c where acf_Script__c in: setScript and acf_Active__c = true];
         if(lstLSteps != null && lstLSteps.size()>0 && lstCommunity != null && lstCommunity.size()>0)

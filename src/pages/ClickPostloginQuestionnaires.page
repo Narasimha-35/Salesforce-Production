@@ -209,7 +209,7 @@
                 .app2_phone2, .app2_phone3 ,.app2_phone4 ,.app2_phone5, .app2_phone6{
                   font-size:14px;
                   padding-left:3em !important;
-                  border:1px solid #CCC;
+                 // border:1px solid #CCC;
                 }
                 
                 .post_slide_question2 .unit {
@@ -218,7 +218,7 @@
                 top: 32%;
                 left: 1%;
                 font-size: 1.2em;
-                border-right: 1px #ccc solid;
+               // border-right: 1px #ccc solid;
                 padding-right: 0.2em; 
                 }
                 
@@ -1054,8 +1054,8 @@
                                                                                             </apex:commandButton>
                                                                                         </apex:repeat>-->
                                                                                          <apex:commandButton value="I Consent" styleClass="btn-question"  action="{!updateApplicant}" />
-                                                                                        <apex:commandButton value="Verify Online" styleClass="btn-question" rendered="{!!verifyClicked}" action="{!checkMailStatusSend}" rerender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentPanel" status="counterStatus"/>
-                                                                                        <apex:commandButton value="Verify Now" styleClass="btn-question" rendered="{!verifyClicked}" action="{!checkUserResponse}" />
+                                                                                        <apex:commandButton value="Verify via Email And SMS" styleClass="btn-question" rendered="{!!verifyClicked}" action="{!checkMailStatusSend}" rerender="optQuestion,optStages,optStagesText,optErrormsg,optBackbtn,consentPanel" status="counterStatus"/>
+                                                                                        <apex:commandButton value="Verifying" styleClass="btn-question" rendered="{!verifyClicked}" action="{!checkUserResponse}" />
                                                                                       </div>
                                                                                   </apex:outputPanel>
                                                                                 </apex:outputPanel>

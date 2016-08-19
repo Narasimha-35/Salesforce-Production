@@ -1,4 +1,10 @@
 <apex:page controller="CallCoreApi">
+<Style>
+pre {
+   font-family: "courier new", courier, monospace;
+   font-size: 15px;
+}
+</style>
 <apex:form >
 <apex:pageBlock id="pg" title="Please Enter Address" >
 <apex:pageBlockSection columns="1" >
@@ -15,18 +21,21 @@
 
 
         <apex:outputPanel rendered="{!showavm}">
-          <br/>
-       <h1> faresFSDScore---</h1><apex:outputText >{!temp.faresFSDScore}</apex:outputText>
+       
+        
+        
+        <apex:pageBlockSection >
+        
+       <h1> Estimate Confidence:</h1><apex:outputText >{!temp.faresScore}</apex:outputText>
         <br/>
-       <h1> faresScore--- </h1><apex:outputText >{!temp.faresScore}</apex:outputText>
+        <h1>Estimate Value:</h1><apex:outputText >{!temp.faresValueEstimate}</apex:outputText>
         <br/>
-       <h1> faresFSDScore---</h1><apex:outputText >{!temp.faresFSDScore}</apex:outputText>
-        <br/>
-        <h1>faresValueEstimate---</h1><apex:outputText >{!temp.faresValueEstimate}</apex:outputText>
-        <br/>
-        <h1>faresValueHigh---</h1><apex:outputText >{!temp.faresValueHigh}</apex:outputText>
-        <br/>
-         faresValueLow--- <apex:outputText >{!temp.faresValueLow}</apex:outputText>
+        
+        <h1> Estimate Value Range:</h1> <apex:outputText > {!temp.faresValueLow} -- {!temp.faresValueHigh}</apex:outputText>
+         </apex:pageBlockSection>
+          <apex:pageBlockSection >
+               <pre> {!StateMessgae }  </pre>
+        </apex:pageBlockSection>
         </apex:outputPanel>
 </apex:pageBlock>
 </apex:form>

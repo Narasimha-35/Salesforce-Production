@@ -51,6 +51,16 @@
     <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
     <fields>
+        <fullName>Brokers_in_this_market__c</fullName>
+        <externalId>false</externalId>
+        <label>Brokers in this market</label>
+        <summaryForeignKey>Market_Broker_Association__c.Market__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
         <fullName>Market_Region__c</fullName>
         <externalId>false</externalId>
         <label>Market Region</label>
@@ -197,9 +207,9 @@
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
+        <columns>Brokers_in_this_market__c</columns>
         <columns>Market_Region__c</columns>
         <columns>Market_State__c</columns>
-        <columns>Number_of_Brokers__c</columns>
         <columns>Region__c</columns>
         <columns>State__c</columns>
         <columns>Sydney_Timezone_Offset__c</columns>
@@ -207,14 +217,22 @@
         <label>All</label>
     </listViews>
     <listViews>
-        <fullName>All_Markets</fullName>
+        <fullName>All_Markets2</fullName>
         <columns>NAME</columns>
         <columns>State__c</columns>
         <columns>Region__c</columns>
         <columns>Sydney_Timezone_Offset__c</columns>
-        <columns>Number_of_Brokers__c</columns>
+        <columns>Brokers_in_this_market__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
         <filterScope>Everything</filterScope>
-        <label>All Markets</label>
+        <label>All Markets2</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+            <role>Phone_Broker_Management</role>
+        </sharedTo>
     </listViews>
     <nameField>
         <label>Market Name</label>

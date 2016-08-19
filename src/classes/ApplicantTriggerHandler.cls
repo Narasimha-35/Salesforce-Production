@@ -11,6 +11,21 @@ public class ApplicantTriggerHandler extends TriggerHandler
     string strIncomeSelfEmployedAPI = system.label.acfIncome_SelfEmployed_API;
     string strIncomePAYGAPI = system.label.acfIncome_PAYG_API;
     string strExpenseAPI = system.label.acfExpense_API;
+    // changes done by Ankit 
+    // added GUID functionality.
+    public override void BeforeInsert() 
+    {
+        for(click_Applicant__c objApplicant : (List<click_Applicant__c>) Trigger.new) 
+        {
+            if(string.isEmpty(objApplicant.Lendi_User_uuid__c))
+            {
+                List<string> lstGuid = new List<string>();
+                lstGuid = Utilities.NewGuid();
+                if(lstGuid != null && !lstGuid.isEmpty())
+                    objApplicant.Lendi_User_uuid__c= lstGuid[0];
+            }
+        }
+    }
     public override void afterInsert() 
     {
         insertIncomeExpenses();
@@ -25,7 +40,7 @@ public class ApplicantTriggerHandler extends TriggerHandler
     //create income and expense records
     public void insertIncomeExpenses()
     {
-    system.debug('strIncomeSelfEmployedAPI-----'+strIncomeSelfEmployedAPI +'strExpenseAPI------' +strExpenseAPI);
+    system.debug('strIncomeSelfEmployedAPI-----'+strIncomePAYGAPI +'strExpenseAPI------' +strExpenseAPI);
     
         list<Income_And_Expense__c> lstIncomeExpense = new list<Income_And_Expense__c>();
         list<Financials_Source__c> lstFinanceSource = new list<Financials_Source__c>();
@@ -84,7 +99,24 @@ public class ApplicantTriggerHandler extends TriggerHandler
         system.debug('!!@#$test'+lstIncomeExpense);
         if(lstIncomeExpense != null && lstIncomeExpense.size()>0)
         {
-            insert lstIncomeExpense;                       
+            insert lstIncomeExpense; 
+            //================ changes done by Ankit =================================
+            // for changing "1 to many" to "many to many" relationship between 
+            // applicant and Income and expense.
+            //========================================================================
+            // for Ticket no. ACFQ-245
+            //========================================================================  
+            /*List<ApplicantAndI_ELink__c> lstApplicantAndIELink = new List<ApplicantAndI_ELink__c>();
+            for(Income_And_Expense__c objIncomeandExpense : lstIncomeExpense)  
+            {
+                ApplicantAndI_ELink__c objApplicantandIELink = new ApplicantAndI_ELink__c();
+                if(objIncomeandExpense.Applicant__c != null)
+                    objApplicantandIELink.Applicant__c = objIncomeandExpense.Applicant__c;
+                objApplicantandIELink.Income_And_Expense__c = objIncomeandExpense.Id;
+                lstApplicantAndIELink.add(objApplicantandIELink);
+            } 
+            if(lstApplicantAndIELink != null && !lstApplicantAndIELink.IsEmpty()) 
+                insert lstApplicantAndIELink;        */   
         }
     }
     //update financial source records
@@ -112,13 +144,14 @@ public class ApplicantTriggerHandler extends TriggerHandler
             
         }
         system.debug('setApplicantIds-----'+setApplicantIds.size());
-        
+        system.debug('setApplicantIds-----'+setApplicantIds.size());
         set<string> setIncomeCategories = new set<string>();
         setIncomeCategories.add('Full Time - PAYG');
         setIncomeCategories.add('Self Employed');
         setIncomeCategories.add('Basic Living Expense');
         map<string,string> mapUsrIdToUsrInputType = new map<string,string>();
-        system.debug('Income_And_Expense__c ' + Financials_Source__c.Income_And_Expense__c + ' ' + setApplicantIds +' '+ setIncomeCategories);        
+      
+        system.debug('setIncomeCategories'+setIncomeCategories);
         list<Financials_Source__c> lstFinanceSources = [select id,Amount__c,Income_And_Expense__r.Applicant__c,createdbyId,Income_And_Expense__r.Category__c,Source__c from Financials_Source__c 
                                                         where Income_And_Expense__c != null AND Income_And_Expense__r.Applicant__c IN:setApplicantIds AND Income_And_Expense__r.Category__c IN:setIncomeCategories];
         
@@ -246,6 +279,7 @@ public class ApplicantTriggerHandler extends TriggerHandler
             {
                 setAppIds.add(objApplicant.id);
                 setOppIds.add(objApplicant.clickOpportunity__c);
+                System.debug('12345set12345'+setAppIds);
             }
         } 
         //Econsent record      
@@ -259,10 +293,12 @@ public class ApplicantTriggerHandler extends TriggerHandler
             }
             update lstEconsentTobeUpdate;
         }
-        //Required doc & task status       
+        //Required doc & task status     
+        System.debug('@#setAppIds$%'+setAppIds);  
         list<Required_Document__c> lstRequiredDocsTobeUpdate = [select id,acfStatus__c,name,(select id,status from tasks__r limit 1)
                                                                 from Required_Document__c where Click_Applicant__c IN:setAppIds];
-        
+         System.debug('12345set12345'+setAppIds);
+         System.debug('1234'+lstRequiredDocsTobeUpdate);
         list<Task> lstTaskTobeupdate = new list<Task>();
         if(lstRequiredDocsTobeUpdate != null && !lstRequiredDocsTobeUpdate.isEmpty())
         {

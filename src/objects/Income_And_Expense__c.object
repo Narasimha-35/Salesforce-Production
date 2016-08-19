@@ -1,0 +1,977 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <fieldSets>
+        <fullName>FSIncomeExpense</fullName>
+        <description>This field set is used to  get income and expense labels on  the pdf page.</description>
+        <displayedFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Category__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Amount__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Record_Type__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>Income and Expense Field Set</label>
+    </fieldSets>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>IncomeAndExpenses</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Applicant__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Applicant</label>
+        <referenceTo>click_Applicant__c</referenceTo>
+        <relationshipLabel>Income And Expenses</relationshipLabel>
+        <relationshipName>Income_And_Expenses</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Asset_And_Liability__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Asset And Liability</label>
+        <referenceTo>Asset_And_Liability__c</referenceTo>
+        <relationshipLabel>Income And Expenses</relationshipLabel>
+        <relationshipName>Income_And_Expenses</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Balance__c</fullName>
+        <externalId>false</externalId>
+        <label>Balance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Category__c</fullName>
+        <externalId>false</externalId>
+        <label>Category</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Bonus</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Business Income</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dividends</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Family Allowance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Overtime</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pension</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rental</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Salary</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Credit Card</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Home Loan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Investment Loan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Car Loan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Personal Loan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Maintenance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rent Paid</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Basic Living Expense</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Education</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Insurance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Existing Interest Expenses</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Full Time - PAYG</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Self Employed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Income</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Govt Benefits</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Liability Expenses</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Commenced__c</fullName>
+        <externalId>false</externalId>
+        <label>Commenced</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Copy_From__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Master Record</label>
+        <referenceTo>Income_And_Expense__c</referenceTo>
+        <relationshipLabel>Income And Expenses</relationshipLabel>
+        <relationshipName>Income_And_Expenses</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Credit_Limit__c</fullName>
+        <externalId>false</externalId>
+        <label>Credit Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employment_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>Applicant__r.acfEmployment_Type__c</formula>
+        <label>Employment Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Frequency__c</fullName>
+        <externalId>false</externalId>
+        <label>Frequency</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Daily</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Weekly</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fortnightly</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Monthly</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yearly</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Income_And_Expense_Detail__c</fullName>
+        <externalId>false</externalId>
+        <label>Income And Expense Detail</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Lendi_Application_uuid__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Lendi_Application_uuid__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Lendi Application uuid</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lendi_Income_And_Expense_uuid__c</fullName>
+        <externalId>false</externalId>
+        <label>Lendi Income And Expense uuid</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lendi_User_uuid__c</fullName>
+        <externalId>false</externalId>
+        <label>Lendi User uuid</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipName>IncomeAndExpenses</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Record_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>RecordType.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Record Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfDetails__c</fullName>
+        <externalId>false</externalId>
+        <label>Details</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Living Expenses</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>Income And Expense</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Applicant__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Category__c</columns>
+        <columns>Amount__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Employment_Type__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>INC-{0000}</displayFormat>
+        <label>IncomeAndExpense Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Income And Expenses</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Expense</fullName>
+        <active>true</active>
+        <label>Expense</label>
+        <picklistValues>
+            <picklist>Category__c</picklist>
+            <values>
+                <fullName>Bonus</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Business Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dividends</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Family Allowance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maintenance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Overtime</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pension</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rental</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salary</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Frequency__c</picklist>
+            <values>
+                <fullName>Daily</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fortnightly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Monthly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Weekly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yearly</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Income_And_Expense_Detail</picklist>
+            <values>
+                <fullName>Age Pension</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basic Living Expenses</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Childcare and School Fees</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Disability Support Pension</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Family Tax Benefit A or B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Foreign Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Insurance Premiums</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Investment Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Large Family Supplement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Car Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Commercial Bill</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Credit Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability HECS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Hire Purchase</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Lease</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Line Of Credit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Loan As Guarantor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Maintenance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Mortgage Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Other Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Outstanding Taxation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Overdraft</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Personal Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Store Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Term Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Living Expense%3A Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Living Expenses%3A Basic Housing and Property Expenses %28inc Utilities%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maintenance %2F Child Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile%2C Internet and TV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other Expenses</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Allowances %28not-taxed%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Allowances %28taxed%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Bonus Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Casual%2FTemporary Employees</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Commission Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Contractor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Matenity Leave</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Non-Voluntary Deductions %28Pre-tax%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Overtime Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Salary Sacrifice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Second Job</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rental Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Self Employed - Business Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Super %2F Annuity %2F Pension</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Travel and Transport</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Workers Compensation</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Income</fullName>
+        <active>true</active>
+        <label>Income</label>
+        <picklistValues>
+            <picklist>Category__c</picklist>
+            <values>
+                <fullName>Car Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Credit Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Education</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Existing Interest Expenses</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Home Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Insurance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Investment Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maintenance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rent Paid</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Frequency__c</picklist>
+            <values>
+                <fullName>Daily</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fortnightly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Monthly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Weekly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yearly</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Income_And_Expense_Detail</picklist>
+            <values>
+                <fullName>Age Pension</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basic Living Expenses</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Childcare and School Fees</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Disability Support Pension</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Family Tax Benefit A or B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Foreign Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Insurance Premiums</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Investment Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Large Family Supplement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Car Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Commercial Bill</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Credit Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability HECS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Hire Purchase</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Lease</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Line Of Credit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Loan As Guarantor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Maintenance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Mortgage Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Other Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Outstanding Taxation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Overdraft</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Personal Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Store Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability Term Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Living Expense%3A Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Living Expenses%3A Basic Housing and Property Expenses %28inc Utilities%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maintenance %2F Child Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile%2C Internet and TV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other Expenses</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Allowances %28not-taxed%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Allowances %28taxed%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Bonus Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Casual%2FTemporary Employees</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Commission Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Contractor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Matenity Leave</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Non-Voluntary Deductions %28Pre-tax%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Overtime Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Salary Sacrifice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PAYG - Second Job</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rental Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Self Employed - Business Income</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Super %2F Annuity %2F Pension</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Travel and Transport</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Workers Compensation</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>acfDetails__c</picklist>
+            <values>
+                <fullName>Living Expenses</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

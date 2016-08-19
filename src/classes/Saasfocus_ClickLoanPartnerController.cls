@@ -311,7 +311,7 @@ public without sharing class  Saasfocus_ClickLoanPartnerController {
         system.debug('aid==>'+aid2);
         if(aid!=null|| aid2!=null)
         {
-            List<Opportunity> lstopp=[select id from Opportunity where accountid =:aid and recordtype.name= 'Click Refi' limit 1];
+            List<Opportunity> lstopp=[select id from Opportunity where accountid =:aid and (recordtype.name= 'Click Refi' OR recordtype.name='Click New Loans') limit 1];
             if(lstopp.size()>0)
                 copp=true;
             List<Lead> lstLead=[select Transaction_Type__c from Lead where acf_partner_account__c=:aid and (recordtype.name='Click refi' or recordtype.name='Click New Loans') limit 1];    
@@ -348,7 +348,7 @@ public without sharing class  Saasfocus_ClickLoanPartnerController {
                     lstLeadpreques=[select Transaction_Type__c,Current_Lender__c,acfLoan_Amount__c,acfWhy_are_you_refinancing__c,acfCurrentRate__c,acfApproximately_how_much_is_your_house__c,
                                      click_Is_this_loan_for_an_investment_p__c,acfHow_is_your_current_credit_history__c,acfWhat_is_your_current_payment_type__c,
                                      acfEmployment_Type__c,acfWhat_is_your_postcode__c,acfLast_2_years_Tax_Return_or_ATO_NOA__c
-                                     from Lead  where acf_partner_account__c=:aid2 and recordtype.name='Click refi' limit 1];
+                                     from Lead  where acf_partner_account__c=:aid2 and (recordtype.name='Click refi' or recordtype.name='Click New Loans') limit 1];
                                   
                                                      
                   

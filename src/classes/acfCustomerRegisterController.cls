@@ -784,11 +784,11 @@ public without sharing class acfCustomerRegisterController
                         objWrapVariableProduct.ProdLVRID   =  objLVRRate.id; 
                         objWrapVariableProduct.strProdName =  objLVRRate.acfProduct__r.name;                                 
                         objWrapVariableProduct.decMonthlyPayment   = 0;
-                         acfLoanDashboardController objLoanDashboardController = new acfLoanDashboardController();
+                //      acfLoanDashboardController objLoanDashboardController = new acfLoanDashboardController();
                              //objWrapVariableProduct.EstimatedMonthlySaving = objLoanDashboardController.DisplayEstimatedSaving(lstLead[0].acfCurrentRate__c,objLVRRate.acfRate__c,lstLead[0].acfLoan_Amount__c,lstLead[0].acfWhat_is_your_current_payment_type__c,objLVRRate.acfProduct__r.acfvarTenure_In_Years__c);
                               Integer intTenureMonths = 0;
                               decimal decMonthlySavings = 0;
-                              acfLoanDashboardController objLoanDashboard = new acfLoanDashboardController();
+               //             acfLoanDashboardController objLoanDashboard = new acfLoanDashboardController();
                               If(objLVRRate.acfProduct__r.Recordtype.Name == 'Fixed')
                               {
                                   objWrapVariableProduct.decRate = objLVRRate.clickFixed_Interest_Rate__c;

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Protected</customSettingsVisibility>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Applicant_Trigger_Switch__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Applicant Trigger Switch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Asset_And_Liability_Switch__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Asset_And_Liability_Switch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Bank_Statement_SubCategory_TriggerSwitch__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Bank Statement SubCategory TriggerSwitch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Call_Trigger_Switch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Call Trigger Switch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>E_Consent_Switch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>E_Consent_Switch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Fund_Position_Trigger_Switch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Fund Position Trigger Switch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Funding_Position_Detail_Switch_Trigger__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Funding Position Detail Switch Trigger</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>GoogleCalendarEmailSwitch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>to control if Email been Sent when Exception Occur</description>
+        <externalId>false</externalId>
+        <label>[Email Switch] Google Calendar</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Income_Trigger_Switch__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Income Trigger Switch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LeadTriggerSwitch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>On / Off the trigger switch on Lead</description>
+        <externalId>false</externalId>
+        <label>[Trigger Switch] Lead</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Mercury_AOL_Switch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>To enable/disable the AOL submission</description>
+        <externalId>false</externalId>
+        <label>Mercury AOL Switch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Mercury_Email_Switch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>To control debug log email sending to Mercury Email Receiver</description>
+        <externalId>false</externalId>
+        <inlineHelpText>To control debug log email sending to Mercury Email Receiver</inlineHelpText>
+        <label>[Email Switch] Mercury</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Prioritization_CFM_Email_Switch__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>enable/disable Prioritization CFM Email Switch</description>
+        <externalId>false</externalId>
+        <inlineHelpText>enable/disable Prioritization CFM Email Switch</inlineHelpText>
+        <label>Prioritization CFM Email Switch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>QueuedAsyncRequestSwitch__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>for turn on or off the TriggerOnAsyncRequest in case of infinity loop</description>
+        <externalId>false</externalId>
+        <label>[Trigger Switch] Async Request</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>ACF Switchs</label>
+</CustomObject>

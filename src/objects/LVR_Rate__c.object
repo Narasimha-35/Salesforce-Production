@@ -63,6 +63,22 @@
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>Investment__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Investment</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Owner_occupied__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Owner occupied</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>acfAnnual_Fees__c</fullName>
         <description>Click Loans</description>
         <externalId>false</externalId>
@@ -146,7 +162,7 @@
         <label>Mortgage Risk Fee</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>0</scale>
+        <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -283,7 +299,114 @@
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
+    <fields>
+        <fullName>lendi_lvr_uuid__c</fullName>
+        <externalId>true</externalId>
+        <label>Lendi lvr uuid</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_uniqueId__c</fullName>
+        <externalId>false</externalId>
+        <label>merc uniqueId</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <label>Click Loans LVR &amp; Rate</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>acfProduct__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>clickFixed_Interest_Rate__c</columns>
+        <columns>acfLoan_Size__c</columns>
+        <columns>clickLoan_Size_From__c</columns>
+        <columns>clickLVR_From__c</columns>
+        <columns>acfLVR__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Fixed</fullName>
+        <columns>NAME</columns>
+        <columns>acfProduct__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>clickFixed_Interest_Rate__c</columns>
+        <columns>acfLoan_Size__c</columns>
+        <columns>clickLoan_Size_From__c</columns>
+        <columns>clickLVR_From__c</columns>
+        <columns>acfLVR__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>clickFixed_Interest_Rate__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <filters>
+            <field>acfProduct__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>All Fixed</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Variable</fullName>
+        <columns>NAME</columns>
+        <columns>acfProduct__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>clickFixed_Interest_Rate__c</columns>
+        <columns>acfLoan_Size__c</columns>
+        <columns>clickLoan_Size_From__c</columns>
+        <columns>clickLVR_From__c</columns>
+        <columns>acfLVR__c</columns>
+        <columns>acfTerm_in_Years__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>clickFixed_Interest_Rate__c</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>acfProduct__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>All Variable</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Variable_TODAY</fullName>
+        <columns>NAME</columns>
+        <columns>acfProduct__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>clickFixed_Interest_Rate__c</columns>
+        <columns>acfLoan_Size__c</columns>
+        <columns>clickLoan_Size_From__c</columns>
+        <columns>clickLVR_From__c</columns>
+        <columns>acfLVR__c</columns>
+        <columns>acfTerm_in_Years__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>clickFixed_Interest_Rate__c</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>acfProduct__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>All Variable TODAY</label>
+    </listViews>
     <nameField>
         <label>Name</label>
         <type>Text</type>

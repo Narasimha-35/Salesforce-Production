@@ -120,6 +120,24 @@
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
+    <listViews>
+        <fullName>AllAns_11749</fullName>
+        <columns>NAME</columns>
+        <columns>acfAnswer__c</columns>
+        <columns>acfFilter__c</columns>
+        <columns>acfProduct__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>acfAnswer__c</field>
+            <operation>equals</operation>
+            <value>Ans-11749</value>
+        </filters>
+        <label>AllAns-11749</label>
+    </listViews>
     <nameField>
         <displayFormat>PA-{0000}</displayFormat>
         <label>Name</label>

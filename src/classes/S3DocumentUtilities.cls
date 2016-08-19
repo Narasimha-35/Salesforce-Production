@@ -2,7 +2,7 @@ public with sharing class S3DocumentUtilities {
 
 	public static HttpRequest buildBasicRequest(String endPoint, String method) {
 		HttpRequest req = new HttpRequest();
-		req.setHeader('Authorization', LendiApiStaticValue.TOKEN);
+		req.setHeader('Authorization', 'Bearer ' + S3StaticValue.TOKEN);
 		req.setEndPoint(endPoint);
 		System.debug(LoggingLevel.DEBUG, '[S3DocumentUtilities] End Point: ' + endPoint);
 		req.setMethod(method);
@@ -12,28 +12,25 @@ public with sharing class S3DocumentUtilities {
 	public static String buildMultipartBody(List<S3DocumentModel.UploadRequest> uploadRequests) {
 		String body = '';
 		for(S3DocumentModel.UploadRequest uploadReq : uploadRequests) {
-			body += '--' + LendiApiStaticValue.MULTIPART_BOUNDARY + '\r\n';
-			body += 'Content-Disposition: form-data; name="files"; filename="' + uploadReq.name + '"\r\n';
+			body += '--' + S3StaticValue.MULTIPART_BOUNDARY + '\r\n';
+			body += 'Content-Disposition: form-data; name="documents"; filename="' + uploadReq.name + '"\r\n';
 			body += 'Content-Type: ' + uploadReq.type + '\r\n';
 			body += 'content-transfer-encoding: base64\r\n';
 			body += '\r\n';
 			body += EncodingUtil.base64Encode(uploadReq.data) + '\r\n';
 			body += '\r\n';
 		}
-		body += '--' + LendiApiStaticValue.MULTIPART_BOUNDARY + '--\r\n';
+		body += '--' + S3StaticValue.MULTIPART_BOUNDARY + '--\r\n';
 
 		return body;
 	}
 
 	public static HttpRequestResponse insertS3Document(List<S3DocumentModel.UploadRequest> uploadRequests) {
 		Http http = new Http();
-		HttpRequest req = buildBasicRequest(LendiApiStaticValue.DOC_SERVICE_ENDPOINT, 'PUT');
-		System.debug(req);
-		System.debug('Authorization: ' + req.getHeader('Authorization'));
-
-		req.setHeader('Content-Type', 'multipart/form-data; boundary=' + LendiApiStaticValue.MULTIPART_BOUNDARY);
+		HttpRequest req = buildBasicRequest(S3StaticValue.S3_SERVICE_ENDPOINT, 'PUT');
+		req.setHeader('Content-Type', 'multipart/form-data; MULTIPART_BOUNDARY=' + S3StaticValue.MULTIPART_BOUNDARY);
 		req.setBody(buildMultipartBody(uploadRequests));
-		req.setTimeout(LendiApiStaticValue.TIME_OUT_MILLISEC);
+		req.setTimeout(S3StaticValue.TIME_OUT_MILLISEC);
 		HttpRequestResponse ret = new HttpRequestResponse(req, http.send(req));
 		handleResponse(ret);
 		return ret;
@@ -50,12 +47,10 @@ public with sharing class S3DocumentUtilities {
 		} else if(resStatusCode < 500) {
 			//4xx
 			//TODO: throw Developer Exception
-			System.debug(httpRR.res);
 			throw new HttpRequestResponse.HttpException();
 		} else if(resStatusCode < 600) {
 			//5xx
 			//TODO: throw Service Excepton CC Developer
-			System.debug(httpRR.res);
 			throw new HttpRequestResponse.HttpException();
 		} else {
 			//Unknow

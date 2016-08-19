@@ -1,156 +1,104 @@
-@isTest(SeeAllData = false)
+/*
+ =============================================================================
+    Name                             Date                                version
+    =============================================================================
+   Ashna                           07/6/2016                                1.0
+    =============================================================================
+*/
+
+@isTest
 private class WLWelcomeDashboardTracker 
 {
     private static User objUser;
+    private static Lead objLead;
     private static Contact objContact;
     private static Account objAccount;
-
+    private static Account objpersonAccount;
+    private static Opportunity objOpp; 
+    private static Click_Community_Setup__c objClcommset;
+    
+    
     
     static testMethod void validate() 
     {
         LoadData();
-        
-        Opportunity objOpportunity = new Opportunity();
-        objOpportunity.AccountId = objuser.AccountId;
-        objOpportunity.name = 'test';
-        objOpportunity.Stagename = 'Application Taken';
-        objOpportunity.CloseDate = System.today();
-        insert objOpportunity;
-        
-        PageReference pageRef = new PageReference('http://www.google.com');
+        PageReference pageRef = new PageReference('https://clickloans.com.au/ClickPreloginQuestions');
         Test.setCurrentPage(pageRef);
-        WLWelcomeDashboard obj = new WLWelcomeDashboard();
-        obj.pge_name = 'ClickEditProfile';
-        
-
+        WLWelcomeDashboard wlwelDash=new WLWelcomeDashboard();
+        wlwelDash.Dashboard();
+        wlwelDash.setMyOpportunityIds(objOpp.Id);
+        wlwelDash.CountTasks=123;
+         wlwelDash.pge_name='ashna';
+         wlwelDash.isDocumentRejected=true;
+         wlwelDash.isshow=true;
+         wlwelDash.strHeaderName='ash';
+         wlwelDash.strDescriptionName='ashi';
+        wlwelDash.getMyOpportunityIds();
+        wlwelDash.Dashboard();
+        Id logid=ClickCommon.getCurrentLoggedInLeadId(objUser.id);
+        //objClcommset=ClickCommon.getCommunitySetup(Network.getNetworkId());
+        //wlwelDash.pge_name = 'ClickEditProfile';
+       // Opportunity objO1= new Opportunity();
+        //objO1=WLCommonTrackerClass.createOpportunity(objO1,objUser);
+         //String objstr=objO1.Id;
+        //objO1.id=objstr;
     }
-    
-      static testMethod void validate1() 
-    {
-        LoadData();
-        
-        Opportunity objOpportunity = new Opportunity();
-        objOpportunity.AccountId = objuser.AccountId;
-        objOpportunity.name = 'test';
-        objOpportunity.Stagename = 'Approval';
-        objOpportunity.CloseDate = System.today();
-        insert objOpportunity;
-        
-        
-        PageReference pageRef = new PageReference('http://www.google.com');
-        Test.setCurrentPage(pageRef);
-        WLWelcomeDashboard obj = new WLWelcomeDashboard();
-        obj.pge_name = 'ClickEditProfile';
-        
-
-    }
-    
-       static testMethod void validate2() 
-    {
-        LoadData();
-        
-        Opportunity objOpportunity = new Opportunity();
-        objOpportunity.AccountId = objuser.AccountId;
-        objOpportunity.name = 'test';
-        objOpportunity.Stagename = 'Loan Document';
-        objOpportunity.CloseDate = System.today();
-        insert objOpportunity;
-        
-        PageReference pageRef = new PageReference('http://www.google.com');
-        Test.setCurrentPage(pageRef);
-        ClickWelcomeDashboard obj = new ClickWelcomeDashboard();
-        
-
-    }
-    
-         static testMethod void validate3() 
-    {
-        LoadData();
-        
-        Opportunity objOpportunity = new Opportunity();
-        objOpportunity.AccountId = objuser.AccountId;
-        objOpportunity.name = 'test';
-        objOpportunity.Stagename = 'Settlement';
-        objOpportunity.CloseDate = System.today();
-        insert objOpportunity; 
-        
-         acfContentManagementSystem__c   objContentManagementSystem = new acfContentManagementSystem__c();
-        objContentManagementSystem.acfHeading__c = 'POPULAR SEARCHES';
-        objContentManagementSystem.acfPageName__c = 'acfLogin';
-        objContentManagementSystem.acfSectionName__c = 'Dashboard';
-        objContentManagementSystem.acfSequence__c = 5;
-        objContentManagementSystem.acfDescription__c = 'Online loans';
-        objContentManagementSystem.acfIs_Checked__c = true;
-        objContentManagementSystem.acfHeader_Sequance__c = 4;
-        objContentManagementSystem.Click_Community_Setup__c = ClickCommon.getCommunitySetup(WLCommonTrackerClass.testNetworkId).Id;
-        insert objContentManagementSystem;
-        
-        Task t = new Task();
-        t.OwnerId = UserInfo.getUserId();
-        t.Subject='test';
-        t.Status='open';
-        t.Priority='Normal';
-        t.WhatId = objOpportunity.id;
-        insert t;
-
-        
-        PageReference pageRef = new PageReference('http://www.google.com');
-        Test.setCurrentPage(pageRef);
-        WLWelcomeDashboard obj = new WLWelcomeDashboard();
-        
-
-    }
-    
-     static testMethod void validate4() 
-    {
-        LoadData();
-        
-        Lead objLead = new Lead();
-        objLead.FirstName = '+619654922845';
-        objLead.LastName = '+619654922845';
-        objLead.Email = 'swati.sharma@saasfocus.com';
-        objLead.MobilePhone = '+619654922845';
-        objLead.acfIs_Identity_Document_Rejected__c = false;
-        objLead.Status = 'Open';
-        objLead.acfOneTimePassword__c = '724715';
-        insert objLead;
-        
-        PageReference pageRef = new PageReference('http://www.google.com');
-        Test.setCurrentPage(pageRef);
-        WLWelcomeDashboard obj = new WLWelcomeDashboard();
-        obj.pge_name = 'WLEditProfile';
-        
-
-    }
-    
-    
+       
     private static void LoadData()
     {
+        createLead();
         createAccount();
         createContact();
-        createUser();
-
+        createPersonAccount();
+        createPortalUser();
+        createOpportunity();
+        
     }
     
     static void createAccount()
     {
         objAccount = new Account();
-        objAccount = acfCommontrackerClass.createAccount(objAccount);
+        objAccount = WLCommonTrackerClass.createAccount(objAccount);
     }
+    
+    static void createLead()
+    {
+        objLead = new Lead();
+        objLead = WLCommonTrackerClass.createLead(objLead);
+    }
+    
     
     static void createContact()
     {
         objContact = new Contact();
         //objContact.AccountId = objAccount.id;
         //objContact.acf_lead__c = objLead.id;
-        objContact = acfCommontrackerClass.createContact(objContact,objAccount);
+        objContact = WLCommonTrackerClass.createContact(objContact,objAccount);
     }
     
-    static void createuser()
+    static void createPersonAccount()
+    {
+        objpersonAccount= new Account();
+        objpersonAccount=WLCommonTrackerClass.CreatePersonAccount('Fname','LName','strPhone','strLeadEmail@gmail.com',objLead.Id);
+    }
+    static void createPortalUser()
     {
         objUser = new User();
         objuser.ContactId = objContact.id;
-        objUser = acfCommontrackerClass.createuser(objUser);
+        //objuser.AccountId = objAccount.id;
+        objUser = WLCommonTrackerClass.CreatePortalUser(objpersonAccount.id);
     }
     
+    static void createOpportunity()
+    {
+    objOpp= new Opportunity();
+    objOpp.AccountId =objuser.AccountId;
+     String recordtypeid =Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Click Refi').getRecordTypeId();
+     objOpp.recordtypeid =recordtypeid;
+    //objOpp.recordtypeid = acfCommon.GetRecordTypeId('Opportunity','Click Refi');
+    objOpp.name = 'test';
+    objOpp.Stagename = 'Settlement';
+    objOpp.CloseDate = System.today();
+    objOpp=WLCommonTrackerClass.createOpportunity(objOpp,objUser);
+    }
 }

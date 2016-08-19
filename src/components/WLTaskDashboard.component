@@ -1,5 +1,5 @@
 <apex:component controller="WLTaskDashboard" >
-<apex:attribute name="oppId" type="String" assignTo="{!MyOpportunityIds}" description="Opportunity ID"/>
+    <apex:attribute name="oppId" type="String" assignTo="{!MyOpportunityIds}" description="Opportunity ID"/>
     <style type="text/css">
         .task_asign_sec .completeTask
         {
@@ -27,7 +27,7 @@ background-position:-180px -64px;
                <apex:repeat value="{!tsk_obj}" var="tsk">
                     
                     <apex:outputPanel rendered="{!tsk.Status == 'Completed'}">
-                       <li class="completeTask"><a><span class="task_check_orange "></span>{!tsk.subject}</a></li>
+                       <li class="completeTask"><a><span class="task_check_orange"></span>{!tsk.subject}</a></li>
                     </apex:outputPanel>
                     
                     <apex:outputPanel rendered="{!tsk.Status != 'Completed'}">

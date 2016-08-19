@@ -8,9 +8,15 @@ public class acfIConsentController
     private string applicantNumber{get;set;} 
     public click_Applicant__c objAppToUpdate;
     public string applicantId;
+    public boolean acfCommunity{get;set;}
     //constructor
     public acfIConsentController ()
-    {              
+    {
+        acfCommunity = false;
+        Click_Community_Setup__c objCommunity = ClickCommon.getCommunitySetup(Network.getNetWorkId());
+        if(objCommunity.Click_Page_Prefix__c == 'ACF'){
+            acfCommunity = true;
+        }
         long currentTime=System.currentTimeMillis();
         Blob cryptoKey1 = Blob.valueOf('380db410e8b11fa9');        
         Blob EconsentIdBlob =EncodingUtil.base64decode(ApexPages.currentPage().getParameters().get('EconsentId'));

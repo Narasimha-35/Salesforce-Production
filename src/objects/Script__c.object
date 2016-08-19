@@ -52,6 +52,18 @@
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
+        <fullName>Click_Community_Setup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Community Setup</label>
+        <referenceTo>Click_Community_Setup__c</referenceTo>
+        <relationshipLabel>Script</relationshipLabel>
+        <relationshipName>Script</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>acf_Question_Type__c</fullName>
         <description>Click Loans</description>
         <externalId>false</externalId>
@@ -60,23 +72,23 @@
             <controllingField>acf_Type__c</controllingField>
             <picklistValues>
                 <fullName>Property Details</fullName>
-                <controllingFieldValues>Post-Login</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Post-Login</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Applicant Details</fullName>
-                <controllingFieldValues>Post-Login</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Post-Login</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Assets and Liabilities</fullName>
-                <controllingFieldValues>Post-Login</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Post-Login</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Personal Details</fullName>
-                <controllingFieldValues>Post-Login</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Post-Login</controllingFieldValues>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
@@ -137,14 +149,23 @@
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
+    <fields>
+        <fullName>clickAsk_for_every_applicant__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Ask for every applicant</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
     <label>Click Loans Script</label>
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
         <columns>acf_Question_Type__c</columns>
         <columns>acf_Sequence_no__c</columns>
-        <columns>acf_Stage_Name__c</columns>
         <columns>acf_Type__c</columns>
+        <columns>Click_Community_Setup__c</columns>
+        <columns>clickAsk_for_every_applicant__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
@@ -230,6 +251,9 @@
         <customTabListAdditionalFields>acf_Question_Type__c</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>acf_Type__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>acf_Sequence_no__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>acf_Question_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>clickAsk_for_every_applicant__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Click_Community_Setup__c</lookupDialogsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

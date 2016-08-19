@@ -300,6 +300,18 @@
                 <fullName>OX4</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>C21</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Home Expo</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Search</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
@@ -328,30 +340,77 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Chatter_Message__c</fullName>
+        <externalId>false</externalId>
+        <label>Chatter Message</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Click_Community_Setup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>ACF Community Setup</label>
+        <referenceTo>Click_Community_Setup__c</referenceTo>
+        <relationshipLabel>Accounts</relationshipLabel>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Click_Is_Phone_Broker_customer__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Phone Broker customer</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Click_Is_community_user_created__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is community user created</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Click_Loan_Close_Lost_Reason__c</fullName>
         <externalId>false</externalId>
-        <label>Click Loan Close Lost Reason</label>
+        <label>Closed Lost Reason</label>
         <picklist>
             <controllingField>Click_Loan_Stage__c</controllingField>
             <picklistValues>
                 <fullName>Closed Lost - Competitive Pricing</fullName>
-                <controllingFieldValues>Closed Lost</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Closed Lost</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Closed Lost - Not Interested</fullName>
-                <controllingFieldValues>Closed Lost</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Closed Lost</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Closed Lost - Not servicing / Out of Policy</fullName>
-                <controllingFieldValues>Closed Lost</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Closed Lost</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Closed Lost - Wrong Number</fullName>
-                <controllingFieldValues>Closed Lost</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Closed Lost</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Closed Lost - No Opportunity</fullName>
+                <default>false</default>
+                <controllingFieldValues>Closed Lost</controllingFieldValues>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
@@ -362,7 +421,7 @@
     <fields>
         <fullName>Click_Loan_Stage__c</fullName>
         <externalId>false</externalId>
-        <label>Click Loan Stage</label>
+        <label>Loan Stage</label>
         <picklist>
             <picklistValues>
                 <fullName>Closed Lost</fullName>
@@ -393,18 +452,75 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Contacted - In Progress - Future</fullName>
+                <fullName>Contacted - Future Opportunity</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Dashboard</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>New</fullName>
+                <default>true</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Contact_Attempted__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( (ISPICKVAL(Click_Loan_Stage__c , &apos;&apos;) ||  ISPICKVAL(Click_Loan_Stage__c , &apos;Dashboard&apos;)) , false, true)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Attempted</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Current_Appointment_Status__c</fullName>
+        <description>Latest Appointment Status</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Latest Appointment Status</inlineHelpText>
+        <label>Current Appointment Status</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer_Contacted__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Determine if contact attempt has been made by Click Team</description>
+        <externalId>false</externalId>
+        <label>Customer Contacted</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Dashboard_Reached_Date__c</fullName>
+        <description>Date when user reached dashboard</description>
+        <externalId>false</externalId>
+        <label>Dashboard Reached Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Documents_Uploaded__c</fullName>
+        <externalId>false</externalId>
+        <label>Documents Uploaded</label>
+        <length>2</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Feed_Comment_check__c</fullName>
@@ -563,6 +679,104 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>IsClickLoanPage__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Partner Created Account</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsMaster__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>ACF Is Master</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Partner_Broker_Customer__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Partner Broker Customer</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Phone_Broker_customer__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Phone Broker customer</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Lead_Groups__c</fullName>
+        <description>Mapped directly to Accounts from Lead on Conversion (default SF mapping)</description>
+        <externalId>false</externalId>
+        <label>Lead Groups</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Group 1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Group 2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Group 3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Group 4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Group 5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Group 6</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Group 7</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Mercury_Loan_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Mercury Loan Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mercury_People_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Mercury People ID</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>No_Show_Campaign_Account__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -698,6 +912,17 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Owner_Role__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner.UserRole.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Owner Role</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Ownership</fullName>
         <picklist>
             <picklistValues>
@@ -723,10 +948,31 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Ownership_Change_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Ownership Change Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>ParentId</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Hierarchy</type>
+    </fields>
+    <fields>
+        <fullName>Partner_User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Partner User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>PersonLeadSource</fullName>
@@ -831,6 +1077,18 @@
                 <fullName>OX4</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>C21</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Home Expo</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Search</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
@@ -857,6 +1115,19 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>SelfLookup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>ACF Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Accounts</relationshipLabel>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Type</fullName>
@@ -912,6 +1183,153 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>User_pwdreset__c</fullName>
+        <externalId>false</externalId>
+        <formula>rh2__Describe__pr.rh2__User__r.acfIs_Password_Reset__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>User_pwdreset</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Domain_Mapping__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Domain Mapping</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Last_Sync_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Last Sync Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Last_Sync_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Last Sync Status</label>
+        <length>40</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Notes__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Notes</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Result__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Contains the result of whether the Zendesk system was updated with the Account record changes</description>
+        <externalId>false</externalId>
+        <label>Zendesk Result</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Tags__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Tags</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Zendesk_Organization_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Contains the Zendesk ORG Id</description>
+        <externalId>false</externalId>
+        <label>Zendesk Organization Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Zendesk_Organization__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Specify your Zendesk Organization name here if you&apos;d like to override the default behavior of the ticket view.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Show Zendesk tickets for the specified organization instead of the combined tickets for all users in the account.</inlineHelpText>
+        <label>Zendesk Organization</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Zendesk_OutofSync__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Set to True if the record is not synced with Zendesk Organization</description>
+        <externalId>false</externalId>
+        <label>Zendesk_OutofSync</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Zendesk_oldTags__c</fullName>
+        <deprecated>false</deprecated>
+        <description>contains the old tags before changes were made to the tags. To handle deleting tags in Zendesk system.</description>
+        <externalId>false</externalId>
+        <label>Zendesk_oldTags</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Zendesk__createdUpdatedFlag__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Used in trigger to prevent looping of after insert and update. This flag is used to stop the account that came for creation to get updated again thereby preventing the loop</description>
+        <externalId>false</externalId>
+        <label>createdUpdatedFlag</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>acfAsset_House_Worth__c</fullName>
+        <externalId>false</externalId>
+        <label>Asset House Worth</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>acfIsMobileVerified__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Click Loans</description>
@@ -932,6 +1350,68 @@
         <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfPerson_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>TRIM(PersonContact.Email)</formula>
+        <label>Person Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acfPerson_Mobile__c</fullName>
+        <externalId>false</externalId>
+        <formula>TRIM(PersonContact.MobilePhone)</formula>
+        <label>Person Mobile</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>clickNo_Of_Pending_Docs__c</fullName>
+        <externalId>false</externalId>
+        <label>No Of Pending Docs</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>click_Is_Required_Document_Sent__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Required Document Sent</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>merc_current_status__c</fullName>
+        <description>Current merc Status as per opportunity</description>
+        <externalId>false</externalId>
+        <label>merc current status</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_settlement_date__c</fullName>
+        <externalId>false</externalId>
+        <label>merc settlement date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>vhc__CallFile__c</fullName>
@@ -1364,39 +1844,7 @@
         <type>Picklist</type>
     </fields>
     <listViews>
-        <fullName>AllAccounts</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.LAST_UPDATE</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <filterScope>Everything</filterScope>
-        <label>All Accounts</label>
-    </listViews>
-    <listViews>
-        <fullName>Click_Loans_Accounts</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>acf_Lead__pc</columns>
-        <columns>Click_Loan_Stage__c</columns>
-        <columns>clickLead_Status__pc</columns>
-        <columns>PC_FIRST_NAME</columns>
-        <columns>PC_LAST_NAME</columns>
-        <columns>PC_PHONE3</columns>
-        <columns>PC_EMAIL</columns>
-        <columns>acfEconsent__pc</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>ACCOUNT.CREATED_DATE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>ACCOUNT.RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>PersonAccount.Click_Refi</value>
-        </filters>
-        <label>Click Loans Accounts</label>
-    </listViews>
-    <listViews>
-        <fullName>Click_Loans_Accounts_Future_Leads_Mine</fullName>
+        <fullName>ACF_Accounts_Future_Leads_Mine</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>acf_Lead__pc</columns>
         <columns>clickLead_Status__pc</columns>
@@ -1413,7 +1861,346 @@
         <filters>
             <field>ACCOUNT.RECORDTYPE</field>
             <operation>equals</operation>
+            <value>PersonAccount.ACF_New_Loans,PersonAccount.ACF_Refi</value>
+        </filters>
+        <filters>
+            <field>clickLead_Status__pc</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>contains</operation>
+            <value>Future</value>
+        </filters>
+        <label>4 ACF - Future Leads (Mine)</label>
+    </listViews>
+    <listViews>
+        <fullName>ACF_Accounts_In_Progres_Mine</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>acf_Lead__pc</columns>
+        <columns>PC_FIRST_NAME</columns>
+        <columns>PC_LAST_NAME</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>Future_Contact_Date__c</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>PC_PHONE3</columns>
+        <columns>PC_EMAIL</columns>
+        <columns>acfEconsent__pc</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>clickLead_Status__pc</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.ACF_New_Loans,PersonAccount.ACF_Refi</value>
+        </filters>
+        <filters>
+            <field>clickLead_Status__pc</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>contains</operation>
+            <value>Progress</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Future</value>
+        </filters>
+        <label>3 ACF - In Progress (Mine)</label>
+    </listViews>
+    <listViews>
+        <fullName>ACF_Accounts_Uncontacte_Mine</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>acf_Lead__pc</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>ACCOUNT.RECORDTYPE</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>PC_EMAIL</columns>
+        <columns>PC_FIRST_NAME</columns>
+        <columns>PC_LAST_NAME</columns>
+        <columns>PC_PHONE3</columns>
+        <columns>acfEconsent__pc</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.ACF_New_Loans,PersonAccount.ACF_Refi</value>
+        </filters>
+        <filters>
+            <field>clickLead_Status__pc</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>contains</operation>
+            <value>No Answer</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>No Answer 5</value>
+        </filters>
+        <label>2 ACF - Uncontacted (Mine)</label>
+    </listViews>
+    <listViews>
+        <fullName>ACF_All_Unconverted_Leads_not_closed</fullName>
+        <booleanFilter>1 AND 2 and 3 and 4</booleanFilter>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Lead_Converted_Status__pc</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.ACF_New_Loans,PersonAccount.ACF_Refi</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.LAST_NAME</field>
+            <operation>contains</operation>
+            <value>devai,thompson,stewart,Anindita,challita,moore,redmond,Bombardieri,ben murray</value>
+        </filters>
+        <filters>
+            <field>Lead_Converted_Status__pc</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>ACF - All Unconverted Leads (not closed)</label>
+        <sharedTo>
+            <role>Partner_Broker_Management</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>ACF_Loans_Accounts_New_Mine</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6 AND 7</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>acf_Lead__pc</columns>
+        <columns>clickLead_Status__pc</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>PC_FIRST_NAME</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>Future_Contact_Date__c</columns>
+        <columns>PC_EMAIL</columns>
+        <columns>acfEconsent__pc</columns>
+        <columns>PC_LAST_NAME</columns>
+        <columns>PC_PHONE3</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.ACF_New_Loans,PersonAccount.ACF_Refi</value>
+        </filters>
+        <filters>
+            <field>clickLead_Status__pc</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>No Answer</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Contacted</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Dashboard</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.CREATED_DATE</field>
+            <operation>greaterThan</operation>
+            <value>4/4/2016 12:00 AM</value>
+        </filters>
+        <label>1 ACF - New (Mine)</label>
+    </listViews>
+    <listViews>
+        <fullName>ACF_Loans_Accounts_UTM</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>acf_Lead__pc</columns>
+        <columns>clickLead_Status__pc</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>PC_FIRST_NAME</columns>
+        <columns>PC_LAST_NAME</columns>
+        <columns>acfEconsent__pc</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.ACF_New_Loans</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.ACF_Refi</value>
+        </filters>
+        <label>ACF Loans Accounts - UTM</label>
+    </listViews>
+    <listViews>
+        <fullName>AllAccounts</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>ACCOUNT.RECORDTYPE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>Business_Account_View</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE_CODE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Account.Business_Account</value>
+        </filters>
+        <label>Business Account View</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Click_Accounts_Uncontacte_Mine</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>acf_Lead__pc</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>ACCOUNT.RECORDTYPE</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>PC_EMAIL</columns>
+        <columns>PC_FIRST_NAME</columns>
+        <columns>PC_LAST_NAME</columns>
+        <columns>PC_PHONE3</columns>
+        <columns>acfEconsent__pc</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.Click_New_Loans,PersonAccount.Click_Refi</value>
+        </filters>
+        <filters>
+            <field>clickLead_Status__pc</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>contains</operation>
+            <value>No Answer</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>No Answer 5</value>
+        </filters>
+        <label>2 CL - Uncontacted (Mine)</label>
+    </listViews>
+    <listViews>
+        <fullName>Click_Loans_Accounts_Alex</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>acf_Lead__pc</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>clickLead_Status__pc</columns>
+        <columns>PC_FIRST_NAME</columns>
+        <columns>PC_LAST_NAME</columns>
+        <columns>PC_PHONE3</columns>
+        <columns>PC_EMAIL</columns>
+        <columns>acfEconsent__pc</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
             <value>PersonAccount.Click_Refi</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>equals</operation>
+            <value>vredm,HGigu</value>
+        </filters>
+        <label>Click Loans Accounts- Alex team</label>
+    </listViews>
+    <listViews>
+        <fullName>Click_Loans_Accounts_Future_Leads_Mine</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>acf_Lead__pc</columns>
+        <columns>clickLead_Status__pc</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>PC_FIRST_NAME</columns>
+        <columns>PC_LAST_NAME</columns>
+        <columns>PC_PHONE3</columns>
+        <columns>PC_EMAIL</columns>
+        <columns>acfEconsent__pc</columns>
+        <columns>Future_Contact_Date__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.Click_Refi,PersonAccount.Click_New_Loans</value>
         </filters>
         <filters>
             <field>clickLead_Status__pc</field>
@@ -1431,27 +2218,32 @@
             <value>Future</value>
         </filters>
         <label>4 CL - Future Leads (Mine)</label>
+        <sharedTo>
+            <role>Click_Loans_Management</role>
+            <role>Click_Loans_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Click_Loans_Accounts_In_Progres_Mine</fullName>
         <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
         <columns>ACCOUNT.NAME</columns>
         <columns>acf_Lead__pc</columns>
-        <columns>clickLead_Status__pc</columns>
-        <columns>Click_Loan_Stage__c</columns>
-        <columns>Future_Contact_Date__c</columns>
         <columns>PC_FIRST_NAME</columns>
         <columns>PC_LAST_NAME</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
         <columns>PC_PHONE3</columns>
         <columns>PC_EMAIL</columns>
         <columns>acfEconsent__pc</columns>
+        <columns>Click_Loan_Stage__c</columns>
         <columns>CORE.USERS.ALIAS</columns>
-        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>clickLead_Status__pc</columns>
+        <columns>Lead_Converted_Status__pc</columns>
         <filterScope>Mine</filterScope>
         <filters>
             <field>ACCOUNT.RECORDTYPE</field>
             <operation>equals</operation>
-            <value>PersonAccount.Click_Refi</value>
+            <value>PersonAccount.Click_Refi,PersonAccount.Click_New_Loans</value>
         </filters>
         <filters>
             <field>clickLead_Status__pc</field>
@@ -1474,10 +2266,13 @@
             <value>Future</value>
         </filters>
         <label>3 CL - In Progress (Mine)</label>
+        <sharedTo>
+            <role>Click_Loans_Management</role>
+            <role>Click_Loans_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
-        <fullName>Click_Loans_Accounts_New_Mine</fullName>
-        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
+        <fullName>Click_Loans_Accounts_Insurance</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>acf_Lead__pc</columns>
         <columns>clickLead_Status__pc</columns>
@@ -1489,11 +2284,49 @@
         <columns>acfEconsent__pc</columns>
         <columns>CORE.USERS.ALIAS</columns>
         <columns>ACCOUNT.CREATED_DATE</columns>
-        <filterScope>Mine</filterScope>
+        <filterScope>Everything</filterScope>
         <filters>
             <field>ACCOUNT.RECORDTYPE</field>
             <operation>equals</operation>
             <value>PersonAccount.Click_Refi</value>
+        </filters>
+        <filters>
+            <field>clickLead_Status__pc</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>acfAdequate_Insurance__pc</field>
+            <operation>equals</operation>
+            <value>No,I don&apos;t know</value>
+        </filters>
+        <label>Click Loans Accounts - Insurance</label>
+    </listViews>
+    <listViews>
+        <fullName>Click_Loans_Accounts_New_Mine</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>acf_Lead__pc</columns>
+        <columns>clickLead_Status__pc</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>PC_FIRST_NAME</columns>
+        <columns>PC_LAST_NAME</columns>
+        <columns>PC_EMAIL</columns>
+        <columns>acfEconsent__pc</columns>
+        <columns>PC_PHONE3</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.Click_New_Loans,PersonAccount.Click_Refi</value>
         </filters>
         <filters>
             <field>clickLead_Status__pc</field>
@@ -1521,6 +2354,10 @@
             <value>Dashboard</value>
         </filters>
         <label>1 CL - New (Mine)</label>
+        <sharedTo>
+            <role>Click_Loans_Management</role>
+            <role>Click_Loans_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Click_Loans_Accounts_Open</fullName>
@@ -1562,11 +2399,11 @@
         <columns>Click_Loan_Stage__c</columns>
         <columns>PC_FIRST_NAME</columns>
         <columns>PC_LAST_NAME</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
         <columns>PC_PHONE3</columns>
         <columns>PC_EMAIL</columns>
         <columns>acfEconsent__pc</columns>
         <columns>CORE.USERS.ALIAS</columns>
-        <columns>ACCOUNT.CREATED_DATE</columns>
         <filterScope>Mine</filterScope>
         <filters>
             <field>ACCOUNT.RECORDTYPE</field>
@@ -1616,18 +2453,84 @@
         <label>Click Loans Accounts - E-Consent</label>
     </listViews>
     <listViews>
-        <fullName>Click_Loans_Accounts_Uncontacte_Mine</fullName>
+        <fullName>Click_Loans_Accounts_UTM</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>acf_Lead__pc</columns>
+        <columns>clickLead_Status__pc</columns>
         <columns>Click_Loan_Stage__c</columns>
         <columns>PC_FIRST_NAME</columns>
         <columns>PC_LAST_NAME</columns>
-        <columns>PC_PHONE3</columns>
-        <columns>PC_EMAIL</columns>
         <columns>acfEconsent__pc</columns>
-        <columns>CORE.USERS.ALIAS</columns>
         <columns>ACCOUNT.CREATED_DATE</columns>
-        <filterScope>Mine</filterScope>
+        <columns>Account_Owner_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.Click_Refi,PersonAccount.Click_New_Loans</value>
+        </filters>
+        <filters>
+            <field>clickLead_Status__pc</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Is_Phone_Broker_customer__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>Click Loans Accounts - UTM</label>
+    </listViews>
+    <listViews>
+        <fullName>Click_Loans_Accounts_UTM_Closed</fullName>
+        <booleanFilter>1 AND (2 OR 3) AND 4</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>acf_Lead__pc</columns>
+        <columns>clickLead_Status__pc</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>PC_FIRST_NAME</columns>
+        <columns>PC_LAST_NAME</columns>
+        <columns>acfEconsent__pc</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>Account_Owner_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.Click_Refi,PersonAccount.Click_New_Loans</value>
+        </filters>
+        <filters>
+            <field>clickLead_Status__pc</field>
+            <operation>contains</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>contains</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Is_Phone_Broker_customer__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>Click Loans Accounts - UTM Closed</label>
+    </listViews>
+    <listViews>
+        <fullName>James_Blanche_Click_Leads</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6 AND 7 AND 8</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE_CODE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <filterScope>Everything</filterScope>
         <filters>
             <field>ACCOUNT.RECORDTYPE</field>
             <operation>equals</operation>
@@ -1645,10 +2548,85 @@
         </filters>
         <filters>
             <field>Click_Loan_Stage__c</field>
-            <operation>contains</operation>
+            <operation>notContain</operation>
             <value>No Answer</value>
         </filters>
-        <label>2 CL - Uncontacted (Mine)</label>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Contacted</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Dashboard</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.LAST_NAME</field>
+            <operation>equals</operation>
+            <value>Blanche</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>James</value>
+        </filters>
+        <label>James Blanche Click Leads</label>
+        <sharedTo>
+            <role>Click_Loans_Team</role>
+            <role>Phone_Broker_Team</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>James_Wu_Click_Leads</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6 AND 7</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE_CODE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>Click_Loan_Stage__c</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PersonAccount.Click_Refi</value>
+        </filters>
+        <filters>
+            <field>clickLead_Status__pc</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Contacted</value>
+        </filters>
+        <filters>
+            <field>Click_Loan_Stage__c</field>
+            <operation>notContain</operation>
+            <value>Dashboard</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.LAST_NAME</field>
+            <operation>equals</operation>
+            <value>Wu</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>James</value>
+        </filters>
+        <label>James Wu Click Leads Uncontacted</label>
+        <sharedTo>
+            <role>Phone_Broker_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>MyAccounts</fullName>
@@ -1936,6 +2914,37 @@
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Lead_Groups__c</picklist>
+            <values>
+                <fullName>Group 1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Group 2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Group 3</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Group 4</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Group 5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Group 6</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Group 7</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>No_Show_Campaign_Status__c</picklist>
             <values>
                 <fullName>Appointed</fullName>
@@ -2143,11 +3152,24 @@
         <searchResultsAdditionalFields>ACCOUNT.SITE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>ACCOUNT.PHONE1</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.CREATED_DATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.RECORDTYPE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.LAST_UPDATE</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Private</sharingModel>
     <validationRules>
+        <fullName>Dashboard_Loan_Stage_Manually_changed</fullName>
+        <active>false</active>
+        <description>Loan Stage cannot be changed to Dashboard unless &quot;Is Post Login Ques Attempted&quot; checkbox = True</description>
+        <errorConditionFormula>acf_Lead__pr.IsConverted  = FALSE
+&amp;&amp;
+(ISPICKVAL( Click_Loan_Stage__c , &quot;Dashboard&quot;))</errorConditionFormula>
+        <errorDisplayField>acf_3yrs_of_address_history__pc</errorDisplayField>
+        <errorMessage>You can&apos;t change to Dashboard manually</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>Force_Mobile_Phone_Number</fullName>
-        <active>true</active>
+        <active>false</active>
         <errorConditionFormula>NOT( Contains ( &quot;+61&quot;,
 Left(PersonMobilePhone, 3)))</errorConditionFormula>
         <errorMessage>Please check mobile number on the Lead
@@ -2155,12 +3177,24 @@ Phone and Mobile Numbers must be entered as +61xxxxxxxxx</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Force_Phone_Number</fullName>
-        <active>true</active>
+        <active>false</active>
         <errorConditionFormula>NOT( Contains ( &quot;+61&quot;, 
 Left(Phone, 3)))</errorConditionFormula>
         <errorMessage>Please check the Phone number on the Lead 
 Phone and Mobile Numbers must be entered as +61xxxxxxxxx</errorMessage>
     </validationRules>
+    <webLinks>
+        <fullName>Enable_Click_Loan_User</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Community User</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/25.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/apex.js&quot;)}
+top.location.href = &apos;/apex/CreateClickLead?id={!Account.Id}&apos;</url>
+    </webLinks>
     <webLinks>
         <fullName>GoogleMaps</fullName>
         <availability>online</availability>

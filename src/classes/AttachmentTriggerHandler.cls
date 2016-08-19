@@ -12,7 +12,7 @@ Public Class AttachmentTriggerHandler{
         List<Document_Master__c> docMasterList = [Select id,File_Address__c From Document_Master__c where id=:parentIdSet];
         
         if(docMasterList.size() > 0){
-           docMasterList[0].File_Address__c  = 'https://'+URL.getSalesforceBaseURL().getHost()+'/servlet/servlet.FileDownload?file=' + attachmentIdList[0];
+           docMasterList[0].File_Address__c  = '/servlet/servlet.FileDownload?file=' + attachmentIdList[0];
            update docMasterList;
         }
 

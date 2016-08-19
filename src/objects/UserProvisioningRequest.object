@@ -22,14 +22,12 @@
         <type>Lookup</type>
     </fields>
     <searchLayouts>
-        <customTabListAdditionalFields>Name</customTabListAdditionalFields>
         <customTabListAdditionalFields>ConnectedApp</customTabListAdditionalFields>
         <customTabListAdditionalFields>Operation</customTabListAdditionalFields>
         <customTabListAdditionalFields>ApprovalStatus</customTabListAdditionalFields>
         <customTabListAdditionalFields>SalesforceUser</customTabListAdditionalFields>
         <customTabListAdditionalFields>UserProvAccount</customTabListAdditionalFields>
         <customTabListAdditionalFields>LastModifiedBy</customTabListAdditionalFields>
-        <searchResultsAdditionalFields>Name</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>ConnectedApp</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Operation</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>ApprovalStatus</searchResultsAdditionalFields>

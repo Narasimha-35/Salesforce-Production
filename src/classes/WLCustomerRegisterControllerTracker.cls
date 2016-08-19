@@ -1,11 +1,15 @@
-@isTest(seealldata=true)
+@isTest
 private class WLCustomerRegisterControllerTracker 
 {
+    static private String strSelectedAnswers = '';
   static private Lead objLead;
   static private User objUser;
+   public static User objuser1;
+  private static acfSuggested_Product__c objacfSuggested;
   static private Profile objUserProfile;
   private static string USER_PROFILE_NAME = 'Community User';
   private static Contact objContact;
+  private static acfBank_Detail__c objBank ;
   private static Account objAccount;
   private static MortgageExpert__c objMortgageExpert;
   private static Profile objProfile;
@@ -15,11 +19,22 @@ private class WLCustomerRegisterControllerTracker
   private static Opportunity objOpportunity;
   private static Script__c objScript;
   private static Question__c objQuestion;
+   private static Click_Loans_Bank__c objclickloan;
+   private static Asset_And_Liability__c objassetli;
+   private static Click_Community_Setup__c objclcmm;
+    private static Click_Community_Setup__c objcommunity;
+    private static click_Applicant__c objclickappl;
+     private static Twilio__c objtwilio;
+    private static acfBank_Information__c objBankQuestions;
   private static Answer__c objAnswer;
+   //private static username;
   
    static testMethod void ValidateRegistration()
   {
+ 
         LoadData();
+         system.runas(objuser)
+  {
         Lead objL = new Lead();
         objL.FirstName = '+619654922845';
         objL.LastName = '+619654922845';
@@ -31,6 +46,7 @@ private class WLCustomerRegisterControllerTracker
         objL.acf_partner_account__c = objAccount.id;
         objL.acfLoan_Amount__c = 1000.00;
         objL.acfCurrentRate__c = 3;
+         objL.Community__c =objclcmm.id;
         objL.acfWhat_is_your_current_payment_type__c = 'Cash';
         objL.acfApproximately_how_much_is_your_house__c = 2000.00;
         insert objL;
@@ -45,6 +61,8 @@ private class WLCustomerRegisterControllerTracker
         objPro.acfvarTenure_In_Years__c = 10;
         objPro.acfOffset_Account__c = false;
         objPro.Name = 'test';
+        objPro.Trailing_Commission__c=0.5;
+       objPro.Upfront_Commission__c=0.6;
         insert objPro;
         
         objProduct2.recordtypeid = ClickCommon.GetRecordTypeId('product2','Fixed');
@@ -96,7 +114,7 @@ private class WLCustomerRegisterControllerTracker
         objContentManagementSystem.acfHeader_Sequance__c = 4;
         insert objContentManagementSystem;
         
-        objScript     = WLCommonTrackerClass.createScript('Post-Login');//string strQuestion,Integer NewsequenceNo,string strType,boolean IsRefinence,boolean IsNew,Id ScriptID
+        objScript     = WLCommonTrackerClass.createScript('Pre-Login');//string strQuestion,Integer NewsequenceNo,string strType,boolean IsRefinence,boolean IsNew,Id ScriptID
         system.debug('!@#$%'+objScript.id);
         objQuestion   = WLCommonTrackerClass.CreatePrePostLoginQuestions('Who is your current lender?',1,'Button',true,false,objScript.id,objL.FirstName);
         objQuestion   = WLCommonTrackerClass.CreatePrePostLoginQuestions('Who is your current lender?',1,'Button',true,false,objScript.id,objL.FirstName);
@@ -138,6 +156,11 @@ private class WLCustomerRegisterControllerTracker
         objacfCustomerRegisterController.strTimezoneId = 'Asia/Kolkata';
         objacfCustomerRegisterController.showformVar =false;
         
+         objcommunity= new Click_Community_Setup__c();
+        objcommunity.Name = 'Click';
+        insert objcommunity;
+        
+        WLCustomerRegisterController.generateReqDocs(objL.Id,objclcmm);
         
         objacfCustomerRegisterController.getProductIdslist();
         objacfCustomerRegisterController.Login(); 
@@ -145,18 +168,23 @@ private class WLCustomerRegisterControllerTracker
         objacfCustomerRegisterController.VerifyEmail();
         objacfCustomerRegisterController.IsUserAlreadyExist();
         
+         objL.Community__c=objclcmm.id;
+        update objL;
+        objacfCustomerRegisterController.username='swati.sharma@saasfocus.com';
+        objacfCustomerRegisterController.maptst.put('test','test');
+       
         objacfCustomerRegisterController.Registration();
         objacfCustomerRegisterController.SendSmsAfterRegistration();
         objacfCustomerRegisterController.DisplayTop3Products(objL.id,WLCommonTrackerClass.testNetworkId) ; 
         objacfCustomerRegisterController.istermsConditionsConfirmed = true;      
         objacfCustomerRegisterController.verifyOTP();
         objacfCustomerRegisterController.mobile_num = '+918896292603';     
-//        objacfCustomerRegisterController.resendOTP();
+        //objacfCustomerRegisterController.resendOTP();
         objacfCustomerRegisterController.OK();
         objacfCustomerRegisterController.RedirectToLandingPage();
         objacfCustomerRegisterController.redirect();
         objacfCustomerRegisterController.DisplayEstimatedSaving(5.0,3.0,12000,'Interest Only',10);
-        
+        }
   }
   
   
@@ -229,10 +257,17 @@ private class WLCustomerRegisterControllerTracker
         objacfCustomerRegisterController.strTimezoneId = 'Asia/Kolkata';
         objacfCustomerRegisterController.showformVar =false;
         
+        objcommunity= new Click_Community_Setup__c();
+        objcommunity.Name = 'Click';
+        insert objcommunity;
+        
+        WLCustomerRegisterController.generateReqDocs(objL.Id,objclcmm);
+        
         objacfCustomerRegisterController.Login(); 
         objacfCustomerRegisterController.showResendOTPfrm();   
         objacfCustomerRegisterController.VerifyEmail();
         objacfCustomerRegisterController.IsUserAlreadyExist();
+        objacfCustomerRegisterController.username='testtest';
         objacfCustomerRegisterController.Registration(); 
         objacfCustomerRegisterController.DisplayTop3Products(objL.id,WLCommonTrackerClass.testNetworkId) ; 
         objacfCustomerRegisterController.istermsConditionsConfirmed = true;      
@@ -293,12 +328,19 @@ private class WLCustomerRegisterControllerTracker
         objacfCustomerRegisterController.pList = lstpro;
         objacfCustomerRegisterController.objLead = objL1;
         
+        objcommunity= new Click_Community_Setup__c();
+        objcommunity.Name = 'Click';
+        insert objcommunity;
         
+        objDocumentMaster.Click_Community_Setup__c=objclcmm.id;
+        update objDocumentMaster;
+        WLCustomerRegisterController.generateReqDocs(objL1.Id,objclcmm);
 
         objacfCustomerRegisterController.Login(); 
         objacfCustomerRegisterController.showResendOTPfrm();   
         objacfCustomerRegisterController.VerifyEmail();
         objacfCustomerRegisterController.IsUserAlreadyExist();
+        objacfCustomerRegisterController.username='testtest';
          objacfCustomerRegisterController.Registration();
        /* user guestUser = WLCommonTrackerClass.CreatePortalUser(objAccount.id);
         
@@ -316,12 +358,23 @@ private class WLCustomerRegisterControllerTracker
   {
     createAccount();
     createContact();
-  //  createUser(); 
- //   createOpportunity();
+    createUser(); 
+   // createUser1();
+    createOpportunity();
+    createProfile();
     createMortgageExpert();
-    createprofile();
+     createAssetAndLiability();
+     createclickApplicant();
+    //createprofile();
+      createBankDetail();
     createProduct();
+    createacfSuggestedProduct();
+    createclickCommunitySetup();
+  
+    createClickloan();
+    createBankQuestions() ;
     createDocumentMaster();
+    createRequiredDocument();
   }
   
   static void createuser()
@@ -336,8 +389,20 @@ private class WLCustomerRegisterControllerTracker
   //      objUser = acfCommontrackerClass.createuser(objUser,objContact,objAccount);
      
   }
+    /*
+   static void createUser1()
+   {
+       objuser1=new User();
+       objuser1=WLCommonTrackerClass.CreateUser(objuser1);
+   }
   
-  static void createprofile()
+ static void createProfile()
+  {
+      objUserProfile=new Profile();
+      objUserProfile=WLCommonTrackerClass.createProfile('Community User');
+  }*/
+  
+ static void createprofile()
   {
     objProfile = new Profile();
     objProfile =[Select id,Name from Profile where name='Community User' limit 1];
@@ -353,6 +418,17 @@ private class WLCustomerRegisterControllerTracker
     
   }
   
+  static void createclickApplicant()
+    {
+         objclickappl=new click_Applicant__c();
+         objclickappl= WLCommonTrackerClass.createApplicant(objclickappl,objaccount,objOpportunity);
+    }
+  
+   static void createAssetAndLiability()
+    {
+        objassetli=new Asset_And_Liability__c ();
+        objassetli=WLCommonTrackerClass.createAssetandLiablility(objassetli,objaccount);
+  }
   static void createContact()
   {
     objContact = new Contact();
@@ -366,11 +442,27 @@ private class WLCustomerRegisterControllerTracker
       objMortgageExpert = WLCommonTrackerClass.createMortgageExpert(objMortgageExpert);
     }
   
-     static void  createproduct()
+    static void  createproduct()
     {
       objProduct2= new Product2();
-      objProduct2 = WLCommonTrackerClass.createproduct(objProduct2);      
+      objProduct2.Click_Loans_Bank_Detail__c = objBank.id;
+      objProduct2 = WLCommonTrackerClass.createproduct(objProduct2);       
     }
+    
+    static void  createacfSuggestedProduct()
+    {
+    objacfSuggested=new acfSuggested_Product__c();
+    objacfSuggested=WLCommonTrackerClass.createacfSuggestedProduct();
+    
+    }
+   
+    
+    static void createBankQuestions() 
+    {
+    objBankQuestions=new acfBank_Information__c();
+    objBankQuestions=WLCommonTrackerClass.createBankQuestions(); 
+    }
+    
     
     static void createOpportunity()
     {
@@ -386,6 +478,13 @@ private class WLCustomerRegisterControllerTracker
   
     }
     
+     static void createclickCommunitySetup() 
+    {
+        objclcmm= new Click_Community_Setup__c();
+        objclcmm= WLCommonTrackerClass.createcommunitysetup();
+       // objclcmm= ClickCommon.getCommunitySetup('');
+    }
+    
     static void createRequiredDocument()
     {
         objRequiredDocument = new Required_Document__c ();      
@@ -394,25 +493,38 @@ private class WLCustomerRegisterControllerTracker
         system.debug('objRequiredDocument'+objRequiredDocument);
     }
     
-     static testMethod void ValidateRegistration02()
-  {
+    static void createBankDetail()
+    {
+        objBank = new acfBank_Detail__c();
+        objBank =  WLCommonTrackerClass.createBankDetail();
+    }
+    
+     static void createClickloan()
+    {
+         objclickloan=new Click_Loans_Bank__c();
+        objclickloan=WLCommonTrackerClass.createClickloan(objBank,objclcmm);
+    }
+    
+    static testMethod void ValidateRegistration02()
+    {
         LoadData();
         Lead objL = new Lead();
-        objL.FirstName = '+619654922845';
-        objL.LastName = '+619654922845';
-        objL.Email = 'swati.sharma@saasfocus.com';
-        objL.MobilePhone = '+619654922845';
-        objL.Status = 'Open';
-        objL.acfOneTimePassword__c = '724715';
-        objL.acfIsMobileVerified__c =true;
-        objL.acf_partner_account__c = objAccount.id;
-        objL.acfLoan_Amount__c = 1000.00;
-        objL.acfCurrentRate__c = 3;
-        objL.acfWhat_is_your_current_payment_type__c = 'Cash';
-        objL.acfApproximately_how_much_is_your_house__c = 2000.00;
-        objL.acfIs_User_Registered__c = false;
-        insert objL;
-        
+        test.starttest();
+            objL.FirstName = '+619654922845';
+            objL.LastName = '+619654922845';
+            objL.Email = 'swati.sharma@saasfocus.com';
+            objL.MobilePhone = '+619654922845';
+            objL.Status = 'Open';
+            objL.acfOneTimePassword__c = '724715';
+            objL.acfIsMobileVerified__c =true;
+            objL.acf_partner_account__c = objAccount.id;
+            objL.acfLoan_Amount__c = 1000.00;
+            objL.acfCurrentRate__c = 3;
+            objL.acfWhat_is_your_current_payment_type__c = 'Cash';
+            objL.acfApproximately_how_much_is_your_house__c = 2000.00;
+            objL.acfIs_User_Registered__c = false;
+            insert objL;
+        test.stoptest();
  /*     RecordType objRT=[select id, name, SObjectType From RecordType Where SObjectType= 'product2' AND name= 'Variable'];
         product2 objPro = new product2();
         objPro.ACF_Comparison_Rate__c = 10;
@@ -430,17 +542,18 @@ private class WLCustomerRegisterControllerTracker
         objProduct2.recordtypeid = ClickCommon.GetRecordTypeId('product2','Fixed');
         objProduct2.acfTenure_in_Years__c = '3';
         objProduct2.acfvarTenure_In_Years__c = 3;
+        objProduct2.Family='none';
         update objProduct2;
-                
+                 
         LVR_Rate__c objLVR = new LVR_Rate__c();
-        objLVR.acfLVR__c = 51.25;
+        objLVR.acfLVR__c = 100;
         objLVR.acfRate__c = 10.25;
         objLVR.acfProduct__c = objProduct2.id;
-        objLVR.acfLoan_Size__c = 1900.20;
+        objLVR.acfLoan_Size__c = 10000000;
         objLVR.ACF_Comparison_Rate__c = 10.00; 
         objLVR.clickFixed_Interest_Rate__c = 9.00;
-        objLVR.clickLoan_Size_From__c = 500.50;
-        objLVR.clickLVR_From__c = 1.2;
+        objLVR.clickLoan_Size_From__c = 0;
+        objLVR.clickLVR_From__c = 0;
         objLVR.acfApplication_Fee__c = 5000; 
         
         insert objLVR; 
@@ -489,8 +602,10 @@ private class WLCustomerRegisterControllerTracker
         ApexPages.currentPage().setCookies( new Cookie[]{LeadId});
         Cookie strUserId = new Cookie('strUserId',''+userinfo.getuserid()+'','true',72000, false);
         ApexPages.currentPage().setCookies( new Cookie[]{strUserId});
-        Cookie IsNewHomeLoan = new Cookie('IsNewHomeLoan','false','true',72000, false);
-        ApexPages.currentPage().setCookies( new Cookie[]{IsNewHomeLoan});
+         Cookie IsNewHomeLoan = new Cookie('IsNewHomeLoan','false',null,72000,true);        
+      ApexPages.currentPage().setCookies( new Cookie[]{IsNewHomeLoan});
+       Cookie ACFRequiredDocumentsAnswers = new Cookie('ACFRA',strSelectedAnswers,null,72000, false); 
+        ApexPages.currentPage().setCookies( new Cookie[]{ACFRequiredDocumentsAnswers});
        
         Cookie ACFLeadApiNames = new Cookie('ACFLeadApiNames',''+objQuestion+'-:-'+objQuestion+'','true',72000, false);
         ApexPages.currentPage().setCookies( new Cookie[]{ACFLeadApiNames});
@@ -509,7 +624,13 @@ private class WLCustomerRegisterControllerTracker
         objacfCustomerRegisterController.mobile_num = '9212155244';
         objacfCustomerRegisterController.strTimezoneId = 'Asia/Kolkata';
         objacfCustomerRegisterController.showformVar =false;
+        objacfCustomerRegisterController.lstCommunity = objclcmm;
         
+        objcommunity= new Click_Community_Setup__c();
+        objcommunity.Name = 'Click';
+        insert objcommunity;
+        
+        WLCustomerRegisterController.generateReqDocs(objL.Id,objclcmm);
         
         objacfCustomerRegisterController.getProductIdslist();
         objacfCustomerRegisterController.Login(); 
@@ -517,20 +638,48 @@ private class WLCustomerRegisterControllerTracker
         objacfCustomerRegisterController.VerifyEmail();
         objacfCustomerRegisterController.IsUserAlreadyExist();
         
+        objacfCustomerRegisterController.username='testtest';
         objacfCustomerRegisterController.Registration();
+        objacfCustomerRegisterController.userId = objuser.id;
+         objL.acfLoan_Amount__c = 12345.00;
+          objL.acfApproximately_how_much_is_your_house__c = 21273.00;
+         
+           update objL;
+        objacfCustomerRegisterController.objLead = objL;
+         objtwilio=new Twilio__c();
+         objtwilio.name='Twilio';
+           objtwilio.Twilio__c=false;
+           insert objtwilio;
+           objAccount.Click_Community_Setup__c=objclcmm.id;
+         
+           update objAccount;
+           
+     
         objacfCustomerRegisterController.SendSmsAfterRegistration();
-        objacfCustomerRegisterController.DisplayTop3Products(objL.id,WLCommonTrackerClass.testNetworkId) ; 
+        
+        objacfSuggested.acfProduct__c=objProduct2.id;
+        objacfSuggested.acfLead__c=objL.id;
+        update objacfSuggested;
+        /*
+        objLVR.clickLoan_Size_From__c = objL.acfLoan_Amount__c ;
+        objLVR.clickLVR_From__c =  objL.acfLoan_Amount__c ;
+         objLVR.acfLoan_Size__c = 50;
+          objLVR.acfLVR__c = 50;
+           objProduct2.Click_Loans_Bank_Detail__c=objBank.id;
+            objProduct2.IsActive = true;
+        
+        update objLVR;
+          */
+       // objacfCustomerRegisterController.DisplayTop3Products(objL.id,objclcmm.id) ; 
         objacfCustomerRegisterController.istermsConditionsConfirmed = true;      
         objacfCustomerRegisterController.verifyOTP();
         objacfCustomerRegisterController.mobile_num = '+918896292603';     
-//        objacfCustomerRegisterController.resendOTP();
+        objacfCustomerRegisterController.resendOTP();
         objacfCustomerRegisterController.OK();
         objacfCustomerRegisterController.RedirectToLandingPage();
         objacfCustomerRegisterController.redirect();
         objacfCustomerRegisterController.DisplayEstimatedSaving(5.0,3.0,12000,'Interest Only',10);
         
   }
-  
-    
-    
+ 
 }

@@ -2,47 +2,51 @@ public  class acfTriggerOnOpportunityLineItemHandler
 {
   public void OnBeforeInsert(List<Opportunitylineitem>triggerNew)
   {
-   // UpdateOpportunityLineItem(triggerNew);  //commented on 22-04-2016 regarding recalculate LVR
+    UpdateOpportunityLineItem(triggerNew);  
     //Added on 02-03-2016 regarding multiple product funtionality
     ValidateExistingBankProducts(triggerNew);
   }
   public void OnBeforeUpdate(List<Opportunitylineitem>triggerNew)
   {
-    //UpdateOpportunityLineItem(triggerNew);
+    UpdateOpportunityLineItem(triggerNew);
   }
   public void OnAfterInsert(List<Opportunitylineitem>triggerNew)
   {
     
     UpdateFeeInOpportunity(triggerNew);
     updateRequiredDocumentOnOpportunity(triggerNew);
-    updateFundingPosition(triggerNew,'insert');
+    updateFundingPosition(triggerNew);
   }
   public void OnAfterUpdate(List<Opportunitylineitem>triggerNew)
   {
     UpdateFeeInOpportunity(triggerNew);
     updateRequiredDocumentOnOpportunity(triggerNew);
-    updateFundingPosition(triggerNew,'update');
+    updateFundingPosition(triggerNew);
   }
   public void OnAfterDelete(List<Opportunitylineitem>triggerOld)
   {
       UpdateFeeInOpportunity(triggerOld);
   }
   
-  public void updateFundingPosition(List<opportunitylineitem> triggernew,string event){
+  public void updateFundingPosition(List<opportunitylineitem> triggernew){
     Set<id> oppIdSet = new Set<Id>();
     for(OpportunityLineItem tNew:triggernew){
         oppIdSet.add(tNew.OpportunityId);
     }
-    Funding_Position__c fPosition = new Funding_Position__c();
+    List<Funding_Position__c> fPositionList = new List<Funding_Position__c>();
     if(oppIdSet.size() > 0){
          List<OpportunityLineItem> oppLineList = [SELECT acfLegal_Fees__c,clickEstablishment_Fee__c,clickMortgage_Risk_Fee__c FROM OpportunityLineItem where OpportunityId =:oppIdSet ORDER BY CreatedDate ASC LIMIT 1];
-         fPosition = [SELECT Id,Lender_Set_Up_Fees__c FROM Funding_Position__c where Opportunity__c =:oppIdSet];
-         if((fPosition !=null && fPosition.Lender_Set_Up_Fees__c == null && event == 'insert') ||(fPosition !=null && event == 'update')){
-            if(oppLineList[0].acfLegal_Fees__c !=null && oppLineList[0].clickEstablishment_Fee__c !=null && oppLineList[0].clickMortgage_Risk_Fee__c !=null){
-                fPosition.Lender_Set_Up_Fees__c = Integer.valueOf(oppLineList[0].acfLegal_Fees__c) + Integer.valueOf(oppLineList[0].clickEstablishment_Fee__c) + Integer.valueOf(oppLineList[0].clickMortgage_Risk_Fee__c);
-            }
-            update fPosition;
+         fPositionList  = [SELECT Id,Lender_Set_Up_Fees__c FROM Funding_Position__c where Opportunity__c =:oppIdSet];
+         if(fPositionList.size() >0){
+             for(Funding_Position__c fList:fPositionList){
+                 
+                if(oppLineList[0].acfLegal_Fees__c != null && oppLineList[0].clickEstablishment_Fee__c !=null && oppLineList[0].clickMortgage_Risk_Fee__c !=null){
+                    fList.Lender_Set_Up_Fees__c = Integer.valueOf(oppLineList[0].acfLegal_Fees__c) + Integer.valueOf(oppLineList[0].clickEstablishment_Fee__c) + Integer.valueOf(oppLineList[0].clickMortgage_Risk_Fee__c);
+                }
+             }
+             update fPositionList;
          }
+         
      }
   }
   public void UpdateFeeInOpportunity(List<Opportunitylineitem>triggerNew)
@@ -127,12 +131,6 @@ public  class acfTriggerOnOpportunityLineItemHandler
   }
   public void UpdateOpportunityLineItem(List<Opportunitylineitem>triggerNew)
   {
-    set<Id>setOpportunityId = new set<Id>();
-    set<Id>setPriceBookEntryId = new set<Id>();
-    set<Id>setProductId = new set<Id>();
-    map<Id,PricebookEntry>mapPBEIdToPBE = new map<Id,PricebookEntry>();
-    map<Id,Opportunity>mapOppIdToOpp = new map<Id,Opportunity>();
-    map<Id,List<LVR_Rate__c>>mapProductIdToListOfLVR = new map<id,List<LVR_Rate__c>>();
     if(triggerNew <> null && triggerNew.size()>0)
     {
       for(OpportunityLineItem objOppLi:triggerNew)
@@ -140,138 +138,8 @@ public  class acfTriggerOnOpportunityLineItemHandler
         //Added on 3/2/2016
         objOppLi.Quantity = 1;
         objOppLi.click_Loan_Amount__c = objOppLi.UnitPrice;
-        //Added on 3/2/2016
-        if(objOppLi.OpportunityId <> null)
-        {
-           setOpportunityId.add(objOppLi.OpportunityId);
-        }
-        if(objOppLi.PricebookEntryId <> null)
-        {
-          setPriceBookEntryId.add(objOppLi.PricebookEntryId);
-        }
-        system.debug('1234567'+setPriceBookEntryId);
       }
-    }
-    if(setPriceBookEntryId <> null && setPriceBookEntryId.size()>0)
-    {
-      for(PricebookEntry objPBE:[select id,product2Id,product2.acfvarTenure_In_Years__c from PricebookEntry where id in:setPriceBookEntryId])
-      {
-        setProductId.add(objPBE.product2Id);
-        mapPBEIdToPBE.put(objPBE.id,objPBE);
-      }                  
-    }
-    if(setOpportunityId <> null && setOpportunityId.size()>0)
-    {
-      for(Opportunity objOpp:[select id,acfCurrentLoanAmount__c,acfCuurent_Rate__c,acfPayment_Type__c,Account.acfApproximately_how_much_is_your_house__pc from Opportunity where id in:setOpportunityId])
-      {
-        mapOppIdToOpp.put(objOpp.id,objOpp);            
-      }
-    }
-    if(setProductId <> null && setProductId.size()>0)
-    {
-      for(LVR_Rate__c objLVRRate:[select id,acfLVR__c,acfProduct__c,acfProduct__r.RecordType.Name,acfProduct__r.acfInterest_Only__c,acfRate__c,acfAnnual_Fees__c,acfApplication_Fee__c,acfTotal_Fee__c,ACF_Comparison_Rate__c,acfEstablishment_Fee__c,clickFixed_Interest_Rate__c,acfLegal_Fees__c,
-      acfMonthly_Fees__c,acfMortgage_Risk_Fee__c,acfOngoing_Fees_annual__c,acfTitle_Protection_Fee__c,acfValuation_Fee__c,acfTerm_in_Years__c,clickLoan_Size_From__c,acfLoan_Size__c,clickLVR_From__c 
-      from LVR_Rate__c where acfProduct__c in:setProductId])
-      {
-        if(mapProductIdToListOfLVR.get(objLVRRate.acfProduct__c) == null)
-          mapProductIdToListOfLVR.put(objLVRRate.acfProduct__c,new List<LVR_Rate__c>());
-        mapProductIdToListOfLVR.get(objLVRRate.acfProduct__c).add(objLVRRate);
-      }
-    }
-    if(mapOppIdToOpp <> null && mapPBEIdToPBE <> null)
-    {
-      for(OpportunityLineItem objOppLi:triggerNew)
-      {
-
-
-        if(mapOppIdToOpp.get(objOppLi.OpportunityId)<> null && mapPBEIdToPBE.get(objOppLi.PricebookEntryId)<>null && mapProductIdToListOfLVR.get(mapPBEIdToPBE.get(objOppLi.PricebookEntryId).Product2Id)<>null)
-        {
-          if(mapOppIdToOpp.get(objOppLi.OpportunityId).acfCurrentLoanAmount__c <> null)
-          {
-           // List<decimal> lstFinalRate = new List<decimal>();
-            string PaymentType = (mapOppIdToOpp.get(objOppLi.OpportunityId).acfPayment_Type__c);
-            decimal acfRate = 0;
-            decimal TenureInYears;
-            decimal HouseValue = 0;
-            decimal LoanAmount = 0;
-            if(mapPBEIdToPBE.get(objOppLi.PricebookEntryId) <> null && mapPBEIdToPBE.get(objOppLi.PricebookEntryId).Product2.acfvarTenure_In_Years__c <> null) 
-                TenureInYears = mapPBEIdToPBE.get(objOppLi.PricebookEntryId).Product2.acfvarTenure_In_Years__c;    
-            if(mapOppIdToOpp.get(objOppLi.OpportunityId).Account.acfApproximately_how_much_is_your_house__pc != null)    
-                HouseValue = (mapOppIdToOpp.get(objOppLi.OpportunityId).Account.acfApproximately_how_much_is_your_house__pc);
-            if(mapOppIdToOpp.get(objOppLi.OpportunityId).acfCurrentLoanAmount__c != null)
-                LoanAmount = (mapOppIdToOpp.get(objOppLi.OpportunityId).acfCurrentLoanAmount__c);
-           /* if(mapOppIdToOpp.get(objOppLi.OpportunityId).acfCuurent_Rate__c != null)
-            {
-                acfRate = (mapOppIdToOpp.get(objOppLi.OpportunityId).acfCuurent_Rate__c);
-            }*/
-           // map<decimal,decimal>mapLVRToRate  = new map<decimal,decimal>();
-            if(LoanAmount <> null && HouseValue <> Null && TenureInYears <> null && PaymentType <> null)
-            {
-              Double  LVR = ((LoanAmount/HouseValue)*100);
-              system.debug('@#$%%'+LVR);
-              List<LVR_Rate__c> lstLVR = mapProductIdToListOfLVR.get(mapPBEIdToPBE.get(objOppLi.PricebookEntryId).Product2Id);
-              system.debug('@#$%%'+lstLVR);       
-              LVR_Rate__c objFinalLVR = new LVR_Rate__c();
-              if(lstLVR <> null && lstLVR.size()>0)
-              {
-                Decimal decTempRate = 0;
-               
-                for(LVR_Rate__c objLVR:lstLVR)
-                {
-                    if(objLVR.acfLVR__c>=LVR && objLVR.clickLVR_From__c<=LVR && objLVR.clickLoan_Size_From__c<=LoanAmount && objLVR.acfLoan_Size__c >= LoanAmount)  
-                    {
-                    //  mapLVRToRate.put(objLVR.acfLVR__c,objLVR.acfRate__c);
-                     // lstFinalRate.add(objLVR.acfRate__c);
-                      if((objLVR.acfProduct__r.RecordType.Name == 'Variable' && (objLVR.acfRate__c < decTempRate)) || (objLVR.acfProduct__r.RecordType.Name == 'Fixed' && (objLVR.clickFixed_Interest_Rate__c < decTempRate)) || decTempRate == 0)
-                      {   
-                        objFinalLVR = objLVR;
-                      }
-                      if(objLVR.acfProduct__r.RecordType.Name == 'Variable')
-                      {
-                        decTempRate = objLVR.acfRate__c;
-                        if(acfRate == null || acfRate == 0)
-                        {
-                            acfRate = objLVR.acfRate__c;
-                        }
-                      }
-                      if(objLVR.acfProduct__r.RecordType.Name == 'Fixed')
-                      {
-                        decTempRate = objLVR.clickFixed_Interest_Rate__c;
-                        if(acfRate == null || acfRate == 0)
-                        {
-                            acfRate = objLVR.clickFixed_Interest_Rate__c;
-                        }
-                      }
-                    }
-                }
-       
-                 if(objFinalLVR <> null && acfRate <> null)
-                 {
-      
-                   Decimal CurrentEMI = 0;
-                   if(acfRate <> 0 && objOppLi.Click_Loan_Amount__c != null && objOppLi.click_Type__c != null && objOppLi.click_Tenure__c != null)                      
-                   CurrentEMI = ClickCommon.calculateMonthlyPayment(objOppLi.Click_Loan_Amount__c,double.valueof(acfRate),objOppLi.click_Type__c,double.valueof(objOppLi.click_Tenure__c));            
-                   objOppLi.Click_Estimated_Monthly_Payment__c = CurrentEMI;
-                   objOppLi.acfRate__c = acfRate;
-                   objOppLi.acfComparison_Rate__c = objFinalLVR.ACF_Comparison_Rate__c;
-                   //objOppLi.Quantity  = TenureInYears*12;
-                   objOppLi.acfApplication_Fee__c = objFinalLVR.acfApplication_Fee__c;
-                   objOppLi.acfValuation_Fee__c =objFinalLVR.acfValuation_Fee__c;
-                   objOppLi.acfLegal_Fees__c = objFinalLVR.acfLegal_Fees__c;
-                   objOppLi.acfOngoing_Fees__c = objFinalLVR.acfOngoing_Fees_annual__c;
-                   objOppLi.clickEstablishment_Fee__c = objFinalLVR.acfEstablishment_Fee__c;
-                   objOppLi.clickMonthly_Fees__c = objFinalLVR.acfMonthly_Fees__c;
-                   objOppLi.clickMortgage_Risk_Fee__c = objFinalLVR.acfMortgage_Risk_Fee__c;
-                   objOppLi.clickTitle_Protection_Fee__c = objFinalLVR.acfTitle_Protection_Fee__c;
-                   objOppLi.clickTotal_Upfront_Fee__c = objFinalLVR.acfTotal_Fee__c;
- 
-                 }
-              }
-            }     
-          }  
-        }   
-      }
-     }  
+     } 
    }
    public void updateRequiredDocumentOnOpportunity(list<OpportunityLineItem> triggerNew)
    {
@@ -369,6 +237,46 @@ public  class acfTriggerOnOpportunityLineItemHandler
     //added on 02-03-2016
     public void ValidateExistingBankProducts(list<OpportunityLineItem> triggerNew) 
     {
+        // changes done by Ankit 
+        // added GUID functionality.
+        if(triggerNew != null && triggerNew.size() > 0)
+        {
+             map<id,id> mapOppLineItemIdToOppId = new map<id,id>();
+             string strCommName = System.label.Lendi; 
+             set<Id> setOfOppId = new set<Id>();
+             Id lendiRecordTypeId = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get(strCommName).getRecordTypeId();
+             for(OpportunityLineItem objOppLineItem : triggerNew)
+             {
+                 if(objOppLineItem.OpportunityId != null)
+                     mapOppLineItemIdToOppId.put(objOppLineItem.id,objOppLineItem.OpportunityId);
+             }
+              
+             List<Opportunity> lstOpp = new List<Opportunity>();
+             if(mapOppLineItemIdToOppId != null && !mapOppLineItemIdToOppId.isempty() && mapOppLineItemIdToOppId.values() != null && string.isNotempty(strCommName) && lendiRecordTypeId != null)
+                 lstOpp =[select id,RecordTypeId,Community_Setup__c,Community_Setup__r.Name from Opportunity where id=:mapOppLineItemIdToOppId.values() 
+                          and Community_Setup__c != null and Community_Setup__r.Name =: strCommName and RecordTypeId =:lendiRecordTypeId];
+             if(lstOpp != null && !lstOpp.isempty())
+             {
+                 for(Opportunity objOpp : lstOpp)
+                 {
+                     setOfOppId.add(objOpp.Id);
+                 }
+             }
+             for(OpportunityLineItem objOppLineItems : triggerNew)
+             {
+                 system.debug('mapOppLineItemIdToOppId ************'+mapOppLineItemIdToOppId+'%^&*'+ mapOppLineItemIdToOppId.get(objOppLineItems.Id));
+                 system.debug('setOfOppId************'+setOfOppId+'%^&*'+ setOfOppId.contains(objOppLineItems.OpportunityId));
+                 if(mapOppLineItemIdToOppId != null && !mapOppLineItemIdToOppId.isempty() && mapOppLineItemIdToOppId.get(objOppLineItems.Id) != null && setOfOppId != null
+                    && setOfOppId.size() > 0 && setOfOppId.contains(objOppLineItems.OpportunityId) && string.isEmpty(objOppLineItems.Lendi_Opportunity_Product_uuid__c))
+                 {
+                     List<string> lstGuid = new List<string>();
+                     lstGuid = Utilities.NewGuid();
+                     if(lstGuid != null && !lstGuid.isEmpty())
+                         objOppLineItems.Lendi_Opportunity_Product_uuid__c = lstGuid[0];
+                 }
+             }
+        }
+        
         Set<Id> setOppIds = new Set<Id>();
         Set<Id> setPriceBookEntryIds = new Set<Id>();
         map<Id,set<Id>> mapOppIdToBankIds = new map<Id,set<Id>>();

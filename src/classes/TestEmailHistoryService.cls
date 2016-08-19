@@ -11,8 +11,8 @@ public with sharing class TestEmailHistoryService {
 	public static MultiStaticResourceCalloutMock multimock;
 	static {
 		uploadRequests = new List<S3DocumentModel.UploadRequest>();
-		S3DocumentModel.UploadRequest req1 = new S3DocumentModel.UploadRequest('doc1', Blob.valueOf('doc1'), LendiApiStaticValue.TEXT_MINE_TYPE);
-		S3DocumentModel.UploadRequest req2 = new S3DocumentModel.UploadRequest('doc2', Blob.valueOf('doc2'), LendiApiStaticValue.TEXT_MINE_TYPE);
+		S3DocumentModel.UploadRequest req1 = new S3DocumentModel.UploadRequest('doc1', Blob.valueOf('doc1'), S3StaticValue.TEXT_MINE_TYPE);
+		S3DocumentModel.UploadRequest req2 = new S3DocumentModel.UploadRequest('doc2', Blob.valueOf('doc2'), S3StaticValue.TEXT_MINE_TYPE);
 		uploadRequests.add(req1);
 		uploadRequests.add(req2);
 
@@ -24,7 +24,7 @@ public with sharing class TestEmailHistoryService {
 		resources__c  = 'docs'
 		);
 		multimock = new MultiStaticResourceCalloutMock();
-		multimock.setStaticResource(LendiApiStaticValue.DOC_SERVICE_ENDPOINT, 's3UploadSuccess');
+		multimock.setStaticResource(S3StaticValue.S3_SERVICE_ENDPOINT, 's3UploadSuccess');
 	}
 
 	private static testMethod void testSaveEmailHistory() {
@@ -49,7 +49,7 @@ public with sharing class TestEmailHistoryService {
 		System.assertEquals(2, newDocList.size());
 		System.assertEquals('ffab49ad-15de-4b08-9ff3-2e623153f9a5', newDocList[0].objectKey__c);
 		System.assertEquals('CK3pm4T6hCkbjsA8KE90wlxl8GX6OdXu', newDocList[0].version__c);
-		System.assertEquals(LendiApiStaticValue.TEXT_MINE_TYPE, newDocList[0].contentType__c);
+		System.assertEquals(S3StaticValue.TEXT_MINE_TYPE, newDocList[0].contentType__c);
 	}
 
 }

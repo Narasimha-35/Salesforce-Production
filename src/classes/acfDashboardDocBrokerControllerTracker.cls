@@ -1,4 +1,4 @@
-@isTest(SeeAllData = true)
+@isTest
 private class acfDashboardDocBrokerControllerTracker
 {
     private static User objUser;
@@ -81,11 +81,14 @@ private class acfDashboardDocBrokerControllerTracker
         objacfDashboardDocumentController.addNotes();
         objacfDashboardDocumentController.ResetPopup1();
         objacfDashboardDocumentController.attach=objAttachment;
+        test.starttest();
         objacfDashboardDocumentController.uploadDoc();
         objacfDashboardDocumentController.docattach=objAttachment;
         objacfDashboardDocumentController.UploadDocumentsNotification();
         objacfDashboardDocumentController.previewdoc();
+        
         objacfDashboardDocumentController.DeleteDoc();
+        test.stoptest();
     }
     
       static testMethod void validateacfDashboardDocumentController1() 
@@ -118,7 +121,7 @@ private class acfDashboardDocBrokerControllerTracker
         objacfDashboardDocumentController.uploadDoc();
         objacfDashboardDocumentController.docattach=objAttachment;
         objacfDashboardDocumentController.UploadDocumentsNotification();
-        objacfDashboardDocumentController.DeleteDoc();
+        //objacfDashboardDocumentController.DeleteDoc();
         objacfDashboardDocumentController.previewdoc();
         //test.Stoptest();
     }

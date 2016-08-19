@@ -25,6 +25,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>LinkToSetupUserDetailAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>ManagePermSetsAction</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -47,6 +51,14 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>true</enableFeeds>
     <fields>
+        <fullName>Is_Converted__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact.acf_Lead__r.IsConverted</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Converted</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>ManagerId</fullName>
         <trackFeedHistory>true</trackFeedHistory>
         <type>Hierarchy</type>
@@ -60,63 +72,18 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>acfPassword_Modified_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Password Modified Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>acfWork_Experience__c</fullName>
         <externalId>false</externalId>
         <label>Work Experience</label>
         <length>255</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>pi__Can_View_Not_Assigned_Prospects__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Can View Not Assigned Prospects</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>pi__Pardot_Api_Key__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Pardot Api Key</label>
-        <length>100</length>
-        <maskChar>X</maskChar>
-        <maskType>all</maskType>
-        <required>false</required>
-        <type>EncryptedText</type>
-    </fields>
-    <fields>
-        <fullName>pi__Pardot_User_Id__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Pardot User Id</label>
-        <length>100</length>
-        <maskChar>X</maskChar>
-        <maskType>all</maskType>
-        <required>false</required>
-        <type>EncryptedText</type>
-    </fields>
-    <fields>
-        <fullName>pi__Pardot_User_Key__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Pardot User Key</label>
-        <length>100</length>
-        <maskChar>X</maskChar>
-        <maskType>all</maskType>
-        <required>false</required>
-        <type>EncryptedText</type>
-    </fields>
-    <fields>
-        <fullName>pi__Pardot_User_Role__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Pardot User Role</label>
-        <length>100</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
@@ -129,10 +96,10 @@
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
         <columns>CORE.PROFILE.NAME</columns>
-        <columns>DELEGATED_APPROVER</columns>
-        <columns>CORE.USERS.DIVISION</columns>
         <columns>MANAGER</columns>
         <columns>CREATED_DATE</columns>
+        <columns>CORE.USERS.TITLE</columns>
+        <columns>CORE.USERS.DEPARTMENT</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CORE.USERS.ACTIVE</field>
@@ -171,6 +138,36 @@
         <label>Active Users - Phone Broker</label>
     </listViews>
     <listViews>
+        <fullName>Active_ACF_Staff_no_partner_brokers</fullName>
+        <booleanFilter>1 AND 2 and 3</booleanFilter>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>DELEGATED_APPROVER</columns>
+        <columns>CORE.USERS.DIVISION</columns>
+        <columns>MANAGER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CORE.PROFILE.NAME</field>
+            <operation>notContain</operation>
+            <value>Analytics,community,Premier Support User,External API User</value>
+        </filters>
+        <filters>
+            <field>CORE.USER_ROLE.NAME</field>
+            <operation>notContain</operation>
+            <value>partner</value>
+        </filters>
+        <label>Active ACF Staff - no partner brokers</label>
+    </listViews>
+    <listViews>
         <fullName>Active_Users</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -202,6 +199,38 @@
         </sharedTo>
     </listViews>
     <listViews>
+        <fullName>Active_Users_Admin</fullName>
+        <booleanFilter>1 AND (2 OR 3)</booleanFilter>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.USERS.ACTIVE</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>MANAGER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CORE.PROFILE.NAME</field>
+            <operation>contains</operation>
+            <value>Super</value>
+        </filters>
+        <filters>
+            <field>CORE.PROFILE.NAME</field>
+            <operation>contains</operation>
+            <value>Admin</value>
+        </filters>
+        <label>Active Users - Admin</label>
+        <sharedTo>
+            <role>Executive_Team</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
         <fullName>AdminUsers</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -220,6 +249,7 @@
     <listViews>
         <fullName>AllUsers</fullName>
         <columns>CORE.USERS.ACTIVE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.PHONE</columns>
         <columns>CORE.USERS.EXTENSION</columns>
@@ -235,6 +265,56 @@
         <columns>CORE.USERS.TITLE</columns>
         <filterScope>Everything</filterScope>
         <label>All Users</label>
+    </listViews>
+    <listViews>
+        <fullName>Click_Loans_Team</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>DELEGATED_APPROVER</columns>
+        <columns>CORE.USERS.DIVISION</columns>
+        <columns>MANAGER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CORE.USER_ROLE.NAME</field>
+            <operation>equals</operation>
+            <value>Click Loans Team</value>
+        </filters>
+        <label>Click Loans Team</label>
+    </listViews>
+    <listViews>
+        <fullName>Non_Community_Users</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>DELEGATED_APPROVER</columns>
+        <columns>CORE.USERS.DIVISION</columns>
+        <columns>MANAGER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CORE.PROFILE.USERTYPE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CORE.PROFILE.NAME</field>
+            <operation>notContain</operation>
+            <value>partner,community</value>
+        </filters>
+        <label>Non Community Users</label>
     </listViews>
     <listViews>
         <fullName>PartnerUsers</fullName>
@@ -264,7 +344,6 @@
         <searchResultsAdditionalFields>CORE.USERS.TITLE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.USERS.PHONE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.USERS.EMAIL</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CORE.USER_ROLE.NAME</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Read</sharingModel>
 </CustomObject>

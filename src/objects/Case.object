@@ -195,6 +195,27 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Prefer_Contact__c</fullName>
+        <externalId>false</externalId>
+        <label>Prefer Contact Method</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Priority</fullName>
         <picklist>
             <picklistValues>
@@ -221,33 +242,68 @@
         <picklist>
             <picklistValues>
                 <fullName>Reschedule Appointment</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <picklistValues>
                 <fullName>Cancel Appointment</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <picklistValues>
                 <fullName>Cancel Appointment - Unable to contact</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <picklistValues>
                 <fullName>Appointment Acknowledgement</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <picklistValues>
                 <fullName>General</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <picklistValues>
                 <fullName>Reschedule - Conflict in Calendar</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
+            </picklistValues>
+            <picklistValues>
+                <fullName>RCTI query</fullName>
+                <default>false</default>
+                <cssExposed>false</cssExposed>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Bank details</fullName>
+                <default>false</default>
+                <cssExposed>false</cssExposed>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Please Call</fullName>
+                <default>false</default>
+                <cssExposed>false</cssExposed>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lender selection</fullName>
+                <default>false</default>
+                <cssExposed>false</cssExposed>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Loan structure</fullName>
+                <default>false</default>
+                <cssExposed>false</cssExposed>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lender credit policy</fullName>
+                <default>false</default>
+                <cssExposed>false</cssExposed>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
@@ -257,27 +313,34 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>SourceId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Status</fullName>
         <picklist>
             <picklistValues>
                 <fullName>On Hold</fullName>
-                <closed>false</closed>
                 <default>false</default>
+                <closed>false</closed>
             </picklistValues>
             <picklistValues>
                 <fullName>Escalated</fullName>
-                <closed>false</closed>
                 <default>false</default>
+                <closed>false</closed>
             </picklistValues>
             <picklistValues>
                 <fullName>Closed</fullName>
-                <closed>true</closed>
                 <default>false</default>
+                <closed>true</closed>
             </picklistValues>
             <picklistValues>
                 <fullName>New</fullName>
-                <closed>false</closed>
                 <default>true</default>
+                <closed>false</closed>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
@@ -307,6 +370,78 @@
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Created_At__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Created At</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Initially_Assigned_At__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Initially Assigned At</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Resolution_Time__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Resolution Time</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Solved_At__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Solved At</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Updated_At__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Updated At</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Zendesk__Zendesk_Ticket_ID__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Zendesk Ticket ID</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>bizible__AdWords_Campaign__c</fullName>
@@ -490,113 +625,219 @@
         <type>Lookup</type>
     </fields>
     <listViews>
-        <fullName>AllEmailReplies</fullName>
+        <fullName>ACF_Online_Open_Cases</fullName>
+        <booleanFilter>1 and 2 and 3 and 4 and 5</booleanFilter>
         <columns>CASES.CASE_NUMBER</columns>
-        <columns>ACCOUNT.NAME</columns>
         <columns>NAME</columns>
-        <columns>CONTACT.FIRST_NAME</columns>
-        <columns>CONTACT.LAST_NAME</columns>
-        <columns>CONTACT.ACCOUNT</columns>
         <columns>CASES.SUBJECT</columns>
         <columns>CASES.STATUS</columns>
         <columns>CASES.PRIORITY</columns>
-        <columns>CASES.TYPE</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.RECORDTYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>notEqual</operation>
+            <value>Case.Support,Case.acfClick_Refi,Case.Scenario_Help,Case.Commission_Query,Case.General_Case,Case.ACF</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>notEqual</operation>
+            <value>Presales Action Req - Appts</value>
+        </filters>
+        <filters>
+            <field>CASES.SUBJECT</field>
+            <operation>notContain</operation>
+            <value>sms case,property report</value>
+        </filters>
+        <filters>
+            <field>CASES.EMAIL</field>
+            <operation>notEqual</operation>
+            <value>heretohelp@clickloans.com.au</value>
+        </filters>
+        <label>2. ACF Online Open Cases</label>
+        <sharedTo>
+            <role>Partner_Broker_Management</role>
+            <role>Phone_Broker_Management</role>
+            <role>Phone_Broker_Team</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>AllEmailReplies</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>CONTACT.ACCOUNT</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.RECORDTYPE</columns>
+        <columns>OWNER_NAME</columns>
         <columns>CASES.ORIGIN</columns>
         <columns>CASES.EMAIL</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CASES.SUBJECT</field>
             <operation>contains</operation>
-            <value>Re: **No Reply** Australian Credit and Finance - Appointment Confirmation</value>
+            <value>Re:</value>
+        </filters>
+        <filters>
+            <field>CASES.STATUS</field>
+            <operation>equals</operation>
+            <value>New</value>
+        </filters>
+        <filters>
+            <field>CASES.SUBJECT</field>
+            <operation>notContain</operation>
+            <value>commission</value>
+        </filters>
+        <filters>
+            <field>CASES.CREATED_DATE_DATE_ONLY</field>
+            <operation>greaterThan</operation>
+            <value>11/1/2015 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>CASES.SUBJECT</field>
+            <operation>notContain</operation>
+            <value>call</value>
         </filters>
         <label>All Email Replies</label>
     </listViews>
     <listViews>
         <fullName>AllOpenCases</fullName>
         <columns>CASES.CASE_NUMBER</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
         <columns>NAME</columns>
         <columns>CASES.SUBJECT</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>CASES.PRIORITY</columns>
         <columns>CASES.CREATED_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CASES.RECORDTYPE</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CASES.CLOSED</field>
             <operation>equals</operation>
             <value>0</value>
         </filters>
-        <label>All Open Cases</label>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>notEqual</operation>
+            <value>Case.Commission_Query</value>
+        </filters>
+        <label>1. All Open Cases</label>
     </listViews>
     <listViews>
-        <fullName>All_Cases</fullName>
+        <fullName>Click_Loans_Closed_Cases</fullName>
         <columns>CASES.CASE_NUMBER</columns>
-        <columns>NAME</columns>
         <columns>CASES.SUBJECT</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>CORE.USERS.ALIAS</columns>
         <columns>CASES.PRIORITY</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>ACCOUNT.NAME</columns>
         <columns>CASES.CREATED_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CASES.LAST_UPDATE_DATE_ONLY</columns>
         <filterScope>Everything</filterScope>
-        <label>All Cases</label>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Case.acfClick_Refi</value>
+        </filters>
+        <filters>
+            <field>CASES.STATUS</field>
+            <operation>contains</operation>
+            <value>Closed</value>
+        </filters>
+        <label>Click Loans Closed Cases</label>
+        <sharedTo>
+            <role>Click_Loans_Management</role>
+            <role>Click_Loans_Team</role>
+        </sharedTo>
     </listViews>
     <listViews>
-        <fullName>ClickRefiAssignment_Case</fullName>
-        <filterScope>Queue</filterScope>
-        <label>Click LoansRefiAssignment</label>
-        <queue>ClickRefiAssignment</queue>
+        <fullName>Click_Loans_Open_Cases</fullName>
+        <booleanFilter>((1 and 2) OR (3 and (5 or 4) and 2))</booleanFilter>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE_DATE_ONLY</columns>
+        <columns>CASES.RECORDTYPE</columns>
+        <columns>OWNER_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Case.acfClick_Refi</value>
+        </filters>
+        <filters>
+            <field>CASES.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Case.ACF,Case.ACF_Online</value>
+        </filters>
+        <filters>
+            <field>CASES.SUBJECT</field>
+            <operation>contains</operation>
+            <value>CLICK</value>
+        </filters>
+        <filters>
+            <field>OWNER_NAME</field>
+            <operation>contains</operation>
+            <value>click</value>
+        </filters>
+        <label>3. Click Loans Open Cases</label>
         <sharedTo>
-            <allInternalUsers></allInternalUsers>
+            <role>Click_Loans_Management</role>
+            <role>Click_Loans_Team</role>
         </sharedTo>
     </listViews>
     <listViews>
         <fullName>Commission_Enquiries</fullName>
         <columns>CASES.CASE_NUMBER</columns>
         <columns>CASES.CREATED_DATE</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>NAME</columns>
-        <columns>CONTACT.FIRST_NAME</columns>
-        <columns>CONTACT.LAST_NAME</columns>
-        <columns>CONTACT.ACCOUNT</columns>
         <columns>CASES.SUBJECT</columns>
         <columns>CASES.STATUS</columns>
-        <columns>CASES.TYPE</columns>
         <columns>CASES.ORIGIN</columns>
-        <columns>CASES.NAME</columns>
-        <columns>CASES.EMAIL</columns>
-        <columns>CASES.COMPANY</columns>
         <columns>CASES.REASON</columns>
-        <filterScope>Queue</filterScope>
+        <columns>CASES.RECORDTYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CASES.LAST_UPDATE_DATE_ONLY</columns>
+        <filterScope>Everything</filterScope>
         <filters>
             <field>CASES.STATUS</field>
-            <operation>equals</operation>
-            <value>On Hold,Escalated,New</value>
+            <operation>notEqual</operation>
         </filters>
-        <label>Commission Enquiries</label>
-        <queue>Commission_Enquiries</queue>
+        <filters>
+            <field>CASES.SUBJECT</field>
+            <operation>contains</operation>
+            <value>commission</value>
+        </filters>
+        <label>Commission Enquiry Cases</label>
         <sharedTo>
-            <allInternalUsers></allInternalUsers>
             <role>Executive_Team</role>
-            <role>Partner_Broker_Leader</role>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>Email_and_SMS_Queue</fullName>
-        <filterScope>Queue</filterScope>
-        <filters>
-            <field>CASES.STATUS</field>
-            <operation>equals</operation>
-            <value>New</value>
-        </filters>
-        <label>Email and SMS Queue</label>
-        <queue>Apptoto_SMS</queue>
-        <sharedTo>
-            <allInternalUsers></allInternalUsers>
+            <role>Partner_Broker_Management</role>
         </sharedTo>
     </listViews>
     <listViews>
         <fullName>MyCases</fullName>
         <filterScope>Mine</filterScope>
+        <filters>
+            <field>CASES.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
         <label>My Cases</label>
     </listViews>
     <listViews>
@@ -610,44 +851,552 @@
         <label>My Open Cases</label>
     </listViews>
     <listViews>
-        <fullName>Presales_Action_Req_Appts_Case</fullName>
-        <filterScope>Queue</filterScope>
-        <label>Presales Action Req - Appts</label>
-        <queue>Presales_Action_Req_Appts</queue>
+        <fullName>PreSales_Open_Cases</fullName>
+        <booleanFilter>(1 and 2 and 3 and 4)</booleanFilter>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>NAME</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>OWNER_NAME</columns>
+        <columns>CASES.ORIGIN</columns>
+        <columns>CASES.RECORDTYPE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>notEqual</operation>
+            <value>Case.Commission_Query,Case.acfClick_Refi,Case.Scenario_Help,Case.Support,Case.ACF_Online</value>
+        </filters>
+        <filters>
+            <field>CASES.SUBJECT</field>
+            <operation>notContain</operation>
+            <value>sms case,click</value>
+        </filters>
+        <filters>
+            <field>OWNER_NAME</field>
+            <operation>notContain</operation>
+            <value>click</value>
+        </filters>
+        <label>5. PreSales Open Cases</label>
         <sharedTo>
-            <allInternalUsers></allInternalUsers>
+            <role>Broker_Liaison</role>
+            <role>Presales_Management</role>
         </sharedTo>
     </listViews>
     <listViews>
-        <fullName>ScenarioHelp_Case</fullName>
+        <fullName>PreSales_SMS</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.SUBJECT</field>
+            <operation>contains</operation>
+            <value>SMS</value>
+        </filters>
+        <filters>
+            <field>CASES.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <label>6. PreSales SMS Cases</label>
+        <sharedTo>
+            <role>Presales_Management</role>
+            <role>Presales_Team</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Presales_Action_Req_Appts_Case</fullName>
         <filterScope>Queue</filterScope>
         <filters>
             <field>CASES.STATUS</field>
             <operation>notEqual</operation>
             <value>Closed</value>
         </filters>
-        <label>ScenarioHelp</label>
-        <queue>ScenarioHelp</queue>
+        <label>4. Presales Action Req - Appts</label>
+        <queue>Presales_Action_Req_Appts</queue>
         <sharedTo>
             <allInternalUsers></allInternalUsers>
         </sharedTo>
     </listViews>
     <listViews>
-        <fullName>appointment_cancellations</fullName>
-        <filterScope>Queue</filterScope>
+        <fullName>Return_Calls</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>notEqual</operation>
+            <value>ScenarioHelp</value>
+        </filters>
+        <filters>
+            <field>CASES.SUBJECT</field>
+            <operation>contains</operation>
+            <value>call</value>
+        </filters>
         <filters>
             <field>CASES.STATUS</field>
             <operation>equals</operation>
             <value>New</value>
         </filters>
-        <label>Appointment Cancellations</label>
-        <queue>Appointment_Cancellations</queue>
+        <filters>
+            <field>CASES.CREATED_DATE_DATE_ONLY</field>
+            <operation>greaterThan</operation>
+            <value>11/1/2015 12:00 AM</value>
+        </filters>
+        <label>8. Return Calls</label>
+        <sharedTo>
+            <role>Broker_Liaison</role>
+            <role>Presales_Management</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>SMS_Queue</fullName>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>notEqual</operation>
+            <value>ScenarioHelp</value>
+        </filters>
+        <filters>
+            <field>CASES.SUBJECT</field>
+            <operation>contains</operation>
+            <value>SMS</value>
+        </filters>
+        <filters>
+            <field>CASES.CREATED_DATE_DATE_ONLY</field>
+            <operation>greaterOrEqual</operation>
+            <value>11/1/2015 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>CASES.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <label>SMS Queue</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>ScenarioHelp_Case</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.CREATED_DATE_DATE_ONLY</columns>
+        <columns>CASES.LAST_UPDATE_DATE_ONLY</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CASES.RECORDTYPE</columns>
+        <filterScope>Queue</filterScope>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Case.Scenario_Help</value>
+        </filters>
+        <filters>
+            <field>CASES.STATUS</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <label>9. Scenario Help Cases</label>
+        <queue>ScenarioHelp</queue>
+    </listViews>
+    <listViews>
+        <fullName>X7_Presales_Other_Cases</fullName>
+        <booleanFilter>(1 AND 2) or (3 and 4 and 5)</booleanFilter>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.RECORDTYPE</columns>
+        <columns>OWNER_NAME</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>NAME</columns>
+        <columns>CASES.STATUS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Case.Support</value>
+        </filters>
+        <filters>
+            <field>CASES.STATUS</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Case.ACF_Online</value>
+        </filters>
+        <filters>
+            <field>CASES.SUBJECT</field>
+            <operation>contains</operation>
+            <value>property report</value>
+        </filters>
+        <filters>
+            <field>CASES.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <label>7. Presales Other Cases</label>
         <sharedTo>
             <allInternalUsers></allInternalUsers>
         </sharedTo>
     </listViews>
     <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
     <recordTypeTrackHistory>true</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>ACF</fullName>
+        <active>true</active>
+        <businessProcess>Click Refi</businessProcess>
+        <label>ACF</label>
+        <picklistValues>
+            <picklist>Origin</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Prefer_Contact__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Priority</picklist>
+            <values>
+                <fullName>High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medium</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason</picklist>
+            <values>
+                <fullName>Appointment Acknowledgement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Bank details</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancel Appointment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancel Appointment - Unable to contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>General</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lender credit policy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lender selection</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Loan structure</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Please Call</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>RCTI query</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Reschedule - Conflict in Calendar</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Reschedule Appointment</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Feature Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Problem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Question</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>ACF_Online</fullName>
+        <active>true</active>
+        <businessProcess>Click Refi</businessProcess>
+        <label>ACF Online</label>
+        <picklistValues>
+            <picklist>Origin</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Prefer_Contact__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Priority</picklist>
+            <values>
+                <fullName>High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medium</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason</picklist>
+            <values>
+                <fullName>Appointment Acknowledgement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Bank details</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancel Appointment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancel Appointment - Unable to contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>General</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lender credit policy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lender selection</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Loan structure</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Please Call</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>RCTI query</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Reschedule - Conflict in Calendar</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Reschedule Appointment</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Feature Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Problem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Question</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Commission_Query</fullName>
+        <active>true</active>
+        <businessProcess>Click Refi</businessProcess>
+        <label>Commission Query</label>
+        <picklistValues>
+            <picklist>Origin</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Prefer_Contact__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Priority</picklist>
+            <values>
+                <fullName>High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medium</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason</picklist>
+            <values>
+                <fullName>Appointment Acknowledgement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Bank details</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancel Appointment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancel Appointment - Unable to contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>General</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>RCTI query</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Reschedule - Conflict in Calendar</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Reschedule Appointment</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Feature Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Problem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Question</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
     <recordTypes>
         <fullName>General_Case</fullName>
         <active>true</active>
@@ -665,6 +1414,17 @@
             </values>
             <values>
                 <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Prefer_Contact__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -699,6 +1459,14 @@
             </values>
             <values>
                 <fullName>General</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Please Call</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -747,6 +1515,17 @@
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Prefer_Contact__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Priority</picklist>
             <values>
                 <fullName>High</fullName>
@@ -777,6 +1556,123 @@
             </values>
             <values>
                 <fullName>General</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lender credit policy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lender selection</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Loan structure</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Reschedule - Conflict in Calendar</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Reschedule Appointment</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Feature Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Problem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Question</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Support</fullName>
+        <active>true</active>
+        <businessProcess>Click Refi</businessProcess>
+        <label>Support</label>
+        <picklistValues>
+            <picklist>Origin</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Prefer_Contact__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Priority</picklist>
+            <values>
+                <fullName>High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medium</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason</picklist>
+            <values>
+                <fullName>Appointment Acknowledgement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Bank details</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancel Appointment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancel Appointment - Unable to contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>General</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>RCTI query</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -825,6 +1721,17 @@
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Prefer_Contact__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Priority</picklist>
             <values>
                 <fullName>High</fullName>
@@ -858,6 +1765,14 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Please Call</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Reschedule Appointment</fullName>
                 <default>false</default>
             </values>
@@ -885,10 +1800,12 @@
         <customTabListAdditionalFields>CASES.PRIORITY</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>CASES.CASE_NUMBER</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CASES.SUBJECT</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CASES.STATUS</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CASES.CASE_NUMBER</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CASES.SUBJECT</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>NAME</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>ACCOUNT.NAME</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CASES.STATUS</lookupPhoneDialogsAdditionalFields>
         <searchResultsAdditionalFields>CASES.CASE_NUMBER</searchResultsAdditionalFields>
@@ -921,6 +1838,20 @@
         <page>MassUpdateCase</page>
         <protected>false</protected>
         <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>Zendesk__Zendesk_Ticket_View_Link</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Zendesk Ticket View Link</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+
+var pageUrl = sforce.apex.execute(&quot;Zendesk.ZendeskPageURL&quot;, &quot;getPageUrl&quot;, {ticketid:&quot;{!Case.Zendesk__Zendesk_Ticket_ID__c}&quot;});
+window.location.href =  pageUrl;</url>
     </webLinks>
     <webLinks>
         <fullName>bizible__UpsellCrosssellOpportunity</fullName>

@@ -1,4 +1,4 @@
-@isTest(SeeAllData = true)
+@isTest
 private class WLDashboardDocumentControllerTracker 
 {
     private static User objUser;
@@ -19,7 +19,7 @@ private class WLDashboardDocumentControllerTracker
         objNote.Body = 'test';
         objNote.Title = 'test';
         insert objNote;
-        
+        string reqDocId = Apexpages.currentPage().getParameters().put('recName',objRequiredDocument.Id);
         list<Attachment> lstAttach = new list<Attachment>();
         Attachment objAttach = new Attachment(); 
         objAttach .ParentId =objRequiredDocument.Id;  
@@ -72,7 +72,7 @@ private class WLDashboardDocumentControllerTracker
         objacfDashboardDocumentController.getdocattach();
         objacfDashboardDocumentController.BindWrapperDocument(objOpportunity.Id);
         objacfDashboardDocumentController.redirect();
-        WLDashboardDocumentController.uploadMultipleDoc(1);
+        WLDashboardDocumentController.uploadMultipleDoc(1,string.valueof(objOpportunity.Id));
         objacfDashboardDocumentController.fetchDocName();
         objacfDashboardDocumentController.frameURL();
         objacfDashboardDocumentController.addNotes();
@@ -83,6 +83,8 @@ private class WLDashboardDocumentControllerTracker
         objacfDashboardDocumentController.UploadDocumentsNotification();
         objacfDashboardDocumentController.previewdoc();
         objacfDashboardDocumentController.DeleteDoc();
+        objacfDashboardDocumentController.downloadFile();
+        objacfDashboardDocumentController.deleteFile_Acf();
     }
     
       static testMethod void validateacfDashboardDocumentController1() 
@@ -178,7 +180,7 @@ private class WLDashboardDocumentControllerTracker
         objacfDashboardDocumentController.getdocattach();
         objacfDashboardDocumentController.BindWrapperDocument(objOpportunity.Id);
         objacfDashboardDocumentController.redirect();
-        WLDashboardDocumentController.uploadMultipleDoc(1);
+        WLDashboardDocumentController.uploadMultipleDoc(1,string.valueof(objOpportunity.Id));
         objacfDashboardDocumentController.fetchDocName();
         objacfDashboardDocumentController.frameURL();
         objacfDashboardDocumentController.addNotes();

@@ -44,16 +44,12 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
-    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
-    <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
-    <enableSharing>true</enableSharing>
-    <enableStreamingApi>true</enableStreamingApi>
     <fields>
         <fullName>Account_Holder__c</fullName>
         <externalId>false</externalId>
@@ -147,10 +143,9 @@
     <label>Bank Statements Account</label>
     <listViews>
         <fullName>All</fullName>
+        <columns>OBJECT_ID</columns>
         <columns>NAME</columns>
         <columns>Click_Loans_Required_Document__c</columns>
-        <columns>Account_Number__c</columns>
-        <columns>Account_Holder__c</columns>
         <columns>CREATED_DATE</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>

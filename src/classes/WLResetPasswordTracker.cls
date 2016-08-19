@@ -1,16 +1,17 @@
-@isTest(SeeAllData = true)
+@isTest(SeeAllData = false)
 private class WLResetPasswordTracker 
 {
     private static User objUser;
+     private static User objUser1;
     private static Contact objContact;
     private static Account objAccount;
     private static Opportunity objOpportunity;
-
+    private static Click_Community_Setup__c objclcmm;
     
     static testMethod void validateController() 
     {
        LoadData();
-       PageReference pageRef = new PageReference('http://www.google.com');
+       PageReference pageRef = new PageReference('http://www.changepassword.com');
        Test.setCurrentPage(pageRef);
        WLResetPassword objreset = new WLResetPassword();
        objreset.IsLoginAttemptCompleted = true;
@@ -36,6 +37,7 @@ private class WLResetPasswordTracker
        objreset.strnewPassword = 'test@007007';
        objreset.strverifynewPassword = 'test@007007';
        objreset.pageName = 'clickeditprofile';
+       objreset.ChkValidPassword('test');
 
        objreset.ResetPassword();
        objreset.ChkValidPassword('test');
@@ -64,7 +66,7 @@ private class WLResetPasswordTracker
        static testMethod void validateController3() 
     {
        LoadData();
-       PageReference pageRef = new PageReference('http://www.google.com');
+       PageReference pageRef = new PageReference('http://changepassword');
        Test.setCurrentPage(pageRef);
        WLResetPassword objreset = new WLResetPassword();
        objreset.IsLoginAttemptCompleted = true;
@@ -75,6 +77,23 @@ private class WLResetPasswordTracker
 
        objreset.ResetPassword();
        objreset.ChkValidPassword('testtesttt');
+       
+
+    }
+     static testMethod void validateController7() 
+    {
+       LoadData();
+       PageReference pageRef = new PageReference('http://www.changepassword.com');
+       Test.setCurrentPage(pageRef);
+       WLResetPassword objreset = new WLResetPassword();
+       objreset.IsLoginAttemptCompleted = true;
+       objreset.stroldPassword = 'ankit';
+       objreset.strnewPassword = 'test@007007';
+       objreset.strverifynewPassword = 'test@007007';
+       objreset.pageName = 'ashish';
+   
+       objreset.ResetPassword();
+       objreset.ChkValidPassword('test');
        
 
     }
@@ -111,7 +130,9 @@ private class WLResetPasswordTracker
         createAccount();
         createContact();
         createUser();
+       
         createOpportunity();
+        createclickCommunitySetup();
 
     }
     
@@ -136,6 +157,9 @@ private class WLResetPasswordTracker
         objUser = acfCommontrackerClass.createuser(objUser);
     }
     
+  
+     
+    
     static void createOpportunity()
     {
       objOpportunity = new Opportunity();
@@ -144,4 +168,14 @@ private class WLResetPasswordTracker
     }
     
     
+     static void createclickCommunitySetup() 
+    {
+        objclcmm= new Click_Community_Setup__c();
+        objclcmm.Click_IsActive__c=true;
+        objclcmm.Click_Page_Prefix__c='Click';
+        objclcmm.Community_User_Name_Prefix__c='test';
+        insert objclcmm;
+        //objclcmm= ClickCommon.getCommunitySetup('');
+        
+    }
 }

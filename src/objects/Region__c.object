@@ -74,11 +74,25 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>timeZone__c</fullName>
+        <description>tz database name</description>
+        <externalId>false</externalId>
+        <inlineHelpText>tz database name</inlineHelpText>
+        <label>Time Zone</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <label>Region</label>
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
         <columns>State__c</columns>
+        <columns>Sydney_Timezone_Offset__c</columns>
+        <columns>timeZone__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>

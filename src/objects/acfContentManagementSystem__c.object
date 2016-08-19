@@ -56,6 +56,18 @@
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
+        <fullName>Click_Community_Setup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Community Setup</label>
+        <referenceTo>Click_Community_Setup__c</referenceTo>
+        <relationshipLabel>Content Management System</relationshipLabel>
+        <relationshipName>Content_Management_System</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>acfAttachmentId__c</fullName>
         <description>Click Loans</description>
         <externalId>false</externalId>
@@ -289,6 +301,23 @@
     </fields>
     <label>Click Loans Content Management System</label>
     <listViews>
+        <fullName>About_Us_Team</fullName>
+        <columns>NAME</columns>
+        <columns>acfIs_Checked__c</columns>
+        <columns>acfSectionName__c</columns>
+        <columns>acfPageName__c</columns>
+        <columns>acfSequence__c</columns>
+        <columns>acfHeading__c</columns>
+        <columns>acfHeadingRemoveSpace__c</columns>
+        <columns>acfDescription__c</columns>
+        <columns>acfAttachmentId__c</columns>
+        <columns>acfDescriptionAttachmentID__c</columns>
+        <columns>acfImageURL__c</columns>
+        <columns>acfMoreDetailURL__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>About Us - Team</label>
+    </listViews>
+    <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
         <columns>acfIs_Checked__c</columns>
@@ -304,6 +333,28 @@
         <columns>acfMoreDetailURL__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All_ACF</fullName>
+        <columns>NAME</columns>
+        <columns>acfIs_Checked__c</columns>
+        <columns>acfSectionName__c</columns>
+        <columns>acfPageName__c</columns>
+        <columns>acfSequence__c</columns>
+        <columns>acfHeading__c</columns>
+        <columns>acfHeadingRemoveSpace__c</columns>
+        <columns>acfDescription__c</columns>
+        <columns>acfAttachmentId__c</columns>
+        <columns>acfDescriptionAttachmentID__c</columns>
+        <columns>acfImageURL__c</columns>
+        <columns>acfMoreDetailURL__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Click_Community_Setup__c</field>
+            <operation>equals</operation>
+            <value>ACF</value>
+        </filters>
+        <label>All - ACF</label>
     </listViews>
     <nameField>
         <displayFormat>cms-{000000}</displayFormat>

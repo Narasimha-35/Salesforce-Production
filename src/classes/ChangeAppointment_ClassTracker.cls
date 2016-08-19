@@ -20,21 +20,21 @@ public class ChangeAppointment_ClassTracker
        
        
        loadData();
-        
+       Test.startTest();
        Allocate_Appointment__c custobj = new Allocate_Appointment__c(Name = 'Phone_Broker');        
        ApexPages.currentPage().getParameters().put('id',app.id);
        ChangeAppointment_Class obj = new ChangeAppointment_Class();
-       Test.startTest();
        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
        obj.save2();
        obj.Save3();
-       Test.stopTest();
+     
        
        obj.getBroker();
        obj.brokername = objBrk.id;
        System.assertNotEquals(objBrk,null);      
        obj.save();
        obj.Cancel();
+       Test.stopTest();
    }
    
    static testMethod void TestCallouts() 

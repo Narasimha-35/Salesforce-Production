@@ -7,7 +7,7 @@
 public class BankStatementSubCategoryTriggersHandler extends TriggerHandler
  {  
     public override void BeforeInsert() {
-     //  updateClickBankStatementSubCategory(trigger.New);
+     //   updateClickBankStatementSubCategory(trigger.New);
      }
      
       public override void AfterInsert() {

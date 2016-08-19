@@ -137,6 +137,9 @@ private class acfCustomerRegisterControllerTracker
         objacfCustomerRegisterController.IsUserAlreadyExist();
         
         objacfCustomerRegisterController.Registration();
+        objacfCustomerRegisterController.userId = objuser.id;
+
+        objacfCustomerRegisterController.SendSmsAfterRegistration();
         objacfCustomerRegisterController.DisplayTop3Products(objL.id) ; 
         objacfCustomerRegisterController.istermsConditionsConfirmed = true;      
         objacfCustomerRegisterController.verifyOTP();
@@ -222,9 +225,10 @@ private class acfCustomerRegisterControllerTracker
         objacfCustomerRegisterController.VerifyEmail();
         objacfCustomerRegisterController.IsUserAlreadyExist();
         objacfCustomerRegisterController.Registration(); 
+        objacfCustomerRegisterController.SendSmsAfterRegistration();
         objacfCustomerRegisterController.DisplayTop3Products(objL.id) ; 
         objacfCustomerRegisterController.istermsConditionsConfirmed = true;      
-        objacfCustomerRegisterController.verifyOTP();    
+        //objacfCustomerRegisterController.verifyOTP();    
         objacfCustomerRegisterController.resendOTP();
         objacfCustomerRegisterController.OK();
         objacfCustomerRegisterController.RedirectToLandingPage();
@@ -288,10 +292,11 @@ private class acfCustomerRegisterControllerTracker
         objacfCustomerRegisterController.VerifyEmail();
         objacfCustomerRegisterController.IsUserAlreadyExist();
         
-        user guestUser = acfCommonTrackerClass.CreatePortalUser(objAccount.id);
-        System.runAs(guestUser) {
+        //user guestUser = acfCommonTrackerClass.CreatePortalUser(objAccount.id);
+       
              objacfCustomerRegisterController.Registration();
-        } 
+             objacfCustomerRegisterController.SendSmsAfterRegistration();
+       
             
         objacfCustomerRegisterController.resendOTP();
         objacfCustomerRegisterController.OK();
@@ -304,7 +309,7 @@ private class acfCustomerRegisterControllerTracker
   {
     createAccount();
     createContact();
-  //  createUser(); 
+    createUser(); 
  //   createOpportunity();
     createMortgageExpert();
     createprofile();
@@ -314,10 +319,10 @@ private class acfCustomerRegisterControllerTracker
   
   static void createuser()
   {    
-         objuser= new User();
-         objLead = acfCommonTrackerClass.createLeadForPortal();
-         objAccount = acfCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
-         objuser    =  acfCommonTrackerClass.CreatePortalUser(objAccount.id); 
+   objuser= new User();
+         objLead = WLCommonTrackerClass.createLeadForPortal();
+         objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
+         objuser    =  WLCommonTrackerClass.CreatePortalUser(objAccount.id);
          
    //      objuser = [select id,name,AccountID from User where profile.name = 'Community User' limit 1];
  //       objuser.ContactId = objContact.id;

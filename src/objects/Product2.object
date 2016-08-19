@@ -43,6 +43,17 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>true</enableFeeds>
     <fields>
+        <fullName>ACF_Bank_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Click_Loans_Bank_Detail__r.acfBank_Name__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ACF Bank Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ACF_Comparison_Rate__c</fullName>
         <description>Click Loans</description>
         <externalId>false</externalId>
@@ -53,6 +64,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Annual_Fee__c</fullName>
+        <externalId>false</externalId>
+        <label>Annual Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>ClickFeature_1__c</fullName>
@@ -88,6 +110,19 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Click_Loans_Bank_Detail__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>ACF Bank</label>
+        <referenceTo>acfBank_Detail__c</referenceTo>
+        <relationshipLabel>Products</relationshipLabel>
+        <relationshipName>Products</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Family</fullName>
         <picklist>
             <picklistValues>
@@ -99,6 +134,260 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Lendi_Ongoing_Fees__c</fullName>
+        <description>This is the sum of the annual fee and monthly annualised</description>
+        <externalId>false</externalId>
+        <formula>Annual_Fee__c + ( Monthly_Fee__c * 12)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Lendi Ongoing Fees</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Lendi_Product_uuid__c</fullName>
+        <externalId>true</externalId>
+        <label>Lendi Product uuid</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Loan_Purpose__c</fullName>
+        <externalId>false</externalId>
+        <label>Loan Purpose</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Investment &amp; Owner Occupied - Package (Only)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Owner Occupied</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Investment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Loan_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Loan Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Monthly_Fee__c</fullName>
+        <externalId>false</externalId>
+        <label>Monthly Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Product_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Product Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Basic Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Basic Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Basic Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Basic Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Basic Pro Pack Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fixed Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fixed Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fixed Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fixed Low Doc Pro Pack</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fixed Pro Pack Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>LOC Fixed Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>LOC Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>LOC Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>LOC Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>LOC Low Doc Pro Pack</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>LOC Pro Pack Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Basic Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Basic Full Doc Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Basic Full Doc No Deposit</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Basic Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Basic Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Basic Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Fixed Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Fixed Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR LOC Full Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR LOC Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Low Doc Pro Pack</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SVR Pro Pack Low Doc</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Trailing_Commission__c</fullName>
+        <externalId>false</externalId>
+        <label>Trailing Commission</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Upfront_Commission__c</fullName>
+        <externalId>false</externalId>
+        <label>Upfront Commission</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>X18_digit_ID__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASESAFEID(Id)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>18 digit ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>acfAdd_Repayments__c</fullName>
@@ -219,9 +508,8 @@
     </fields>
     <fields>
         <fullName>acfFunder__c</fullName>
-        <description>Click Loans</description>
         <externalId>false</externalId>
-        <label>acfFunder</label>
+        <label>Wholesale Funder</label>
         <picklist>
             <picklistValues>
                 <fullName>Pepper</fullName>
@@ -236,7 +524,7 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
-        <visibleLines>3</visibleLines>
+        <visibleLines>5</visibleLines>
     </fields>
     <fields>
         <fullName>acfInterest_Only__c</fullName>
@@ -446,11 +734,111 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>assessmentRate__c</fullName>
+        <externalId>false</externalId>
+        <label>Assessment Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>incomeAndExpenseType__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Income And Expense Type</label>
+        <referenceTo>Income_And_Expense_Type__c</referenceTo>
+        <relationshipLabel>Products</relationshipLabel>
+        <relationshipName>Products</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>merc_productId__c</fullName>
+        <description>productId as determined by Mercury</description>
+        <externalId>false</externalId>
+        <inlineHelpText>productId as determined by Mercury</inlineHelpText>
+        <label>merc productId</label>
+        <length>200</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>merc_uniqueId__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <description>unique ID as determined by Mercury</description>
+        <externalId>false</externalId>
+        <inlineHelpText>unique ID as determined by Mercury</inlineHelpText>
+        <label>merc uniqueId</label>
+        <length>200</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>rateBuffer__c</fullName>
+        <externalId>false</externalId>
+        <label>Rate Buffer</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <listViews>
+        <fullName>All_Products</fullName>
+        <columns>PRODUCT2.ACTIVE</columns>
+        <columns>ACF_Bank_Name__c</columns>
+        <columns>PRODUCT2.NAME</columns>
+        <columns>Click_Loans_Bank_Detail__c</columns>
+        <columns>PRODUCT2.RECORD_TYPE</columns>
+        <columns>acfvarTenure_In_Years__c</columns>
+        <columns>acfTenure_in_Years__c</columns>
+        <columns>acfOffset_Account__c</columns>
+        <columns>PRODUCT2.CREATED_DATE</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>PRODUCT2.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>acfFunder__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Products</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Variable</fullName>
+        <columns>PRODUCT2.NAME</columns>
+        <columns>PRODUCT2.DESCRIPTION</columns>
+        <columns>PRODUCT2.FAMILY</columns>
+        <columns>PRODUCT2.RECORD_TYPE</columns>
+        <columns>PRODUCT2.ACTIVE</columns>
+        <columns>ACF_Bank_Name__c</columns>
+        <columns>Click_Loans_Bank_Detail__c</columns>
+        <columns>PRODUCT2.CREATED_DATE</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>PRODUCT2.RECORD_TYPE</field>
+            <operation>equals</operation>
+            <value>Product2.acfVariable</value>
+        </filters>
+        <label>All Variable</label>
+    </listViews>
     <listViews>
         <fullName>Mac_Products</fullName>
         <columns>PRODUCT2.ACTIVE</columns>
         <columns>acfFunder__c</columns>
         <columns>PRODUCT2.NAME</columns>
+        <columns>PRODUCT2.DESCRIPTION</columns>
         <columns>PRODUCT2.RECORD_TYPE</columns>
         <columns>acfvarTenure_In_Years__c</columns>
         <columns>acfTenure_in_Years__c</columns>
@@ -468,6 +856,7 @@
         <fullName>Pepper_Products</fullName>
         <columns>acfFunder__c</columns>
         <columns>PRODUCT2.NAME</columns>
+        <columns>PRODUCT2.DESCRIPTION</columns>
         <columns>PRODUCT2.RECORD_TYPE</columns>
         <columns>acfvarTenure_In_Years__c</columns>
         <columns>acfTenure_in_Years__c</columns>
@@ -491,6 +880,167 @@
             <picklist>Family</picklist>
             <values>
                 <fullName>None</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Loan_Purpose__c</picklist>
+            <values>
+                <fullName>Investment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Investment %26 Owner Occupied - Package %28Only%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Owner Occupied</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Loan_Type__c</picklist>
+            <values>
+                <fullName>Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low Doc</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Product_Type__c</picklist>
+            <values>
+                <fullName>Basic Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basic Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basic Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basic Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basic Pro Pack Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Low Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Pro Pack Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Fixed Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Low Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Pro Pack Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Full Doc Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Full Doc No Deposit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Fixed Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Fixed Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR LOC Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR LOC Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Low Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Pro Pack Low Doc</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -563,6 +1113,167 @@
             <picklist>Family</picklist>
             <values>
                 <fullName>None</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Loan_Purpose__c</picklist>
+            <values>
+                <fullName>Investment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Investment %26 Owner Occupied - Package %28Only%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Owner Occupied</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Loan_Type__c</picklist>
+            <values>
+                <fullName>Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low Doc</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Product_Type__c</picklist>
+            <values>
+                <fullName>Basic Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basic Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basic Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basic Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basic Pro Pack Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Low Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Pro Pack Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Fixed Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Low Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LOC Pro Pack Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Full Doc Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Full Doc No Deposit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Basic Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Fixed Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Fixed Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Intro Rate Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR LOC Full Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR LOC Full Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Low Doc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Low Doc Pro Pack</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SVR Pro Pack Low Doc</fullName>
                 <default>false</default>
             </values>
         </picklistValues>

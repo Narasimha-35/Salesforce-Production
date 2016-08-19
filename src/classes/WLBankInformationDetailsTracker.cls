@@ -1,108 +1,280 @@
-@isTest(seealldata = true)
-private class WLBankInformationDetailsTracker 
+/*
+ =============================================================================
+    Name                             Date                                version
+    =============================================================================
+   Ashna                           14/6/2016                                1.0
+    =============================================================================
+*/
+@isTest
+public class WLBankInformationDetailsTracker
 {
-    private static Lead objLead;
-    private static User objUser;
-    private static Contact objContact;
-    private static Account objAccount;
-    private static Opportunity objOpportunity;
-    acfBank_Detail__c bnkObj;
+        Public static string strEndpoint;
+        Public static string strApiKey;
+        private static User objUser;
+        private static Account objpersonAccount;
+        private static Opportunity objOpp;
+        private static Lead objLead;
+         private static Id objid;
+        private static acfBank_Statement_Credential__c objBankstmtCredential;
+        private static acfBank_Detail__c objBank ;
+        private static acfBank_Information__c objBankQuestions;
+         private static Click_Community_Setup__c objclcmm;
+         private static Required_Document__c objre;
+         private static Document_Master__c objmas;
+         public list<string> lstUserCredentials;
+         public list<string> lstUserQuearyType;
 
-    
-    public static testMethod void validateWLBankInformationDetailsController() 
+    static testMethod void validate()
     {
-        LoadData();
+         
+        loaddata();
+        Apexpages.currentpage().getparameters().put('id',objOpp.id);
+       
+        WLBankInformationDetails objwlbankinfo=new WLBankInformationDetails();
+       WLBankInformationDetails.AutoCompleteBanklList('test');
+         
+        objBankstmtCredential =new acfBank_Statement_Credential__c();
+        objBankstmtCredential.name='Credential';
+        objBankstmtCredential.acfEndPoint_Url__c='https://bankstatements.com.au/api/v1/';
+        objBankstmtCredential.acfX_API_KEY__c='FCWFJVDVVQYY7Z4TYAZAH7WWVLVSI1OO8BBTRHRO';
+        insert objBankstmtCredential;  
+      
+        test.starttest();
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerators12());
+          Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerators2());
+        system.debug('###123'+ new MockHttpResponseGenerators12());
+          
+        objwlbankinfo.strBankSlugName='HSBC';
+        WLbankStatementRequest objrequest=new WLbankStatementRequest();
+        objwlbankinfo.SelectBankName();
         
-      system.runas(objuser){
-        WLBankInformationDetails.AllAccountsClass wrap = new WLBankInformationDetails.AllAccountsClass();
-        wrap.chk_box =true;
-        wrap.accountHolder ='test';
-        wrap.name = 'test';
-        wrap.accountNumber ='1234';
-        wrap.id = '001';
-        wrap.bsb ='test';
-        wrap.balance = '10000';
-        wrap.available = '2000';
+        WLBankInformationDetails.ErrorMessage clsobjerror=new WLBankInformationDetails.ErrorMessage();
+        clsobjerror.error='error';
+        clsobjerror.errorcode=123;
+        clsobjerror.user_token='usertoken';
         
-        WLBankInformationDetails.ErrorMessage wrpp = new WLBankInformationDetails.ErrorMessage();
-        wrpp.error = 'error';
-        wrpp.errorcode = 12345;
-        wrpp.user_token = 'te1234';
+        WLBankInformationDetails.AllAccountsClass clsobjacc=new WLBankInformationDetails.AllAccountsClass();
+       List<WLBankInformationDetails.AllAccountsClass> lstobjacc=new List<WLBankInformationDetails.AllAccountsClass>();
+        clsobjacc.chk_box=true;
+        clsobjacc.accountHolder='testholder';
+        clsobjacc.name='test'; 
+        clsobjacc.accountNumber='123456'; 
+        clsobjacc.id='123';
+        clsobjacc.bsb='test';
+        clsobjacc.balance='987654';  
+        clsobjacc.available='testavl';  
+        lstobjacc.add(clsobjacc);
+        //lstobjacc.lstBankAccounts = lstobjacc;
+        system.runas(objuser)
+     {
+        objwlbankinfo.gobackmethod();
+        objwlbankinfo.redirect();
+        objwlbankinfo.skipMethod();
+        objid=ClickCommon.getCurrentLoggedInLeadId(objLead.id);
+        objwlbankinfo.FetchStatements();
+         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerators2());
+        objwlbankinfo.BankLogin();
+        objwlbankinfo.hidepopup();
+         Apexpages.currentpage().getparameters().put('Docid',objre.id);
+        objwlbankinfo.redirectToNextpage();
+        test.stoptest();
         
+   }
+    }
+    
+    
+     static testMethod void validate1()
+    {
+     
+        loaddata1();
+        
+        WLBankInformationDetails objwlbankinfo=new WLBankInformationDetails();
+         
+         objwlbankinfo.SelectBankName();
         WLBankInformationDetails.AutoCompleteBanklList('test');
         
-        WLBankInformationDetails objacfbank = new WLBankInformationDetails();
-        Click_Community_Setup__c objCommunitySetUp = new Click_Community_Setup__c ();
-        objCommunitySetUp.Click_Page_Prefix__c ='WL';
-        insert objCommunitySetUp; 
-        objacfbank.strParentId = objLead.id;
-        objacfbank.strSelectedOption ='test';
-        objacfbank.captchaImgUrl ='test';
+        objBankstmtCredential =new acfBank_Statement_Credential__c();
+        objBankstmtCredential.name='Credential';
+        objBankstmtCredential.acfEndPoint_Url__c='https://bankstatements.com.au/api/v1/';
+        objBankstmtCredential.acfX_API_KEY__c='FCWFJVDVVQYY7Z4TYAZAH7WWVLVSI1OO8BBTRHRO';
+        insert objBankstmtCredential;  
+          
         test.starttest();
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerators12());
+        
+        objwlbankinfo.strBankSlugName='HSBC';
+        WLbankStatementRequest objrequest=new WLbankStatementRequest();
+        objwlbankinfo.SelectBankName();
+       
+        WLBankInformationDetails.ErrorMessage clsobjerror=new WLBankInformationDetails.ErrorMessage();
+        clsobjerror.error='error';
+        clsobjerror.errorcode=123;
+        clsobjerror.user_token='usertoken';
+        
+        WLBankInformationDetails.AllAccountsClass clsobjacc=new WLBankInformationDetails.AllAccountsClass();
+        clsobjacc.chk_box=true;
+        clsobjacc.accountHolder='testholder';
+        clsobjacc.name='test'; 
+        clsobjacc.accountNumber='123456'; 
+        clsobjacc.id='123';
+        clsobjacc.bsb='test';
+        clsobjacc.balance='987654';  
+        clsobjacc.available='testavl';  
 
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
-       objacfbank.strBankSlugName = 'HSBC';
-        //objacfbank.SelectBankName(); 
-        objacfbank.hidepopup(); 
-        
-        Institution.Credential objCred = new Institution.Credential();
-        objCred.name = 'test';
-        objCred.fieldID = 'test';
-        objacfbank.lstCredentials.add(objCred);
-        objacfbank.BankLogin(); 
-        
-        WLBankInformationDetails.AllAccountsClass objAAC = new WLBankInformationDetails.AllAccountsClass();
-        objAAC.id = objAccount.Id;
-        objAAC.chk_box = true;
-        objacfbank.lstBankAccounts.add(objAAC);
-        
-        objacfbank.FetchStatements(); 
-        
-        objacfbank.strBankSlugName = 'anz';
-        objacfbank.redirectToNextpage(); 
-        objacfbank.skipMethod();
-        objacfbank.redirect(); 
+        system.runas(objuser)
+     {
+        objwlbankinfo.gobackmethod();
+        objwlbankinfo.redirect();
+        objwlbankinfo.skipMethod();
+        objid=ClickCommon.getCurrentLoggedInLeadId(objLead.id);
+        objwlbankinfo.FetchStatements();
+        objwlbankinfo.BankLogin();
+        objwlbankinfo.hidepopup();
+        objwlbankinfo.strParentId = objLead.id;
+        objwlbankinfo.redirectToNextpage();
         test.stoptest();
-        }
+       
+   }
     }
-    
-    private static void LoadData()
-    {
-        createLead();
-        createAccount();
- //     createContact();
-        createUser();
-        createOpportunity();
 
-    }
-    
-     static void createLead()
+         static testMethod void validate2()
     {
-        objLead = WLCommonTrackerClass.createLeadForPortal();
+     
+        loaddata();
+        WLBankInformationDetails objwlbankinfo=new WLBankInformationDetails();
+        objwlbankinfo.strBankName = 'bank_of_statements';
+       WLBankInformationDetails.AutoCompleteBanklList('test');
+        
+        objBankstmtCredential =new acfBank_Statement_Credential__c();
+        objBankstmtCredential.name='Credential';
+        objBankstmtCredential.acfEndPoint_Url__c='https://bankstatements.com.au/api/v1/';
+        objBankstmtCredential.acfX_API_KEY__c='FCWFJVDVVQYY7Z4TYAZAH7WWVLVSI1OO8BBTRHRO';
+        insert objBankstmtCredential;  
+        
+        test.starttest();
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerators12());
+       
+        objwlbankinfo.strBankSlugName='bank_of_statements';
+        WLbankStatementRequest objrequest=new WLbankStatementRequest();
+        objwlbankinfo.SelectBankName();
+        
+        WLBankInformationDetails.ErrorMessage clsobjerror=new WLBankInformationDetails.ErrorMessage();
+        clsobjerror.error='error';
+        clsobjerror.errorcode=123;
+        clsobjerror.user_token='usertoken';
+        
+        WLBankInformationDetails.AllAccountsClass clsobjacc=new WLBankInformationDetails.AllAccountsClass();
+        clsobjacc.chk_box=true;
+        clsobjacc.accountHolder='testholder';
+        clsobjacc.name='test'; 
+        clsobjacc.accountNumber='123456'; 
+        clsobjacc.id='123';
+        clsobjacc.bsb='test';
+        clsobjacc.balance='987654';  
+        clsobjacc.available='testavl';  
+
+        system.runas(objuser)
+     {
+        objwlbankinfo.gobackmethod();
+        objwlbankinfo.redirect();
+        objwlbankinfo.skipMethod();
+        objid=ClickCommon.getCurrentLoggedInLeadId(objLead.id);
+        objwlbankinfo.FetchStatements();
+        objwlbankinfo.BankLogin();
+        objwlbankinfo.hidepopup();
+        objwlbankinfo.redirectToNextpage();
+        test.stoptest();
+        
+   }
     }
-    
-    static void createAccount()
+
+    public static void loaddata()
     {
-        objAccount = new Account();
-        objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','+619540505050','test@fakeemail.com',objLead.id);
+        createclickCommunitySetup();
+        createLead();
+        createPersonAccount();
+        createPortalUser();
+        createOpportunity();
+          createBankQuestions();
+        createBankDetail();
+        createmasterdoc();
+        createrequireddoc();
+       
     }
     
-    static void createContact()
+    public static void loaddata1()
     {
-        objContact = new Contact();
-        objContact = WLCommontrackerClass.createContact(objContact,objAccount);
+       
+        createLead();
+        createPersonAccount();
+        createPortalUser();
+        createOpportunity();
+        createBankDetail();
+        createBankQuestions() ;
+        createmasterdoc();
+        createrequireddoc();
+       
     }
     
-    static void createuser()
+    
+    static void createclickCommunitySetup() 
+    {
+        objclcmm= new Click_Community_Setup__c();
+         objclcmm= WLCommonTrackerClass.createcommunitysetup();
+        objclcmm= ClickCommon.getCommunitySetup('');
+        system.debug('setup1234'+objclcmm);
+    }
+    
+    static void createBankQuestions() 
+    {
+        objBankQuestions=new acfBank_Information__c();
+        objBankQuestions=WLCommonTrackerClass.createBankQuestions(); 
+    }
+    
+    static void createLead()
+    {
+        objLead = new Lead();
+        objLead = WLCommonTrackerClass.createLead(objLead); 
+    }
+    
+    static void createBankDetail()
+    {
+        objBank = new acfBank_Detail__c();
+        objBank =  WLCommonTrackerClass.createBankDetail();
+    }
+    
+    static void createPersonAccount()
+    {
+        objpersonAccount= new Account();
+        objpersonAccount=WLCommonTrackerClass.CreatePersonAccount('Fname','LName','strPhone','strLead12Email@gmail.com',objLead.Id);
+    }
+    
+    static void createPortalUser()
     {
         objUser = new User();
-        objuser =  WLCommonTrackerClass.CreatePortalUser(objAccount.id); 
+        objUser = WLCommonTrackerClass.CreatePortalUser(objpersonAccount.id);
     }
     
     static void createOpportunity()
     {
-      objOpportunity = new Opportunity();
-      objOpportunity.acfBankdetailStatus__c = 'Skipped';
-      objOpportunity = WLCommonTrackerClass.createOpportunity(objOpportunity,objUser);
+        objOpp= new Opportunity();
+        objOpp.AccountId =objuser.AccountId;
+        objOpp.name = 'test';
+        objOpp.Stagename = 'Settlement';
+        objOpp=WLCommonTrackerClass.createOpportunity(objOpp,objUser);
+    }
+    
+    static void createrequireddoc()
+    {
+        objre= new Required_Document__c();
+        objre= WLCommonTrackerClass.createRequiredDocument(objre,objmas,objOpp);
+        objre.Lead__c = objLead .id;
+       update objre;
+    }
+    
+     static void createmasterdoc()
+    {
+        objmas= new Document_Master__c(); 
+        objmas= WLCommonTrackerClass.createDocumentMaster(objmas);
     }
 }

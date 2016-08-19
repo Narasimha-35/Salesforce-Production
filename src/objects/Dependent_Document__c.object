@@ -52,6 +52,17 @@
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
+        <fullName>ACF_Community__c</fullName>
+        <externalId>false</externalId>
+        <formula>acfDocument_Master__r.Click_Community_Setup__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ACF Community</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>acfActive__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Click Loans</description>
@@ -87,8 +98,32 @@
     <label>Click Loans Dependent Document</label>
     <listViews>
         <fullName>All</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>acfActive__c</columns>
+        <columns>acfAnswer__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>ACF_Community__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Lendi</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>acfActive__c</columns>
+        <columns>acfAnswer__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>ACF_Community__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACF_Community__c</field>
+            <operation>equals</operation>
+            <value>Lendi</value>
+        </filters>
+        <label>All - Lendi</label>
     </listViews>
     <nameField>
         <label>Name</label>

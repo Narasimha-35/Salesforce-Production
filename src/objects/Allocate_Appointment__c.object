@@ -6,7 +6,9 @@
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Buffer__c</fullName>
+        <description>The time difference between two appointment</description>
         <externalId>false</externalId>
+        <inlineHelpText>The time difference between two appointment</inlineHelpText>
         <label>Buffer</label>
         <length>18</length>
         <required>true</required>
@@ -36,7 +38,9 @@
     </fields>
     <fields>
         <fullName>DurationOfMeeting__c</fullName>
+        <description>The length of meeting</description>
         <externalId>false</externalId>
+        <inlineHelpText>The length of meeting</inlineHelpText>
         <label>DurationOfMeeting</label>
         <length>18</length>
         <required>true</required>
@@ -45,8 +49,19 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>IntervalOfMeeting__c</fullName>
+        <fullName>DynamicTimeOffset__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>if want to use dynamic time offset</description>
         <externalId>false</externalId>
+        <label>Dynamic Time Offset</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IntervalOfMeeting__c</fullName>
+        <description>the slot difference, e.g. 15 min will make the appointment allocation page have available time as pick list with 15 min difference for consecutive available slot.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>the slot difference, e.g. 15 min will make the appointment allocation page have available time as pick list with 15 min difference for consecutive available slot.</inlineHelpText>
         <label>IntervalOfMeeting</label>
         <length>18</length>
         <required>true</required>

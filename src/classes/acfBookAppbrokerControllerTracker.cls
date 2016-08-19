@@ -1,4 +1,4 @@
-@isTest(SeeAllData =true)
+@isTest
 private class acfBookAppbrokerControllerTracker {
     private static User objUser;
     private static Contact objContact;

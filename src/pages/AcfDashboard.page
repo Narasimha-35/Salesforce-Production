@@ -177,6 +177,16 @@ color:#777;
 .nav .open>a, .nav .open>a:focus, .nav .open>a:hover, .dropdown-toggle{background:transparent; border-radius:0px;border:0px;}
 .loan-select .dropdown-menu li a{padding:12px 27px; border:0px;border-radius:0px; color:#337ab7!important; font-weight:bold;}
 .nav-tabs .dropdown-menu{margin:1px 0px 0px; padding:0px; border-radius:0px;}
+.btn-load-disable{
+    position: absolute;
+    width: 100%;
+    background-color: #fff;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+    opacity: 0.1;
+    z-index: 1000;
+}
 </style>
 </head>
 <c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>

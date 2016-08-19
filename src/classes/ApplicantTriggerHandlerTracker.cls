@@ -1,85 +1,132 @@
 @isTest
-private class ApplicantTriggerHandlerTracker{
-
-private static Income_And_Expense__c objIncomeExpense;
-private static Account objAccount;
-private static Financials_Source__c objFinancialSource;
-private static click_Applicant__c objApplicant;
-private static Asset_And_Liability__c objAssetLiab;
-private static Id recordtypeID;
- static testMethod void createApplicant(){
- 
- string strExpenseAPI = system.label.acfExpense_API;
- 
-      ACFSwitch__c acfswitch = new ACFSwitch__c();
-       acfswitch.Applicant_Trigger_Switch__c = true;
-       insert acfswitch;
- 
- /* Set<String> StrIncomeCategories = new set<string>();
-     StrIncomeCategories.add('Full Time - PAYG');
-     StrIncomeCategories.add('Basic Living Expense');
-     StrIncomeCategories.add('Self Employed');
-     */
- objAccount = new Account();
- objAccount = WLCommonTrackerClass.createAccount(objAccount);
- 
- objApplicant = new click_Applicant__c();
- objApplicant = WLCommonTrackerClass.createApplicant(objApplicant,objAccount);
- 
- objApplicant.click_Applicant_Number__c = 'APP5'; 
- objApplicant.acf_applicant_Annual_profit_income__c = '20000';
- objApplicant.acf_applicant_App_1_Monthly_Expenses__c = '3000';
- objApplicant.clickApp_1_Monthly_Expenses__c = 2400;
- objApplicant.acfEmployment_Type__c = 'Self Employed';
- // objApplicant.createdById = 'Customer Input';
- //objApplicant.lastmodifiedById = 'Customer Input';
- 
- update objApplicant;
- 
- objApplicant.acfEmployment_Type__c = 'Full Time - PAYG';
- update objApplicant;
- 
- objApplicant.acf_applicant_App_1_Monthly_Expenses__c= '4003';
- update objApplicant;
- 
- objApplicant.acfEmployment_Type__c = 'Full Time';
- update objApplicant;
- 
- objIncomeExpense = new Income_And_Expense__c();
- objIncomeExpense = WLCommonTrackerClass.createIncomeExpense(objIncomeExpense,objApplicant);
- objIncomeExpense.Category__c = 'Full Time - PAYG';
- update objIncomeExpense;
- objIncomeExpense.Category__c = 'Self Employed';
- update objIncomeExpense;
- objIncomeExpense.Category__c = 'Basic Living Expense';
- update objIncomeExpense;
- 
-  ApplicantTriggerHandler objAppTrigHandler = new ApplicantTriggerHandler();
- // objAppTrigHandler.insertIncomeExpenses();
-  
- update objIncomeExpense; 
- objAssetLiab = new Asset_And_Liability__c();
- objAssetLiab = WLCommonTrackerClass.createAssetandLiablility(objAssetLiab,objAccount);
- 
-     
- 
-    List<Financials_Source__c> lstfinancialsource = new List<Financials_Source__c>();
-    objFinancialSource = new Financials_Source__c();
-    objFinancialSource.Amount__c = 10000;
-    objFinancialSource.Income_And_Expense__c = objIncomeExpense.Id;
-    objFinancialSource.Source__c = 'Customer Input';
-    objFinancialSource.Asset_And_Liability__c = objAssetLiab.Id;
-    lstfinancialsource.add(objFinancialSource);
+private class ApplicantTriggerHandlerTracker
+    {
+        private static Income_And_Expense__c objIncomeExpense;
+        private static Account objAccount;
+        private static Financials_Source__c objFinancialSource;
+        private static click_Applicant__c objApplicant;
+        private static Asset_And_Liability__c objAssetLiab;
+        private static E_Consent__c objEconsent;
+        private static Required_Document__c objrequiredDoc;
+        private static Document_Master__c objDocumentMaster;
+        private static Id recordtypeID;
+        private static task objTask;
+        private static user objUser;
+        private static Lead objLead;
+        private static Contact objContact;
+        private static opportunity objOpportunity ;
+        private static Document_Master__c docobj;
+        private static Required_Document__c reqobj;
+       // private static acfTask_Master__c objTask;
     
-    insert lstfinancialsource;
-    system.debug(objFinancialSource.id != null);
-  
-    update objFinancialSource;
+    static testMethod void validate()
+    {
+       
+        ACFSwitch__c acfswitch = new ACFSwitch__c();
+        acfswitch.Applicant_Trigger_Switch__c = true;    
+        insert acfswitch;
+        
+        loadData();
+        objTask=new Task();
+        //objTask.Description = objTaskMaster.acfDescription__c;
+        objTask.WhatId = reqobj.id;
+        objTask.Status = 'Open';
+        objTask.Priority = 'Normal';
+        objTask.ActivityDate = system.today();
+        objTask.IsVisibleInSelfService = true;
+        //insert objTask;
+        
+        Financials_Source__c financeobj=new Financials_Source__c();
+        financeobj.Income_And_Expense__c=objIncomeExpense.id;
+        financeobj.Amount__c=888;
+        insert financeobj;
+        financeobj.Amount__c=880;
+        update financeobj;
+        
+        objApplicant.acf_create_from_custom_clone_button__C=false;
+        objApplicant.clickApp_1_Monthly_Expenses__c =56;
+        objApplicant.acfEconsent__c='I Consent';
+        update objApplicant; 
+      }
+       
+        static void loadData()
+        {
+        createLead();
+        createAccount();
+        createContact();
+        createuser();
+        createOpportunity();
+        createApplicant();
+        createEconsent();
+        createIncomeAndExpenses();
+         
+        }
+         static void createLead()
+    {
     
-   // objAppTrigHandler.insertIncomeExpenses();
-  //  objAppTrigHandler.updateFinancialSources();
- 
- }
+    objLead=new Lead();
+    objLead=WLCommonTrackerClass.createLead(objLead);
+    }
+    
+    static void createAccount()
+    {
+        objAccount = new Account();
+        objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','88','test@gmail.com',objLead.id);
+        objAccount.acfAsset_House_Worth__c=55;
+        update objAccount; 
+    }
+      static void createuser()
+    {
+        objUser = new User();
+        objuser.ContactId = objContact.id;
+        objUser = WLCommonTrackerClass.CreatePortalUser(objAccount.id);
+    }
+      static void createContact()
+    {
+        objContact = new Contact();
+        objContact = WLCommonTrackerClass.createContact(objContact,objAccount);
+    }
 
-
-}
+    
+    static void createOpportunity()
+    {
+      objOpportunity = new Opportunity();
+      objOpportunity = WLCommonTrackerClass.createOpportunity(objOpportunity,objUser);
+      
+    }
+    static void createApplicant()
+    {
+        objApplicant=new click_Applicant__c ();
+        objApplicant.clickOpportunity__c = objOpportunity.id;
+        //objApplicant.acfAnnual_profit_income__c = 3250;
+        objApplicant.acf_applicant_Monthlly_Salary__c = 45;
+        objApplicant.clickApp_1_Monthly_Expenses__c  = 654;
+        objApplicant.click_Applicant_Number__c = '1';
+        objApplicant.acf_applicant_DOB__c='10/06/2016';
+        objApplicant.acfEconsent__c='test';
+        objApplicant.acfRelationship_code__c='1';
+        objApplicant.click_Account__c = objAccount.id;
+        objApplicant.acf_Applicant_Name__c='Neha Gupta';
+        objApplicant.acf_applicant_Employer_Name__c='test';
+        insert objApplicant;
+        
+        docobj=new Document_Master__c ();
+        docobj=WLCommonTrackerClass.createDocumentMaster(docobj);   
+        reqobj=new Required_Document__c ();
+        reqobj=WLCommonTrackerClass.createRequiredDocument(reqobj,docobj,objOpportunity);
+        reqobj.Click_Applicant__c=objApplicant.id;
+        reqobj.acfStatus__c='Verified';
+        update reqobj;
+    }  
+      static void createEconsent()
+      {
+      objEconsent=new E_Consent__c();
+      objEconsent=WLCommonTrackerClass.createEconsent(objApplicant);
+      }
+      static void createIncomeAndExpenses()
+      {
+      objIncomeExpense=new Income_And_Expense__c();
+      objIncomeExpense=WLCommonTrackerClass.createIncomeExpense(objIncomeExpense,objApplicant);
+      }
+      
+     }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Protected</customSettingsVisibility>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Mercury_Email_Receiver__c</fullName>
+        <description>comma sperate email address</description>
+        <externalId>false</externalId>
+        <label>[Mercury] Email Receiver</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Prioritization_CFM_Email_Receiver__c</fullName>
+        <description>from BatchPrioritiseCallFileMember, send email to address separated by &apos;,&apos; when update fails</description>
+        <externalId>false</externalId>
+        <inlineHelpText>from BatchPrioritiseCallFileMember, send email to address separated by &apos;,&apos; when update fails</inlineHelpText>
+        <label>Prioritization CFM Email Receiver</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>ACF Email List</label>
+</CustomObject>

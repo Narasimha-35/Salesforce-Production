@@ -9,7 +9,8 @@ public  class acfTriggerOnOpportunityHandler
     //Method to call on opportunity after Update.
     public void OnAfterInsert(List<opportunity>lstTriggerNew)
     {
-       //Create Task from TaskMaster    
+       createRequiresDocumentForLendi(lstTriggerNew,null);
+       //Create Task from TaskMaster   
        CreateTaskFromTaskMaster(lstTriggerNew); 
        CreateOpportunityLineItems(lstTriggerNew);
        mapOpportunityWIthFpRecord(lstTriggerNew);
@@ -18,6 +19,8 @@ public  class acfTriggerOnOpportunityHandler
     public void onAfterUpdate(list<opportunity> triggernew,map<id,opportunity> triggerOldMap)
     {
         updateOppLIMonthlyPayments(triggernew,triggerOldMap);
+        sendEmailonOppUpdate(triggernew,triggerOldMap);
+        createRequiresDocumentForLendi(triggernew,triggerOldMap);
     }
     //Create task after opportunity created. 
     public void CreateTaskFromTaskMaster(List<opportunity>lstTriggerNew)
@@ -78,7 +81,7 @@ public  class acfTriggerOnOpportunityHandler
                 update lstUpdatedTasks;
             }
         }
-    }
+    }    
     
     public void CreateOpportunityLineItems(List<opportunity>lstTriggerNew)
     {
@@ -105,13 +108,10 @@ public  class acfTriggerOnOpportunityHandler
             }
             if(setProductIDs.size()>0)
             {
-                  for(pricebookentry pbe:[select id, unitprice, product2id 
-                                          from pricebookentry 
-                                          where pricebook2.isstandard = true 
-                                            and product2id in :setProductIDs]) {
-                  mapPricebookentries.put(pbe.product2id, pbe);
+                  for(pricebookentry pbe:[select id, unitprice, product2id  from pricebookentry where pricebook2.isstandard = true and product2id in :setProductIDs])
+                  {
+                      mapPricebookentries.put(pbe.product2id, pbe);
                   }
-                  system.debug('@@@@@Lokesh'+mapPricebookentries);
             }
             system.debug('!@#$%^'+mapLVRProdIdToLVR);
             if(mapLVRProdIdToLVR <> null)
@@ -238,13 +238,15 @@ public  class acfTriggerOnOpportunityHandler
                          system.debug('objoli--------------------'+mapProduct2IdToOLIID);
                      }   
                 }
-            }                      
+            }  
+            if( mapProduct2IdToOLIID.keySet().size() > 0)   {
             for(Product2 objProd : [ SELECT Id , acfInterest_Only__c 
                                      FROM Product2
                                      WHERE Id IN :mapProduct2IdToOLIID.keySet()
                                    ]){
             
                 mapOLIIdWithInterestOnly.put(mapProduct2IdToOLIID.get(objProd.Id), objProd.acfInterest_Only__c );                         
+            }
             }
               
             for(Opportunity ObjOpp  : Triggernew)
@@ -269,7 +271,7 @@ public  class acfTriggerOnOpportunityHandler
                         
                         if(ObjOpp.id != null)
                         {                      
-                           if(mapOppIdToOpp.get(ObjOpp.Accountid).acfAsset_House_Worth__c != null)    
+                           if(mapOppIdToOpp != null && !mapOppIdToOpp.isempty() && mapOppIdToOpp.get(ObjOpp.Accountid)!= null && mapOppIdToOpp.get(ObjOpp.Accountid).acfAsset_House_Worth__c != null)    
                             HouseValue = (mapOppIdToOpp.get(ObjOpp.Accountid).acfAsset_House_Worth__c);
                              System.debug(HouseValue);                  
                         }
@@ -396,27 +398,47 @@ public  class acfTriggerOnOpportunityHandler
               update updateOLI;
         }
         
-    
-    public void mapOpportunityWIthFpRecord(list<opportunity> triggernew){
-                set<Id> setObj = new set<Id>();
-        map<Id, Id> mapObj = new map<Id,ID>();
-         for(Opportunity ObjTemp  : Triggernew )
-        {   mapObj.put(ObjTemp.accountid, ObjTemp.id);
-            setObj.add(ObjTemp.accountid);
+    //create fundind position records
+    public void mapOpportunityWIthFpRecord(list<opportunity> triggernew)
+    {
+        set<Id> setObj = new set<Id>();
+        map<Id, Id> mapAccountOppId = new map<Id,ID>();      
+        for(Opportunity ObjTemp  : triggerNew )
+        {   
+             if(ObjTemp.accountid <> null && ObjTemp.create_from_custom_clone_button__c == false)
+             {
+                 mapAccountOppId.put(ObjTemp.accountid, ObjTemp.id);
+                 setObj.add(ObjTemp.accountid);
+             }
         }
         List<Funding_Position__c> updateFp = new List<Funding_Position__c>();
+        List<Asset_And_Liability__c> updateAsset = new List<Asset_And_Liability__c>();
         List<Funding_Position__c> lstFp = [SELECT Account__c, Opportunity__c FROM Funding_Position__c where Account__c in :setObj  ];
+        List<Asset_And_Liability__c> lstAsset = [SELECT Account__c, Opportunity__c,id FROM Asset_And_Liability__c where Account__c in :setObj];
         
-        for(Funding_Position__c fp :lstFp){
-            
-            if(mapObj.get(fp.Account__c) != null){
-                fp.Opportunity__c = mapObj.get(fp.Account__c);
+        for(Funding_Position__c fp :lstFp)
+        {      
+            if(fp.Account__c <> null && mapAccountOppId <> null && mapAccountOppId.size()>0 && mapAccountOppId.get(fp.Account__c) != null)
+            {
+                fp.Opportunity__c = mapAccountOppId.get(fp.Account__c);
                 updateFp.add(fp);
-            }
-            
+            }          
         }
-        if(updateFp.size() > 0){
+        
+        for(Asset_And_Liability__c assetObj :lstAsset){
+            
+            if(assetObj.Account__c <> null && mapAccountOppId <> null && mapAccountOppId.size()>0 && mapAccountOppId.get(assetObj.Account__c) != null )
+            {
+                assetObj.Opportunity__c = mapAccountOppId.get(assetObj.Account__c);
+                updateAsset.add(assetObj);
+            }   
+        }      
+        if(updateFp != null && updateFp.size() > 0){
             update updateFp;
+        } 
+        
+        if(updateAsset != null && updateAsset.size() > 0){
+            update updateAsset;
         }       
     }    
     
@@ -430,8 +452,8 @@ public  class acfTriggerOnOpportunityHandler
             for(opportunity objopp : lstTriggerNew)
             {
                 if(objopp.AccountId != null)
-                {
-                    mapAccountIdToOppId.put(objopp.AccountId,objopp.Id);
+                {   if(objopp.create_from_custom_clone_button__c == false && objopp.Id <> null)
+                      mapAccountIdToOppId.put(objopp.AccountId,objopp.Id);
                 }
             }
             
@@ -457,4 +479,565 @@ public  class acfTriggerOnOpportunityHandler
         }
     
     }   
+    
+  //-----------*************Created by Bhasin on 31-05-16*****************--------------//
+  // This method is used to send email template to the broker when applicant is updated on the basis of stage name and status.          
+    public void sendEmailonOppUpdate(List<opportunity> lstTriggerNew,map<id,Opportunity> mapTriggerOld)
+    {    
+      /*  Set<Id> setOppIds = new Set<Id>();
+        for(Opportunity objOpp : lstTriggerNew)
+        {
+          if((objOpp.StageName != mapTriggerOld.get(objOpp.id).StageName && objOpp.StageName == 'Application Taken') 
+                || (objOpp.acf_Status__c != mapTriggerOld.get(objOpp.id).acf_Status__c && objOpp.acf_Status__c == 'Submitted'))
+            {
+              setOppIds.add(objOpp.id);
+              system.debug('setOppIds-----'+setOppIds);
+            }
+        } 
+        ClickCommon.sendEmailNotification(setOppIds);    */
+    }
+    
+       
+    //===================================================================================
+    //     Name             createdDate               Version
+    //===================================================================================
+    //    Ankit Singh       23-05-2016                 2.0
+    //===================================================================================
+    // This method to create Required Documents Based on the Answer Selected and Community.
+    // for ACFQ-199 and ACFQ-235
+    //===================================================================================
+    
+    public void createRequiresDocumentForLendi(List<opportunity>lstTriggerNew,map<id,opportunity> triggerOldMap)
+    {
+        Id CommId;
+        string strCommName = System.label.Lendi; 
+        System.debug('strCommName@@'+strCommName);
+        map<Id,Id> MapAccountIdToOpportunityId = new map<Id,Id>();
+        Set<Id> setOfoppId = new Set<Id>();
+        List<Opportunity> lstOpp = new List<Opportunity>();  
+        List<Question__c> lstQuestions = new List<Question__c>();
+        set<id> setOfBankDetailId = new set<id>();
+        List<Click_Loans_Bank__c> lstbank = new List<Click_Loans_Bank__c>();
+        List<Document_Master__c> List_DocMaster = new List<Document_Master__c>();
+        Id lendiRecordTypeId = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get(strCommName).getRecordTypeId();
+        if(lstTriggerNew != null && lstTriggerNew.size() > 0)
+        {
+            system.debug('!@#$%**************************************'+trigger.isInsert);
+            system.debug('!@#$%1**************************************'+trigger.isUpdate);
+            lstOpp = [select id,RecordTypeId,Community_Setup__c,Community_Setup__r.Name,acfRequired_Document_Generation__c,AccountId from 
+            Opportunity where id in : lstTriggerNew];
+            if(lstOpp != null && !lstOpp.Isempty())
+            {
+                System.debug('@@lstOpp'+lstOpp);
+                for(opportunity objopp : lstOpp)
+                {
+                    System.debug('objopp.Community_Setup__r.Name objopp.Community_Setup__r.Name '+objopp.Community_Setup__r.Name );
+                    if((trigger.isInsert && objopp.Community_Setup__c != null && objopp.Community_Setup__r.Name == strCommName && objopp.RecordTypeId == lendiRecordTypeId && objopp.acfRequired_Document_Generation__c)
+                        ||(trigger.isUpdate && objopp.Community_Setup__c != null && objopp.Community_Setup__r.Name == strCommName && objopp.RecordTypeId == lendiRecordTypeId 
+                        && triggerOldMap.get(objopp.id).get('acfRequired_Document_Generation__c') == false && objopp.get('acfRequired_Document_Generation__c') != triggerOldMap.get(objopp.id).get('acfRequired_Document_Generation__c')))
+                    {
+                        system.debug('objopp.AccountId****************************'+objopp.AccountId);
+                        CommId = objopp.Community_Setup__c;
+                        setOfoppId.add(objopp.Id);
+                    }
+                    else if(trigger.isInsert && objopp.Community_Setup__c != null && objopp.Community_Setup__r.Name == strCommName && objopp.RecordTypeId == lendiRecordTypeId && objopp.acfRequired_Document_Generation__c == false)
+                    {
+                        CommId = objopp.Community_Setup__c;
+                        if(objopp.AccountId != null)
+                        {
+                            MapAccountIdToOpportunityId.put(objopp.AccountId,objopp.Id);
+                        }
+                    }
+                }
+                if(strCommName != null && strCommName != '' && lendiRecordTypeId != null && CommId != null && ((MapAccountIdToOpportunityId != null && MapAccountIdToOpportunityId.size() > 0
+                   && MapAccountIdToOpportunityId.keyset() != null) || setOfoppId != null && setOfoppId.size() > 0))
+                {
+                    System.debug('!@#$%asasasasasasasasasa'+CommId);
+                    lstQuestions = [select id,acf_Script__r.Click_Community_Setup__c,acf_ApiName__c,acf_Description__c,acf_Current_lender__c,acf_Master_Question__c,
+                                    acf_Question__c,acf_Script__c,acf_Type__c,acf_Stage_Name__c,acf_Sequence_No__c, acf_Postal_Code__c,acfBubble_Text__c,acfOpportunity_Api_Name__c,
+                                    (select id,acf_Answer__c from Answer__r),acf_AccountApiName__c,acfWatermark_Text__c,acfIs_New_Loan__c,acfNew_Loan_Sequence_No__c
+                                    from Question__c where (acf_Script__r.Click_Community_Setup__c =:CommId and acf_Script__r.acf_Type__c='Pre-Login' and acf_Active__c = true 
+                                    and (acf_Type__c ='picklist' or acf_Type__c ='Checkbox' or acf_Type__c ='button' or acf_Type__c ='Radiobutton'))];
+                    system.debug('lstQuestions****************************'+lstQuestions);
+                    //map AnswerId to list of Dependent document. 
+                    lstbank = [select id,Click_Loans_Bank_Detail__c,Community_Setup__c from Click_Loans_Bank__c where Community_Setup__c =:CommId];
+                    
+                    if(lstbank != null && lstbank.size() > 0) 
+                    {
+                        for(Click_Loans_Bank__c objbank : lstbank)
+                        {
+                            setOfBankDetailId.add(objbank.Click_Loans_Bank_Detail__c);
+                        }
+                    }
+                    List_DocMaster = [select id,Name,acfActive__c,acfDescription__c,acf_Source__c,Click_Community_Setup__c from Document_Master__c
+                                          where acfActive__c=true AND Click_Community_Setup__c =: CommId];
+                    system.debug('MapAccountIdToOpportunityId ******************'+MapAccountIdToOpportunityId );
+                    system.debug('lstQuestions ******************'+lstQuestions );
+                    system.debug('setOfBankDetailId ******************'+setOfBankDetailId);
+                    system.debug('List_DocMaster ******************'+List_DocMaster);
+                    if(MapAccountIdToOpportunityId != null && MapAccountIdToOpportunityId.size() > 0 && MapAccountIdToOpportunityId.keyset() != null
+                        && lstQuestions != null && !lstQuestions.isEmpty() && setOfBankDetailId != null && setOfBankDetailId.size() > 0 && List_DocMaster != null
+                        && !List_DocMaster.isEmpty())
+                    {
+                        set<id> setOfnullId = new set<id>();
+                        insertrequiredDocforLendi(MapAccountIdToOpportunityId,setOfnullId,lstOpp,'acf_AccountApiName__c',lstQuestions,setOfBankDetailId,
+                                                  List_DocMaster,strCommName,lendiRecordTypeId,CommId);
+                    }
+                    if(setOfoppId != null && setOfoppId.size() > 0 && lstQuestions != null && !lstQuestions.isEmpty() && setOfBankDetailId != null && 
+                        setOfBankDetailId.size() > 0 && List_DocMaster != null && !List_DocMaster.isEmpty())
+                    {
+                        map<Id,Id> MapnullIdTonullId = new map<Id,Id>();
+                        insertrequiredDocforLendi(MapnullIdTonullId,setOfoppId,lstOpp,'acfOpportunity_Api_Name__c',lstQuestions,setOfBankDetailId,
+                                                  List_DocMaster,strCommName,lendiRecordTypeId,CommId);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void insertrequiredDocforLendi(map<id,id> MapAccountIdToOpportunityId,set<id> setOfoppId,List<opportunity> lstOpp,string strApiName,List<Question__c> lstQuestions,set<id> setOfBankDetailId,List<Document_Master__c> List_DocMaster,string strCommName,Id lendiRecordTypeId,id CommId)
+    {
+        Set<String> setOfQuesApiNames = new Set<String>();
+        List<Answer__c> lstAnswer = new List<Answer__c>();
+        List<Answer__c> lstAnswers = new List<Answer__c>();
+        Set<Id> setOfAnswerId = new Set<Id>();
+        map<Id,List<Dependent_Document__c>> mapIdtoDependentDoc = new map<Id,List<Dependent_Document__c>>();  
+        map<Id,List<acfDependent_Product__c>> mapIdtoDependentProduct = new map<Id,List<acfDependent_Product__c>>();
+        List<Required_Document__c> lstRequiredDocumentToInsert = new List<Required_Document__c>(); 
+        List<acfSuggested_Product__c> lstSuggestedDocumentToInsert = new List<acfSuggested_Product__c>();
+        map<id,set<string>> mapIdToSetofAnswer = new map<id,set<string>>();
+        map<id,set<Id>> mapIdToSetofAnswerId = new map<id,set<Id>>();
+        map<id,set<Id>> mapIdToSetofDocumentMasterId = new map<id,set<Id>>();
+        //Code to display set of selected Answer products.
+        // Get Pre-Login Question And There Answer For Particular Community.
+        
+       if(lstQuestions != null && lstQuestions.size()>0)
+       {
+            for(Question__c objQues :lstQuestions)
+            {
+                if(strApiName <> null && strApiName <> '' && objQues.get(strApiName) != null && objQues.get(strApiName) != '')
+                {
+                    setOfQuesApiNames.add(string.valueof(objQues.get(strApiName)));
+                    for(Answer__c objAns: objQues.Answer__r)
+                    {
+                        lstAnswer.add(objAns);
+                        setOfAnswerId.add(objAns.Id);
+                    }
+                }
+            }
+        }
+        String strleadQues='';
+        if(setOfQuesApiNames != null && setOfQuesApiNames.size()>0)
+        {
+            for(String strApinames : setOfQuesApiNames)
+            {
+                strleadQues = strleadQues+strApinames+',';
+            }
+        }
+        
+        set<Id> setofAccountId = new set<Id>();
+        if(MapAccountIdToOpportunityId != null && MapAccountIdToOpportunityId.size() > 0 && MapAccountIdToOpportunityId.keyset() != null)
+        {
+            setofAccountId = MapAccountIdToOpportunityId.keyset();
+            
+            if(MapAccountIdToOpportunityId.values() != null && !MapAccountIdToOpportunityId.values().isEmpty())
+            {
+                List<Opportunity> lstOpps = new List<Opportunity>();
+                lstOpps = [select id,(select id,acfDocument_Master__c from Required_Documents__r) from Opportunity where id=:MapAccountIdToOpportunityId.values()];
+                for(Opportunity objOpp : lstOpps)
+                {
+                    if(objOpp.Required_Documents__r != null && !objOpp.Required_Documents__r.isEmpty())
+                    {
+                        for(Required_Document__c objRequiredDoc : objOpp.Required_Documents__r)
+                        {
+                            if(mapIdToSetofDocumentMasterId.get(objOpp.Id) == null)
+                            {
+                                mapIdToSetofDocumentMasterId.put(objOpp.Id,new set<id>());
+                            }
+                            mapIdToSetofDocumentMasterId.get(objOpp.Id).add(objRequiredDoc.acfDocument_Master__c); 
+                        }
+                    }
+                }
+            }
+        }
+        if(setOfoppId != null && setOfoppId.size() > 0)
+        {
+            List<Opportunity> lstOpps = new List<Opportunity>();
+            
+            lstOpps = [select id,(select id,acfDocument_Master__c from Required_Documents__r) from Opportunity where id in :setOfoppId];
+            
+            
+            for(Opportunity objOpp : lstOpps)
+            {
+                if(objOpp.Required_Documents__r != null && !objOpp.Required_Documents__r.isEmpty())
+                {
+                    for(Required_Document__c objRequiredDoc : objOpp.Required_Documents__r)
+                    {
+                        if(mapIdToSetofDocumentMasterId.get(objOpp.Id) == null)
+                        {
+                            mapIdToSetofDocumentMasterId.put(objOpp.Id,new set<id>());
+                        }
+                        mapIdToSetofDocumentMasterId.get(objOpp.Id).add(objRequiredDoc.acfDocument_Master__c); 
+                    }
+                }
+            }
+        }
+        system.debug('mapIdToSetofDocumentMaster*&^%$#'+mapIdToSetofDocumentMasterId);
+        if(strleadQues != null && strleadQues <> '')
+        {
+            String strQueryOnObj = '';
+            if(setOfoppId != null && setOfoppId.size() > 0)
+                strQueryOnObj = 'select '+strleadQues+'id from opportunity where Id IN:setOfoppId';
+            if(MapAccountIdToOpportunityId != null && MapAccountIdToOpportunityId.size() > 0 && MapAccountIdToOpportunityId.keyset() != null)
+                strQueryOnObj = 'select '+strleadQues+'id from Account where Id IN:setofAccountId';
+            system.debug('strQueryOnObj **************************'+strQueryOnObj);
+            SObject[] lstDependentObj = Database.query(strQueryOnObj);
+            if(lstDependentObj != null && lstDependentObj.size()>0)
+            {
+                for(SObject objDependentObj : lstDependentObj)
+                {
+                    for(String strApiNames : setOfQuesApiNames)
+                    {
+                        If(strApiNames <> '' && objDependentObj.get(strApiNames) <> null)
+                        {  
+                            if(mapIdToSetofAnswer.get(objDependentObj.Id) == null)
+                            {
+                                mapIdToSetofAnswer.put(objDependentObj.Id,new set<string>());
+                            }
+                            mapIdToSetofAnswer.get(objDependentObj.Id).add(string.valueof(objDependentObj.get(strApiNames))); 
+                        }
+                    }   
+                }
+            }
+            system.debug('mapIdToSetofAnswer****************************'+mapIdToSetofAnswer);
+            if(mapIdToSetofAnswer != null && mapIdToSetofAnswer.size() > 0 && mapIdToSetofAnswer.Keyset() != null)
+            {
+                for(Id objOppId : mapIdToSetofAnswer.Keyset())
+                {
+                    if(lstAnswer != null && lstAnswer.size()>0)
+                    {
+                        for(Answer__c objAns : lstAnswer)
+                        {
+                            if(mapIdToSetofAnswer.get(objOppId).contains(objAns.acf_Answer__c))
+                            {
+                                if(mapIdToSetofAnswerId.get(objOppId) == null)
+                                {
+                                    mapIdToSetofAnswerId.put(objOppId,new set<Id>());
+                                }
+                                mapIdToSetofAnswerId.get(objOppId).add(objAns.id);
+                            }
+                        }
+                    }   
+                }
+            }
+            system.debug('mapIdToSetofAnswerId****************************'+mapIdToSetofAnswerId);
+        }   
+        if(setOfAnswerId != null && setOfAnswerId.size() > 0)
+        {
+            lstAnswers = [select id,acf_Answer__c,(select id,acfAnswer__c,acfFilter__c,acfProduct__c,acfProduct__r.Click_Loans_Bank_Detail__c,acfProduct_Family__c from Dependent_Products__r
+                          where acfProduct__r.Click_Loans_Bank_Detail__c IN : setOfBankDetailId),(select id,name,acfDocument_Master__c,acfDocument_Master__r.Click_Community_Setup__c
+                          from Dependent_Documents__r where acfDocument_Master__r.Click_Community_Setup__c =:CommId ) from Answer__c where id=:setOfAnswerId];
+            if(lstAnswers != null && !lstAnswers.isEmpty())
+            {
+                for(Answer__c objAnswers: lstAnswers)
+                {
+                    if(objAnswers.Dependent_Documents__r != null && objAnswers.Dependent_Documents__r.size() > 0)
+                    {
+                        for(Dependent_Document__c objDependentDoc : objAnswers.Dependent_Documents__r)
+                        {
+                            if(mapIdtoDependentDoc.get(objAnswers.id) == null)
+                            {
+                                mapIdtoDependentDoc.put(objAnswers.id,new List<Dependent_Document__c>());
+                            }
+                            mapIdtoDependentDoc.get(objAnswers.id).add(objDependentDoc);
+                        }
+                    }
+                    if(objAnswers.Dependent_Products__r != null && objAnswers.Dependent_Products__r.size() > 0)
+                    {
+                        for(acfDependent_Product__c objDependentProduct : objAnswers.Dependent_Products__r)
+                        {
+                            if(mapIdtoDependentProduct.get(objAnswers.id) == null)
+                            {
+                                mapIdtoDependentProduct.put(objAnswers.id,new List<acfDependent_Product__c>());
+                            }
+                            mapIdtoDependentProduct.get(objAnswers.id).add(objDependentProduct);
+                        }
+                    }
+                }
+            }
+        }
+        system.debug('mapIdtoDependentDoc****************************'+mapIdtoDependentDoc);
+        system.debug('mapIdtoDependentDoc****************************'+mapIdtoDependentProduct);
+        
+        Set<String> st = new Set<String>();
+        if(lstOpp != null && !lstOpp.isEmpty())
+        {
+            for(opportunity objopp : lstOpp)
+            {
+                if(objopp.Community_Setup__c != null && objopp.Community_Setup__r.Name == strCommName && objopp.RecordTypeId == lendiRecordTypeId && objopp.acfRequired_Document_Generation__c == false)
+                {
+                    if(objopp.AccountId != null && mapIdToSetofAnswerId != null && mapIdToSetofAnswerId.size() > 0 && mapIdToSetofAnswerId.Keyset() != null
+                       && mapIdToSetofAnswerId.get(objopp.AccountId) != null)
+                    {
+                        for(Id AnswerObjIds : mapIdToSetofAnswerId.get(objopp.AccountId))
+                        {
+                            if(mapIdtoDependentDoc != null && mapIdtoDependentDoc.size() > 0 && mapIdtoDependentDoc.Keyset() != null
+                               && mapIdtoDependentDoc.get(AnswerObjIds) != null)
+                            {
+                               for(Dependent_Document__c objDependentDoc: mapIdtoDependentDoc.get(AnswerObjIds))
+                               {
+                                    if(!st.contains(objDependentDoc.Name) && mapIdToSetofDocumentMasterId.isEmpty())
+                                    {
+                                        Required_Document__c objRequiredDocument  =  new Required_Document__c();
+                                        objRequiredDocument.Name                  =  objDependentDoc.Name;
+                                        objRequiredDocument.acfDocument_Master__c =  objDependentDoc.acfDocument_Master__c;
+                                        objRequiredDocument.acfOpportunity__c     =  objopp.id;
+                                        objRequiredDocument.acfStatus__c          =  'Pending';
+                                        lstRequiredDocumentToInsert.add(objRequiredDocument);       
+                                        st.add(objDependentDoc.Name);
+                                    } 
+                                    else if(!st.contains(objDependentDoc.Name) && mapIdToSetofDocumentMasterId != null && mapIdToSetofDocumentMasterId.size() > 0 
+                                            && mapIdToSetofDocumentMasterId.keyset() != null && mapIdToSetofDocumentMasterId.get(objopp.id) != null 
+                                            && !mapIdToSetofDocumentMasterId.get(objopp.id).contains(objDependentDoc.acfDocument_Master__c))
+                                    {
+                                        Required_Document__c objRequiredDocument  =  new Required_Document__c();
+                                        objRequiredDocument.Name                  =  objDependentDoc.Name;
+                                        objRequiredDocument.acfDocument_Master__c =  objDependentDoc.acfDocument_Master__c;
+                                        objRequiredDocument.acfOpportunity__c     =  objopp.id;
+                                        objRequiredDocument.acfStatus__c          =  'Pending';
+                                        lstRequiredDocumentToInsert.add(objRequiredDocument);       
+                                        st.add(objDependentDoc.Name);
+                                    }                                        
+                                }
+                            }
+                            if(mapIdtoDependentProduct != null && mapIdtoDependentProduct.size() > 0 && mapIdtoDependentProduct.Keyset() != null
+                               && mapIdtoDependentProduct.get(AnswerObjIds) != null)
+                            {
+                                for(acfDependent_Product__c objDependentProducts : mapIdtoDependentProduct.get(AnswerObjIds))
+                                {
+                                    acfSuggested_Product__c objSuggestedProd = new acfSuggested_Product__c();
+                                    objSuggestedProd.acfFilter__c   =  objDependentProducts.acfFilter__c;
+                                    objSuggestedProd.acfOpportunity__c =  objopp.id; 
+                                    objSuggestedProd.acfProduct__c  =  objDependentProducts.acfProduct__c;
+                                    lstSuggestedDocumentToInsert.add(objSuggestedProd);
+                                }
+                            }
+                        }
+                        If(List_DocMaster != null && !List_DocMaster.isEmpty())
+                        {
+                            for(Document_Master__c objDoc : List_DocMaster)
+                            {
+                                system.debug('mapIdToSetofDocumentMasterId******************'+mapIdToSetofDocumentMasterId);
+                                if(mapIdToSetofDocumentMasterId.isEmpty())
+                                {
+                                    If(objDoc.acf_Source__c == 'Jumio' || (objDoc.acf_Source__c == 'Bank Statement'))
+                                    {
+                                        Required_Document__c objReqDoc = new Required_Document__c();
+                                        objReqDoc.Name = objDoc.Name;
+                                        objReqDoc.acfOpportunity__c = objopp.id;
+                                        objReqDoc.acfDocument_Master__c = objDoc.id;
+                                        if(objDoc.acf_Source__c == 'Jumio')
+                                          objReqDoc.acf_Is_Identity_Verification_Doc__c = true;
+                                        else if(objDoc.acf_Source__c == 'Bank Statement')
+                                           objReqDoc.acf_Bank_Statement_Doc__c = true;  
+                                        lstRequiredDocumentToInsert.add(objReqDoc);
+                                    }
+                                }
+                                else if(mapIdToSetofDocumentMasterId != null && mapIdToSetofDocumentMasterId.size() > 0 
+                                       && mapIdToSetofDocumentMasterId.keyset() != null && mapIdToSetofDocumentMasterId.get(objopp.id) != null 
+                                       && !mapIdToSetofDocumentMasterId.get(objopp.id).contains(objDoc.Id))
+                                {
+                                    If(objDoc.acf_Source__c == 'Jumio' || (objDoc.acf_Source__c == 'Bank Statement'))
+                                    {
+                                        Required_Document__c objReqDoc = new Required_Document__c();
+                                        objReqDoc.Name = objDoc.Name;
+                                        objReqDoc.acfOpportunity__c = objopp.id;
+                                        objReqDoc.acfDocument_Master__c = objDoc.id;
+                                        if(objDoc.acf_Source__c == 'Jumio')
+                                          objReqDoc.acf_Is_Identity_Verification_Doc__c = true;
+                                        else if(objDoc.acf_Source__c == 'Bank Statement')
+                                           objReqDoc.acf_Bank_Statement_Doc__c = true;  
+                                        lstRequiredDocumentToInsert.add(objReqDoc);
+                                    }
+                                }   
+                            }
+                        }
+                        st.clear();
+                    }
+                }
+                else if(objopp.Community_Setup__c != null && objopp.Community_Setup__r.Name == strCommName && objopp.RecordTypeId == lendiRecordTypeId && objopp.acfRequired_Document_Generation__c)
+                {
+                    if(mapIdToSetofAnswerId != null && mapIdToSetofAnswerId.size() > 0 && mapIdToSetofAnswerId.Keyset() != null
+                       && mapIdToSetofAnswerId.get(objopp.Id) != null)
+                    {
+                        for(Id AnswerObjIds : mapIdToSetofAnswerId.get(objopp.Id))
+                        {
+                            if(mapIdtoDependentDoc != null && mapIdtoDependentDoc.size() > 0 && mapIdtoDependentDoc.Keyset() != null
+                               && mapIdtoDependentDoc.get(AnswerObjIds) != null)
+                            {
+                               for(Dependent_Document__c objDependentDoc: mapIdtoDependentDoc.get(AnswerObjIds))
+                               {
+                                    if(!st.contains(objDependentDoc.Name) && mapIdToSetofDocumentMasterId.isEmpty())
+                                    {
+                                        Required_Document__c objRequiredDocument  =  new Required_Document__c();
+                                        objRequiredDocument.Name                  =  objDependentDoc.Name;
+                                        objRequiredDocument.acfDocument_Master__c =  objDependentDoc.acfDocument_Master__c;
+                                        objRequiredDocument.acfOpportunity__c     =  objopp.id;
+                                        objRequiredDocument.acfStatus__c          =  'Pending';
+                                        lstRequiredDocumentToInsert.add(objRequiredDocument);       
+                                        st.add(objDependentDoc.Name);
+                                    } 
+                                    else if(!st.contains(objDependentDoc.Name)  && mapIdToSetofDocumentMasterId != null && mapIdToSetofDocumentMasterId.size() > 0 
+                                       && mapIdToSetofDocumentMasterId.keyset() != null && mapIdToSetofDocumentMasterId.get(objopp.id) != null 
+                                       && !mapIdToSetofDocumentMasterId.get(objopp.id).contains(objDependentDoc.acfDocument_Master__c))
+                                    {
+                                        Required_Document__c objRequiredDocument  =  new Required_Document__c();
+                                        objRequiredDocument.Name                  =  objDependentDoc.Name;
+                                        objRequiredDocument.acfDocument_Master__c =  objDependentDoc.acfDocument_Master__c;
+                                        objRequiredDocument.acfOpportunity__c     =  objopp.id;
+                                        objRequiredDocument.acfStatus__c          =  'Pending';
+                                        lstRequiredDocumentToInsert.add(objRequiredDocument);       
+                                        st.add(objDependentDoc.Name);
+                                    }   
+                                }
+                            }
+                            if(mapIdtoDependentProduct != null && mapIdtoDependentProduct.size() > 0 && mapIdtoDependentProduct.Keyset() != null
+                               && mapIdtoDependentProduct.get(AnswerObjIds) != null)
+                            {
+                                for(acfDependent_Product__c objDependentProducts : mapIdtoDependentProduct.get(AnswerObjIds))
+                                {
+                                    acfSuggested_Product__c objSuggestedProd = new acfSuggested_Product__c();
+                                    objSuggestedProd.acfFilter__c   =  objDependentProducts.acfFilter__c;
+                                    objSuggestedProd.acfOpportunity__c =  objopp.id; 
+                                    objSuggestedProd.acfProduct__c  =  objDependentProducts.acfProduct__c;
+                                    lstSuggestedDocumentToInsert.add(objSuggestedProd);
+                                }
+                            }
+                        }
+                        If(List_DocMaster <> null && !List_DocMaster.isEmpty())
+                        {
+                            for(Document_Master__c objDoc : List_DocMaster)
+                            {
+                                system.debug('mapIdToSetofDocumentMasterId11111******************'+mapIdToSetofDocumentMasterId);
+                                if(mapIdToSetofDocumentMasterId.isEmpty())
+                                {
+                                    If(objDoc.acf_Source__c == 'Jumio' || (objDoc.acf_Source__c == 'Bank Statement'))
+                                    {
+                                        Required_Document__c objReqDoc = new Required_Document__c();
+                                        objReqDoc.Name = objDoc.Name;
+                                        objReqDoc.acfOpportunity__c = objopp.id;
+                                        objReqDoc.acfDocument_Master__c = objDoc.id;
+                                        if(objDoc.acf_Source__c == 'Jumio')
+                                          objReqDoc.acf_Is_Identity_Verification_Doc__c = true;
+                                        else if(objDoc.acf_Source__c == 'Bank Statement')
+                                           objReqDoc.acf_Bank_Statement_Doc__c = true;  
+                                        lstRequiredDocumentToInsert.add(objReqDoc);
+                                    }
+                                }
+                                else if(mapIdToSetofDocumentMasterId != null && mapIdToSetofDocumentMasterId.size() > 0 
+                                        && mapIdToSetofDocumentMasterId.keyset() != null && mapIdToSetofDocumentMasterId.get(objopp.id) != null 
+                                        && !mapIdToSetofDocumentMasterId.get(objopp.id).contains(objDoc.Id))
+                                {
+                                    If(objDoc.acf_Source__c == 'Jumio' || (objDoc.acf_Source__c == 'Bank Statement'))
+                                    {
+                                        Required_Document__c objReqDoc = new Required_Document__c();
+                                        objReqDoc.Name = objDoc.Name;
+                                        objReqDoc.acfOpportunity__c = objopp.id;
+                                        objReqDoc.acfDocument_Master__c = objDoc.id;
+                                        if(objDoc.acf_Source__c == 'Jumio')
+                                          objReqDoc.acf_Is_Identity_Verification_Doc__c = true;
+                                        else if(objDoc.acf_Source__c == 'Bank Statement')
+                                           objReqDoc.acf_Bank_Statement_Doc__c = true;  
+                                        lstRequiredDocumentToInsert.add(objReqDoc);
+                                    }
+                                }
+                            }
+                        }
+                        st.clear();
+                    }
+                }
+            }
+            if(lstRequiredDocumentToInsert <> null && lstRequiredDocumentToInsert.size()>0)
+            {
+                system.debug('lstRequiredDocumentToInsert****************************'+lstRequiredDocumentToInsert);
+                insert lstRequiredDocumentToInsert;
+            } 
+            if(lstSuggestedDocumentToInsert <> null && lstSuggestedDocumentToInsert.size()>0)
+                insert lstSuggestedDocumentToInsert;
+        }
+    }  
+    
+    
+
+public void createFundingPosition(List<Opportunity>  lstOpp)
+{
+    if(!test.isrunningtest())
+    {
+        List<Funding_Position__c>  fPosExistingList = [Select id,Account__c , Opportunity__c from Funding_Position__c where Opportunity__c IN:lstOpp];
+        
+        map<Id, Funding_Position__c>  mapFunding = new map<Id, Funding_Position__c>();
+        
+        for(Funding_Position__c  fpObj  : fPosExistingList)
+        {
+            mapFunding.put(fpObj.Opportunity__c , fpObj );
+        }
+        Set<ID>  oppId = new Set<Id>();
+        for(Opportunity  opp :  lstOpp)
+        {
+            oppId.add(opp.id);
+        }
+        map<Id ,OpportunityLineItem >  mapOLI = new map<Id ,OpportunityLineItem >();
+       
+        List<OpportunityLineItem> oppLineList = [ SELECT acfLegal_Fees__c,OpportunityId,clickEstablishment_Fee__c,clickMortgage_Risk_Fee__c
+        FROM OpportunityLineItem  where OpportunityId in : oppId  ORDER BY CreatedDate Asc];
+        
+        for(OpportunityLineItem   oli : oppLineList )
+        {
+            mapOLI.put(oli.OpportunityId, oli );
+            
+        }
+    
+    
+        List<Funding_Position__c>  fpObj = new List<Funding_Position__c>();
+        for(Opportunity  opp :  lstOpp)
+        {
+        if(opp.recordtypeid != null )
+        {
+            string recordtypename = Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(opp.recordtypeid).getname();    
+            if(recordtypename == 'Lendi')
+            {   
+                if(!mapFunding.containskey(opp.id))
+                {
+                    Funding_Position__c fp = new Funding_Position__c();
+                    
+                    fp.Account__c = opp.AccountId;
+                    fp.Opportunity__c = opp.id;
+                    
+                     if(mapOLI.containsKey(opp.ID) && mapOLI.get(opp.ID).acfLegal_Fees__c !=null && mapOLI.get(opp.ID).clickEstablishment_Fee__c !=null && mapOLI.get(opp.ID).clickMortgage_Risk_Fee__c !=null){
+                      fp.Lender_Set_Up_Fees__c = (Integer)mapOLI.get(opp.ID).acfLegal_Fees__c + (Integer) mapOLI.get(opp.ID).clickEstablishment_Fee__c + (Integer) mapOLI.get(opp.ID).clickMortgage_Risk_Fee__c;
+                     }
+                     
+                    fpObj.add(fp);
+                }   
+                else
+                {
+                    Funding_Position__c fp  =   mapFunding.get(opp.id) ;
+                    if(mapOLI.containsKey(opp.ID) && mapOLI.get(opp.ID).acfLegal_Fees__c !=null && mapOLI.get(opp.ID).clickEstablishment_Fee__c !=null && mapOLI.get(opp.ID).clickMortgage_Risk_Fee__c !=null){
+                      fp.Lender_Set_Up_Fees__c = (Integer)mapOLI.get(opp.ID).acfLegal_Fees__c + (Integer) mapOLI.get(opp.ID).clickEstablishment_Fee__c + (Integer) mapOLI.get(opp.ID).clickMortgage_Risk_Fee__c;
+                     }
+                     
+                    fpObj.add(fp);
+                }
+            }
+        }
+            
+        }
+        
+        if(fpObj.size() > 0){
+            upsert fpObj ;
+        }
+    }
+
+}
+ 
 }

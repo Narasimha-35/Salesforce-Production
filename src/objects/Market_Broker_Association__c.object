@@ -51,6 +51,16 @@
     <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
     <fields>
+        <fullName>Active_Broker__c</fullName>
+        <externalId>false</externalId>
+        <formula>Broker__r.Active_Broker__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Active Broker?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Broker__c</fullName>
         <externalId>false</externalId>
         <label>Broker</label>
@@ -110,6 +120,17 @@
         <unique>true</unique>
     </fields>
     <label>Market Broker Association</label>
+    <listViews>
+        <fullName>All2</fullName>
+        <columns>NAME</columns>
+        <columns>Broker__c</columns>
+        <columns>Active_Broker__c</columns>
+        <columns>Market__c</columns>
+        <columns>Priority__c</columns>
+        <columns>OBJECT_ID</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
     <nameField>
         <label>Market Broker Association Name</label>
         <trackHistory>false</trackHistory>

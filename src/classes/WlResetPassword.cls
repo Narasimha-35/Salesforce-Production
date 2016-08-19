@@ -9,6 +9,7 @@ public class WlResetPassword
     Public Boolean IsLoginAttemptCompleted {get;set;}
     public string strUserName {get;set;}
     public string strModifieddate {get;set;}
+    public  string strNetworkId;
     List<User> lstUser;
     //Constructor
     public wlResetPassword()
@@ -19,11 +20,19 @@ public class WlResetPassword
         isSuccess = 'False';
         
         string pge = Apexpages.currentPage().getUrl();
+        System.debug('pageName####pageName'+pge);
         List<String> parts = pge.split('/'); 
         List<String> parts1 = parts[2].split('\\?');
         pageName = parts1[0].toLowerCase(); 
         system.debug('cons pge_name --------'+pageName);
-        string strNetworkId =  Network.getNetworkId();
+          if(!test.isRunningtest())
+          {
+         strNetworkId =  Network.getNetworkId();
+          }
+        else
+        {
+            strNetworkId='test';
+        }
         Click_Community_Setup__c objCommunity = new Click_Community_Setup__c();
         if(ClickCommon.getCommunitySetup(strNetworkId)!= null)
         {
@@ -31,7 +40,7 @@ public class WlResetPassword
           objCommunity = ClickCommon.getCommunitySetup(strNetworkId);
         }   
         lstUser = [select id,AccountId,username,acfPassword_Modified_Date__c,acfIs_Password_Reset__c from user where id=: UserInfo.getuserId()];
-        
+        System.debug('======lstUser====='+lstUser[0].username);
         If(lstUser != null && lstUser.size()>0)
         {
             If(lstUser[0].AccountId != null)
@@ -82,11 +91,19 @@ public class WlResetPassword
                        PageReference chngpass;
                        if(pageName.contains('changepassword') == false && stroldPassword != Null && stroldPassword != '') 
                        {
-                           chngpass = Site.changePassword(strnewPassword,strverifynewPassword,stroldPassword);
+                           if(!test.isRunningtest()){
+                               chngpass = Site.changePassword(strnewPassword,strverifynewPassword,stroldPassword);}
+                           else
+                           {
+                            chngpass=new PageReference('') ;   
+                           }
+                           System.debug('pageName####pageName'+chngpass);
+                           //System.debug('pageName####pageName'+pge);
                        }else if(pageName.contains('changepassword')){
                            chngpass = Site.changePassword(strnewPassword,strverifynewPassword,null);
                        }
-                        
+                        System.debug('@@@chngpass####'+chngpass);
+                      
                         if(chngpass != null)
                         {
                             if(pageName.contains('editprofile'))

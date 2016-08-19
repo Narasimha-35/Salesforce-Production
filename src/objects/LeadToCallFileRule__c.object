@@ -189,6 +189,31 @@
         <type>Picklist</type>
     </fields>
     <label>LeadToCallFileRule</label>
+    <listViews>
+        <fullName>ACF_Group_4</fullName>
+        <columns>NAME</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>Call_File__c</columns>
+        <columns>Delay_To_Call_File_Days__c</columns>
+        <columns>Exclude_Closed_And_Lost__c</columns>
+        <columns>Exclude_Converted_Lead__c</columns>
+        <columns>Exclude_Do_Not_Call__c</columns>
+        <columns>Exclude_Do_Not_Email__c</columns>
+        <columns>Is_Active_Rule__c</columns>
+        <columns>Priority__c</columns>
+        <columns>Rule_Description__c</columns>
+        <columns>Rule_Name__c</columns>
+        <columns>Rule_Object__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Call_File__c</field>
+            <operation>contains</operation>
+            <value>ACF - Group 4</value>
+        </filters>
+        <label>ACF - Group 4</label>
+    </listViews>
     <nameField>
         <label>LeadToCallFileRule Name</label>
         <trackHistory>false</trackHistory>

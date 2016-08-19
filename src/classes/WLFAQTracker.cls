@@ -6,12 +6,8 @@ private class WLFAQTracker
     private static Account objAccount;
     private static Opportunity objOpportunity;
 
-    
     static testMethod void validateController() 
-    {
-    
-//        LoadData();
-            
+    {   
         acfCMS_Page__c obj = new acfCMS_Page__c ();
         obj .Name ='ClickFAQ';
         obj .acfDescription__c = 'Ankit Singh';
@@ -26,11 +22,11 @@ private class WLFAQTracker
         objf.acfQuestion__c = 'test';
         lstacf.add(objf);
         
-        acfFAQ.wrapperFAQType wrap = new acfFAQ.wrapperFAQType();
-        acfFAQ.WrapperFAQ wrp = new acfFAQ.WrapperFAQ();
+        WLFAQ.wrapperFAQType wrap = new WLFAQ.wrapperFAQType();
+        WLFAQ.WrapperFAQ wrp = new WLFAQ.WrapperFAQ();
         wrp.id = '1234';
         
-        acfFAQ  objFAQ = new acfFAQ();
+        WLFAQ  objFAQ = new WLFAQ();
         objFAQ.strUserName = 'test';
         objFAQ.strUserPhone = 'test';
         objFAQ.strUserEmail = 'test@test.com';
@@ -38,15 +34,10 @@ private class WLFAQTracker
         objFAQ.strErrorMsg = 'test';
         objFAQ.lstacfFAQ = lstacf; 
         objFAQ.submitCase();
-        
-
     }
     
-        static testMethod void validateController1() 
-    {
-    
-//        LoadData();
-            
+    static testMethod void validateController1() 
+    {   
         acfCMS_Page__c obj = new acfCMS_Page__c ();
         obj .Name ='ClickFAQ';
         obj .acfDescription__c = 'Ankit Singh';
@@ -61,11 +52,11 @@ private class WLFAQTracker
         objf.acfQuestion__c = 'test';
         lstacf.add(objf);
         
-        acfFAQ.wrapperFAQType wrap = new acfFAQ.wrapperFAQType();
-        acfFAQ.WrapperFAQ wrp = new acfFAQ.WrapperFAQ();
+        WLFAQ.wrapperFAQType wrap = new WLFAQ.wrapperFAQType();
+        WLFAQ.WrapperFAQ wrp = new WLFAQ.WrapperFAQ();
         wrp.id = '1234';
         
-        acfFAQ  objFAQ = new acfFAQ();
+        WLFAQ  objFAQ = new WLFAQ();
         objFAQ.strUserName = null;
         objFAQ.strUserPhone = 'test';
         objFAQ.strUserEmail = 'test@test.com';
@@ -73,15 +64,10 @@ private class WLFAQTracker
         objFAQ.strErrorMsg = 'test';
         objFAQ.lstacfFAQ = lstacf; 
         objFAQ.submitCase();
-        
-
     }
     
-        static testMethod void validateController2() 
-    {
-    
-//        LoadData();
-            
+    static testMethod void validateController2() 
+    {    
         acfCMS_Page__c obj = new acfCMS_Page__c ();
         obj .Name ='ClickFAQ';
         obj .acfDescription__c = 'Ankit Singh';
@@ -96,11 +82,11 @@ private class WLFAQTracker
         objf.acfQuestion__c = 'test';
         lstacf.add(objf);
         
-        acfFAQ.wrapperFAQType wrap = new acfFAQ.wrapperFAQType();
-        acfFAQ.WrapperFAQ wrp = new acfFAQ.WrapperFAQ();
+        WLFAQ.wrapperFAQType wrap = new WLFAQ.wrapperFAQType();
+        WLFAQ.WrapperFAQ wrp = new WLFAQ.WrapperFAQ();
         wrp.id = '1234';
         
-        acfFAQ  objFAQ = new acfFAQ();
+        WLFAQ  objFAQ = new WLFAQ();
         objFAQ.strUserName = 'test';
         objFAQ.strUserPhone = null;
         objFAQ.strUserEmail = 'test@test.com';
@@ -108,15 +94,10 @@ private class WLFAQTracker
         objFAQ.strErrorMsg = 'test';
         objFAQ.lstacfFAQ = lstacf; 
         objFAQ.submitCase();
-        
-
     }
     
-        static testMethod void validateController3() 
+    static testMethod void validateController3() 
     {
-    
-//        LoadData();
-            
         acfCMS_Page__c obj = new acfCMS_Page__c ();
         obj .Name ='ClickFAQ';
         obj .acfDescription__c = 'Ankit Singh';
@@ -143,15 +124,10 @@ private class WLFAQTracker
         objFAQ.strErrorMsg = 'test';
         objFAQ.lstacfFAQ = lstacf; 
         objFAQ.submitCase();
-        
-
     }
     
-        static testMethod void validateController4() 
-    {
-    
-//        LoadData();
-            
+    static testMethod void validateController4() 
+    {   
         acfCMS_Page__c obj = new acfCMS_Page__c ();
         obj .Name ='ClickFAQ';
         obj .acfDescription__c = 'Ankit Singh';
@@ -221,18 +197,15 @@ private class WLFAQTracker
         objFAQ.strErrorMsg = null;
         objFAQ.lstacfFAQ = lstacf; 
         objFAQ.submitCase();
-        
-
     }
     
     
-     static testMethod void validateController6() 
+    static testMethod void validateController6() 
     {
-    
-       acfCMS_Page__c obj = new acfCMS_Page__c ();
-        obj .Name ='ClickFAQ';
-        obj .acfDescription__c = 'Ankit Singh';
-        obj .acfHeading__c = 'abcd';
+        acfCMS_Page__c obj = new acfCMS_Page__c ();
+        obj.Name ='ClickFAQ';
+        obj.acfDescription__c = 'Ankit Singh';
+        obj.acfHeading__c = 'abcd';
         insert obj ;
         
         list<acfFAQ__c>  lstacf = new list<acfFAQ__c>(); 
@@ -263,18 +236,13 @@ private class WLFAQTracker
         objFAQ.strErrorMsg = null;
         objFAQ.lstacfFAQ = lstacf; 
         objFAQ.submitCase();
-        
-
     }
-    
-    
+
     private static void LoadData()
     {
         createAccount();
-  //      createContact();
         createUser();
         createOpportunity();
-
     }
     
     static void createAccount()
@@ -286,8 +254,6 @@ private class WLFAQTracker
     static void createContact()
     {
         objContact = new Contact();
-        //objContact.AccountId = objAccount.id;
-        //objContact.acf_lead__c = objLead.id;
         objContact = WLCommontrackerClass.createContact(objContact,objAccount);
     }
     

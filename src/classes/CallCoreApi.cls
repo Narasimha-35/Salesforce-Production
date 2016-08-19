@@ -2,25 +2,39 @@ public class CallCoreApi {
 
     public boolean  showavm { get; set; }
     public Double Range { get; set; }
-   String pId  ;
+   public String pId  ;
    map<String, String> mapdata = new map<String,String>();
     public CallCoreApi(){
+        
+    String CommonData ='\n\n';
+CommonData =  CommonData + 'AVM Disclaimer \n\n';
+
+CommonData =  CommonData +'This publication contains an automated valuation model estimate (AVM Estimated Value). \n '; 
+CommonData =  CommonData +'This AVM Estimated Value is current at the date of the publication only. \n ';
+CommonData =  CommonData +'It is computer generated and is not a professional appraisal of the subject property and should not be relied upon as such. \n';
+ CommonData =  CommonData +'The accuracy of the methodology used to develop the AVM Estimated Value, the existence of the subject property, \n' ;
+ CommonData =  CommonData +'and the accuracy of the predicted value and all rule sets provided are estimates based on available data and are not guaranteed or warranted. \n';
+CommonData =  CommonData +'CoreLogic excludes all liability for any loss or damage arising in connection with the AVM Estimated Value.\n';
+    
     String Queensland  ='Queensland Data \n';
     Queensland  = Queensland + 'Based on or contains data provided by the State of Queensland (Department of Natural Resources and Mines) 2016. In consideration of the State permitting  \n' ;
     Queensland  = Queensland+'use of this data you acknowledge and agree that the State gives no warranty in relation to the data (including accuracy, reliability, completeness, \n';
     Queensland  = Queensland+'currency or suitability) and accepts no liability (including without limitation, liability in negligence) for any loss, damage or costs (including  \n';
     Queensland  = Queensland+' consequential damage) relating to any use of the data. Data must not be used for direct marketing or be used in breach of the privacy laws.';
+    Queensland  = Queensland+CommonData ;
     mapdata.put('Queensland',Queensland);
     
     String SouthAustralian = 'South Australian Data \n';
     SouthAustralian  =SouthAustralian +'© 2016 Copyright in this information belongs to the South Australian Government and the South Australian Government does \n ';
     SouthAustralian = SouthAustralian +'not accept any responsibility for the accuracy or completeness of the information or its suitability for purpose.';
+    SouthAustralian  = SouthAustralian+CommonData ;
     mapdata.put('SouthAustralian',SouthAustralian);
     
     String NewSouthWales ='New South Wales Data \n';
     NewSouthWales = NewSouthWales +'contains property sales information provided under licence from the Land and Property Information (“LPI”). RP Data Pty Ltd  \n';
     NewSouthWales = NewSouthWales +'trading as CoreLogic is authorised as a Property Sales Information provider by the LPI.';
-    mapdata.put('NewSouthWales',NewSouthWales);
+    NewSouthWales  = NewSouthWales+CommonData ;
+   mapdata.put('NewSouthWales',NewSouthWales);
     String Victorian  = 'Victorian Data \n';
     Victorian =Victorian +'The State of Victoria owns the copyright in the Property Sales Data and reproduction of that data in any way without the \n';
     Victorian = Victorian +'consent of the State of Victoria will constitute a breach of the Copyright Act 1968 (Cth). The State of Victoria does not warrant \n ';
@@ -28,7 +42,7 @@ public class CallCoreApi {
         Victorian = Victorian +'the basis that the State of Victoria accepts no responsibility or liability whatsoever for any errors, faults, defects or omissions in \n';
         
     Victorian = Victorian +'the information supplied.';
-
+ Victorian  = Victorian+CommonData ;
     mapdata.put('Victorian',Victorian);
     String WesternAustralian ='Western Australian Data \n';
     WesternAustralian  =WesternAustralian +'Based on information provided by and with the permission of the Western Australian Land Information Authority (2016) trading as Landgate. \n';
@@ -37,7 +51,7 @@ public class CallCoreApi {
         WesternAustralian = WesternAustralian +'without prior written permission. Enquiries should be directed to: Director, Customer Services ACT Planning and Land \n';
         
     WesternAustralian = WesternAustralian +'Authority GPO Box 1908 Canberra ACT 2601.';
-
+ WesternAustralian  = WesternAustralian +CommonData ;
     mapdata.put('WesternAustralian',WesternAustralian);
     String Tasmanian   = 'Tasmanian Data /n';
     Tasmanian   =Tasmanian  +'This product incorporates data that is copyright owned by the Crown in Right of Tasmania. The data has been used in the \n';
@@ -46,7 +60,7 @@ public class CallCoreApi {
         Tasmanian  = Tasmanian  +'(b) do not accept liability howsoever arising, including but not limited to negligence for any loss resulting from the use of or reliance upon the data.\n ';
         
     Tasmanian  = Tasmanian  +'Base data from the LIST © State of Tasmania http://www.thelist.tas.gov.au';
-
+ Tasmanian  = Tasmanian +CommonData ;
     mapdata.put('Tasmanian ',Tasmanian );
     
      String AustralianCapitalTerritory   = 'Australian Capital Territory Data/n';
@@ -56,7 +70,7 @@ public class CallCoreApi {
         AustralianCapitalTerritory  = AustralianCapitalTerritory  +'Authority GPO Box 1908 Canberra ACT 2601. \n ';
         
    
-
+AustralianCapitalTerritory  = AustralianCapitalTerritory +CommonData ;
     mapdata.put('AustralianCapitalTerritory',AustralianCapitalTerritory);
     
     }
@@ -76,28 +90,30 @@ public class CallCoreApi {
         if(propertyval != null ){
         List<Avm_Property__c> avmObj = [Select id ,Fares_FSD_Score__c, propertyId__c ,Fares_Score__c ,Fares_ValuationDate__c ,Expiry_date__c,Fares_Value_High__c ,Fares_Value_Low__c,Fares_Value_Estimate__c
         from Avm_Property__c where propertyId__c = : Integer.valueof(pid)] ;
+        system.debug('###existing'+avmObj);
         if(avmObj.size() > 0 ){
         DateTime dt = system.now();
-        if(avmObj[0].Expiry_date__c  < dt){
-            System.debug(avmObj[0].Expiry_date__c);
-        UpdateAVmRecord(propertyval,avmObj[0].id );
-
-        }else{
-        avmFaresDetail aObj =new avmFaresDetail();
-            System.debug(avmObj[0].Expiry_date__c);
-        aObj.faresFSDScore =avmObj[0].Fares_FSD_Score__c ;
-        aObj.faresScore  = avmObj[0].Fares_Value_Estimate__c;
-        aObj.faresValuationDate = avmObj[0].Fares_ValuationDate__c ;
-        aObj.faresValueEstimate = avmObj[0].Fares_Value_Estimate__c;
-        aObj.faresValueHigh =avmObj[0].Fares_Value_High__c;
-        aObj.faresValueLow = avmObj[0].Fares_Value_Low__c;
-        temp = aObj ;
-        if(avmObj[0].Fares_Value_High__c != null && avmObj[0].Fares_Value_Low__c != null )
-        Range  = double.valueof(avmObj[0].Fares_Value_High__c) -  double.valueof(avmObj[0].Fares_Value_Low__c);
-        System.debug(temp);
-          showavm = true;
-
-        }
+            if(avmObj[0].Expiry_date__c  < dt){
+                System.debug(avmObj[0].Expiry_date__c);
+            UpdateAVmRecord(propertyval,avmObj[0].id );
+    
+            }
+            else{
+            avmFaresDetail aObj =new avmFaresDetail();
+                System.debug(avmObj[0].Expiry_date__c);
+            aObj.faresFSDScore =avmObj[0].Fares_FSD_Score__c ;
+            aObj.faresScore  = avmObj[0].Fares_Value_Estimate__c;
+            aObj.faresValuationDate = avmObj[0].Fares_ValuationDate__c ;
+            aObj.faresValueEstimate = avmObj[0].Fares_Value_Estimate__c;
+            aObj.faresValueHigh =avmObj[0].Fares_Value_High__c;
+            aObj.faresValueLow = avmObj[0].Fares_Value_Low__c;
+            temp = aObj ;
+            if(avmObj[0].Fares_Value_High__c != null && avmObj[0].Fares_Value_Low__c != null )
+            Range  = double.valueof(avmObj[0].Fares_Value_High__c) -  double.valueof(avmObj[0].Fares_Value_Low__c);
+            System.debug(temp);
+              showavm = true;
+    
+            }
 
         }
         else
@@ -114,7 +130,11 @@ public class CallCoreApi {
       CoreLogic obj = new CoreLogic();
         avmres = obj.getPropertyAVM(propId ) ;
      JSONParser parser = JSON.createParser(avmres );
+      system.debug('###prop'+propId);
+      system.debug('###av'+parser);
       Avm av = (Avm)parser.readValueAs(Avm.class);
+      system.debug('###avm'+av);
+     
      showavm = true;
       temp = av.avmFaresDetail ;
       Avm_Property__c aobj = new Avm_Property__c();

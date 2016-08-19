@@ -1,5 +1,6 @@
 global without sharing class acfFetchBankStatementFile{
 public static string resp = '';
+public static string strreq = '';
 @future(callout=true)
   public static void BankStatementFetchFile(string user_Token, string selectedAccounts, string bankname,string strEndpoint,string strApiKey,string ReqDocId) {
      try
@@ -15,8 +16,9 @@ public static string resp = '';
         req.setHeader('Accept', 'application/json');
         req.setHeader('X-API-KEY',strApiKey);
         req.setbody(body);
-        req.setTimeout(100000);
+        req.setTimeout(120000);
         
+        strreq = body;
         System.debug('!!!!Statement Body -'+body);
         
         Http http = new Http();
@@ -24,7 +26,52 @@ public static string resp = '';
         String Statuscode = String.valueOf(objresponse.getStatusCode());
         resp = objresponse.getBody();
         
-        System.debug('!!!! XML Response - '+resp);
+        System.debug('!!!! JSON Response - '+resp);
+        
+         //To fetch zip file
+        HttpRequest reqest = new HttpRequest();
+        reqest.setEndpoint(strEndpoint+'/files?X-API-KEY='+strApiKey+'&user_token='+user_Token);
+        reqest.setMethod('GET');    
+        Http httpreq = new Http();
+        HTTPResponse objZipresponse = httpreq.send(reqest); 
+        system.debug('objresponse?????' + objZipresponse.getBody());        
+        Blob objBlob = objZipresponse.getBodyAsBlob();       
+        system.debug('status???' + objZipresponse.getBodyAsBlob());
+        if(objBlob <> null && ReqDocId<> null && ReqDocId<> '')
+        {
+            Attachment attach = new Attachment();
+            attach.Body = objBlob;
+            attach.Name = 'Bankstatement.zip';
+            attach.ContentType = 'application/zip';            
+            attach.ParentID = ReqDocId;
+            insert attach;  
+        }
+        else
+        {
+            list<string> lstToaddress = new list<string>();
+            string strEmail = '';
+            if(System.label.acf_Bank_Statement_Response_Error_Email != null && System.label.acf_Bank_Statement_Response_Error_Email !='')
+                strEmail = System.label.acf_Bank_Statement_Response_Error_Email;
+            if(strEmail != null && strEmail != '')  
+            {
+                string[] strToaddress = strEmail.split(';');
+                for(string strObjEmail : strToaddress)
+                {
+                    lstToaddress.add(strObjEmail);
+                }
+            }
+            if(!lstToaddress.isEmpty())
+            {
+                Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+                string strSubject = 'Bank Statement Zip Issue';
+                string strContent = 'Required Document Id:'+ReqDocId+'\n Exception: File does not exist.';
+                email.setToAddresses(lstToaddress);   
+                email.setSubject(strSubject);
+                email.setSenderDisplayName('ACF Support');
+                email.setPlainTextBody(strContent);
+                Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+            }
+        }
     
        
         if(string.isNotEmpty(resp))
@@ -409,31 +456,56 @@ public static string resp = '';
             {
                 insert lstTransaction;
                 system.debug('lstTransaction***********************************'+lstTransaction);
-            }
+            } 
         } 
       }
       catch(Exception Ex)
       {
-        Blob b = blob.valueOf(resp);
-        Messaging.EmailFileAttachment efa = new Messaging.EmailFileAttachment();
-        efa.setFileName('BankStatement Response');
-        efa.setBody(b);
+            // sending email when any exception occurs. 
+            list<string> lstToaddress = new list<string>();
+            string strEmail='';
+            if(System.label.acf_Bank_Statement_Response_Error_Email != null && System.label.acf_Bank_Statement_Response_Error_Email !='')
+                strEmail = System.label.acf_Bank_Statement_Response_Error_Email;
+            if(strEmail != null && strEmail != '')
+            {
+                string[] strToaddress = strEmail.split(';');
+                for(string strObjEmail : strToaddress)
+                {
+                    lstToaddress.add(strObjEmail);
+                }
+            }
+            if(!lstToaddress.isEmpty())
+            {
+                Messaging.EmailFileAttachment efa = new Messaging.EmailFileAttachment();
+                efa.setFileName('BankStatement Response');
+                if(resp != null && resp != '')
+                {
+                    Blob b = blob.valueOf(resp);
+                    efa.setBody(b);
+                }
+                
+                Messaging.EmailFileAttachment efas = new Messaging.EmailFileAttachment();
+                efas.setFileName('BankStatement Request');
+                Blob bl = blob.valueOf(strreq);
+                efas.setBody(bl);
 
-        system.debug('!@#$%%%^'+Ex.getmessage());
-        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-        string strSubject = 'Bank Statement Response Issue';
-        string strContent = 'Required Document Id:'+ReqDocId+'\n Exception:'+Ex.getmessage();
-        list<string> lstToaddress = new list<string>();
-        lstToaddress.add('chen@creditandfinance.com.au');
-        lstToaddress.add('karthik.chekkila@saasfocus.com');
-        lstToaddress.add('ankit.singh@saasfocus.com');
-        if(lstToaddress <> null && lstToaddress.size()>0)
-            email.setToAddresses(lstToaddress);   
-        email.setSubject(strSubject);
-        email.setSenderDisplayName('ACF Support');
-        email.setPlainTextBody(strContent);
-        email.setFileAttachments(new Messaging.EmailFileAttachment[] {efa});
-        Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+                system.debug('!@#$%%%^'+Ex.getmessage());
+                Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+                string strSubject = 'Bank Statement Response Issue';
+                string strContent = 'Required Document Id:'+ReqDocId+'\n Exception:'+Ex.getmessage();
+                email.setToAddresses(lstToaddress);   
+                email.setSubject(strSubject);
+                email.setSenderDisplayName('ACF Support');
+                email.setPlainTextBody(strContent);
+                if(resp != null && resp != '')
+                {
+                    email.setFileAttachments(new Messaging.EmailFileAttachment[] {efa,efas});
+                }
+                else{
+                    email.setFileAttachments(new Messaging.EmailFileAttachment[] {efas});
+                }
+                Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+            }
       } 
     }     
     public static void CallBenefits(FromBankstatementWrapper.cls_analysis objanalysis,integer SubcategoryIndex,integer CategoryIndex,integer TransactionIndex,List<click_Bank_Statements_Sub_Category__c> lstSubctegory,List<click_Bank_Statement_Data__c> lstctegory,List<click_Bank_Statements_Transactions__c> lstTransaction,string AccountNumber,String ReqDocId)

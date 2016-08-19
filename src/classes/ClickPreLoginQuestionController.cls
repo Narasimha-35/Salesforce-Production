@@ -37,7 +37,8 @@ public class ClickPreLoginQuestionController
     public ClickPreLoginQuestionController(ApexPages.StandardController controller)
     {
             mapIdToAnswer = new map<id,string>();
-            system.debug(strCurrentAccId);
+       
+            system.debug('ashishkumarstrCurrentAccId'+strCurrentAccId);
             if(strCurrentAccId == null && strCurrentAccId == '')
             {
                  ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'Account Id is null'));                
@@ -46,7 +47,7 @@ public class ClickPreLoginQuestionController
             {
                 strCurrentAccId = ApexPages.currentPage().getParameters().get('id');   
             }
-        system.debug(strCurrentAccId);
+        system.debug('strCurrentAccId_sonu_kumar@saasfocus'+strCurrentAccId);
             lstAcc = new List<Account>();
             objLead = new Lead();
      //     objLead.Click_Loan_Type__c = 'New Purchase';
@@ -59,6 +60,7 @@ public class ClickPreLoginQuestionController
             {
                 lstAcc = [select id,LastName,RecordTypeId,FirstName,PersonEmail,Click_Is_Phone_Broker_customer__c,PersonMobilePhone,Click_Community_Setup__c,IsMaster__c,SelfLookup__c,SelfLookup__r.Click_Community_Setup__c,(select id,Click_Community_Setup__c,SelfLookup__c from Accounts__r) from Account where id=:strCurrentAccId];
                 setCommIds = new set<Id>();
+                System.debug('@#$%^&lstAcc@@@@@@@@@@@@sonu'+lstAcc);
                 if(lstAcc != null && lstAcc.size()>0)
                 {
                     Account ObjMasterAccount = lstAcc[0];
@@ -97,6 +99,7 @@ public class ClickPreLoginQuestionController
         {
          lstWrapperQuestion.clear();
          lstMasterWrapperQuestion.clear();
+            System.debug('==selectedCommunity=='+selectedCommunity);
           List<Click_Community_Setup__c> lstComm = [select id,Click_Page_Prefix__c from Click_Community_Setup__c where id =:selectedCommunity];
           List<Lead> lstLeadObj = new  List<Lead>();
         /*  if(lstAcc != null && lstAcc.size() > 0 && lstComm <> null && lstComm.size() > 0)
@@ -157,6 +160,7 @@ public class ClickPreLoginQuestionController
                                      mapQuestionIdToQuestion.put(objQuestion.id,objQuestion);
                                      WrapperQuestions objWarpperQues = new WrapperQuestions();
                                      objWarpperQues.objWrapQuestion = objQuestion;
+                                    System.debug('@@soham##'+objQuestion.acf_Script__c);
                                      if(objQuestion.acf_Script__c <> null)
                                      {
                                           lstMasterWrapperQuestion.add(objWarpperQues);   
@@ -164,7 +168,7 @@ public class ClickPreLoginQuestionController
                                  }  
                    }
                        //for adding wrapperlist in a page for all master questions.  
-                 if(lstMasterWrapperQuestion != null && lstMasterWrapperQuestion.size()>0)
+                 if(lstMasterWrapperQuestion != null && lstMasterWrapperQuestion.size()> 0)
                    {
                          for(WrapperQuestions objMasterQuestion:lstMasterWrapperQuestion)
                          {
@@ -174,11 +178,14 @@ public class ClickPreLoginQuestionController
                             for(Answer__c objAnswer:objMasterQuestion.objWrapQuestion.Answer__r)
                             {   
                                 objMasterQuestion.lstSelectOptions.add(objAnswer);
-                                objMasterQuestion.lstSelectOpt.add(new SelectOption((objAnswer.id),objAnswer.acf_Answer__c));
-                                mapIdToAnswer.put(objAnswer.id,objAnswer.acf_Answer__c);
+                                if(objAnswer.acf_Answer__c != null)
+                                {
+                                    objMasterQuestion.lstSelectOpt.add(new SelectOption((objAnswer.id),objAnswer.acf_Answer__c));
+                                    mapIdToAnswer.put(objAnswer.id,objAnswer.acf_Answer__c);
+                                }
                             }
                    
-                            lstWrapperQuestion.add(objMasterQuestion); 
+                            lstWrapperQuestion.add(objMasterQuestion ); 
                          }
                    }
               }
@@ -195,17 +202,23 @@ public class ClickPreLoginQuestionController
         {
             if(selectedLoanType == 'New Purchase')
             {
-                RecordTypeId = Schema.SObjectType.Lead.getRecordTypeInfosByName().get(lstComm[0].Click_Page_Prefix__c +' New Loans').getRecordTypeId();
-                strRecTypeName = lstComm[0].Click_Page_Prefix__c +' New Loans';
+                if(Schema.SObjectType.Lead.getRecordTypeInfosByName().get(lstComm[0].Click_Page_Prefix__c +' New Loans') != null)
+              
+                    RecordTypeId = Schema.SObjectType.Lead.getRecordTypeInfosByName().get(lstComm[0].Click_Page_Prefix__c +' New Loans').getRecordTypeId();
+                    strRecTypeName = lstComm[0].Click_Page_Prefix__c +' New Loans';
+              
             } 
             else if(selectedLoanType == 'Refinance')
             {
-                RecordTypeId = Schema.SObjectType.Lead.getRecordTypeInfosByName().get(lstComm[0].Click_Page_Prefix__c +' Refi').getRecordTypeId();
+                if( Schema.SObjectType.Lead.getRecordTypeInfosByName().get(lstComm[0].Click_Page_Prefix__c +' Refi') <> null)
+                    RecordTypeId = Schema.SObjectType.Lead.getRecordTypeInfosByName().get(lstComm[0].Click_Page_Prefix__c +' Refi').getRecordTypeId();
                 strRecTypeName = lstComm[0].Click_Page_Prefix__c +' Refi';
             }
         } 
         Account objChildAccount = new Account();
         Lead objInsertLead = new Lead();
+        click_Applicant__c objFirstApplicant = new click_Applicant__c();
+        
         Id AccRecTypeId = clickcommon.GetRecordTypeId('Account',strRecTypeName);
         if(lstAcc != null && lstAcc.size()>0)
         {
@@ -218,6 +231,7 @@ public class ClickPreLoginQuestionController
                  objAcc.RecordTypeId = AccRecTypeId;
                  objAcc.Click_Is_Phone_Broker_customer__c = true;
                  objAcc.Click_Community_Setup__c = selectedCommunity;
+                 objFirstApplicant.click_Account__c = objAcc.id;
             }else{              
                 
                 objChildAccount.FirstName = lstAcc[0].FirstName;
@@ -230,6 +244,7 @@ public class ClickPreLoginQuestionController
                 objChildAccount.RecordTypeId = AccRecTypeId;
                 insert objChildAccount;
                 objInsertLead.acf_partner_account__c = objChildAccount.id;
+                objFirstApplicant.click_Account__c = objChildAccount.id;
             }      
         objInsertLead.FirstName = lstAcc[0].FirstName;
         objInsertLead.LastName = lstAcc[0].LastName;
@@ -242,7 +257,7 @@ public class ClickPreLoginQuestionController
         objInsertLead.MobilePhone = lstAcc[0].PersonMobilePhone;
         objInsertLead.Status = 'Open';
         
-        click_Applicant__c objFirstApplicant = new click_Applicant__c();
+        
         for(WrapperQuestions objWrappQuestion : lstWrapperQuestion)
         {
            if((objWrappQuestion.strWrapAnswer == null || objWrappQuestion.strWrapAnswer == '' || objWrappQuestion.strWrapAnswer == 'NONE') && objWrappQuestion.lstCheckBoxAnswer.size()==0) 
@@ -281,12 +296,17 @@ public class ClickPreLoginQuestionController
                     // system.debug('Ankit113*******'+objInsertLead);
                 }
             }
+               
             else
             {
+                system.debug('#$@'+objWrappQuestion.strWrapAnswer);
                 if(objWrappQuestion.strWrapAnswer <> null && objWrappQuestion.strWrapAnswer <> '')
                 {
                       objInsertLead.put(objWrappQuestion.objWrapQuestion.acf_ApiName__c,string.valueof(objWrappQuestion.strWrapAnswer));
-                      //system.debug('Ankit114*******'+objInsertLead);
+                      system.debug('Ankit114*******'+objInsertLead);
+                    system.debug('ashna---'+objWrappQuestion.objWrapQuestion.acf_ApiName__c);
+                    system.debug('#$@'+objWrappQuestion.strWrapAnswer);
+                    
                 }
             }
             
@@ -300,17 +320,23 @@ public class ClickPreLoginQuestionController
                   objFirstApplicant.put(objWrappQuestion.objWrapQuestion.acf_ApiName__c,string.valueof(mapIdToAnswer.get(objWrappQuestion.strWrapAnswer)));
              }
           
-              objFirstApplicant.acf_Applicant_Name__c = objAcc.firstname+' '+objAcc.lastname;
-              objFirstApplicant.click_Account__c = objAcc.id;
+              if(objAcc.firstname <> null)
+              {
+                  objFirstApplicant.acf_Applicant_Name__c = objAcc.firstname+' '+objAcc.lastname;
+              }else{
+                  objFirstApplicant.acf_Applicant_Name__c = objAcc.lastname;
+              }
+              
               objFirstApplicant.click_Applicant_Number__c = '1';
-          
-      
+              objFirstApplicant.Applicant_Email__c = lstAcc[0].PersonEmail;
+              objFirstApplicant.Applicant_Phone__c = lstAcc[0].PersonMobilePhone;    
         }   
 
         if(objFirstApplicant !=null)
+        {
           insert objFirstApplicant;
           system.debug('Ankit113*******'+objFirstApplicant);
-                 
+        }        
         AssignmentRule AR = new AssignmentRule();
         AR = [select id from AssignmentRule where SobjectType = 'Lead' and Active = true limit 1];
         if(AR <> null)
@@ -365,7 +391,7 @@ public class ClickPreLoginQuestionController
         return null;   
     }
     
-    public void updateAccount(id leadId,List<Click_Community_Setup__c> lstComm)
+    /*public void updateAccount(id leadId,List<Click_Community_Setup__c> lstComm)
     {
          if(leadId != null)
          {
@@ -401,7 +427,7 @@ public class ClickPreLoginQuestionController
          }
          
      
-    }
+    }*/
     
     public List<SelectOption> getBankNames()
     {  
@@ -418,9 +444,10 @@ public class ClickPreLoginQuestionController
         }
         return options;
     }
+    
     //To populate communities
     public List<SelectOption> getCommunity()
-    {  
+    {  System.debug('====lstAcc&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'+lstAcc);
         if(lstAcc != null && lstAcc.size()>0)
         {
             

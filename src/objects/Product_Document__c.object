@@ -51,13 +51,13 @@
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
-        <fullName>Click_Loans_Required_Document_del__c</fullName>
+        <fullName>Click_Loans_Document_Master__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>Required Document</label>
-        <referenceTo>Required_Document__c</referenceTo>
-        <relationshipLabel>ProductRequiredDocuments</relationshipLabel>
-        <relationshipName>ProductDocuments_del</relationshipName>
+        <label>Click Loans Document Master</label>
+        <referenceTo>Document_Master__c</referenceTo>
+        <relationshipLabel>DepedentDocumentOnProduct</relationshipLabel>
+        <relationshipName>DepedentDocumentOnProduct</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
@@ -68,14 +68,19 @@
         <externalId>false</externalId>
         <label>Product</label>
         <referenceTo>Product2</referenceTo>
-        <relationshipName>ProductDocuments</relationshipName>
+        <relationshipLabel>DepedentDocumentOnProduct</relationshipLabel>
+        <relationshipName>DepedentDocumentOnProduct</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
-    <label>ProductRequiredDocuments</label>
+    <label>DepedentDocumentOnProducts</label>
     <listViews>
         <fullName>All</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>Click_Loans_Document_Master__c</columns>
+        <columns>Product__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
@@ -83,7 +88,7 @@
         <label>Product-Document Name</label>
         <type>Text</type>
     </nameField>
-    <pluralLabel>ProductRequiredDocuments</pluralLabel>
+    <pluralLabel>DepedentDocumentOnProduct</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

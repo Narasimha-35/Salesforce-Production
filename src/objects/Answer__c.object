@@ -52,6 +52,17 @@
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
+        <fullName>Click_Community_Setup__c</fullName>
+        <externalId>false</externalId>
+        <formula>acf_Question__r.Click_Community_Setup__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Community Setup</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>acfSequence_No__c</fullName>
         <description>Click Loans</description>
         <externalId>false</externalId>
@@ -101,6 +112,13 @@
     <label>Click Loans Answer</label>
     <listViews>
         <fullName>All</fullName>
+        <columns>acf_Answer__c</columns>
+        <columns>NAME</columns>
+        <columns>Click_Community_Setup__c</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>acf_Question__c</columns>
+        <columns>acf_Related_Question__c</columns>
+        <columns>acfSequence_No__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>

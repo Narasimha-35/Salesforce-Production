@@ -1,7 +1,7 @@
 public with sharing class EmailUtilities {
 
 	public static Messaging.EmailFileAttachment constructInlineEmailAttachmentAsPDF(String name, Blob body) {
-		return constructEmailAttachment(LendiApiStaticValue.PDF_MINE_TYPE, name, false, body);
+		return constructEmailAttachment(S3StaticValue.PDF_MINE_TYPE, name, false, body);
 	}
 
 	public static Messaging.EmailFileAttachment constructEmailAttachment(String contentType, String name, Boolean isInline, Blob body) {

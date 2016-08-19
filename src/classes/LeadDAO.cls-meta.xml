@@ -3,13 +3,8 @@
     <apiVersion>30.0</apiVersion>
     <packageVersions>
         <majorNumber>1</majorNumber>
-        <minorNumber>58</minorNumber>
+        <minorNumber>67</minorNumber>
         <namespace>MC4SF</namespace>
-    </packageVersions>
-    <packageVersions>
-        <majorNumber>1</majorNumber>
-        <minorNumber>28</minorNumber>
-        <namespace>pi</namespace>
     </packageVersions>
     <packageVersions>
         <majorNumber>1</majorNumber>
@@ -18,7 +13,7 @@
     </packageVersions>
     <packageVersions>
         <majorNumber>2</majorNumber>
-        <minorNumber>56</minorNumber>
+        <minorNumber>58</minorNumber>
         <namespace>vhc</namespace>
     </packageVersions>
     <status>Active</status>

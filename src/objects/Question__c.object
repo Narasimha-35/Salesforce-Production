@@ -52,6 +52,25 @@
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
+        <fullName>Click_Community_Setup__c</fullName>
+        <externalId>false</externalId>
+        <formula>If(OR(ISNULL(acf_Script__c), ISBLANK(acf_Script__c) ),acf_Master_Question__r.acf_Script__r.Click_Community_Setup__r.Name ,acf_Script__r.Click_Community_Setup__r.Name)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Community Setup</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Click_Is_Broker_Question__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Broker Question</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Date__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -141,6 +160,10 @@
                 <fullName>Contact</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Applicant</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackTrending>false</trackTrending>
@@ -206,6 +229,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>acfOpportunity_Api_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Opportunity Api Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>acfRefinance_Sequence_No__c</fullName>
         <description>Click Loans</description>
         <externalId>false</externalId>
@@ -232,6 +265,16 @@
         <externalId>false</externalId>
         <label>Watermark Text</label>
         <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>acf_AccountApiName__c</fullName>
+        <externalId>false</externalId>
+        <label>Account Api Name</label>
+        <length>255</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -410,25 +453,23 @@
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
+    <fields>
+        <fullName>clickLoan_Type__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Loan Type</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>click_is_EConsent__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>IsE-Consent</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
     <label>Click Loans Question</label>
-    <listViews>
-        <fullName>All</fullName>
-        <columns>NAME</columns>
-        <columns>acfIs_New_Loan__c</columns>
-        <columns>acfIs_refinance__c</columns>
-        <columns>acf_Question__c</columns>
-        <columns>acf_Sequence_No__c</columns>
-        <columns>acf_Script__c</columns>
-        <columns>acf_Master_Question__c</columns>
-        <columns>acf_Type__c</columns>
-        <columns>acf_Active__c</columns>
-        <columns>acf_ApiName__c</columns>
-        <columns>acf_Description__c</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>acfApplicant_2_Api_Name__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>All</label>
-    </listViews>
     <listViews>
         <fullName>Script_0000</fullName>
         <columns>NAME</columns>
@@ -533,16 +574,10 @@
         <fullName>Script_0002</fullName>
         <columns>NAME</columns>
         <columns>acf_Question__c</columns>
-        <columns>acf_Script__c</columns>
         <columns>acf_Sequence_No__c</columns>
-        <columns>acf_Master_Question__c</columns>
         <columns>acf_Type__c</columns>
         <columns>acf_Active__c</columns>
         <columns>acf_ApiName__c</columns>
-        <columns>acfApplicant_2_Api_Name__c</columns>
-        <columns>acf_Description__c</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>acfIs_Applicant_Question__c</columns>
         <columns>acfDependent_Field_Name__c</columns>
         <columns>acfDependent_Value__c</columns>
         <columns>acfDependent_Object_Name__c</columns>
@@ -572,6 +607,11 @@
             <field>acf_Script__c</field>
             <operation>equals</operation>
             <value>Script-0003</value>
+        </filters>
+        <filters>
+            <field>acf_Active__c</field>
+            <operation>equals</operation>
+            <value>1</value>
         </filters>
         <label>4 Final Questions &amp; Resp Lending</label>
     </listViews>
@@ -614,6 +654,11 @@
             <field>acf_Master_Question__c</field>
             <operation>notEqual</operation>
         </filters>
+        <filters>
+            <field>acf_Active__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
         <label>Sub Questions</label>
     </listViews>
     <nameField>
@@ -646,6 +691,10 @@
         </picklistValues>
         <picklistValues>
             <picklist>acfDependent_Object_Name__c</picklist>
+            <values>
+                <fullName>Applicant</fullName>
+                <default>false</default>
+            </values>
             <values>
                 <fullName>Contact</fullName>
                 <default>false</default>

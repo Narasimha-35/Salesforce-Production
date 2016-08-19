@@ -39,12 +39,13 @@ public without sharing class acfCommon
             List<smagicinteract__smsmagic__c> smsObjectList;
             smsObjectList = new List <smagicinteract__smsmagic__c>();
             Sms_Magic__c objSetting = Sms_Magic__c.getValues('senderId');
+            string senderId = objSetting.senderId__c; 
             if(objSetting == Null)
             {
                 response = 'Sender ID not found in custom settings.';
                 return response;
             }
-            String senderId = objSetting.senderId__c;
+           
             String templateText = message;
             smagicinteract__smsMagic__c smsObject = new smagicinteract__smsMagic__c();
             smsObject.smagicinteract__SenderId__c = senderId;
@@ -111,22 +112,116 @@ public without sharing class acfCommon
         {
             List<smagicinteract__smsmagic__c> smsObjectList;
             smsObjectList = new List <smagicinteract__smsmagic__c>();
+            Click_Community_Setup__c objCommunity = ClickCommon.getCommunitySetup(Network.getNetWorkId());
             Sms_Magic__c objSetting = Sms_Magic__c.getValues('senderId');
+            Sms_Magic__c objSetting1 = Sms_Magic__c.getValues('ACF senderId');
             
             if(objSetting == Null)
             {
                 return ;
             }
             
-            String senderId = objSetting.senderId__c;
+           
+            string senderId = '';
+            system.debug('###123'+objCommunity.Click_Page_Prefix__c);
+            if(objCommunity.Click_Page_Prefix__c == 'ACF')
+                senderId = objSetting1.senderId__c;
+            else
+                senderId = objSetting.senderId__c;
+                
+            system.debug('###'+senderId);
+
             String templateText = message;
-            
             smagicinteract__smsMagic__c smsObject = new smagicinteract__smsMagic__c();
             smsObject.smagicinteract__SenderId__c = senderId;
             smsObject.smagicinteract__PhoneNumber__c = recepientNumber;
             smsObject.smagicinteract__Name__c = recepientName; // records name
             smsObject.smagicinteract__ObjectType__c = 'Mobile'; // record type
-            smsObject.smagicinteract__disableSMSOnTrigger__c = 0; // this field either be 0 or 1, if you specify the value as 1 then sms will not get send but entry of sms will get create under SMS History object
+            smsObject.smagicinteract__disableSMSOnTrigger__c = 1; // this field either be 0 or 1, if you specify the value as 1 then sms will not get send but entry of sms will get create under SMS History object
+            smsObject.smagicinteract__external_field__c = smagicinteract.ApexAPI.generateUniqueKey();
+            smsObject.smagicinteract__SMSText__c = templateText;//+'*TestOTPIssue*';
+            smsObjectList.add(smsObject);
+            
+            if(isTest == true)
+            {
+                system.debug('@@@@mobile'+recepientName);
+                system.debug('@@@@mobile'+recepientNumber);
+                
+                DescribeSObjectResult result = Schema.getGlobalDescribe().get('smagicinteract__smsMagic__c').getDescribe();
+                System.debug('Object Accessible:'+result.isAccessible());
+                System.debug('Object Createable:'+result.isCreateable());
+                System.debug('Object Updateable:'+result.isUpdateable());
+                System.debug('Object Deleteable:'+result.isDeletable());
+
+                for (Schema.Sobjectfield obj : result.fields.getMap().values()) {
+                Schema.DescribeFieldResult fldResult = obj.getDescribe();
+                System.debug('Field Name:'+fldResult.getLabel()+';\tField Accessible:'+fldResult.isAccessible()+';\tField Createable:'+fldResult.isCreateable()+';\tField Updateable:'+fldResult.isUpdateable());
+                }
+                
+                
+                response = smagicinteract.ApexAPI.pushSMSCallout(smsObjectList);
+                System.debug('NRAC::response ->'+ response);
+            }
+        }
+        catch(Exception e)
+        {
+            response = 'Exception occurred :1.Message is -'+e.getMessage() +'2.Stack trace is -'+e.getStackTraceString();
+            system.debug('@@Exception'+e);
+        }        
+    }
+    
+    
+     @future (callout=true)
+    public static void SendSMSUsingFutureEconsent(String recepientName, String recepientNumber, String message, Boolean isTest,string prefix)
+    {
+        String response;
+        
+        if(recepientName == Null || recepientName.trim() == '')
+        {
+            return;
+        }
+        if(recepientNumber == Null || recepientNumber.trim() == '')
+        {
+            return;
+        }
+        if(message == Null || message.trim() == '')
+        {
+            return;
+        }
+        
+        if(message != null) {
+            message = message.replaceAll('\\r\\n','\\n').replaceAll('\\n','\\r\\n');
+        }
+
+        try
+        {
+            List<smagicinteract__smsmagic__c> smsObjectList;
+            smsObjectList = new List <smagicinteract__smsmagic__c>();
+            Sms_Magic__c objSetting = Sms_Magic__c.getValues('senderId');
+            Sms_Magic__c objSetting1 = Sms_Magic__c.getValues('ACF senderId');
+            
+            if(objSetting == Null)
+            {
+                return ;
+            }
+            
+           
+            string senderId = '';
+            system.debug('###123'+prefix);
+            if(prefix == 'ACF')
+                senderId = objSetting1.senderId__c;
+            else
+                senderId = objSetting.senderId__c;
+                
+            system.debug('###'+senderId);
+
+            String templateText = message;
+            smagicinteract__smsMagic__c smsObject = new smagicinteract__smsMagic__c();
+            smsObject.smagicinteract__SenderId__c = senderId;
+            smsObject.smagicinteract__PhoneNumber__c = recepientNumber;
+            smsObject.smagicinteract__Name__c = recepientName; // records name
+            smsObject.smagicinteract__ObjectType__c = 'Mobile'; // record type
+            smsObject.smagicinteract__disableSMSOnTrigger__c = 1; // this field either be 0 or 1, if you specify the value as 1 then sms will not get send but entry of sms will get create under SMS History object
             smsObject.smagicinteract__external_field__c = smagicinteract.ApexAPI.generateUniqueKey();
             smsObject.smagicinteract__SMSText__c = templateText;//+'*TestOTPIssue*';
             smsObjectList.add(smsObject);
