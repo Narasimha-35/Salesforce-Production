@@ -7,23 +7,15 @@ public virtual class Service {
     /**
     * log simple info
     */
-    public void logInfo(String msg) {
-        System.debug(LoggingLevel.INFO, msg);
-    }
-
-    /**
-    * log info with map
-    */
-    public void logInfo(String msgTemplate, Map<String, String> infos) {
-        logInfo(putDetail(msgTemplate, infos));
+    public void log(LoggingLevel level, String msg, String className) {
+        System.debug(level, '[' + className + ']' + ' ' + msg);
     }
 
     /**
     * log detailed info
     */
-    public void logInfo(String msgTemplate, Map<String, String> infos, String className) {
-        msgTemplate = '[' + className + ']' + ' ' + putDetail(msgTemplate, infos);
-        logInfo(msgTemplate);
+    public void log(LoggingLevel level, String msgTemplate, Map<String, String> infos, String className) {
+        log(level, putDetail(msgTemplate, infos), className);
     }
 
     /**

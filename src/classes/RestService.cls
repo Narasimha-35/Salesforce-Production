@@ -16,6 +16,13 @@ public virtual class RestService extends Service {
 	/**
 	* for authenticate service.
 	*/
+	public HttpRequest buildRequest(String method, String urlParams) {
+		return buildRequest(method, urlParams, null, null, null);
+	}
+
+	/**
+	* for authenticate service.
+	*/
 	public HttpRequest buildRequest(String method, String urlParams, String body) {
 		return buildRequest(method, urlParams, null, null, body);
 	}
@@ -30,7 +37,8 @@ public virtual class RestService extends Service {
 		if(queryParams != null) {
 			for(String key : queryParams.keySet()) qParams += key + '=' + queryParams.get(key) + '&';
 		}
-		String url = serviceEndPoint + urlParams + '?' + qParams.left(qParams.length() - 1);
+		String url = serviceEndPoint + urlParams + '?' + qParams;
+		url = url.left(url.length() - 1);
 		if(defaultHeaderParams != null) {
 			for(String key : defaultHeaderParams.keySet()) req.setHeader(key, defaultHeaderParams.get(key));
 		}
@@ -48,7 +56,14 @@ public virtual class RestService extends Service {
 	* send rest request
 	*/
 	public HttpRequestResponse sendRequest(HttpRequest req) {
-		return new HttpRequestResponse(req, http.send(req));
+		log(LoggingLevel.DEBUG, 'Sending Request: ' + req.getEndPoint(), CLASS_NAME);
+		HttpResponse res = http.send(req);
+		return new HttpRequestResponse(req, res);
 	}
+
+	// public static String paramStringify(Object o) {
+	// 	String jsonString = JSON.serialize(o);
+	//
+	// }
 
 }

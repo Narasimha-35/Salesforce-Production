@@ -15,17 +15,22 @@ public with sharing class LendiApiStaticValue {
 	* Auth Service
 	*/
 	public static final String AUTH_RESOURCE          = Lendi__c.getOrgDefaults().apiAuth__c;
-	public static final String AUTH_SERVICE_ENDPOINT  = LENDI_API_END_POINT + '/' + AUTH_RESOURCE;
-	public static final String LOGIN_AS_RESOURCE_NAME = 'login-as';
-	public static final String LOGIN_AS_END_POINT     = AUTH_SERVICE_ENDPOINT + '/' + LOGIN_AS_RESOURCE_NAME;
+	public static final String LOGIN_AS_RESOURCE_NAME = 'login-as'; //TODO: refactor need from api service.
+	public static final String LOGIN_AS_RELATIVE_PATH = AUTH_RESOURCE + '/' + LOGIN_AS_RESOURCE_NAME;
 
 	/**
 	* DOC Servives
 	*/
 	public static final String DOC_RESOURCE           = Lendi__c.getOrgDefaults().apiDocs__c;
-	public static final String DOC_SERVICE_ENDPOINT   = LENDI_API_END_POINT + '/' + DOC_RESOURCE;
+	public static final String DOC_SERVICE_ENDPOINT   = LENDI_API_END_POINT + '/' + DOC_RESOURCE; //TODO: refactor doc service
 	public static final String MULTIPART_BOUNDARY     = '----S3ServiceMULTIPART_BOUNDARY' + Utilities.generateRandomString(10);
 	public static final Integer TIME_OUT_MILLISEC     = 80000;
 	public static final String PDF_MINE_TYPE          = 'application/pdf';
 	public static final String TEXT_MINE_TYPE         = 'text/plain';
+
+	/**
+	* Product Service
+	*/
+	public static final String PRODUCT_RESOURCE       = Lendi__c.getOrgDefaults().apiProduct__c;
+
 }
