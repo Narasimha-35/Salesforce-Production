@@ -821,6 +821,13 @@ function ajaxindicatorstop()
 <apex:actionFunction action="{!SendMailforEconsent}" name="sendSmsAndEmail" status="ResetstatusId" reRender="formId1">
     <apex:param value="" name="ReqDocsId"/>
 </apex:actionFunction>
+<apex:actionFunction action="{!SendBankNotification}" name="sendbankEmail" status="ResetstatusId" reRender="formId1" oncomplete="location.reload();">
+    <apex:param value="" name="ReqDocsId"/>
+</apex:actionFunction>
+
+<apex:actionFunction action="{!SendBankNotificationagain}" name="sendbankEmailagain" status="ResetstatusId" reRender="formId1" oncomplete="location.reload();">
+    <apex:param value="" name="ReqDocsId"/>
+</apex:actionFunction>
 <apex:actionFunction action="{!VerifyEconsent}" name="econsentVerified" oncomplete="Verifyeconsents('{!strmsg}');" status="ResetstatusId" reRender="formId1">
     <apex:param value="" name="econsentReqDocsId"/>
 </apex:actionFunction>
@@ -910,26 +917,56 @@ function ajaxindicatorstop()
             </apex:outputPanel>
 
             <apex:outputPanel rendered="{!if(doc.objRequiredDocumnets.Click_Is_E_consent__c,true,false)}">
-                  
-                  <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Pending'}">
-                       <script>
-                    $(document).ready(function(){
-                    $('[data-toggle="tooltip"]').tooltip();
-                    });
-                    </script>
-                     <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyEmailStyle red-tooltip" style="margin-bottom:7px;"  data-toggle="tooltip" title="Verify via Email And SMS">&nbsp;</span></a>              
-                     <!--<a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyEmailStyle" style="margin-bottom:7px;">&nbsp;</span></a>-->            
-                 </apex:outputPanel> 
-                 <p></p>
-                  <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'}">
-                    <a href="#" onclick="econsentVerified('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyNow" style="margin-bottom:7px;">&nbsp;</span></a>
-                    <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyAgain" style="margin-bottom:7px;">&nbsp;</span></a>
-                 </apex:outputPanel>
+                     
+                <apex:outputPanel rendered="{!doc.objRequiredDocumnets.type__C != 'Product Specific' }">
+                      <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Pending'}">
+                           <script>
+                        $(document).ready(function(){
+                        $('[data-toggle="tooltip"]').tooltip();
+                        });
+                        </script>
+                         <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyEmailStyle red-tooltip" style="margin-bottom:7px;"  data-toggle="tooltip" title="Verify via Email And SMS">&nbsp;</span></a>              
+                         <!--<a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyEmailStyle" style="margin-bottom:7px;">&nbsp;</span></a>-->            
+                     </apex:outputPanel> 
+                     <p></p>
+                      <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'}">
+                        <a href="#" onclick="econsentVerified('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyNow" style="margin-bottom:7px;">&nbsp;</span></a>
+                        <a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyAgain" style="margin-bottom:7px;">&nbsp;</span></a>
+                     </apex:outputPanel>
+                     
+                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Verified'}">
+                        <a href="#"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active" style="margin-bottom:7px;">&nbsp;</span></a>
+                     </apex:outputPanel>   
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!doc.objRequiredDocumnets.type__C == 'Product Specific' }">
+                
+                    <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Pending'}">
+                           <script>
+                        $(document).ready(function(){
+                        $('[data-toggle="tooltip"]').tooltip();
+                        });
+                        </script>
+                         <a href="#" onclick="sendbankEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyEmailStyle red-tooltip" style="margin-bottom:7px;"  data-toggle="tooltip" title="Verify via Email And SMS">&nbsp;</span></a>              
+                         <!--<a href="#" onclick="sendSmsAndEmail('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyEmailStyle" style="margin-bottom:7px;">&nbsp;</span></a>-->            
+                     </apex:outputPanel>
                  
+                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'}">
+                           <script>
+                        $(document).ready(function(){
+                        $('[data-toggle="tooltip"]').tooltip();
+                        });
+                        </script>
+                          <a href="#" onclick="location.reload();"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyNow" style="margin-bottom:7px;">&nbsp;</span></a>            
+                        <a href="#" onclick="sendbankEmailagain('{!doc.objRequiredDocumnets.id}');"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active VerifyAgain" style="margin-bottom:7px;">&nbsp;</span></a>
+
+                               
+                     </apex:outputPanel> 
                  <apex:outputPanel rendered="{!doc.objRequiredDocumnets.acfStatus__c == 'Verified'}">
                     <a href="#"><span class="custom-file-input col-md-8 col-xs-8 doc_btn_done active" style="margin-bottom:7px;">&nbsp;</span></a>
-                 </apex:outputPanel>   
-            </apex:outputPanel>         
+                 </apex:outputPanel> 
+                    
+                </apex:outputPanel> 
+             </apex:outputPanel>        
         </div>
        <div class="cstm_border_btm dash_row_10">&nbsp;</div>                                
     </section>

@@ -45,6 +45,13 @@
             .pointer{
                 cursor:pointer;
             }
+           
+
+
+.scrollit {
+    overflow:scroll;
+   // height:100px;
+}
 
         </style>
     </head>
@@ -423,6 +430,37 @@
                 </span>
                 </li>
                 </ul>
+            </aside>
+            
+            
+            <aside class="col-md-3 col-sm-8 cstm-table ComplianceDoc" id="right-panel">
+           
+                 <ul class="box list-unstyled rcorners  scrollit ">
+                          <apex:pageMessages ></apex:pageMessages>
+                 <table style="width: 100%;  height : 100%;" border = "1" cellpadding = "1">
+                            <tbody>
+                                <tr>
+                                    <td> <b> Bank Name </b> </td>
+                                    <td><b> Maximum Borrowing </b></td>
+                                </tr>
+                     <apex:repeat value="{!lstData}"  var="bankData"> 
+                    
+                                <tr>
+                                    <td>   {!bankData.Bank.bank_full_name }</td>
+                                    <td>   {!bankData.maximum_borrowing }</td>
+                                </tr>
+                          
+                       
+                      
+                     
+                         
+                     
+                     </apex:repeat>
+                       </tbody>
+                        </table>
+                    
+                     
+                 </ul>
             </aside>
         </div>
         <!--right panel close here-->
