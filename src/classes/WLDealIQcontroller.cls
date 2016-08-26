@@ -10,6 +10,7 @@ public String creditProposalDisclosureId{get;set;}
 public String preliminaryAssesmentId{get;set;}
 public acfDealIQ_Condition__c objDealIqCondition{get;set;}
     public WLDealIQcontroller () {
+      
        opportunityId = '';
        creditGuide = false;
        creditProposalDisclosure =false;
@@ -20,6 +21,7 @@ public acfDealIQ_Condition__c objDealIqCondition{get;set;}
        lstopportunity = new List<Opportunity>();
        lstDealIqCondition = new List<acfDealIQ_Condition__c>();
        opportunityId = ApexPages.currentPage().getParameters().get('id');
+        getBankList();
        List<EmailHistory__c> lstEmailHistory = new List<EmailHistory__c>();
        Set<Id> setOfEmailHistoryId= new Set<Id>();
        List<S3Document__c> lstS3Doc = new List<S3Document__c>();
@@ -110,4 +112,80 @@ public acfDealIQ_Condition__c objDealIqCondition{get;set;}
         }
         return null;
     }
+   public Integer Debuglog  {get ;set ;} 
+    public void getBankList()
+        {
+        try{
+            HttpRequest req = new HttpRequest();
+            req.setEndpoint('http://lendi-api-prod.herokuapp.com/api/v1/products?transformer=aggregation&aggregation_strategy=group_by%3Dbank%26selection%3DmaxBorrowing&application_id='+ opportunityId );
+            req.setMethod('GET');
+              req.setTimeout(120000);
+
+            Http http = new Http();
+            HTTPResponse res = http.send(req);
+          
+            Debuglog  = res.getStatusCode();
+            if( res.getStatusCode() == 200){
+              lstData  = new List<Bankdata >  ();
+            JSONParser parser = JSON.createParser(res.getBody());
+            while (parser.nextToken() != null) 
+            {
+
+                if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) &&
+
+                (parser.getText() == 'aggregation')) 
+                {
+                    parser.nextToken();
+                    if (parser.getCurrentToken() == JSONToken.START_ARRAY) 
+                    {
+                        // debuglog =  String.valueof(parser.getCurrentToken());
+                        while (parser.nextToken() != null) 
+                        {
+                            if (parser.getCurrentToken() == JSONToken.START_OBJECT) 
+                            {
+
+                                Bankdata inv = (Bankdata )parser.readValueAs(Bankdata .class);
+                                lstData.add(inv );
+                               
+
+                            }
+                        }
+                    }
+                }
+            }
+            }
+            else
+            {
+            ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.Error , 'Status-Code==>'+ res.getStatusCode());
+            ApexPages.addMessage(myMsg);
+            }
+            }
+            catch (Exception E)
+            {
+             ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR,E.getmessage());
+            ApexPages.addMessage(myMsg);
+            }
+        }
+        
+    
+     
+     
+public List<Bankdata >     lstData {get ;set ;}
+public class Bankdata {  
+public  String  service_calculator_uuid {get ;set ;}
+
+public  String  maximum_borrowing {get ;set ;}
+
+public  Bank  Bank  {get ;set ;}
+
+
+}
+
+public class Bank 
+{
+public  String bank_sf_id {get ;set ;}
+public  String bank_uuid {get ;set ;}
+public  String bank_short_name {get ;set ;}
+public  String bank_full_name {get ;set ;}
+} 
 }

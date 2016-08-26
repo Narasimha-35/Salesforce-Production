@@ -7,29 +7,72 @@
 */
 public class EConsentTriggerHandler extends TriggerHandler
 {
+    
+    public override void beforeInsert() {
+    /*
+        Set<String> lstId = new Set<String>();
+         for(E_Consent__c eCon : (List<E_Consent__c >) Trigger.new){ 
+            if(eCon.Econsent_Type__c =='Product Specific Econsent'){
+                
+            }
+            if(eCon.Related_Bank_Id__c != null){
+                lstId.add(eCon.Related_Bank_Id__c);
+            }
+         }
+         
+        List<acfBank_Detail__c>   lstBank  = [Select acfBank_Name__c ,ID from acfBank_Detail__c  where id in : lstId  ] ;
+        
+        map<Id, acfBank_Detail__c>   mapBank = new map<Id, acfBank_Detail__c> ();
+        
+        for(acfBank_Detail__c  acfBank : lstBank )
+        {
+            mapBank.put(acfBank.Id,acfBank );
+        }
+        
+        for(E_Consent__c eCon : (List<E_Consent__c >) Trigger.new){ 
+            if(eCon.Econsent_Type__c =='Product Specific Econsent'  &&  eCon.Related_Bank_Id__c  != null  && mapBank.get( eCon.Related_Bank_Id__c) != null 
+                && mapBank.get( eCon.Related_Bank_Id__c).acfBank_Name__c != null ){
+                eCon.Name =      mapBank.get( eCon.Related_Bank_Id__c).acfBank_Name__c + '-'+'EConsent';
+            }
+        }
+        */
+    }
+    
   
     public override void afterInsert() 
     {
         Set<Id> lstApplicantID = new Set<Id>();
+          map<Id,List<String>>  mapEconsent = new  map<Id,List<String>>();
         Set<Id> setAppIdsForReqDocs = new Set<Id>();
+        List<E_Consent__c > lstEconSent = new List<E_Consent__c >();
          for(E_Consent__c eCon : (List<E_Consent__c >) Trigger.new){  
          if(eCon.Applicant__c != null  && econ.Consent_Completed__c == true)
               lstApplicantID.add(eCon.Applicant__c );
-           if(eCon.Applicant__c != null)
-             setAppIdsForReqDocs.add(eCon.Applicant__c);
+        
+          if(eCon.Applicant__c != null)
+          {
+           lstEconSent.add(eCon);
+               
+               
+              
+           }
+            
+            
+            
+          }
              
-         }
-         System.debug(lstApplicantID);
+         
+       
         
          if(lstApplicantID != null && lstApplicantID.size() > 0)
          {
             callVedaApi(lstApplicantID);           
          }
-         if(setAppIdsForReqDocs != null && !setAppIdsForReqDocs.isEmpty())
+         if(lstEconSent != null && !lstEconSent.isEmpty())
          {
-             insertEConsentRequiredDocs(setAppIdsForReqDocs);
+             insertEConsentRequiredDocs(lstEconSent);
          }
-         //callVedaApi(lstApplicantID);
+       
     }
     public override void afterUpdate() 
     {
@@ -135,42 +178,99 @@ public class EConsentTriggerHandler extends TriggerHandler
         upsert lstVedaConnetor ;  
     }
     //To insert econsent required documents
-    public void insertEConsentRequiredDocs(set<id> setAppIds)
+    public void insertEConsentRequiredDocs(   List<E_Consent__c > mapEconsent1)
     {
         string econsent = system.Label.acfEConsent; 
+           set<id> setAppIds  = new   set<id> ();
+           Set<Id>   lstId = new Set<Id>(); 
+           map<ID , E_Consent__c>  mapEconsent = new map<ID , E_Consent__c>();
+           for( E_Consent__c    ObjEcon :  mapEconsent1 )
+           {
+               
+               if( ObjEcon.Related_Bank_Id__c  != null )
+               {
+                 lstId.add(ID.valueof(ObjEcon.Related_Bank_Id__c) );  
+               }
+               
+               if(ObjEcon.Applicant__c  != null ){
+                 setAppIds.add(ObjEcon.Applicant__c );
+                
+               }
+           }
+           
+           
+           
+        List<acfBank_Detail__c>   lstBank  = [Select acfBank_Name__c ,ID from acfBank_Detail__c  where id in : lstId  ] ;
+        
+        map<Id, acfBank_Detail__c>   mapBank = new map<Id, acfBank_Detail__c> ();
+        
+        for(acfBank_Detail__c  acfBank : lstBank )
+        {
+            mapBank.put(acfBank.Id,acfBank );
+        }
         list<Required_Document__c> lstRequiredDocs = new list<Required_Document__c>();
         //Id CommunityId = ClickCommon.getCommunitySetup(Network.getNetWorkId()).id;
         list<Document_Master__c> lstDocumentmaster = [select id,Name,acf_Source__c,acfActive__c from Document_Master__c where acf_Source__c = :econsent And acfActive__c = true];
         system.debug('@@@'+lstDocumentmaster);
-        map<id,click_Applicant__c> mapIdToApplicants = new map<id,click_Applicant__c>([select id,click_Applicant_Number__c,clickOpportunity__c,click_Account__c,click_Account__r.acf_Lead__pc,click_Account__r.acf_Lead__pr.isConverted from click_Applicant__c where id IN:setAppIds]);
+        map<id,click_Applicant__c> mapIdToApplicants = new map<id,click_Applicant__c>([select id,click_Applicant_Number__c,clickOpportunity__c,
+        click_Account__c,click_Account__r.acf_Lead__pc,click_Account__r.acf_Lead__pr.isConverted from click_Applicant__c where id IN:setAppIds]);
+        
+        System.debug(mapIdToApplicants);
         if(lstDocumentmaster != null && !lstDocumentmaster.isEmpty())
         {
             Document_Master__c objDocMaster = lstDocumentmaster[0];
-            if(setAppIds != null && !setAppIds.isEmpty())
+            if(mapEconsent1 != null && !mapEconsent1.isEmpty())
             {
-                for(Id appId : setAppIds)
+                for(E_Consent__c appId : mapEconsent1)
                 {
                     Required_Document__c objRequiredDocument  =  new Required_Document__c();
                     objRequiredDocument.Name                  =  objDocMaster.Name;
                     objRequiredDocument.acfDocument_Master__c =  objDocMaster.Id;
-                    objRequiredDocument.Click_Applicant__c    =  appId;
+                    if( appId.Applicant__c != null)
+                    objRequiredDocument.Click_Applicant__c    =  appId.Applicant__c ;
                     objRequiredDocument.acfStatus__c          =  'Pending';
                     objRequiredDocument.Click_Is_E_consent__c = true;
+                    String Type ='';
+                     
+                    
+                        if(  appId.Econsent_Type__c   != null  &&  appId.Econsent_Type__c    =='Product Specific Econsent')
+                        {
+                        objRequiredDocument.Type__C = 'Product Specific';
+                        }
+                        if(appId.Econsent_Type__c   != null  &&  appId.Econsent_Type__c    == 'General Econsent')
+                        {
+                        objRequiredDocument.Type__C =   'General' ;
+                        }
+                        if(appId.Related_Bank_Id__c   != null   )
+                        objRequiredDocument.Bankid__C = appId.Related_Bank_Id__c;
+                    
+                       
+                        objRequiredDocument.EconsentID__C = appId.ID ;
+                    
+                          
+                          if(  objRequiredDocument.Bankid__C != null && mapBank.get(objRequiredDocument.Bankid__C) != null &&  mapIdToApplicants.get(appId.Applicant__c) != null && mapIdToApplicants.get(appId.Applicant__c).click_Applicant_Number__c != null ){
+                             
+                          objRequiredDocument.Name =   mapBank.get(objRequiredDocument.Bankid__C).acfBank_Name__c + '-'+'EConsent ' + mapIdToApplicants.get(appId.Applicant__c).click_Applicant_Number__c;
+                          
+                          }
+                    
+                    
                     
                     if(mapIdToApplicants != null && mapIdToApplicants.size()>0)
                     {
-                        if(mapIdToApplicants.get(appId) != null && mapIdToApplicants.get(appId).click_Applicant_Number__c != null)
+                        if(mapIdToApplicants.get(appId.Applicant__c) != null && mapIdToApplicants.get(appId.Applicant__c).click_Applicant_Number__c != null  &&  objRequiredDocument.Type__C != 'Product Specific')
                         {
-                            objRequiredDocument.Name  =  objDocMaster.Name+' '+mapIdToApplicants.get(appId).click_Applicant_Number__c;
+                            
+                            objRequiredDocument.Name  =  objDocMaster.Name+' '+mapIdToApplicants.get(appId.Applicant__c).click_Applicant_Number__c;
                         }
-                        if(mapIdToApplicants.get(appId) != null && mapIdToApplicants.get(appId).click_Account__c != null && mapIdToApplicants.get(appId).clickOpportunity__c == null)
+                        if(mapIdToApplicants.get(appId.Applicant__c) != null && mapIdToApplicants.get(appId.Applicant__c).click_Account__c != null && mapIdToApplicants.get(appId.Applicant__c).clickOpportunity__c == null)
                         {
-                            if(mapIdToApplicants.get(appId).click_Account__r.acf_Lead__pc != null && mapIdToApplicants.get(appId).click_Account__r.acf_Lead__pr.isConverted == false)
-                                objRequiredDocument.Lead__c = mapIdToApplicants.get(appId).click_Account__r.acf_Lead__pc;
+                            if(mapIdToApplicants.get(appId.Applicant__c).click_Account__r.acf_Lead__pc != null && mapIdToApplicants.get(appId.Applicant__c).click_Account__r.acf_Lead__pr.isConverted == false)
+                                objRequiredDocument.Lead__c = mapIdToApplicants.get(appId.Applicant__c).click_Account__r.acf_Lead__pc;
                         }
-                        if(mapIdToApplicants.get(appId) != null && mapIdToApplicants.get(appId).clickOpportunity__c != null)
+                        if(mapIdToApplicants.get(appId.Applicant__c) != null && mapIdToApplicants.get(appId.Applicant__c).clickOpportunity__c != null)
                         {
-                             objRequiredDocument.acfOpportunity__c = mapIdToApplicants.get(appId).clickOpportunity__c;
+                             objRequiredDocument.acfOpportunity__c = mapIdToApplicants.get(appId.Applicant__c).clickOpportunity__c;
                         }                    
                     }
                     
@@ -195,5 +295,35 @@ public class EConsentTriggerHandler extends TriggerHandler
            }
            update lstRequiredDoc;
        }
+    }
+    
+    public override void afterDelete(){
+        Set<id> appIdSet = new Set<id>();
+        Set<String> bankIdSet = new Set<String>();
+        List<Required_Document__c> reqListToDelete = new List<Required_Document__c>();
+        for(E_Consent__c econ:(List<E_Consent__c >) Trigger.old){
+           if(econ.Applicant__c !=null){
+              appIdSet.add(econ.Applicant__c); 
+           } 
+           if(String.isNotEmpty(econ.Related_Bank_Id__c)){
+               bankIdSet.add(econ.Related_Bank_Id__c);
+           }
+        }
+        if(appIdSet.size() > 0){
+            List<click_Applicant__c> appList = [Select id, (Select id,BankID__c FROM Required_Documents__r) FROM click_Applicant__c where id=:appIdSet];
+            if(appList !=null && appList.size() > 0){
+                for(click_Applicant__c app:appList ){
+                    for(Required_Document__c req:app.Required_Documents__r){
+                        if(bankIdSet.contains(req.BankID__c)){
+                           reqListToDelete.add(req); 
+                        }
+                    }
+                }
+            }
+            
+            if(reqListToDelete.size() > 0){
+                delete reqListToDelete;
+            }
+        }
     }
 }

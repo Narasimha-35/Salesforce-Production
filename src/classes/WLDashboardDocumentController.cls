@@ -122,8 +122,7 @@ global class WLDashboardDocumentController
         lstWrapperDocumnets = new List<WrapperDocuments>();        
         system.debug('**OpportunityId'+OpportunityId);
         String PrefixUrls = ClickCommon.getCommunitySetup(Network.getNetworkId()).Click_URL__c;
-        for(Required_Document__c objRequiredDoc:[select acfDocument_Master__r.File_Address__c,id,name,acfOpportunity__c,Click_Is_Note_Type__c,acfOpportunity__r.clickJumio_Status__c,
-                                                acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,
+        for(Required_Document__c objRequiredDoc:[select  type__C, acfDocument_Master__r.File_Address__c,id,name,acfOpportunity__c,Click_Is_Note_Type__c,acfOpportunity__r.clickJumio_Status__c,acfOpportunity__r.acfIs_Identity_Document_Rejected__c,acfOpportunity__r.acfBankdetailStatus__c,
                                                 acf_Is_Identity_Verification_Doc__c,acfStatus__c,Click_Is_E_consent__c,acfDocument_Master__c,acf_Bank_Statement_Doc__c,
                                                 click_Is_Uploaded__c,Is_Download_Doc__c,(select id from Attachments) 
                                                 from Required_Document__c where acfOpportunity__c=:OppId order by createddate ASC])
@@ -643,5 +642,156 @@ global class WLDashboardDocumentController
     public boolean isDeleted {get;set;}
     public string attachId {get;set;}
     public string imgUrl {get;set;}
+   }
+   
+   
+   public void SendBankNotification()
+   {
+        string reqDocId = Apexpages.currentPage().getParameters().get('ReqDocsId');
+       
+        if(reqDocId != null && reqDocId != '')
+        {
+            
+          List<Required_Document__c> lstReqDoc = [Select EconsentID__C  ,Bankid__c ,Id,Click_Applicant__c,acfStatus__c From Required_Document__c where id=:reqDocId];
+           if(!lstReqDoc.isEmpty())
+           {
+               if(lstReqDoc[0].acfStatus__c == 'Pending' || lstReqDoc[0].acfStatus__c == 'Not Verified')
+               {
+                  
+                   Required_Document__c reqDocObj = lstReqDoc[0];
+                   reqDocObj.acfStatus__c = 'Not Verified';
+                   update reqDocObj;
+                  
+                  
+               }
+               if(lstReqDoc[0].Bankid__C != null){
+               List<acfBank_Detail__c>  bank = [Select Id , acfBank_Name__c  from acfBank_Detail__c  where id = : lstReqDoc[0].Bankid__C ];
+               if(bank.size() > 0)
+               {
+                  String BankName = bank[0].acfBank_Name__c ; 
+                  String TemplateName ='';
+                  if(BankName != null){
+                    List<acf_Bank_Template__c>  lstBank = [Select Id ,Bank_Name__c from acf_Bank_Template__c
+                    
+                    where Bank_Name__c = :BankName ] ;
+                   
+                       if(  lstReqDoc != null  && lstBank.size() > 0  && lstReqDoc[0].EconsentID__C != null  )
+                       SendEmail(lstBank[0].ID ,lstReqDoc[0].Click_Applicant__c  , lstReqDoc[0].Id  ,lstReqDoc[0].EconsentID__C   );  
+                   }
+                  }
+                  
+               }
+               }
+           } 
+        }
+        
+        
+     public void SendBankNotificationagain()
+   {
+        string reqDocId = Apexpages.currentPage().getParameters().get('ReqDocsId');
+       
+        if(reqDocId != null && reqDocId != '')
+        {
+            
+           List<Required_Document__c> lstReqDoc = [Select EconsentID__C  ,Bankid__c ,Id,Click_Applicant__c,acfStatus__c From Required_Document__c where id=:reqDocId];
+           if(!lstReqDoc.isEmpty())
+           {
+               if(lstReqDoc[0].acfStatus__c == 'Pending' || lstReqDoc[0].acfStatus__c == 'Not Verified')
+               {
+                  
+                   Required_Document__c reqDocObj = lstReqDoc[0];
+                   reqDocObj.acfStatus__c = 'Not Verified';
+                  // update reqDocObj;
+                  
+                  
+               }
+               if(lstReqDoc[0].Bankid__C != null){
+               List<acfBank_Detail__c>  bank = [Select Id , acfBank_Name__c  from acfBank_Detail__c  where id = : lstReqDoc[0].Bankid__C ];
+               if(bank.size() > 0)
+               {
+                  String BankName = bank[0].acfBank_Name__c ; 
+                  String TemplateName ='';
+                  if(BankName != null){
+                    List<acf_Bank_Template__c>  lstBank = [Select Id ,Body__c,Bank_Name__c from acf_Bank_Template__c
+                    
+                    where Bank_Name__c = :BankName ] ;
+                   
+                      if(  lstReqDoc != null  && lstBank.size() > 0  && lstReqDoc[0].EconsentID__C != null  )
+                       SendEmail(lstBank[0].ID ,lstReqDoc[0].Click_Applicant__c  , lstReqDoc[0].Id  ,lstReqDoc[0].EconsentID__C   ); 
+                   }
+                }
+                  
+               }
+               }
+           } 
+        }   
+        
+   
+   
+   public void SendEmail(ID BankId  , Id applicantId   , ID reqDocID , ID econID)
+   {
+    
+                Click_Community_Setup__c objCommunity = ClickCommon.getCommunitySetup(Network.getNetWorkId());
+                list<click_Applicant__c> lstApplicants = [select id,acf_Applicant_Name__c,click_Account__c,click_Applicant_Number__c,Applicant_Phone__c,Applicant_Email__c from click_Applicant__c where id=:applicantId];
+                try
+                {
+                    if(lstApplicants != null && !lstApplicants.isEmpty())
+                    {
+                        List<EmailTemplate> templateId =new List<EmailTemplate>();  
+                        templateId = [select id,subject,body, name,HtmlValue from EmailTemplate where DeveloperName = 'ProductEConsent' AND isActive=true];
+                        for(click_Applicant__c app:lstApplicants ){
+                             system.debug('### Entered Mail Method1');
+                              system.debug('### Entered Mail Method1'+app.Applicant_Email__c);
+                            string econsentId='';
+                            string encodedDate=string.valueOf(System.currentTimeMillis());
+                            econsentId=encodedDate+'-'+applicantId+'-'+BankId+'-'+reqDocID+'-'+econID;
+                                         
+                            
+                            Blob cryptoKey = Blob.valueOf('380db410e8b11fa9');                    
+                            Blob data1 = Blob.valueOf(econsentId);
+                            Blob encryptedValue  =Crypto.encryptWithManagedIV('AES128', cryptoKey, data1);
+                            string Encryptdata=EncodingUtil.base64encode(encryptedValue);
+                            string finalData= EncodingUtil.urlEncode(Encryptdata, 'UTF-8');
+                            string body='';                            
+                            body=templateId[0].HtmlValue;
+                            body=body.replace('{!econsentid}',finalData);  
+                            body = body.replace('{!Site.Label}',objCommunity.Name); 
+                            body = body.replace('baseurl',objCommunity.Click_URL__c);
+                            body=body.replace('{!Account.Name}',app.acf_Applicant_Name__c);
+                            system.debug('###body'+body);
+                            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+                            String[] toaddress=new List<String>();
+                            toaddress.add(app.Applicant_Email__c); 
+                            system.debug('###'+toaddress);                   
+                            mail.setToAddresses(toaddress);
+                            mail.setSubject(templateId[0].Subject);
+                            mail.setHtmlBody(body);
+                            Messaging.sendEmail(new Messaging.SingleEmailMessage[]{mail});
+                            string mobileMessage = '';
+                           if(objCommunity.Click_Page_Prefix__c == 'ACF'){
+                             mobileMessage=Label.Applicant_Econsent_Message_ACF; 
+                            }
+                            else 
+                            {
+                                mobileMessage=Label.Applicant_E_consent_message;
+                            } 
+                            mobileMessage=mobileMessage.replace('{!econsentid}',finalData);             
+                            mobileMessage=mobileMessage.replace('{!Account.Name}',app.acf_Applicant_Name__c);  
+                           
+                            System.debug('___________mobileMessage_____________'+mobileMessage);                            
+                          acfCommon.SendSMSUsingFutureEconsent(app.acf_Applicant_Name__c,app.Applicant_Phone__c,mobileMessage ,true,objCommunity.Click_Page_Prefix__c);
+                        }
+                       
+                    }
+                   
+                }
+                catch(Exception Ex)
+                      {
+                          
+                      } 
+                
+              
+                     
+       
    }
 }

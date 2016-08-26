@@ -10,12 +10,13 @@ public  class acfTriggerOnOpportunityLineItemHandler
   {
     UpdateOpportunityLineItem(triggerNew);
   }
-  public void OnAfterInsert(List<Opportunitylineitem>triggerNew)
+  public void OnAfterInsert(List<Opportunitylineitem>triggerNew, Map<Id,OpportunityLineItem> triggernewMap)
   {
     
     UpdateFeeInOpportunity(triggerNew);
     updateRequiredDocumentOnOpportunity(triggerNew);
     updateFundingPosition(triggerNew);
+    createEConsentForProduct(triggerNew,triggernewMap,'Insert');
   }
   public void OnAfterUpdate(List<Opportunitylineitem>triggerNew)
   {
@@ -23,9 +24,243 @@ public  class acfTriggerOnOpportunityLineItemHandler
     updateRequiredDocumentOnOpportunity(triggerNew);
     updateFundingPosition(triggerNew);
   }
-  public void OnAfterDelete(List<Opportunitylineitem>triggerOld)
+  public void OnAfterDelete(List<Opportunitylineitem>triggerOld,Map<Id,Opportunitylineitem> triggerOldMap)
   {
-      UpdateFeeInOpportunity(triggerOld);
+     // UpdateFeeInOpportunity(triggerOld);
+     deleteEConsetForProduct(triggerOld,triggerOldMap);
+     // createEConsentForProduct(triggerold,trigger.oldMap,'Delete');
+  }
+  
+  public void deleteEConsetForProduct(List<Opportunitylineitem> oppDML,Map<Id,Opportunitylineitem> oppLineMap){
+       List<Opportunity> oppList;
+       List<Product2> prodList;
+       Map<id,id> oppProductMap = new Map<id,id>();
+       Set<id> appSet = new Set<id>();
+       List<E_Consent__c> consentToDelete = new List<E_Consent__c>();
+       Set<id> productSet = new Set<id>();
+       Map<id,id> prodBankMap = new Map<id,id>();
+       Set<id> oppSet = new Set<id>();
+       Map<id,PricebookEntry> priceBookMap = new Map<id,PricebookEntry>([Select id,Product2Id FROM PricebookEntry]);
+       
+       for(OpportunityLineItem tNew:oppDML){
+         system.debug('###tNew'+priceBookMap.get(tNew.PricebookEntryId).Product2Id);
+         system.debug('###tNew'+tNew);
+         if(priceBookMap !=null && priceBookMap.containsKey(tNew.PricebookEntryId)){
+            productSet.add(priceBookMap.get(tNew.PricebookEntryId).Product2Id);
+            oppProductMap.put(tNew.id,priceBookMap.get(tNew.PricebookEntryId).Product2Id);
+         }
+         
+         if(tNew.OpportunityId !=null)
+            oppSet.add(tNew.OpportunityId);
+       }
+       
+            
+        if(oppSet != null && oppSet.size() > 0){
+            oppList = [Select id, (Select Id,PricebookEntryId From OpportunityLineItems), (Select id FROM Applicants__r) From Opportunity o where id=:oppSet];
+         }
+         
+         if(productSet != null && productSet.size() > 0){
+             prodList = [Select id,Click_Loans_Bank_Detail__c FROM Product2 where id=:productSet];
+         }
+         
+         system.debug('###prodDoc'+prodList);
+         for(Product2 pr:prodList){
+             prodBankMap.put(pr.id,pr.Click_Loans_Bank_Detail__c);
+         }
+            
+        for(Opportunity opp:oppList){
+            for(click_Applicant__c app:opp.Applicants__r){   
+                appSet.add(app.id);
+            }    
+        }
+         System.Debug('appset======'+appset);
+         List<E_Consent__c> consentExistingList =  [Select id,EConsent_Type__c,Applicant__c,Consent_Completed__c,Related_Bank_Id__c from E_Consent__c where Applicant__c=:appSet];
+         System.Debug('=========='+consentExistingList );
+         Map<id,List<E_Consent__c>> appConsentMap = new Map<id,List<E_Consent__c>>();
+         Set<id> bankStringSet = new Set<id>();
+         System.Debug('outttttt');
+         for(E_Consent__c conObj:consentExistingList){
+             System.Debug('fooooooooooooor');
+            if(!appConsentMap.containsKey(conObj.Applicant__c)){
+                System.Debug('forrrrrr if');
+                appConsentMap.put(conObj.Applicant__c, new List<E_Consent__c>());
+            }
+            appConsentMap.get(conObj.Applicant__c).add(conObj);
+            
+         }
+         
+         Map<id,List<OpportunityLineItem>> deletedLineItem = new Map<id,List<OpportunityLineItem>>();
+         for(Id lineId:oppLineMap.KeySet()){
+             if(!deletedLineItem.containsKey(oppLineMap.get(lineId).OpportunityId))
+                 deletedLineItem.put(oppLineMap.get(lineId).OpportunityId,new List<OpportunityLineItem>());
+             deletedLineItem.get(oppLineMap.get(lineId).OpportunityId).add(oppLineMap.get(lineId));
+         }
+         
+         for(Opportunity opp:oppList){
+            //integer countLineItem = 0;
+            System.debug('###prod'+prodBankMap);
+             System.debug('###opp'+oppProductMap);
+            for(OpportunityLineItem oppLi:opp.OpportunityLineItems){
+                oppProductMap.put(oppLi.id,priceBookMap.get(oppLi.PricebookEntryId).Product2Id);
+            }
+            for(OpportunityLineItem oppLi:opp.OpportunityLineItems){
+                bankStringSet.add(prodBankMap.get(oppProductMap.get(oppLi.id)));
+            }
+            system.debug('###bankStringSet'+bankStringSet);
+            System.debug('###deleted'+deletedLineItem.get(opp.id));
+            for(OpportunityLineItem oppLi:deletedLineItem.get(opp.id)){
+                //if(oppLi.OpportunityId == opp.id){
+                   if(!bankStringSet.contains(prodBankMap.get(oppProductMap.get(oppLi.id)))){
+                      for(click_Applicant__c app:opp.Applicants__r){
+                          if(appConsentMap.containsKey(app.id)){
+                              for(E_Consent__c econ:appConsentMap.get(app.id)){
+                                  if(econ.Related_Bank_Id__c == prodBankMap.get(oppProductMap.get(oppLi.id)) && econ.Consent_Completed__c == false){
+                                      consentToDelete.add(econ);
+                                  }
+                              }
+                          }
+                      }  
+                   } 
+                //}
+            }
+               
+         }  
+         if(consentToDelete.size() > 0){
+             delete consentToDelete;
+         }
+  }
+  
+  public void createEConsentForProduct(List<Opportunitylineitem> oppDML,Map<Id,Opportunitylineitem> oppLineMap, String event){
+     Set<id> productSet = new Set<id>();
+     Set<id> oppSet = new Set<id>();
+     Map<id,List<Product_Document__c>> dependentDocMap = new Map<id,List<Product_Document__c>>();
+     List<Opportunity> oppList;
+     List<Product2> prodDocList;
+     Map<id,id> oppProductMap = new Map<id,id>();
+     Map<id,id> prodBankMap = new Map<id,id>();
+     Set<id> bankSet = new Set<id>();
+     List<E_Consent__c> consentToDelete = new List<E_Consent__c>();
+     Map<id,PricebookEntry> priceBookMap = new Map<id,PricebookEntry>([Select id,Product2Id FROM PricebookEntry]);
+     List<E_Consent__c> consentList = new List<E_Consent__c>();
+     
+     system.debug('###Entered'+oppDML);
+     for(OpportunityLineItem tNew:oppDML){
+         system.debug('###tNew'+priceBookMap.get(tNew.PricebookEntryId).Product2Id);
+         system.debug('###tNew'+tNew);
+         if(priceBookMap !=null && priceBookMap.containsKey(tNew.PricebookEntryId)){
+            productSet.add(priceBookMap.get(tNew.PricebookEntryId).Product2Id);
+            oppProductMap.put(tNew.id,priceBookMap.get(tNew.PricebookEntryId).Product2Id);
+         }
+         
+         if(tNew.OpportunityId !=null)
+            oppSet.add(tNew.OpportunityId);
+         
+     } 
+     if(event == 'Insert'){
+         if(oppSet != null && oppSet.size() > 0){
+            oppList = [Select id, (Select Id From OpportunityLineItems), (Select id FROM Applicants__r) From Opportunity o where id=:oppSet];
+         }
+         
+         if(productSet != null && productSet.size() > 0){
+             prodDocList = [Select id,Click_Loans_Bank_Detail__c ,(Select id,Click_Loans_Document_Master__c,Click_Loans_Document_Master__r.acf_Source__c,Product__c FROM DepedentDocumentOnProduct__r) FROM Product2 where id=:productSet];
+         
+             system.debug('###prodDoc'+prodDocList);
+             for(Product2 pr:prodDocList){
+                 system.debug('###bank'+bankSet);
+                 if(!bankset.contains(pr.Click_Loans_Bank_Detail__c)){
+                     for(Product_Document__c depDoc:pr.DepedentDocumentOnProduct__r){
+                         if(!dependentDocMap.containsKey(pr.id)){
+                            dependentDocMap.put(pr.id,new List<Product_Document__c>());
+                         }
+                         if(depDoc.Click_Loans_Document_Master__r.acf_Source__c == 'E-Consent')
+                            dependentDocMap.get(pr.id).add(depDoc);
+                     }
+                     
+                     prodBankMap.put(pr.id,pr.Click_Loans_Bank_Detail__c);
+                     bankset.add(pr.Click_Loans_Bank_Detail__c);
+                 }
+                 system.debug('###pro'+prodBankMap);
+                 
+             }
+         }
+       
+       
+        
+         Set<id> appSet = new Set<id>();
+         for(Opportunity opp:oppList){
+            for(click_Applicant__c app:opp.Applicants__r){
+                 appSet.add(app.id);
+            }
+         }
+         
+         system.debug('###appSet'+appSet);
+         List<E_Consent__c> consentExistingList =  [Select id,EConsent_Type__c,Applicant__c,Related_Bank_Id__c from E_Consent__c where Applicant__c=:appSet];
+         
+         Set<String> relatedBankId;
+         Map<id,List<E_Consent__c>> appConsentMap = new Map<id,List<E_Consent__c>>();
+         
+         for(E_Consent__c conObj:consentExistingList){
+            if(!appConsentMap.containsKey(conObj.Applicant__c)){
+                appConsentMap.put(conObj.Applicant__c, new List<E_Consent__c>());
+            }
+            appConsentMap.get(conObj.Applicant__c).add(conObj);
+            
+         }
+         
+         for(Opportunity opp:oppList){
+              
+             relatedBankId = new Set<String>();
+             for(OpportunityLineItem oppLi:opp.OpportunityLineItems){
+                
+                if(oppLineMap !=null && oppLineMap.containsKey(oppLi.id) && oppProductMap!=null && oppProductMap.get(oppLi.id)!= null && oppProductMap.get(oppLi.id) != null && dependentDocMap.get(oppProductMap.get(oppLi.id)) !=null && dependentDocMap.get(oppProductMap.get(oppLi.id)).size() > 0){  
+                    for(click_Applicant__c app:opp.Applicants__r){
+                        boolean flag = true;
+                        if(appConsentMap.containsKey(app.id) && appConsentMap.get(app.id).size() > 0){
+                            for(E_Consent__c econ:appConsentMap.get(app.id)){
+                                if(econ.Related_Bank_Id__c == prodBankMap.get(oppProductMap.get(oppLi.id))){
+                                    flag = false;
+                                    break;
+                                }
+                                else{
+                                    continue;
+                                }
+                            }
+                        }
+                        if(appConsentMap.containsKey(app.id) && appConsentMap.get(app.id).size() == 0){
+                            flag = true;
+                        }
+                        if(flag == true){
+                            consentList.add(new E_Consent__c(EConsent_Type__c = 'Product Specific Econsent',Applicant__c=app.id,Related_Product_Id__c = oppProductMap.get(oppLi.id), Related_Bank_Id__c = prodBankMap.get(oppProductMap.get(oppLi.id))));
+                        }
+                        
+                    }
+                       
+                }
+            }
+        }
+     }
+     system.debug('###noEconsnet'+consentList);
+
+     if(consentList.size() > 0){
+         insert consentList;
+     }
+        
+        
+    if(event == 'Delete'){
+         List<E_Consent__c> econsentList = [Select id,Consent_Completed__c,EConsent_Type__c From E_Consent__c where Related_Product_Id__c=:productSet];
+         if(econsentList !=null && econsentList.size() >0){
+             for(E_Consent__c eCon:econsentList){
+                 if(eCon.Consent_Completed__c == false && eCon.EConsent_Type__c == 'Product Specific Econsent'){
+                      consentToDelete.add(eCon);
+                 }
+    
+             }
+             system.debug('###consent'+consentToDelete);
+             if(consentToDelete.size() > 0)
+                delete consentToDelete;
+            }
+    }
+     
   }
   
   public void updateFundingPosition(List<opportunitylineitem> triggernew){
