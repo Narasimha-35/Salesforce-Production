@@ -33,6 +33,7 @@ public class QSUtil {
 	public static String stringify(String objectName, Object obj) {
 		String jsonString = JSON.serialize(obj, true);
 		JSONParser jp = JSON.createParser(jsonString);
+		System.debug(jsonString);
 
 		Stack st = new Stack();
 		String ret = '';
@@ -53,6 +54,7 @@ public class QSUtil {
 			|| token == JSONToken.VALUE_NUMBER_FLOAT
 			|| token == JSONToken.VALUE_NUMBER_INT
 			) {
+				if(isArrayLabel((String) st.peak())) increaseArrayStackValue(st);
 				String atomString = '';
 				while (st.hasNext()) {
 					if(st.toString() != OBJECT_MARK) atomString = constructItemString(st.toString()) + atomString;

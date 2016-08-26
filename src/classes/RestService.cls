@@ -47,7 +47,7 @@ public virtual class RestService extends Service {
 		}
 		req.setEndPoint(url);
 		req.setMethod(method);
-		req.setBody(body);
+		if(body != null) req.setBody(body);
 
 		return req;
 	}
