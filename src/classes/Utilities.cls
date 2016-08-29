@@ -3,6 +3,7 @@ global class Utilities {
   public static final String SOBJECT_NAME= 'sobjectName';
   public static final String SOBJECT_TYPE = 'sobjectType';
   public static final Map<String, String> stateTimeZoneMap;
+  private static String kHexChars = '0123456789abcdef';
   static{
     stateTimeZoneMap = new Map<String, String>();
     stateTimeZoneMap.put('WA', '(UTC+08:00) Perth');
@@ -385,17 +386,17 @@ global class Utilities {
   }
 
   public static PageReference constructPageRef(String pageName, Map<String, String> params) {
-		PageReference ret = new PageReference('/apex/' + pageName);
-		for(String k : params.keySet()) {
-			ret.getParameters().put(k, params.get(k));
-		}
-		return ret;
-	}
+        PageReference ret = new PageReference('/apex/' + pageName);
+        for(String k : params.keySet()) {
+            ret.getParameters().put(k, params.get(k));
+        }
+        return ret;
+    }
 
-	//could Throws VisualforceException
-	public static Blob getPageAsPDF(PageReference pr) {
-		return pr.getContentAsPDF();
-	}
+    //could Throws VisualforceException
+    public static Blob getPageAsPDF(PageReference pr) {
+        return pr.getContentAsPDF();
+    }
 
   public static String increaseDuplicateCounter(String name) {
     Pattern namePattern = Pattern.compile('[(][1-9][0-9]?[)]');
@@ -422,5 +423,45 @@ global class Utilities {
       }
       return randStr;
   }
+ //@InvocableMethod
+ global static List<String> NewGuid() {
 
+        String returnValue = '';
+        Integer nextByte = 0;
+
+        for (Integer i=0; i<16; i++) {
+
+            if (i==4 || i==6 || i==8 || i==10)
+                returnValue += '-';
+
+            nextByte = (Math.round(Crypto.getRandomInteger() * 255)-128) & 255;
+
+            if (i==6) {
+                nextByte = nextByte & 15;
+                nextByte = nextByte | (4 << 4);
+            }
+
+            if (i==8) {
+                nextByte = nextByte & 63;
+                nextByte = nextByte | 128;
+            }
+
+            returnValue += Utilities.getCharAtIndex(kHexChars, nextByte >> 4);
+            returnValue += Utilities.getCharAtIndex(kHexChars, nextByte & 15);
+        }
+        List<String> values = new List<String>();
+        values.add(returnValue);
+        return values;
+    }
+
+    global static String getCharAtIndex(String str, Integer index) {
+
+        if (str == null) return null;
+
+        if (str.length() <= 0) return str;
+
+        if (index == str.length()) return null;
+
+        return str.substring(index, index+1);
+    }
 }
