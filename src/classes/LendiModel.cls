@@ -96,7 +96,7 @@ public with sharing class LendiModel {
 					incSCDetail.incomeAndExpense__c = inc.income_sf_id;
 					incSCDetail.incomeAndExpenseId__c = inc.income_sf_id;
 					incSCDetail.recogitionAmount__c = inc.recognition_rate == null ? 0 : inc.original_amount * inc.recognition_rate;
-					incSCDetail.recogitionPercentage__c = inc.recognition_rate;
+					incSCDetail.recogitionPercentage__c = inc.recognition_rate * 100;
 					incSCDetail.ServicingCalculator__c = scId;
 					ret.add(incSCDetail);
 				}
@@ -109,7 +109,7 @@ public with sharing class LendiModel {
 					expSCDetail.incomeAndExpense__c = exp.income_sf_id;
 					expSCDetail.incomeAndExpenseId__c = exp.income_sf_id;
 					expSCDetail.recogitionAmount__c = exp.recognition_rate == null ? 0 : exp.original_amount * exp.recognition_rate;
-					expSCDetail.recogitionPercentage__c = exp.recognition_rate;
+					expSCDetail.recogitionPercentage__c = exp.recognition_rate * 100;
 					expSCDetail.ServicingCalculator__c = scId;
 					ret.add(expSCDetail);
 				}
