@@ -13,9 +13,14 @@ public class LendiProductService {
 		List<ServiceCalculatorDetail__c> scds = lendiSC.generateDetails(sfSC.id);
 		System.debug(scds);
 		List<Database.UpsertResult> scDetailRes = Database.upsert(scds, ServiceCalculatorDetail__c.Fields.incomeAndExpenseId__c, false);
-		//TODO: delete other sc details
+		deleteServicingCalculatorDetail((new Map<Id, ServiceCalculatorDetail__c>(scds)).keySet(), oppoId);
 
+		//TODO: if error roll back
 		System.debug(scDetailRes);
+	}
+
+	public static void deleteServicingCalculatorDetail(Set<Id> idsToKeep, Id oppoId) {
+		delete [SELECT id FROM ServiceCalculatorDetail__c WHERE id NOT IN :idsToKeep AND ServicingCalculator__r.opportunity__c =  :oppoId];
 	}
 
 }
