@@ -88,7 +88,7 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest1);
         Lead leadTest1New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest1.Id];
     }
-    
+
     static testMethod void testUpdateTimezoneOnLead1b() {
         Lead leadTest2 = new Lead();
         leadTest2.LastName = 'test2';
@@ -97,7 +97,7 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest2);
         Lead leadTest2New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest2.Id];
     }
-    
+
     static testMethod void testUpdateTimezoneOnLead1c() {
         Lead leadTest3 = new Lead();
         leadTest3.LastName = 'test3';
@@ -106,7 +106,7 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest3);
         Lead leadTest3New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest3.Id];
     }
-    
+
     static testMethod void testUpdateTimezoneOnLead1d() {
         Lead leadTest4 = new Lead();
         leadTest4.LastName = 'test4';
@@ -115,7 +115,7 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest4);
         Lead leadTest4New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest4.Id];
     }
-    
+
     static testMethod void testUpdateTimezoneOnLead1e() {
         Lead leadTest5 = new Lead();
         leadTest5.LastName = 'test5';
@@ -124,8 +124,8 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest5);
         Lead leadTest5New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest5.Id];
     }
-    
-    static testMethod void testUpdateTimezoneOnLead1f() 
+
+    static testMethod void testUpdateTimezoneOnLead1f()
     {
         Lead leadTest6 = new Lead();
         leadTest6.LastName = 'test6';
@@ -134,8 +134,8 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest6);
         Lead leadTest6New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest6.Id];
     }
-    
-    static testMethod void testUpdateTimezoneOnLead1g() 
+
+    static testMethod void testUpdateTimezoneOnLead1g()
     {
         Lead leadTest7 = new Lead();
         leadTest7.LastName = 'test7';
@@ -144,8 +144,8 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest7);
         Lead leadTest7New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest7.Id];
     }
-    
-    static testMethod void testUpdateTimezoneOnLead1h() 
+
+    static testMethod void testUpdateTimezoneOnLead1h()
     {
         Lead leadTest8 = new Lead();
         leadTest8.LastName = 'test8';
@@ -154,8 +154,8 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest8);
         Lead leadTest8New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest8.Id];
     }
-    
-    static testMethod void testUpdateTimezoneOnLead1i() 
+
+    static testMethod void testUpdateTimezoneOnLead1i()
     {
         Lead leadTest9 = new Lead();
         leadTest9.LastName = 'test9';
@@ -164,8 +164,8 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest9);
         Lead leadTest9New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest9.Id];
     }
-    
-    static testMethod void testUpdateTimezoneOnLead1j() 
+
+    static testMethod void testUpdateTimezoneOnLead1j()
     {
         Lead leadTest10 = new Lead();
         leadTest10.LastName = 'test10';
@@ -174,8 +174,8 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest10);
         Lead leadTest10New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest10.Id];
     }
-    
-    static testMethod void testUpdateTimezoneOnLead1K() 
+
+    static testMethod void testUpdateTimezoneOnLead1K()
     {
         Lead leadTest11 = new Lead();
         leadTest11.LastName = 'test11';
@@ -184,8 +184,8 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest11);
         Lead leadTest11New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest11.Id];
     }
-    
-    static testMethod void testUpdateTimezoneOnLead1l() 
+
+    static testMethod void testUpdateTimezoneOnLead1l()
     {
         Lead leadTest12 = new Lead();
         leadTest12.LastName = 'test12';
@@ -194,17 +194,17 @@ private class UtilitiesTest {
         Utilities.updateTimezoneOnLead(leadTest12);
         Lead leadTest12New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest12.Id];
     }
-    
-    static testMethod void testUpdateTimezoneOnLead1m() 
+
+    static testMethod void testUpdateTimezoneOnLead1m()
     {
         Lead leadTest14 = new Lead();
         leadTest14.LastName = 'test14';
         leadTest14.StateCode = 'VIC';
         insert leadTest14;
         Utilities.updateTimezoneOnLead(leadTest14);
-        Lead leadTest14New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest14.Id]; 
+        Lead leadTest14New = [SELECT Id, vhc__TimeZone__c From Lead Where Id =: leadTest14.Id];
     }
-    
+
     static testMethod void testSendEmail() {
         Utilities.sendEmail(new list<String>{'test@creditandfinance.com.au'}, 'test', 'test');
     }
@@ -223,36 +223,6 @@ private class UtilitiesTest {
         insert a;
         System.assertEquals(a.id, Utilities.castId(a.id));
         System.assertEquals(null, Utilities.castId('abc'));
-    }
-
-    private static testMethod void testIsBussy() {
-        Datetime now = Datetime.now();
-
-        Saasfocus_EventClass e = new Saasfocus_EventClass();
-        e.StartDateTime = String.valueOf(now);
-        e.EndDateTime = String.valueOf(now.addDays(1));
-
-        Datetime st = now.addMinutes(1);
-        Datetime ed = st.addDays(1);
-        System.assertEquals(true, Utilities.isBussy(st, ed, e));
-
-        st = now.addMinutes(-2);
-        System.assertEquals(true, Utilities.isBussy(st, ed, e));
-
-        ed = ed.addMinutes(-2);
-        System.assertEquals(true, Utilities.isBussy(st, ed, e));
-
-        st = now.addMinutes(-10);
-        ed = now.addMinutes(-9);
-        System.debug(String.valueofGmt(st));
-        System.debug(String.valueofGmt(ed));
-        System.debug(e.startdatetime);
-        System.debug(e.enddatetime);
-        System.assertEquals(false, Utilities.isBussy(st, ed, e));
-
-        st = now.addDays(1).addMinutes(8);
-        ed = now.addDays(1).addMinutes(10);
-        System.assertEquals(false, Utilities.isBussy(st, ed, e));
     }
 
     private static testMethod void testIncreaseDuplicateCounter() {
@@ -274,8 +244,8 @@ private class UtilitiesTest {
         Integer num = 10;
         System.assertEquals(num, ((String) Utilities.generateRandomString(num)).length());
     }
-    
-    private static testMethod void testNewGuid() 
+
+    private static testMethod void testNewGuid()
     {
         Utilities.NewGuid();
         Utilities.getGMTTime(system.now());
@@ -290,8 +260,8 @@ private class UtilitiesTest {
         obj.StartDateTime = string.valueof(startDateTime);
         obj.EndDateTime = string.valueof(endDateTime);
         lstEventClass.add(obj);
-        
-        Utilities.isBussy(startDateTime,endDateTime,lstEventClass);
+
+        GoogleCalendarUtility.isBusy(startDateTime,endDateTime,lstEventClass);
         Map<String, Schema.DisplayType> maps = new Map<String, Schema.DisplayType>();
         maps.put('Name',Schema.DisplayType.Date);
         Utilities.parseValue(maps,'Name','Account');

@@ -64,6 +64,7 @@ public class Saasfocus_GetGoogleEvent
             System.debug('GOOGLE CALENDER RESPONSE::::::'+res.getBody());
 
             b.isBusy = GoogleCalendarUtility.isBusy(StartDateTime, EndDateTime, bobject.Email__c);
+            System.debug(LoggingLevel.INFO, 'the account: ' + bobject.Email__c + ' @: ' + StartDateTime + ' to ' + EndDateTime + ' isBusy: ' + b.isBusy);
             GoogleCalendarUtility.updateGoogleSetting();
 
 // Check If Google Calender Contains Events or Not
