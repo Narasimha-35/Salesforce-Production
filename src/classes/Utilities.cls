@@ -370,21 +370,6 @@ global class Utilities {
     }
   }
 
-  public static Boolean isBussy(Datetime startTime, Datetime endTime, List<Saasfocus_EventClass> events) {
-    for(Saasfocus_EventClass e : events) if(isBussy(startTime, endTime, e)) return true;
-    return false;
-  }
-
-  public static Boolean isBussy(Datetime startTime, Datetime endTime, Saasfocus_EventClass event) {
-    Datetime st = Datetime.valueOf(event.startDateTime);
-    Datetime ed = Datetime.valueOf(event.endDateTime);
-
-    if(startTime.getTime() < st.getTime() && endTime.getTime() > ed.getTime()) return true;
-    if(st.getTime() < startTime.getTime() && startTime.getTime() < ed.getTime()) return true;
-    if(st.getTime() < endTime.getTime() && endTime.getTime() < ed.getTime()) return true;
-    return false;
-  }
-
   public static PageReference constructPageRef(String pageName, Map<String, String> params) {
         PageReference ret = new PageReference('/apex/' + pageName);
         for(String k : params.keySet()) {
@@ -423,7 +408,7 @@ global class Utilities {
       }
       return randStr;
   }
- //@InvocableMethod 
+ //@InvocableMethod
  global static List<String> NewGuid() {
 
         String returnValue = '';
@@ -431,7 +416,7 @@ global class Utilities {
 
         for (Integer i=0; i<16; i++) {
 
-            if (i==4 || i==6 || i==8 || i==10) 
+            if (i==4 || i==6 || i==8 || i==10)
                 returnValue += '-';
 
             nextByte = (Math.round(Crypto.getRandomInteger() * 255)-128) & 255;
@@ -458,9 +443,9 @@ global class Utilities {
 
         if (str == null) return null;
 
-        if (str.length() <= 0) return str;    
+        if (str.length() <= 0) return str;
 
-        if (index == str.length()) return null;    
+        if (index == str.length()) return null;
 
         return str.substring(index, index+1);
     }

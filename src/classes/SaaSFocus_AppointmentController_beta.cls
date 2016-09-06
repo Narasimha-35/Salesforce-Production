@@ -41,6 +41,10 @@ public class SaaSFocus_AppointmentController_beta {
     public Integer Tempvar{get;set;}
     public Integer Temp1{get;set;}
 
+    public class Busy {
+        public Boolean isBusy;
+    }
+
     private Boolean isDynamicTimeOffset = Allocate_Appointment__c.getValues('System').dynamicTimeOffset__c;
 
     public Integer getSydneyLocalMinuteDiff(Datetime dt, String timezone) {
@@ -366,11 +370,14 @@ public class SaaSFocus_AppointmentController_beta {
         if(AppStarttime.time().addMinutes(DurationOfMeeting)>=DayEndTime.addminutes(offset))
         EveEndTime = AppStarttime.addminutes(DurationOfMeeting);
 
-        Saasfocus_GetGoogleEvent ob = new Saasfocus_GetGoogleEvent();
+        Saasfocus_GetGoogleEvent ob = new Saasfocus_GetGoogleEvent(); //DML
         system.debug('Eventtime===>'+EveStartTime+'EndTime===>'+EveEndTime+'ID of broker===>'+IdBroker);
-        CalenderEvents  = ob.getEventslist(EveStartTime,EveEndTime ,IdBroker);
 
-        if(Utilities.isBussy(eveStartTime, eveEndTime, calenderEvents)) {
+        Busy b = new Busy();
+        b.isBusy = true;
+        CalenderEvents  = ob.getEventslist(EveStartTime,EveEndTime ,IdBroker, b);
+
+        if(b.isBusy) {
             Utilities.sendEmail(new List<String>{'anthony.xuan@creditandfinance.com.au', 'chen@creditandfinance.com.au'}, 'out of sync', 'Broker Id:' + IdBroker + ' Start time:' + EveStartTime + ' End Time' + EveEndTime);
 
             pagereference pg= new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId +'&err=1');
