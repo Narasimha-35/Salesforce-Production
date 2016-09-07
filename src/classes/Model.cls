@@ -1,5 +1,11 @@
+/*
+* Model
+*/
 public abstract class Model {
-	//the patten prefix for the field name are system reserved
+
+	/*
+	* The patten prefix for the field name are system reserved
+	*/
 	public static final String REMOVE_RESERVE_PATTEN = 'param_rr_';
 
 	public Object get(String f) {
@@ -9,7 +15,9 @@ public abstract class Model {
 		return oMap.get(f);
 	}
 
-	//Usage: m = (MyModel) m.put('attribute1', 'Some String', MyModel.class);
+	/*
+	* Usage: m = (MyModel) m.put('attribute1', 'Some String', MyModel.class);
+	*/
 	public Object put(String f, Object v, System.Type t) {
 		Map<String, Object> oMap;
 		String s = JSON.serialize(this);
@@ -32,9 +40,41 @@ public abstract class Model {
 		return ret;
 	}
 
-	//Note: very unlikely to have some field starts with 'param_rr_' and does not because of system reserved
+	/*
+	* Note: very unlikely to have some field starts with 'param_rr_' and does not because of system reserved
+	* @depriciated
+	*/
 	public Boolean isContainsReservedName() {
 		for(String s : getAttributes()) if(s.startsWith(REMOVE_RESERVE_PATTEN)) return true;
 		return false;
 	}
+
+	public String serializeJSON() {
+		return serializeJSON(false);
+	}
+
+	public String serializeJSON(Boolean suppressApexObjectNulls) {
+		String ret = JSON.serialize(this, suppressApexObjectNulls);
+		return ret.replace(REMOVE_RESERVE_PATTEN, '');
+	}
+
+	public static Object deserializeJSON(String jsonString, System.Type t) {
+		JSONParser jp = JSON.createParser(jsonString);
+		Set<String> fieldNameNeedsToReplace = new Set<String>();
+
+		while(jp.nextToken() != null) {
+			JSONToken token = jp.getCurrentToken();
+			String value = jp.getText();
+			if(token == JSONToken.FIELD_NAME && SystemStaticValues.RESERVED_KEYWORDS.contains(value)) {
+				fieldNameNeedsToReplace.add(value);
+			}
+		}
+
+		for(String fn : fieldNameNeedsToReplace) {
+			jsonString = jsonString.replace('"' + fn + '"', '"' + REMOVE_RESERVE_PATTEN + fn + '"');
+		}
+
+		return (Object) JSON.deserialize(jsonString, t);
+	}
+
 }
