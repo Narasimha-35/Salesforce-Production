@@ -40,9 +40,12 @@ public class SaaSFocus_AppointmentController_beta {
     public boolean chkcolor{set;get;}
     public Integer Tempvar{get;set;}
     public Integer Temp1{get;set;}
+    public static Busy b = new Busy();
 
     public class Busy {
         public Boolean isBusy;
+        public List<GoogleCalendarModel.BusyItem> busyItems;
+        public String brokerEmail;
     }
 
     private Boolean isDynamicTimeOffset = Allocate_Appointment__c.getValues('System').dynamicTimeOffset__c;
@@ -79,7 +82,12 @@ public class SaaSFocus_AppointmentController_beta {
 
         system.debug('!limca' +offset );
         if(!testMode && ApexPages.currentPage().getParameters().get('err') != null && ApexPages.currentPage().getParameters().get('err') =='1') {
-            ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'The system was found to be out of sync. Please try again');
+            TimeZone tz = UserInfo.getTimeZone();
+            String message = 'Broker ' + b.brokerEmail + ' is busy at';
+            for(GoogleCalendarModel.BusyItem item : b.busyItems) {
+                message += ' from ' + item.start.addHours(-1).format('MM/dd/yyyy HH:mm:ss', tz.getID()) + ' to ' + item.param_rr_end.addHours(1).format('MM/dd/yyyy HH:mm:ss', tz.getID());
+            }
+            ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, message);
             ApexPages.addMessage(myMsg);
         }
         if(Appointob.Appointment_Type__c == 'Phone Appointment') {
@@ -373,7 +381,6 @@ public class SaaSFocus_AppointmentController_beta {
         Saasfocus_GetGoogleEvent ob = new Saasfocus_GetGoogleEvent(); //DML
         system.debug('Eventtime===>'+EveStartTime+'EndTime===>'+EveEndTime+'ID of broker===>'+IdBroker);
 
-        Busy b = new Busy();
         b.isBusy = true;
         CalenderEvents  = ob.getEventslist(EveStartTime,EveEndTime ,IdBroker, b);
 

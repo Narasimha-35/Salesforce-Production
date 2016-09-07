@@ -97,10 +97,13 @@ public class GoogleCalendarUtility {
 		return (GoogleCalendarModel.FreeBusyResponse) Model.deserializeJSON(res.getBody(), GoogleCalendarModel.FreeBusyResponse.class);
 	}
 
-	public static Boolean isBusy(Datetime timeMin, Datetime timeMax, String calendarId) {
+	public static GoogleCalendarModel.FreeBusyResponse getFreeBusy(Datetime timeMin, Datetime timeMax, String calendarId) {
 		GoogleCalendarModel.FreeBusyRequest fbReq = new GoogleCalendarModel.FreeBusyRequest(timeMin, timeMax, new List<String>{calendarId});
-		GoogleCalendarModel.FreeBusyResponse res = getFreeBusy(fbReq);
-		return res.calendars.get(calendarId).busy.size() > 0;
+		return getFreeBusy(fbReq);
+	}
+
+	public static List<GoogleCalendarModel.BusyItem> getListOfBusyItems(Datetime timeMin, Datetime timeMax, String calendarId) {
+		return getFreeBusy(timeMin, timeMax, calendarId).calendars.get(calendarId).busy;
 	}
 
 }
