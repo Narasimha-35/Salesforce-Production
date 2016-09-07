@@ -21,6 +21,10 @@ public class Saasfocus_GetGoogleEvent
     public List<Event>Evt_list = new List<Event>();
     Public List<Google_Recurring_Events__c> glist= new List<Google_Recurring_Events__c>();
 
+    public List<Saasfocus_EventClass> getEventslist(DateTime StartDateTime ,DateTime EndDateTime, String BrokerId) {
+        return null;
+    }
+
 // This Method is used for get the Event from the Google Calender and return the list of events
     public List<Saasfocus_EventClass> getEventslist(DateTime StartDateTime ,DateTime EndDateTime, String BrokerId, SaaSFocus_AppointmentController_beta.Busy b)
     {

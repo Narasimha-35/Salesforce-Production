@@ -6,13 +6,15 @@ public class GoogleCalendarUtility {
 	private static final String SERVER_NAME = 'https://www.googleapis.com';
 	private static final String APPLICATION_NAME = 'calendar';
 	private static final String API_VERSION = 'v3';
-	private static GoogleAuth gAuth = GoogleAuth.getInstance('calendar');
+	private static GoogleAuth gAuth;
 
 	public static String getAccessToken() {
+		gAuth = GoogleAuth.getInstance('calendar');
 		return gAuth.getAccessToken();
 	}
 
 	public static void updateGoogleSetting() {
+		gAuth = GoogleAuth.getInstance('calendar');
 		gAuth.updateAccessToken();
 	}
 
