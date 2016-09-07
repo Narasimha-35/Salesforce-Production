@@ -82,12 +82,7 @@ public class SaaSFocus_AppointmentController_beta {
 
         system.debug('!limca' +offset );
         if(!testMode && ApexPages.currentPage().getParameters().get('err') != null && ApexPages.currentPage().getParameters().get('err') =='1') {
-            TimeZone tz = UserInfo.getTimeZone();
-            String message = 'Broker ' + b.brokerEmail + ' is busy at';
-            for(GoogleCalendarModel.BusyItem item : b.busyItems) {
-                message += ' from ' + item.start.addHours(-1).format('MM/dd/yyyy HH:mm:ss', tz.getID()) + ' to ' + item.param_rr_end.addHours(1).format('MM/dd/yyyy HH:mm:ss', tz.getID());
-            }
-            ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, message);
+            ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, ApexPages.currentPage().getParameters().get('message'));
             ApexPages.addMessage(myMsg);
         }
         if(Appointob.Appointment_Type__c == 'Phone Appointment') {
@@ -387,7 +382,13 @@ public class SaaSFocus_AppointmentController_beta {
         if(b.isBusy) {
             Utilities.sendEmail(new List<String>{'anthony.xuan@creditandfinance.com.au', 'chen@creditandfinance.com.au'}, 'out of sync', 'Broker Id:' + IdBroker + ' Start time:' + EveStartTime + ' End Time' + EveEndTime);
 
-            pagereference pg= new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId +'&err=1');
+            TimeZone tz = UserInfo.getTimeZone();
+            String message = 'Broker ' + b.brokerEmail + ' is busy at';
+            for(GoogleCalendarModel.BusyItem item : b.busyItems) {
+                message += ' from ' + item.start.addHours(-1).format('MM/dd/yyyy HH:mm:ss', tz.getID()) + ' to ' + item.param_rr_end.addHours(1).format('MM/dd/yyyy HH:mm:ss', tz.getID());
+            }
+
+            pagereference pg= new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId +'&err=1&message=' + message);
             pg.setRedirect(true);
             return pg;
         } else {
