@@ -1,35 +1,24 @@
-trigger TriggerOnOpportunitylineItem on OpportunityLineItem (before insert, before update,after insert,after update,after delete) 
-{
-    acfTriggerOnOpportunityLineItemHandler obj = new acfTriggerOnOpportunityLineItemHandler();
-    if(trigger.isBefore)
-    {
-        if(trigger.isInsert)
-        {
-            system.debug('Before@@#$%');
-            obj.OnBeforeInsert(trigger.new);
-        }
-        else if(trigger.isUpdate)
-        {
-            system.debug('Before@@#$%');
-            obj.OnBeforeUpdate(trigger.new);
-        }
-    }
-    if(trigger.isAfter)
-    {
-        if(trigger.isInsert)
-        {
-            system.debug('After@@#$%');
-            obj.OnAfterInsert(trigger.new,trigger.newMap);
-        }
-        else if(trigger.isUpdate)
-        {
-            system.debug('After@@#$%');
-            obj.OnAfterUpdate(trigger.new);
-        }
-        
-        else if(trigger.isDelete){
-            system.debug('###called');
-            obj.onAfterDelete(trigger.old,trigger.oldMap);
-        }
-    }
+trigger TriggerOnOpportunitylineItem on OpportunityLineItem (before insert, before update, after delete, after insert, after update) {
+	acfTriggerOnOpportunityLineItemHandler obj = new acfTriggerOnOpportunityLineItemHandler();
+	OpportunityLineItemTriggerHandler handler = new OpportunityLineItemTriggerHandler();
+
+	if(Trigger.isBefore) {
+		if(Trigger.isInsert) obj.OnBeforeInsert(Trigger.new);
+		else if(Trigger.isUpdate) obj.OnBeforeUpdate(Trigger.new);
+	}
+
+	if(Trigger.isAfter) {
+		if(Trigger.isInsert) {
+			obj.OnAfterInsert(Trigger.new, Trigger.newMap);
+
+			//Servicing Cal
+			handler.afterInsert(Trigger.newMap);
+		} else if(Trigger.isUpdate) {
+			obj.OnAfterUpdate(Trigger.new);
+
+			//Servicing Cal
+			handler.afterUpdate(Trigger.newMap, Trigger.oldMap);
+		} else if(Trigger.isDelete) handler.afterDelete(Trigger.oldMap);
+	}
+
 }
