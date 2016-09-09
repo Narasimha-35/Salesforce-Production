@@ -664,21 +664,18 @@ global class WLDashboardDocumentController
                   
                   
                }
-               if(lstReqDoc[0].Bankid__C != null){
-               List<acfBank_Detail__c>  bank = [Select Id , acfBank_Name__c  from acfBank_Detail__c  where id = : lstReqDoc[0].Bankid__C ];
-               if(bank.size() > 0)
-               {
-                  String BankName = bank[0].acfBank_Name__c ; 
-                  String TemplateName ='';
-                  if(BankName != null){
-                    List<acf_Bank_Template__c>  lstBank = [Select Id ,Bank_Name__c from acf_Bank_Template__c
+                if(lstReqDoc[0].Bankid__C != null){
+             
+              
+                
+                    List<acf_Bank_Template__c>  lstBank = [Select Id ,Body__c ,Click_Loans_Bank_Detail__c from acf_Bank_Template__c
                     
-                    where Bank_Name__c = :BankName ] ;
+                    where Click_Loans_Bank_Detail__c = :   lstReqDoc[0].Bankid__C  ] ;
                    
-                       if(  lstReqDoc != null  && lstBank.size() > 0  && lstReqDoc[0].EconsentID__C != null  )
-                       SendEmail(lstBank[0].ID ,lstReqDoc[0].Click_Applicant__c  , lstReqDoc[0].Id  ,lstReqDoc[0].EconsentID__C   );  
-                   }
-                  }
+                      if(  lstReqDoc != null  && lstBank.size() > 0  && lstReqDoc[0].EconsentID__C != null  )
+                       SendEmail(lstBank[0].ID ,lstReqDoc[0].Click_Applicant__c  , lstReqDoc[0].Id  ,lstReqDoc[0].EconsentID__C   ); 
+                   
+                
                   
                }
                }
@@ -693,7 +690,8 @@ global class WLDashboardDocumentController
         if(reqDocId != null && reqDocId != '')
         {
             
-           List<Required_Document__c> lstReqDoc = [Select EconsentID__C  ,Bankid__c ,Id,Click_Applicant__c,acfStatus__c From Required_Document__c where id=:reqDocId];
+           List<Required_Document__c> lstReqDoc = [Select EconsentID__C  ,Bankid__c ,Id,Click_Applicant__c,
+           acfStatus__c From Required_Document__c where id=:reqDocId];
            if(!lstReqDoc.isEmpty())
            {
                if(lstReqDoc[0].acfStatus__c == 'Pending' || lstReqDoc[0].acfStatus__c == 'Not Verified')
@@ -706,20 +704,17 @@ global class WLDashboardDocumentController
                   
                }
                if(lstReqDoc[0].Bankid__C != null){
-               List<acfBank_Detail__c>  bank = [Select Id , acfBank_Name__c  from acfBank_Detail__c  where id = : lstReqDoc[0].Bankid__C ];
-               if(bank.size() > 0)
-               {
-                  String BankName = bank[0].acfBank_Name__c ; 
-                  String TemplateName ='';
-                  if(BankName != null){
-                    List<acf_Bank_Template__c>  lstBank = [Select Id ,Body__c,Bank_Name__c from acf_Bank_Template__c
+             
+              
+                
+                    List<acf_Bank_Template__c>  lstBank = [Select Id ,Body__c ,Click_Loans_Bank_Detail__c from acf_Bank_Template__c
                     
-                    where Bank_Name__c = :BankName ] ;
+                    where Click_Loans_Bank_Detail__c = :   lstReqDoc[0].Bankid__C  ] ;
                    
                       if(  lstReqDoc != null  && lstBank.size() > 0  && lstReqDoc[0].EconsentID__C != null  )
                        SendEmail(lstBank[0].ID ,lstReqDoc[0].Click_Applicant__c  , lstReqDoc[0].Id  ,lstReqDoc[0].EconsentID__C   ); 
-                   }
-                }
+                   
+                
                   
                }
                }
@@ -769,11 +764,11 @@ global class WLDashboardDocumentController
                             Messaging.sendEmail(new Messaging.SingleEmailMessage[]{mail});
                             string mobileMessage = '';
                            if(objCommunity.Click_Page_Prefix__c == 'ACF'){
-                             mobileMessage=Label.Applicant_Econsent_Message_ACF; 
+                             mobileMessage=Label.Applicant_Econsent_Message_Acf_for_product; 
                             }
                             else 
                             {
-                                mobileMessage=Label.Applicant_E_consent_message;
+                                mobileMessage=Label.Applicant_E_consent_message_for_product;
                             } 
                             mobileMessage=mobileMessage.replace('{!econsentid}',finalData);             
                             mobileMessage=mobileMessage.replace('{!Account.Name}',app.acf_Applicant_Name__c);  
