@@ -450,12 +450,4 @@ global class Utilities {
         return str.substring(index, index+1);
     }
 
-  public static Boolean isBussy(Datetime dt1, Datetime dt2, Saasfocus_EventClass ec) {
-    return false;
-  }
-
-  public static Boolean isBussy(Datetime dt1, Datetime dt2, List<Saasfocus_EventClass> ec) {
-    return false;
-  }
-
 }
