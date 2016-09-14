@@ -36,7 +36,7 @@ public class StackTest {
 
 	private static testMethod void testToString() {
 		Stack st = initTestStack();
-		System.assertEquals(testItem1 + ' -> ' + testItem2 + ' -> Head', '' + st);
+		System.assertEquals(testItem2, '' + st);
 	}
 
 }

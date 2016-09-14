@@ -9,12 +9,13 @@ public class WLDealIQcontrollerTracker
     private static product2 objPro;
     private static PriceBookEntry pbEntry;
     private static OpportunityLineItem oppLine;
-    private static Servicing__c objServicing;
+    private static ServicingCalculator__c objServicing;
     private static EmailHistory__c objEmailHistory;
     private static acfDealIQ_Condition__c objDealIqCondition;
 
     static testMethod void validate()
     {
+    Test.setMock(HttpCalloutMock.class, new  MockHttpResponseGeneratorforLendi ());
         LoadData();
         ApexPages.currentPage().getParameters().put('id',objOpportunity.Id);
         ApexPages.currentPage().getParameters().put('DealIqIds',objDealIqCondition.Id);
@@ -22,7 +23,33 @@ public class WLDealIQcontrollerTracker
         objDealIq.DealIqRecord();
         objDealIq.updateDealIqRecord();
     }
-    
+
+    static testMethod void getBankList()
+    {
+    Test.setMock(HttpCalloutMock.class, new  MockHttpResponseGeneratorforLendi ());
+
+
+        WLDealIQcontroller objDealIq = new WLDealIQcontroller();
+        objDealIq.getBankList();
+        WLDealIQcontroller.Bank bank = new WLDealIQcontroller.Bank ();
+        bank.bank_sf_id   = '';
+        bank.bank_uuid  = '';
+        bank.bank_short_name   = '';
+        bank.bank_full_name  = '';
+
+        WLDealIQcontroller.Bankdata  obh  = new WLDealIQcontroller.Bankdata();
+
+        obh.service_calculator_uuid  = '';
+
+        obh.maximum_borrowing  ='';
+        obh.Bank  = bank;
+
+
+
+
+
+    }
+
 
 
    private static void LoadData()
@@ -35,21 +62,22 @@ public class WLDealIQcontrollerTracker
         createProduct();
         createPriceBookEntry();
         createOpportunityLineItem();
-        
+
         Global_DealIQ_Condition__c objdealIqRule = new Global_DealIQ_Condition__c();
         objdealIqRule.Active__c = true;
         objdealIqRule.Category__c = 'Character';
         objdealIqRule.Object_Rule_Works_On__c = 'Product';
         insert objdealIqRule;
-        
-        objServicing = new Servicing__c();
+
+        objServicing = new ServicingCalculator__c();
         objServicing.Max_Borrowing_Power__c = 654323456;
         objServicing.Net_Monthly_Surplus__c = 7654;
         objServicing.Opportunity__c = objOpportunity.id;
+        objServicing.OpportunityId__c = objOpportunity.id;
         objServicing.Services_Funds_Requested__c = false;
         objServicing.Services_Funds_Required__c = false;
         insert objServicing;
-        
+
         objEmailHistory = new EmailHistory__c();
         objEmailHistory.ccRecipants__c = 'ankit2gmail.com';
         objEmailHistory.emailContent__c = 'ankit2gmail.com';
@@ -57,7 +85,7 @@ public class WLDealIQcontrollerTracker
         objEmailHistory.recipants__c = 'ankit2gmail.com';
         objEmailHistory.subject__c = 'Ankit Singh';
         insert objEmailHistory;
-        
+
         objDealIqCondition = new acfDealIQ_Condition__c();
         objDealIqCondition.acfComments__c = 'test';
         objDealIqCondition.acfOpportunity__c = objOpportunity.Id;
@@ -70,26 +98,26 @@ public class WLDealIQcontrollerTracker
         objLead=new Lead();
         objLead=WLCommonTrackerClass.createLead(objLead);
     }
-    
+
     static void createAccount()
     {
         objAccount = new Account();
         objAccount = WLCommonTrackerClass.CreatePersonAccount('test','test','88','test@gmail.com',objLead.id);
     }
-    
+
     static void createContact()
     {
         objContact = new Contact();
         objContact = WLCommonTrackerClass.createContact(objContact,objAccount );
     }
-    
+
     static void createuser()
     {
         objUser = new User();
         objuser.ContactId = objContact.id;
         objUser = WLCommonTrackerClass.CreatePortalUser(objAccount.id);
     }
-    
+
     static void createOpportunity()
     {
       objOpportunity = new Opportunity();
@@ -114,9 +142,9 @@ public class WLDealIQcontrollerTracker
         pbEntry.PriceBook2Id = Test.getStandardPricebookId();
         pbEntry.Product2Id = objPro.Id;
         pbEntry.IsActive = true;
-        insert pbEntry ; 
+        insert pbEntry ;
     }
-    
+
      static void createOpportunityLineItem()
     {
         oppLine = new OpportunityLineItem();
