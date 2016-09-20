@@ -40,7 +40,6 @@ public class SaaSFocus_AppointmentController_beta {
     public boolean chkcolor{set;get;}
     public Integer Tempvar{get;set;}
     public Integer Temp1{get;set;}
-    public static Busy b = new Busy();
 
     public class Busy {
         public Boolean isBusy;
@@ -376,6 +375,7 @@ public class SaaSFocus_AppointmentController_beta {
         Saasfocus_GetGoogleEvent ob = new Saasfocus_GetGoogleEvent(); //DML
         system.debug('Eventtime===>'+EveStartTime+'EndTime===>'+EveEndTime+'ID of broker===>'+IdBroker);
 
+        Busy b = new Busy();
         b.isBusy = true;
         CalenderEvents  = ob.getEventslist(EveStartTime,EveEndTime ,IdBroker, b);
 
@@ -383,10 +383,13 @@ public class SaaSFocus_AppointmentController_beta {
             Utilities.sendEmail(new List<String>{'anthony.xuan@creditandfinance.com.au', 'chen@creditandfinance.com.au'}, 'out of sync', 'Broker Id:' + IdBroker + ' Start time:' + EveStartTime + ' End Time' + EveEndTime);
 
             TimeZone tz = UserInfo.getTimeZone();
-            String message = 'Broker ' + b.brokerEmail + ' is busy at';
-            for(GoogleCalendarModel.BusyItem item : b.busyItems) {
-                message += ' from ' + item.start.addHours(-1).format('MM/dd/yyyy HH:mm:ss', tz.getID()) + ' to ' + item.param_rr_end.addHours(1).format('MM/dd/yyyy HH:mm:ss', tz.getID());
+            String message = 'Broker is busy: ';
+            if(b.busyItems != null) {
+                for(GoogleCalendarModel.BusyItem item : b.busyItems) {
+                    message += ' from ' + item.start.addHours(-1).format('MM/dd/yyyy HH:mm:ss', tz.getID()) + ' to ' + item.param_rr_end.addHours(1).format('MM/dd/yyyy HH:mm:ss', tz.getID());
+                }
             }
+            message += ' please book again';
 
             pagereference pg= new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId +'&err=1&message=' + message);
             pg.setRedirect(true);
