@@ -389,6 +389,7 @@ public class SaaSFocus_AppointmentController_beta {
                     message += ' from ' + item.start.addHours(-1).format('MM/dd/yyyy HH:mm:ss', tz.getID()) + ' to ' + item.param_rr_end.addHours(1).format('MM/dd/yyyy HH:mm:ss', tz.getID());
                 }
             }
+            message += ' please book again';
 
             pagereference pg= new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId +'&err=1&message=' + message);
             pg.setRedirect(true);
