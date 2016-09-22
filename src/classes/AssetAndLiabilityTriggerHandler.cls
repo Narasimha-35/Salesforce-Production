@@ -485,22 +485,26 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         fPosdSecond.Category__c = 'Debt';
         
         if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null  && mapOfrecordType != null && !mapOfrecordType.isEmpty() 
-           && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi'){
+           && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi')
+        {
             fPosdSecond.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
             fPosdSecond.Asset_And_Liability__c = assLiab.id;
             fPosdSecond.Amount__c = assLiab.Current_Balance__c;
             if(fundPosdList != null)
                 fundPosdList.add(fPosdSecond);
         }
-        else{
-            if( assLiab.Opportunity__c != null && mapOfrecordType.get(assLiab.Opportunity__c) != null  &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  &&  OppFPtMap.get( assLiab.Opportunity__c) != null ){
-            fPosdSecond.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
-            fPosdSecond.Asset_And_Liability__c = assLiab.id;
-            fPosdSecond.Amount__c = assLiab.Current_Balance__c;
-            if(fundPosdList != null)
-                fundPosdList.add(fPosdSecond);
-            }
-            
+        else
+        {
+            if(assLiab.Opportunity__c != null && mapOfrecordType != null && !mapOfrecordType.isEmpty() && mapOfrecordType.get(assLiab.Opportunity__c) != null
+               &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  
+               && OppFPtMap != null && !OppFPtMap.Isempty() && OppFPtMap.get( assLiab.Opportunity__c) != null )
+            {
+                fPosdSecond.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
+                fPosdSecond.Asset_And_Liability__c = assLiab.id;
+                fPosdSecond.Amount__c = assLiab.Current_Balance__c;
+                if(fundPosdList != null)
+                    fundPosdList.add(fPosdSecond);
+            }  
         }
     }
 
@@ -512,22 +516,28 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         fPosdThird.Detail_Type__c = 'Purchase Stamp Duty';
         fPosdThird.Name = assLiab.Name + '- Purchase Stamp Duty';
      
-     if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi'){
-            fPosdThird.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
-            fPosdThird.Asset_And_Liability__c = assLiab.id;
-            if(fundPosdList != null)
-                fundPosdList.add(fPosdThird);
-        }
-        else{
-            if( assLiab.Opportunity__c != null && mapOfrecordType.get(assLiab.Opportunity__c) != null  &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  &&  OppFPtMap.get( assLiab.Opportunity__c) != null ){
-            fPosdThird.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
-            fPosdThird.Asset_And_Liability__c = assLiab.id;
-           // fPosdSecond.Amount__c = assLiab.Current_Balance__c;
-            if(fundPosdList != null)
-                fundPosdList.add(fPosdThird);
-            }
-            
-        }
+     if(assLiab.Account__c !=null && accountFPCountMap != null && !accountFPCountMap.isEmpty() && accountFPCountMap.get(assLiab.Account__c) !=null
+        && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Account__c) != null  
+        &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi')
+     {
+        fPosdThird.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
+        fPosdThird.Asset_And_Liability__c = assLiab.id;
+        if(fundPosdList != null)
+            fundPosdList.add(fPosdThird);
+     }
+     else
+     {
+        if( assLiab.Opportunity__c != null && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Opportunity__c) != null  
+            &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  
+            && OppFPtMap != null && !OppFPtMap.Isempty() && OppFPtMap.get( assLiab.Opportunity__c) != null )
+            {
+                fPosdThird.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
+                fPosdThird.Asset_And_Liability__c = assLiab.id;
+               // fPosdSecond.Amount__c = assLiab.Current_Balance__c;
+                if(fundPosdList != null)
+                    fundPosdList.add(fPosdThird);
+            }    
+     }
         
         Funding_Position_Detail__c  fPosdFourth = new Funding_Position_Detail__c ();
         if(assLiab.Value__c !=null && assLiab.State__c !=null)
@@ -535,14 +545,17 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         fPosdFourth.Category__c = 'Fee';
         fPosdFourth.Detail_Type__c = 'Transfer Fee';
         fPosdFourth.Name = assLiab.Name + '- Transfer Fee';
-        if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi'){
+        if(assLiab.Account__c !=null && accountFPCountMap != null && !accountFPCountMap.isEmpty() && accountFPCountMap.get(assLiab.Account__c) !=null
+         && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi'){
             fPosdFourth.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
             fPosdFourth.Asset_And_Liability__c = assLiab.id;
             if(fundPosdList != null)
                 fundPosdList.add(fPosdFourth);
         }
         else{
-            if( assLiab.Opportunity__c != null && mapOfrecordType.get(assLiab.Opportunity__c) != null  &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  &&  OppFPtMap.get( assLiab.Opportunity__c) != null ){
+            if(assLiab.Opportunity__c != null && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Opportunity__c) != null
+               &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'
+               && OppFPtMap != null && !OppFPtMap.Isempty() && OppFPtMap.get( assLiab.Opportunity__c) != null ){
             fPosdFourth.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
             fPosdFourth.Asset_And_Liability__c = assLiab.id;
             //fPosdSecond.Amount__c = assLiab.Current_Balance__c;
@@ -557,14 +570,18 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         fPosdFifth.Category__c = 'Fee';
         fPosdFifth.Detail_Type__c = 'Discharge Costs';
         fPosdFifth.Name = assLiab.Name + '- Discharge Costs';
-        if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null && accountFPCountMap.get(assLiab.Account__c) !=null && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi' ){
+        if(assLiab.Account__c !=null && accountFPCountMap != null && !accountFPCountMap.isEmpty() && accountFPCountMap.get(assLiab.Account__c) !=null
+           && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Account__c) != null  
+           && Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi' ){
             fPosdFifth.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
             fPosdFifth.Asset_And_Liability__c = assLiab.id;
             if(fundPosdList != null)
                 fundPosdList.add(fPosdFifth);
         }
         else{
-            if( assLiab.Opportunity__c != null && mapOfrecordType.get(assLiab.Opportunity__c) != null  &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  &&  OppFPtMap.get( assLiab.Opportunity__c) != null ){
+            if(assLiab.Opportunity__c != null && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Opportunity__c) != null
+                &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi' 
+                &&  OppFPtMap != null && !OppFPtMap.Isempty() && OppFPtMap.get( assLiab.Opportunity__c) != null ){
             fPosdFifth.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
             fPosdFifth.Asset_And_Liability__c = assLiab.id;
             //fPosdSecond.Amount__c = assLiab.Current_Balance__c;
@@ -580,20 +597,23 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         fPosdSeventh.Category__c = 'Purchase';
         fPosdSeventh.Detail_Type__c = 'Purchase Price';
         fPosdSeventh.Name = assLiab.Name + '- Purchase Price'; 
-         if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi'){
+         if(assLiab.Account__c !=null && accountFPCountMap != null && !accountFPCountMap.isEmpty() && accountFPCountMap.get(assLiab.Account__c) !=null
+            && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Account__c) != null  
+            &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi'){
             fPosdSeventh.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
             fPosdSeventh.Asset_And_Liability__c = assLiab.id;
             if(fundPosdList != null)
                 fundPosdList.add(fPosdSeventh);
         }
         else{
-            if( assLiab.Opportunity__c != null && mapOfrecordType.get(assLiab.Opportunity__c) != null  &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  &&  OppFPtMap.get( assLiab.Opportunity__c) != null ){
-            
-            fPosdSeventh.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
-            fPosdSeventh.Asset_And_Liability__c = assLiab.id;
-         
-            if(fundPosdList != null)
-                fundPosdList.add(fPosdSeventh);
+            if( assLiab.Opportunity__c != null && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Opportunity__c) != null 
+                && Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  
+                && OppFPtMap != null && !OppFPtMap.Isempty() && OppFPtMap.get( assLiab.Opportunity__c) != null )
+            {
+                fPosdSeventh.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
+                fPosdSeventh.Asset_And_Liability__c = assLiab.id;
+                if(fundPosdList != null)
+                    fundPosdList.add(fPosdSeventh);
             }
             
         }
@@ -608,7 +628,11 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         fPosd.Name = assLiab.Name + '-' + assLiab.Limit__c;
         fPosd.Detail_Type__c = 'Home Loan to Repay';
         fPosd.Category__c = 'Debt';
-        if(assLiab.Account__c !=null && accountFPCountMap != null && accountFPCountMap.get(assLiab.Account__c) !=null  && mapOfrecordType!= null  && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi')
+        system.debug('@@@PPPPPPP************'+assLiab.Opportunity__c+'####'+mapOfrecordType+'%%%'+mapOfrecordType.get(assLiab.Opportunity__c));
+        system.debug('@@@PPPPPPP1************'+Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname()+'####1'+OppFPtMap+'%%%1'+OppFPtMap.get(assLiab.Opportunity__c));
+        if(assLiab.Account__c !=null && accountFPCountMap != null && !accountFPCountMap.isEmpty() && accountFPCountMap.get(assLiab.Account__c) !=null 
+           && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Account__c) != null  
+           &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi')
         {
             fPosd.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
             fPosd.Asset_And_Liability__c = assLiab.id;
@@ -617,7 +641,9 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                 fundPosdList.add(fPosd);
         }
         else{
-            if( assLiab.Opportunity__c != null && mapOfrecordType.get(assLiab.Opportunity__c) != null  &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  &&  OppFPtMap.get( assLiab.Opportunity__c) != null ){
+            if(assLiab.Opportunity__c != null && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Opportunity__c) != null
+                &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  
+                &&  OppFPtMap != null && !OppFPtMap.Isempty() && OppFPtMap.get(assLiab.Opportunity__c) != null ){
             fPosd.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
             fPosd.Asset_And_Liability__c = assLiab.id;
              fPosd.Amount__c = assLiab.Limit__c;
@@ -644,7 +670,9 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
        fPosdFirst.Name = assLiab.Name + '-' + assLiab.Repayments__c;
             else
          fPosdFirst.Name = assLiab.Name + '-' + '';     
-        if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi')
+        if(assLiab.Account__c !=null && accountFPCountMap != null && !accountFPCountMap.isEmpty() && accountFPCountMap.get(assLiab.Account__c) !=null
+           && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Account__c) != null  
+           &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi')
        {
            fPosdFirst.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
            fPosdFirst.Asset_And_Liability__c = assLiab.id; 
@@ -652,14 +680,15 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                fundPosdList.add(fPosdFirst);
        }
        else{
-            if( assLiab.Opportunity__c != null && mapOfrecordType.get(assLiab.Opportunity__c) != null  &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  &&  OppFPtMap.get( assLiab.Opportunity__c) != null ){
-            fPosdFirst.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
-            fPosdFirst.Asset_And_Liability__c = assLiab.id;
-          
-            if(fundPosdList != null)
-                fundPosdList.add(fPosdFirst);
-            }
-            
+            if( assLiab.Opportunity__c != null && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Opportunity__c) != null
+                &&  Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  
+                &&  OppFPtMap != null && !OppFPtMap.Isempty() && OppFPtMap.get( assLiab.Opportunity__c) != null)
+            {
+                fPosdFirst.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
+                fPosdFirst.Asset_And_Liability__c = assLiab.id;
+                if(fundPosdList != null)
+                    fundPosdList.add(fPosdFirst);
+            }   
         }
     }
 
@@ -671,7 +700,9 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         fPosdSixth.Category__c = 'Fee';
         fPosdSixth.Detail_Type__c = 'Registration Fee';
         fPosdSixth.Name = assLiab.Name + '- Registration Fee';
-        if(assLiab.Account__c !=null && accountFPCountMap.get(assLiab.Account__c) !=null  && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi')
+        if(assLiab.Account__c !=null && accountFPCountMap != null && !accountFPCountMap.isEmpty() && accountFPCountMap.get(assLiab.Account__c) !=null
+           && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Account__c) != null
+           &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi')
         {
             fPosdSixth.Funding_Position__c = accountFPCountMap.get(assLiab.Account__c).id;
             fPosdSixth .Asset_And_Liability__c = assLiab.id;
@@ -679,12 +710,14 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                 fundPosdList.add(fPosdSixth);
         }
         else{
-            if( assLiab.Opportunity__c != null && mapOfrecordType.get(assLiab.Opportunity__c) != null  &&  Schema.SObjectType.opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  &&  OppFPtMap.get( assLiab.Opportunity__c) != null ){
-            fPosdSixth.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
-            fPosdSixth.Asset_And_Liability__c = assLiab.id;
-          
-            if(fundPosdList != null)
-                fundPosdList.add(fPosdSixth);
+            if( assLiab.Opportunity__c != null && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Opportunity__c) != null
+                &&  Schema.SObjectType.opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname() == 'Lendi'  
+                &&  OppFPtMap != null && !OppFPtMap.Isempty() && OppFPtMap.get( assLiab.Opportunity__c) != null )
+            {
+                fPosdSixth.Funding_Position__c = OppFPtMap.get( assLiab.Opportunity__c).id;
+                fPosdSixth.Asset_And_Liability__c = assLiab.id;
+                if(fundPosdList != null)
+                    fundPosdList.add(fPosdSixth);
             }
             
         }
@@ -695,39 +728,52 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
      public void insertFSRecords(list<Asset_And_Liability__c> triggernew)
      {
         list<Financials_Source__c> lstFs = new list<Financials_Source__c>();
+        List<click_Applicant__c>  applicantObj = new List<click_Applicant__c>();
+        map<Id,Id> matchAccount = new map<Id,Id> ();
         List<Id> IeId = new list<Id>();
         List<Id> lstid = new List<id>();
         Set<Id> lstaccountid = new Set<id>();
+        map<Id,Income_And_Expense__c >  mapIe = new map<Id ,Income_And_Expense__c >();
+        map<Id,Asset_And_Liability__c >  mapLiability = new map<Id ,Asset_And_Liability__c >();
+        List<Income_And_Expense__c>  lstIE = new List<Income_And_Expense__c>();
+        list<Income_And_Expense__c> InsertIe = new list<Income_And_Expense__c>();
+        
         for(Asset_And_Liability__c objAsset : triggernew)
         {
             IeId.add(objAsset.id);            
             lstid.add(objAsset.createdById);
-            lstaccountid.add(objAsset.Account__c);
+            if(objAsset.Account__c != null)
+                lstaccountid.add(objAsset.Account__c);
         }
-        List<click_Applicant__c>  applicantObj  = [Select Name ,click_Account__c,Id ,click_Applicant_Number__c from  
-     click_Applicant__c  where click_Account__c  in  : lstaccountid    ORDER BY Name DESC  ] ;
-        map<Id,Id> matchAccount = new map<Id,Id> ();
-        
-        for(click_Applicant__c app : applicantObj)
+        if(lstaccountid != null && !lstaccountid.IsEmpty())
         {
-          if(app.click_Account__c  != null )    
-              matchAccount.put(app.click_Account__c,app.Id);
+            applicantObj = [Select Name ,click_Account__c,Id ,click_Applicant_Number__c from click_Applicant__c  where click_Account__c  in  : lstaccountid    ORDER BY Name DESC  ] ;
+            if(applicantObj != null && !applicantObj.Isempty())
+            {
+                for(click_Applicant__c app : applicantObj)
+                {
+                  if(app.click_Account__c  != null )    
+                      matchAccount.put(app.click_Account__c,app.Id);
+                }
+            }
         }
         
         if(!test.isrunningtest())
-        Database.executeBatch(new acfCreateRpDataBatch(IeId), 33);
+            Database.executeBatch(new acfCreateRpDataBatch(IeId), 33);
        
         map<String,String> mapUser  =ClickCommon.mapUserInputType(lstid);
-        
-        List<Income_And_Expense__c>  lstIE = [Select Asset_And_Liability__c ,Opportunity__c ,Applicant__c, Amount__c ,Frequency__c , acfDetails__c  from Income_And_Expense__c where Asset_And_Liability__c in : IeId];
-        
-        map<Id,Income_And_Expense__c >  mapIe = new map<Id ,Income_And_Expense__c >();
-        map<Id,Asset_And_Liability__c >  mapLiability = new map<Id ,Asset_And_Liability__c >();
-        for(Income_And_Expense__c ie : lstIE)
+        if(IeId != null && !IeId.IsEmpty())
         {
-            mapIe.put(ie.Asset_And_Liability__c , ie);
+            lstIE = [Select Asset_And_Liability__c ,Opportunity__c ,Applicant__c, Amount__c ,Frequency__c , acfDetails__c  from Income_And_Expense__c where Asset_And_Liability__c in : IeId];
+            if(lstIE != null && !lstIE.IsEmpty())
+            {
+                for(Income_And_Expense__c ie : lstIE)
+                {
+                    mapIe.put(ie.Asset_And_Liability__c , ie);
+                }
+            }
         }
-        list<Income_And_Expense__c> InsertIe = new list<Income_And_Expense__c>();
+        
         RecordType rt = [select id,Name from RecordType where SobjectType='Income_And_Expense__c' and Name='Expense' Limit 1];
         for(Asset_And_Liability__c objAsset : triggernew)
         {
