@@ -1,4 +1,8 @@
 public with sharing class LendiModel {
+	public static final String INCOME_TYPE = 'incomes';
+	public static final String EXPENSE_TYPE = 'expenses';
+	public static final String ASSET_TYPE = 'assets';
+	public static final String LIABILITY_TYPE = 'liabilities';
 
 	public class Response extends Model {
 		public Integer status_code;
@@ -29,6 +33,7 @@ public with sharing class LendiModel {
 		public Integer funds_required;
 		public List<Income> incomes;
 		public List<Expense> expenses;
+		public List<Liability> liabilities;
 		public Integer taxable_incomes;
 		public Double tax;
 		public Integer user_recognised_income;
@@ -72,46 +77,62 @@ public with sharing class LendiModel {
 		public Double actual_monthly_repayment;
 
 		public ServicingCalculator__c convertToServiceCalculator(Id opportunityId) {
-			ServicingCalculator__c sc = new ServicingCalculator__c();
-			sc.max_Borrowing_Power__c = maximum_borrowing;
-			sc.net_Monthly_Surplus__c = net_monthly_surplus;
+			ServicingCalculator__c sc      = new ServicingCalculator__c();
+			sc.max_Borrowing_Power__c      = maximum_borrowing;
+			sc.net_Monthly_Surplus__c      = net_monthly_surplus;
 			sc.services_Funds_Requested__c = is_services_funds_requested;
-			sc.services_Funds_Required__c = is_services_funds_required;
-			sc.opportunity__c = opportunityId;
-			sc.opportunityId__c = opportunityId;
+			sc.services_Funds_Required__c  = is_services_funds_required;
+			sc.opportunity__c              = opportunityId;
+			sc.opportunityId__c            = opportunityId;
 
 			return sc;
 		}
 
-		public List<ServiceCalculatorDetail__c> generateDetails(Id scId) {
+		public List<ServiceCalculatorDetail__c> generateDetails(Id scId, String type) {
 			List<ServiceCalculatorDetail__c> ret = new List<ServiceCalculatorDetail__c>();
 
 			for(User u : user_group.users) {
-				System.debug(u);
-				for(Income inc : u.incomes) {
-					ServiceCalculatorDetail__c incSCDetail = new ServiceCalculatorDetail__c();
-					incSCDetail.amount__c = inc.original_amount;
-					incSCDetail.applicant__c = inc.user_sf_id;
-					incSCDetail.frequency__c = inc.frequency;
-					incSCDetail.incomeAndExpense__c = inc.income_sf_id;
-					incSCDetail.incomeAndExpenseId__c = inc.income_sf_id;
-					incSCDetail.recogitionAmount__c = inc.recognition_rate == null ? 0 : inc.original_amount * inc.recognition_rate;
-					incSCDetail.recogitionPercentage__c = inc.recognition_rate * 100;
-					incSCDetail.ServicingCalculator__c = scId;
-					ret.add(incSCDetail);
+				if(type == INCOME_TYPE) {
+					for(Income inc : u.incomes) {
+						ServiceCalculatorDetail__c incSCDetail = new ServiceCalculatorDetail__c();
+						incSCDetail.amount__c                  = inc.original_amount;
+						incSCDetail.applicant__c               = inc.user_sf_id;
+						incSCDetail.frequency__c               = inc.frequency;
+						incSCDetail.incomeAndExpense__c        = inc.income_and_expense_sf_id;
+						incSCDetail.incomeAndExpenseId__c      = inc.income_and_expense_sf_id;
+						incSCDetail.recogitionAmount__c        = inc.recognition_rate == null ? 0 : inc.original_amount * inc.recognition_rate;
+						incSCDetail.recogitionPercentage__c    = inc.recognition_rate * 100;
+						incSCDetail.servicingCalculator__c     = scId;
+						ret.add(incSCDetail);
+					}
 				}
-				for(Expense exp : u.expenses) {
-					System.debug('expSCDetail: --->');
-					ServiceCalculatorDetail__c expSCDetail = new ServiceCalculatorDetail__c();
-					expSCDetail.amount__c = exp.original_amount;
-					expSCDetail.applicant__c = exp.user_sf_id;
-					expSCDetail.frequency__c = exp.frequency;
-					expSCDetail.incomeAndExpense__c = exp.income_sf_id;
-					expSCDetail.incomeAndExpenseId__c = exp.income_sf_id;
-					expSCDetail.recogitionAmount__c = exp.recognition_rate == null ? 0 : exp.original_amount * exp.recognition_rate;
-					expSCDetail.recogitionPercentage__c = exp.recognition_rate * 100;
-					expSCDetail.ServicingCalculator__c = scId;
-					ret.add(expSCDetail);
+				if(type == EXPENSE_TYPE) {
+					for(Expense exp : u.expenses) {
+						ServiceCalculatorDetail__c expSCDetail = new ServiceCalculatorDetail__c();
+						expSCDetail.amount__c                  = exp.original_amount;
+						expSCDetail.applicant__c               = exp.user_sf_id;
+						expSCDetail.frequency__c               = exp.frequency;
+						expSCDetail.incomeAndExpense__c        = exp.income_and_expense_sf_id;
+						expSCDetail.incomeAndExpenseId__c      = exp.income_and_expense_sf_id;
+						expSCDetail.recogitionAmount__c        = exp.recognition_rate == null ? 0 : exp.original_amount * exp.recognition_rate;
+						expSCDetail.recogitionPercentage__c    = exp.recognition_rate * 100;
+						expSCDetail.servicingCalculator__c     = scId;
+						ret.add(expSCDetail);
+					}
+				}
+				if(type == LIABILITY_TYPE) {
+					for(Liability lia : u.liabilities) {
+						if(lia.clearing_from_this_loan == true) continue;
+						ServiceCalculatorDetail__c liaSCDetail = new ServiceCalculatorDetail__c();
+						liaSCDetail.amount__c                  = lia.repayments;
+						liaSCDetail.opportunity__c             = lia.opportunity;
+						liaSCDetail.frequency__c               = lia.repayment_frequency;
+						liaSCDetail.assetAndLiability__c       = lia.asset_and_liability_sf_id;
+						liaSCDetail.assetAndLiabilityId__c     = lia.asset_and_liability_sf_id;
+						liaSCDetail.recogitionAmount__c        = lia.repayments;
+						liaSCDetail.recogitionPercentage__c    = 100;
+						ret.add(liaSCDetail);
+					}
 				}
 			}
 
@@ -119,14 +140,30 @@ public with sharing class LendiModel {
 		}
 	}
 
+	public virtual class Asset extends Model {
+		public String asset_and_liability_sf_id;
+		public String asset_and_liability_name;
+		public String account;
+		public String opportunity;
+		public String value;
+	}
+
+	public virtual class Liability extends Model {
+		public String asset_and_liability_sf_id;
+		public Boolean clearing_from_this_loan;
+		public String opportunity;
+		public Double repayments;
+		public String repayment_frequency;
+	}
+
 	public virtual class Income extends Model {
-		public String income_sf_id;
+		public String income_and_expense_sf_id;
 		public String user_sf_id;
 		public String user_uuid;
 		public Double original_amount;
 		public String frequency;
 		public Integer annually_effective_amount;
-		public String income_type;
+		public String income_expense_type;
 		public Integer credit_limit_amount;
 		public String category;
 		public String recognition_field;
@@ -136,13 +173,13 @@ public with sharing class LendiModel {
 	}
 
 	public virtual class Expense extends Model {
-		public String income_sf_id;
+		public String income_and_expense_sf_id;
 		public String user_sf_id;
 		public String user_uuid;
 		public Integer original_amount;
 		public String frequency;
 		public Integer annually_effective_amount;
-		public String expense_type;
+		public String income_expense_type;
 		public Integer credit_limit_amount;
 		public String category;
 		public String recognition_field;
