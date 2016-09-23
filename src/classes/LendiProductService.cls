@@ -11,6 +11,7 @@ public class LendiProductService {
 
 		List<ServiceCalculatorDetail__c> incomeAndExpenseSCDS   = lendiSC.generateDetails(sfSC.id, LendiModel.INCOME_TYPE);
 		List<ServiceCalculatorDetail__c> expensesSCDS           = lendiSC.generateDetails(sfSC.id, LendiModel.EXPENSE_TYPE);
+
 		incomeAndExpenseSCDS.addAll(expensesSCDS);
 		List<Database.UpsertResult> incomeAndExpenseSCDetailRes = Database.upsert(incomeAndExpenseSCDS, ServiceCalculatorDetail__c.Fields.incomeAndExpenseId__c, false);
 
@@ -18,7 +19,8 @@ public class LendiProductService {
 		List<Database.UpsertResult> liabilitiesSCDetailRes      = Database.upsert(liabilitiesSCDS, ServiceCalculatorDetail__c.Fields.assetAndLiabilityId__c, false);
 
 		incomeAndExpenseSCDS.addAll(liabilitiesSCDS);
-		deleteServicingCalculatorDetail((new Map<Id, ServiceCalculatorDetail__c>(incomeAndExpenseSCDS)).keySet(), oppoId);
+		Set<Id> newIds = (new Map<Id, ServiceCalculatorDetail__c>(incomeAndExpenseSCDS)).keySet();
+		deleteServicingCalculatorDetail(newIds, oppoId);
 	}
 
 	public static void deleteServicingCalculatorDetail(Set<Id> idsToKeep, Id oppoId) {

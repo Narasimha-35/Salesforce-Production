@@ -131,6 +131,7 @@ public with sharing class LendiModel {
 						liaSCDetail.assetAndLiabilityId__c     = lia.asset_and_liability_sf_id;
 						liaSCDetail.recogitionAmount__c        = lia.repayments;
 						liaSCDetail.recogitionPercentage__c    = 100;
+						liaSCDetail.servicingCalculator__c     = scId;
 						ret.add(liaSCDetail);
 					}
 				}
@@ -167,7 +168,7 @@ public with sharing class LendiModel {
 		public Integer credit_limit_amount;
 		public String category;
 		public String recognition_field;
-		public Integer recognition_rate;
+		public Double recognition_rate;
 		public Boolean tax_applicable;
 		public Integer recognition_amount;
 	}
@@ -183,7 +184,7 @@ public with sharing class LendiModel {
 		public Integer credit_limit_amount;
 		public String category;
 		public String recognition_field;
-		public Integer recognition_rate;
+		public Double recognition_rate;
 		public Boolean tax_applicable;
 		public Integer recognition_amount;
 	}
