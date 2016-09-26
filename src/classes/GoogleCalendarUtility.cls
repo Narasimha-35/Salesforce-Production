@@ -108,4 +108,84 @@ public class GoogleCalendarUtility {
 		return getFreeBusy(timeMin, timeMax, calendarId).calendars.get(calendarId).busy;
 	}
 
+	// Condition if Event is update, delete previous event and insert new Event
+	public static void upsertSFEventAndGoogleEvent(List<Google_Recurring_Events__c> glist, List<Event> Evt_list) {
+		try{
+			Set<string> st = new Set<string>();
+			List<Google_Recurring_Events__c> lstREinsert = new List<Google_Recurring_Events__c>();
+			for(Google_Recurring_Events__c ob11 :glist){
+				st.add(ob11.Google_Event_Id__c);
+				Google_Recurring_Events__c g_obj = new Google_Recurring_Events__c();
+				g_obj.Name=ob11.Name;
+				g_obj.Start_date__c=ob11.Start_date__c;
+				g_obj.End_date__c=ob11.End_date__c;
+				g_obj.Summary__c=ob11.Summary__c;
+				g_obj.Google_Event_Id__c=ob11.Google_Event_Id__c;
+				g_obj.Description__c=ob11.Description__c;
+				g_obj.Broker__c=ob11.Broker__c;
+				if(ob11.Multiday__c==true){
+					g_obj.Multiday__c=true;
+				} else {
+					g_obj.Recurring_Events__c=true;
+					g_obj.Repeats_on__c=ob11.Repeats_on__c;
+					if(ob11.ByDay__c!=null){
+						g_obj.ByDay__c=ob11.ByDay__c;
+					}
+					if(ob11.Count__c!=null){
+						g_obj.Count__c=ob11.Count__c;
+					}
+					if(ob11.Until__c!=null){
+						g_obj.Until__c=ob11.Until__c;
+					}
+					g_obj.Freq__c=ob11.Freq__c;
+					g_obj.Interval__c=ob11.Interval__c;
+				}
+
+				if(ob11.Assigned_To__c!=null) {
+					g_obj.Assigned_To__c=ob11.Assigned_To__c;
+				}
+				lstREinsert.add(g_obj);
+			}
+			List<Event> lstEvent = new List<Event>();
+			List<Google_Recurring_Events__c> lstRE = new List<Google_Recurring_Events__c>();
+			lstRE = [select id,Google_Event_ID__c from Google_Recurring_Events__c where Google_Event_Id__c in :st];
+			st = new Set<string>();
+			for(Google_Recurring_Events__c ob22 :lstRE){
+				st.add(ob22.id);
+			}
+
+			lstEvent = [select id from Event where Event_ID__c in :st];
+			if(lstEvent.size() > 0) {
+				delete lstEvent;
+			}
+			if(lstRE.size() > 0) {
+				delete lstRE;
+			}
+			List<Google_Recurring_Events__c> lstREC1 = new List<Google_Recurring_Events__c>();
+			if(lstREinsert.size() > 0){
+				for(Google_Recurring_Events__c ob :lstREinsert) {
+					lstREC1.add(ob);
+				}
+				//insert lstREC1;
+				if(lstREC1.size()>0) {
+					insert lstREinsert;
+				}
+			}
+		} catch(Exception e){
+			system.debug('!Bingo error=> '+e);
+		}
+		upsert Evt_list Google_Event_ID__c;
+	}
+
+	public static List<Saasfocus_EventClass> getRetrunList(List<Saasfocus_EventClass> eventList, Set<String> deleteEventIds, Set<String> recIds) {
+		List<Saasfocus_EventClass> ret = new List<Saasfocus_EventClass>();
+		for(Saasfocus_EventClass et : eventList) {
+			if(!deleteEventIds.contains(et.email) && !recIds.contains(et.email)) {
+				String[] Idarray = (et.Email).split('~');
+				et.email = Idarray[1];
+				ret.add(et);
+			}
+		}
+		return ret;
+	}
 }
