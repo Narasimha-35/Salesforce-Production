@@ -15,21 +15,18 @@ public class Saasfocus_GetGoogleEvent {
     public Set<String> recidSet                              = new Set<String>();
     public List<Event> evtList                               = new List<Event>();
     Public List<Google_Recurring_Events__c> glist            = new List<Google_Recurring_Events__c>();
+    public Saasfocus_GenerateToken ob = new Saasfocus_GenerateToken();
     Public String request {get;set;}
-    public Saasfocus_GenerateToken ob{get;set;}
 
     // This Method is used for get the Event from the Google Calender and return the list of events
     public List<Saasfocus_EventClass> getEventslist(DateTime StartDateTime ,DateTime EndDateTime, String BrokerId, SaaSFocus_AppointmentController_beta.Busy b) {
         TimeZone tz = UserInfo.getTimeZone();
 
-        // Call the CheckAccessToken Method of GenerateToken_Saasfocus class for checking the access token is valid or not
-        ob= new Saasfocus_GenerateToken();
-
         List<Saasfocus_EventClass> Event_list= new List<Saasfocus_EventClass>();
         List<Object> items = new List<Object>();
 
         // Get the List of Broker
-        list<Broker__c> broker_list =[select id,Email__c from Broker__c where id =: BrokerId];
+        List<Broker__c> broker_list =[select id,Email__c from Broker__c where id =: BrokerId];
 
         // Logic for get the Google calender Event
         for(Broker__c bobject : broker_list ) {
@@ -44,6 +41,8 @@ public class Saasfocus_GetGoogleEvent {
             request = req.getBody();
             Http http = new Http();
             Httpresponse res = http.send(req);
+
+            System.debug(LoggingLevel.INFO, 'Body:\n' + request);
 
             b.busyItems = GoogleCalendarUtility.getListOfBusyItems(StartDateTime, EndDateTime, bobject.Email__c);
             b.isBusy = b.busyItems.size() > 0;
