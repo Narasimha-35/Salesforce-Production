@@ -23,14 +23,14 @@
 
 <apex:pageblock>
 <apex:pageBlockSection columns="1">
-<apex:outputText value="{!Appointob.Region__r.Name} "/>
-<apex:outputText value="{!Appointob.Market__r.Name} "/>
-<apex:outputText value="{!Appointob.Appointment_Date_and_Time__c} "/>
+<apex:outputText value="{!appointob.Region__r.Name} "/>
+<apex:outputText value="{!appointob.Market__r.Name} "/>
+<apex:outputText value="{!appointob.Appointment_Date_and_Time__c} "/>
 </apex:pageBlockSection>
 <h4 style="width:100% !important;float:left;text-align: center;">Time Availability</h4>
 <apex:variable value="{!0}" var="j"/>
 <div class="main">
-    <apex:repeat value="{!AvailableSchedule}" var="lst">
+    <apex:repeat value="{!availableOptions}" var="lst">
 
     <div style="width:15%;float:left;margin-right:20px;margin-top:10px;">
         <apex:outputText value="{0,date,dd'/'MM'/'yyyy}" style="padding-right: 6px;margin-top: 10px;">
@@ -38,11 +38,11 @@
     </apex:outputText>
     <br/>
 
-    <apex:outputText value="{0,date,EEEE}" style="padding-right: 6px;margin-top: 10px;">
+    <apex:outputText value="{0, date, EEEE}" style="padding-right: 6px;margin-top: 10px;">
     <apex:param value="{!AppointmentDate+j}"/>
 </apex:outputText>
 
-<apex:pageBlockTable value="{!lst}" var="schedule" style="width:100%;margin-top:20px;background:{!if(datevalue(Appointob.Appointment_Date_and_Time__c)=datevalue(AppointmentDate+j),'cyan','')}">
+<apex:pageBlockTable value="{!lst}" var="schedule" style="width:100%;margin-top:20px;background:{!if(datevalue(appointob.Appointment_Date_and_Time__c)=datevalue(AppointmentDate+j),'cyan','')}">
 <apex:column headerValue="Available Time" value="{!schedule.Label}"/>
 <apex:column headerValue="Select Time" id="id_timeselection">
 <apex:outputPanel style="width:50px">
@@ -59,7 +59,7 @@
 </apex:repeat>
 </div>
 <apex:pageBlockSection >
-<apex:inputField Label="Pre-sales note" value="{!Appointob.Pre_Sales_Notes__c}"/>
+<apex:inputField Label="Pre-sales note" value="{!appointob.Pre_Sales_Notes__c}"/>
 </apex:pageBlockSection>
 <apex:pageBlockButtons >
 <apex:outputPanel id="olnew"></apex:outputPanel>

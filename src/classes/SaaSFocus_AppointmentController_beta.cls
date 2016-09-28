@@ -12,29 +12,53 @@
 
 public class SaaSFocus_AppointmentController_beta {
     public Integer offset ;
-    String appointmentId;
-    //  Time chosen by user
+    public String appointmentId;
     public String selectedtime {get;set;}
-    public Integer DurationOfMeeting;
-    public Integer Buffer;
-    public Integer IntervalOfMeeting;
-    public Time DayStartTime;
-    public Time DayEndTime;
-    public Map<Time,Set<Id>> MapTimetoBrokeridnew;
-    Public Set<ID> Allbrokers;
-    public Appointment__c Appointob {get;set;}
-    public Set<id> BusyBrokerInThisTime;
-    public List<Market_Broker_Association__c> LstBrokerMarket;
-    public Map<Date,Map<Time,Set<id>>> FinalMap;
-    public List<List<SelectOption>> CalList {set;get;}
-    public string selfid;
-    public Time EventStarttime;
-    public Time EventEndtime;
-    public Datetime AppointmentDate {set;get;}
+    public Integer durationOfMeeting;
+    public Integer buffer;
+    public Integer intervalOfMeeting;
+    public Time dayStartTime;
+    public Time dayEndTime;
+    public Map<Time, Set<Id>> mapTimetoBrokeridnew;
+    Public Set<id> allbrokers;
+    public Appointment__c appointob {get;set;}
+    public Set<id> busyBrokerInThisTime;
+    public List<Market_Broker_Association__c> lstBrokerMarket;
+    public Map<Date, Map<Time, Set<id>>> finalMap;
+    public String selfid;
+    public Time eventStarttime;
+    public Time eventEndtime;
+    public Datetime appointmentDate {set;get;}
     public Integer flag;
-    public integer maxdays;
+    public Integer maxdays;
     public Boolean chkcolor {set;get;}
-    public Integer Tempvar {get;set;}
+    public Integer tempvar {get;set;}
+    public List<List<SelectOption>> availableOptions {
+        get {
+            //TODO: use free busy api instead of below bull shit.
+
+            // Define a Method for chose time From given time list in apex page
+            List<List<SelectOption>> ret = new List<List<SelectOption>>();
+            for(Date d: finalMap.keyset()) {
+                Map<Time, Set<ID>> MapTimetoBrokerid = finalMap.get(d);
+                mapTimetoBrokeridnew = MapTimetoBrokerid;
+                List<DateTime> LstMapKey = new List<DateTime>();
+                List<SelectOption> Option = new List<SelectOption>();
+                for(Time obj : MapTimetoBrokerid.keyset()) LstMapKey.add(DateTime.newInstance(d.year(), d.month(), d.day(), obj.hour(), obj.minute(), 0));
+                LstMapKey.sort();
+
+                Map<string,set<id>> showbrokers = new Map<string,set<id>>();
+
+                for(DateTime eacht : LstMapKey) {
+                    Datetime dt = Datetime.newInstance(d.year(), d.month(), d.day(), eacht.hour(), eacht.minute(), 0);
+                    String ConvertDate = String.valueOf(eacht);
+                    Option.add(new SelectOption(ConvertDate,dt.format('hh:mm a')));
+                }
+                ret.add(option);
+            }
+            return ret;
+        }
+    }
 
     public class Busy {
         public Boolean isBusy;
@@ -59,109 +83,97 @@ public class SaaSFocus_AppointmentController_beta {
 
     public void init(String appId, Boolean testMode) {
         appointmentId = appId;
-        flag=0;
-        Allbrokers = new Set<Id>();
-        Appointob = new Appointment__c();
-        Appointob =[SELECT Id,Name,Account_Name__c,Account_Email__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Date_and_Time__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id, Region__r.timeZone__c FROM Appointment__c where id=:appointmentId];
+        flag = 0;
+        allbrokers = new Set<Id>();
+        appointob = new Appointment__c();
+        appointob =[SELECT Id,Name,Account_Name__c,Account_Email__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Date_and_Time__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id, Region__r.timeZone__c From Appointment__c Where id=:appointmentId];
 
-        BusyBrokerInThisTime= new Set<Id>();
+        busyBrokerInThisTime= new Set<Id>();
 
         if(isDynamicTimeOffset) {
-            offset = getSydneyLocalMinuteDiff(Appointob.Appointment_Date_and_Time__c, appointob.region__r.timeZone__c);
+            offset = getSydneyLocalMinuteDiff(appointob.Appointment_Date_and_Time__c, appointob.region__r.timeZone__c);
         } else {
-            offset = (Integer) (Appointob.region__r.Sydney_Timezone_Offset__c *60);
+            offset = (Integer) (appointob.region__r.Sydney_Timezone_Offset__c * 60);
         }
 
-        system.debug('!limca' +offset );
         if(!testMode && ApexPages.currentPage().getParameters().get('err') != null && ApexPages.currentPage().getParameters().get('err') =='1') {
             ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, ApexPages.currentPage().getParameters().get('message'));
             ApexPages.addMessage(myMsg);
         }
-        if(Appointob.Appointment_Type__c == 'Phone Appointment') {
+
+        if(appointob.Appointment_Type__c == 'Phone Appointment') {
             // If the type of Appointment is phone appointment
-            Tempvar=10;
-            Allocate_Appointment__c  obj =  Allocate_Appointment__c.getValues('Phone_Broker');
+            tempvar = 10;
+            Allocate_Appointment__c  obj = Allocate_Appointment__c.getValues('Phone_Broker');
 
-            DurationOfMeeting = Integer.valueOf(obj.DurationOfMeeting__c);
-            Buffer  = Integer.valueOf(obj.Buffer__c);
-            IntervalOfMeeting = Integer.valueOf(obj.IntervalOfMeeting__c);
-            DayStartTime= Time.newInstance(Integer.valueOf(obj.DayStartTime__c),00,0,0);
-            DayEndTime  =Time.newInstance(Integer.valueOf(obj.DayEndTime__c),00,0,0);
-            LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Email__c  from Market_Broker_Association__c  where  Broker__r.Speciality_Skills__c includes(:Appointob.Speciality_Skills__c) and Broker__r.Channel__c ='Phone Broker' and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() and  Broker__r.Active_Broker__c = true];// Input All brokerâs Id in the system.
-            System.debug('List1' +LstBrokerMarket );
-            if(Appointob.Speciality_Skills__c == null)
-            LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Email__c  from Market_Broker_Association__c  where Broker__r.Channel__c ='Phone Broker' and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() and  Broker__r.Active_Broker__c = true];// Input All brokerâs Id in the system.
-            System.debug('List2' +LstBrokerMarket );
+            durationOfMeeting = Integer.valueOf(obj.DurationOfMeeting__c);
+            buffer = Integer.valueOf(obj.Buffer__c);
+            intervalOfMeeting = Integer.valueOf(obj.IntervalOfMeeting__c);
+            dayStartTime = Time.newInstance(Integer.valueOf(obj.DayStartTime__c), 00, 0, 0);
+            dayEndTime = Time.newInstance(Integer.valueOf(obj.DayEndTime__c), 00, 0, 0);
+            // Input All brokerâs Id in the system.
+            lstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Email__c From Market_Broker_Association__c Where Broker__r.Speciality_Skills__c includes(:appointob.Speciality_Skills__c) And Broker__r.Channel__c ='Phone Broker' And Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() And  Broker__r.Active_Broker__c = true];
+            if(appointob.Speciality_Skills__c == null)
+            // Input All brokerâs Id in the system.
+            lstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Email__c From Market_Broker_Association__c Where Broker__r.Channel__c = 'Phone Broker' And Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() And Broker__r.Active_Broker__c = true];
         } else {
-            Tempvar=0;
+            tempvar = 0;
             // type of Appointment is face to face appointment
-            Allocate_Appointment__c   obj2 =   Allocate_Appointment__c.getValues('Face_To_face');
+            Allocate_Appointment__c obj2 = Allocate_Appointment__c.getValues('Face_To_face');
 
-            DurationOfMeeting =  Integer.valueOf(obj2.DurationOfMeeting__c);
-            Buffer =  Integer.valueOf(obj2.Buffer__c);
-            IntervalOfMeeting =  Integer.valueOf(obj2.IntervalOfMeeting__c);
-            DayStartTime= Time.newInstance(Integer.valueOf(obj2.DayStartTime__c),00,0,0);
-            DayEndTime  =Time.newInstance(Integer.valueOf(obj2.DayEndTime__c),00,0,0);
+            durationOfMeeting = Integer.valueOf(obj2.DurationOfMeeting__c);
+            buffer = Integer.valueOf(obj2.Buffer__c);
+            intervalOfMeeting = Integer.valueOf(obj2.IntervalOfMeeting__c);
+            dayStartTime = Time.newInstance(Integer.valueOf(obj2.DayStartTime__c), 00, 0, 0);
+            dayEndTime = Time.newInstance(Integer.valueOf(obj2.DayEndTime__c), 00, 0, 0);
 
-            LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Email__c  from Market_Broker_Association__c  where Market__r.Id=:Appointob.Market__r.Id and Broker__r.Speciality_Skills__c includes(:Appointob.Speciality_Skills__c) and Broker__r.Channel__c !='Phone Broker'and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() and Market__r.Region__c = :Appointob.Region__c and Broker__r.Active_Broker__c = true];// Input All brokerâs Id in the system.
-            System.debug('ListFaceToFace' +LstBrokerMarket );
-            if(Appointob.Speciality_Skills__c == null)
-            LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Email__c  from Market_Broker_Association__c  where Market__r.Id=:Appointob.Market__r.Id  and Broker__r.Channel__c !='Phone Broker'and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName()  and Market__r.Region__c = :Appointob.Region__c and Broker__r.Active_Broker__c = true];// Input All brokerâs Id in the system.
-            System.debug('ListFaceToFace' +LstBrokerMarket );
+            // Input All brokerâs Id in the system.
+            lstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Email__c From Market_Broker_Association__c Where Market__r.Id=:appointob.Market__r.Id And Broker__r.Speciality_Skills__c includes(:appointob.Speciality_Skills__c) And Broker__r.Channel__c !='Phone Broker' And Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() And Market__r.Region__c = :appointob.Region__c And Broker__r.Active_Broker__c = true];
+            if(appointob.Speciality_Skills__c == null)
+            // Input All brokerâs Id in the system.
+            lstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Email__c From Market_Broker_Association__c Where Market__r.Id=:appointob.Market__r.Id And Broker__r.Channel__c !='Phone Broker'And Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() And Market__r.Region__c = :appointob.Region__c And Broker__r.Active_Broker__c = true];
         }
     }
 
     public pagereference setDates() {
-        //This method is used to generate the previous and next Appointment dates according to the custom setting.
-        Date dt=Appointob.Appointment_Date_and_Time__c.date();
-        FinalMap=new Map<Date,Map<Time,Set<Id>>>();
-        Define_Appointment_Dates__c appdate= Define_Appointment_Dates__c.getValues('AppointmentDate');
-        integer prevdays=Integer.valueOf(appdate.previous_days__c);
-        maxdays=Integer.valueOf(appdate.Maximum_days__c);
+        //This method is used to generate the previous And next Appointment dates according to the custom setting.
+        Date dt = appointob.Appointment_Date_and_Time__c.date();
+        finalMap = new Map<Date,Map<Time,Set<Id>>>();
+        Define_Appointment_Dates__c appdate = Define_Appointment_Dates__c.getValues('appointmentDate');
+        integer prevdays = Integer.valueOf(appdate.previous_days__c);
+        maxdays = Integer.valueOf(appdate.Maximum_days__c);
         // if logged in user is a broker itself, get the broker
-        if(ApexPages.currentPage().getParameters().get('aid') != null){
-
+        if(ApexPages.currentPage().getParameters().get('aid') != null) {
             List<id> ids = new List<id>();
             ids.add(ApexPages.currentPage().getParameters().get('aid'));
-            system.debug('harish' +ids);
             Saasfocus_GoogleCalenderHelper.processEvent(ids);
-            return new pagereference('/'+ApexPages.currentPage().getParameters().get('id'));
-
-        }
-        else
-        {
+            return new pagereference('/' + ApexPages.currentPage().getParameters().get('id'));
+        } else {
             selfid = selfappointment();
-            if(selfid != null )
-            {
-                if(Appointob.Speciality_Skills__c == null) {
-                    LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  from Market_Broker_Association__c  where Broker__r.Id =:selfid and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName()  and Broker__r.Active_Broker__c = true and Broker__r.Channel__c ='Phone Broker'];// Input All brokerâs Id in the system.
-                    System.debug(LstBrokerMarket);
+            if(selfid != null) {
+                if(appointob.Speciality_Skills__c == null) {
+                    // Input All brokerâs Id in the system.
+                    lstBrokerMarket = [Select Id, Broker__r.Id, Broker__r.Name, Broker__r.Email__c From Market_Broker_Association__c Where Broker__r.Id =: selfid And Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() And Broker__r.Active_Broker__c = true And Broker__r.Channel__c ='Phone Broker'];
                 } else {
-                    LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  from Market_Broker_Association__c  where Broker__r.Speciality_Skills__c includes(:Appointob.Speciality_Skills__c) and Broker__r.Id =:selfid and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() and Broker__r.Active_Broker__c = true and Broker__r.Channel__c ='Phone Broker'];// Input All brokerâs Id in the system.
-                    System.debug(LstBrokerMarket);
+                    // Input All brokerâs Id in the system.
+                    lstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  From Market_Broker_Association__c  Where Broker__r.Speciality_Skills__c includes(:appointob.Speciality_Skills__c) And Broker__r.Id =:selfid And Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() And Broker__r.Active_Broker__c = true And Broker__r.Channel__c ='Phone Broker'];
                 }
 
-                if( LstBrokerMarket.size()==0) {
-                    LstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  from Market_Broker_Association__c  where Broker__r.Speciality_Skills__c includes(:Appointob.Speciality_Skills__c)  and Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() and Broker__r.Active_Broker__c = true and Broker__r.Channel__c ='Phone Broker'];// Input All brokerâs Id in the system.
-                    System.debug(LstBrokerMarket);
+                if(lstBrokerMarket.size() == 0) {
+                    // Input All brokerâs Id in the system.
+                    lstBrokerMarket = [Select Id,Broker__r.Id,Broker__r.Name,Broker__r.Email__c  From Market_Broker_Association__c  Where Broker__r.Speciality_Skills__c includes(:appointob.Speciality_Skills__c)  And Broker__r.Name != :Saasfocus_Global.getUnallocatedBrokerName() And Broker__r.Active_Broker__c = true And Broker__r.Channel__c ='Phone Broker'];
                 }
-
             }
-            while(prevdays>=0) {
-                if(dt.adddays(-prevdays)>=system.today()) {
-                    AppointmentDate=dt.adddays(-prevdays);
-                    if(AppointmentDate.format('EEEE')=='Saturday' || AppointmentDate.format('EEEE')=='Sunday') {
-                        chkcolor=true;
-                    } else {
-                        chkcolor=false;
-                    }
-                    system.debug('Check with system Date'+dt.adddays(-prevdays)+'today date=>'+system.now());
-                    Date dtnew=dt.adddays(-prevdays);
+            while(prevdays >= 0) {
+                if(dt.adddays(-prevdays) >= system.today()) {
+                    appointmentDate = dt.adddays(-prevdays);
+                    if(appointmentDate.format('EEEE') == 'Saturday' || appointmentDate.format('EEEE') == 'Sunday') chkcolor = true;
+                    else chkcolor = false;
+                    Date dtnew = dt.adddays(-prevdays);
 
-                    for(integer i=1;i<=maxdays;i++) {
-                        System.debug('forloop dates'+dtnew);
-                        FinalMap.put(dtnew, getFreeBrokers(dtnew));
-                        dtnew=dtnew.adddays(1);
+                    for(Integer i = 1; i <= maxdays; i++) {
+                        finalMap.put(dtnew, getFreeBrokers(dtnew));
+                        dtnew = dtnew.adddays(1);
                     }
                     break;
                 }
@@ -171,16 +183,14 @@ public class SaaSFocus_AppointmentController_beta {
         return null;
     }
 
-
     public Map<Time,Set<id>> getFreeBrokers(DateTime appdt) {
         // Define method for getting free broker with their available  time
 
-        if(LstBrokerMarket.size()==0) {
+        if(lstBrokerMarket.size() == 0) {
             // Error message
-            system.debug('hhhhh');
-            tempvar=tempvar+1;
-            if(tempvar==maxdays) {
-                tempvar=1;
+            tempvar = tempvar + 1;
+            if(tempvar == maxdays) {
+                tempvar = 1;
             }
             ApexPages.Message myMsg1 = new ApexPages.Message(ApexPages.Severity.ERROR,'No Broker found for this date with either or All of the below mentioned reasons. Please select another date.');
             ApexPages.Message myMsg2 = new ApexPages.Message(ApexPages.Severity.ERROR,' No Broker with Speciality skills');
@@ -195,122 +205,72 @@ public class SaaSFocus_AppointmentController_beta {
             ApexPages.addMessage(myMsg5);
         }
         //return null;
-        for(Market_Broker_Association__c obj:LstBrokerMarket ) {
-            Allbrokers.add(obj.Broker__r.Id);
-        }
+        for(Market_Broker_Association__c obj : lstBrokerMarket ) allbrokers.add(obj.Broker__r.Id);
 
-        Datetime sdt = Datetime.newInstance(appdt.date(),DayStartTime.addminutes(offset));
-        Datetime edt = Datetime.newInstance(appdt.date(), DayEndTime.addminutes(-IntervalOfMeeting+DurationofMeeting+Offset));
-        system.debug('think' + sdt);
-        system.debug('think' + edt);
+        Datetime sdt = Datetime.newInstance(appdt.date(),dayStartTime.addminutes(offset));
+        Datetime edt = Datetime.newInstance(appdt.date(), dayEndTime.addminutes(-intervalOfMeeting+durationOfMeeting+Offset));
 
-        List<Event> todaysevent  = [Select id,IsAllDayEvent,StartDateTime,EndDateTime,whatid from Event where whatid in:Allbrokers and ((startdatetime <= :sdt and enddatetime >:sdt) OR  (Startdatetime < :edt and Enddatetime >= :edt) OR  (Startdatetime >= :sdt and Enddatetime <= :edt) OR (Startdatetime <= :sdt and Enddatetime >= : edt)) ];
-        System.debug('bingo222' +todaysevent);
-        System.debug('madangle' +Allbrokers);
-        DayEndTime = DayEndTime.addminutes(-IntervalOfMeeting);
-        Time tempdt=DayEndTime.addminutes(IntervalOfMeeting);
+        List<Event> todaysevent  = [Select id, IsAllDayEvent, StartDateTime, EndDateTime, whatid From Event Where whatid IN :allbrokers And ((startdatetime <= :sdt And enddatetime >:sdt) OR (Startdatetime < :edt And Enddatetime >= :edt) OR (Startdatetime >= :sdt And Enddatetime <= :edt) OR (Startdatetime <= :sdt And Enddatetime >= : edt)) ];
+        dayEndTime = dayEndTime.addminutes(-intervalOfMeeting);
+        Time tempdt = dayEndTime.addminutes(intervalOfMeeting);
 
-        Map<Time,Set<Id>> MapTimetoBrokeridnew = new Map<Time,Set<Id>>();
-        // This map will contain start time and occupied brokers
+        Map<Time,Set<Id>> mapTimetoBrokeridnew = new Map<Time,Set<Id>>();
+        // This map will contain start time And occupied brokers
         for(Event eobj : todaysevent) {
             // Add logic of buffer hours
-            system.debug('Event start time :'+eobj.StartDateTime);
-            system.debug('Event End time :'+eobj.EndDateTime);
-
-            EventStarttime = ((eobj.StartDateTime).time()).addminutes(-offset);
-
-            EventEndtime = ((eobj.EndDateTime).time()).addminutes(-offset);
-            system.debug('Event ye hai start time :'+EventStarttime );
-            system.debug('Event ye hai end time :'+EventEndtime );
+            eventStarttime = ((eobj.StartDateTime).time()).addminutes(-offset);
+            eventEndtime = ((eobj.EndDateTime).time()).addminutes(-offset);
             // replace below with the method
 
-            if(eobj.IsAllDayEvent || eobj.startdatetime <= sdt) {
-                EventStarttime = Daystarttime;
-                system.debug('info.'+EventEndtime );
-            }
+            if(eobj.IsAllDayEvent || eobj.startdatetime <= sdt) eventStarttime = dayStartTime;
+            if(eobj.IsAllDayEvent || eobj.enddatetime >= edt) eventEndtime = dayEndTime;
 
-
-
-            if(eobj.IsAllDayEvent || eobj.enddatetime >= edt) {
-                EventEndtime = DayEndTime;
-                system.debug('kkkk '+EventEndtime );
-            }
-
-            System.debug('areeee' +EventStarttime );
-            System.debug('areeee bhai' +EventEndtime );
-
-            if( EventEndtime < Daystarttime || EventStarttime >DayEndTime )
+            //TODO: could be a bug
+            if( eventEndtime < dayStartTime || eventStarttime >dayEndTime)
             // continue;
 
-            EventStarttime =RoundtoHour(EventStarttime );
-            system.debug('kkkkkk :'+EventStarttime );
-            // loop from start time to end time .. make user busy starttime - buffer time TO end time + interval time
-            for(Time st=EventStarttime.addminutes((-1)*(Buffer+DurationOfMeeting-IntervalOfMeeting ));st<EventEndtime.addminutes(Buffer);st=st.addminutes(IntervalOfMeeting)) {
-                system.debug('duster' +st);
-                if( st< Daystarttime || st > DayEndTime )
+            eventStarttime =RoundtoHour(eventStarttime);
+            // loop From start time to end time .. make user busy starttime - buffer time TO end time + interval time
+            for(Time st=eventStarttime.addminutes((-1)*(buffer+durationOfMeeting-intervalOfMeeting ));st<eventEndtime.addminutes(buffer);st=st.addminutes(intervalOfMeeting)) {
+                if( st< dayStartTime || st > dayEndTime )
                 continue;
 
                 st = RoundtoHour(st); // Round to nearest hour
-                system.debug('possible' +st );
 
-                if (MapTimetoBrokeridnew.get(st)== null)
-                MapTimetoBrokeridnew.put(st,new set<id>());
-                MapTimetoBrokeridnew.get(st).add(eobj.whatid);
+                //TODO: could be a bug
+                if (mapTimetoBrokeridnew.get(st)== null)
+                mapTimetoBrokeridnew.put(st,new set<id>());
+                mapTimetoBrokeridnew.get(st).add(eobj.whatid);
             }
         }
-        System.debug('neeraj' +MapTimetoBrokeridnew);
 
         // By end of below loop map will contain start time with free borker
-        for(Time initialtime =DayStartTime; initialtime <= DayEndTime; initialtime = initialtime.addminutes(IntervalOfMeeting)) {
-            set<id> tempAllbrokerid = Allbrokers.clone();
-            System.debug('temp' +tempAllbrokerid );
+        for(Time initialtime = dayStartTime; initialtime <= dayEndTime; initialtime = initialtime.addminutes(intervalOfMeeting)) {
+            Set<id> tempAllbrokerid = allbrokers.clone();
             //if value existing in map
-            if(MapTimetoBrokeridnew.get(initialtime )==null)
-            MapTimetoBrokeridnew.put(initialtime ,Allbrokers.clone());
-            else {
-                Set<id> BusyBrokerInThisTime = MapTimetoBrokeridnew.get(initialtime );
-                tempAllbrokerid.removeAll(BusyBrokerInThisTime);
+            if(mapTimetoBrokeridnew.get(initialtime )==null) {
+                mapTimetoBrokeridnew.put(initialtime ,allbrokers.clone());
+            } else {
+                Set<id> busyBrokerInThisTime = mapTimetoBrokeridnew.get(initialtime );
+                tempAllbrokerid.removeAll(busyBrokerInThisTime);
 
-                MapTimetoBrokeridnew.put(initialTime,tempAllbrokerid );
+                mapTimetoBrokeridnew.put(initialTime,tempAllbrokerid );
             }
         }
 
         //  remove all blank keys
-        for(Time eacht: MapTimetoBrokeridnew.keyset()) {
-            if(MapTimetoBrokeridnew.get(eacht).size()==0)
-            MapTimetoBrokeridnew.remove(eacht);
+        for(Time eacht: mapTimetoBrokeridnew.keyset()) {
+            if(mapTimetoBrokeridnew.get(eacht).size()==0)
+            mapTimetoBrokeridnew.remove(eacht);
         }
 
-        if(MapTimetoBrokeridnew.size() == 0 ) flag++;
+        if(mapTimetoBrokeridnew.size() == 0 ) flag++;
         if(flag==maxdays) {
             ApexPages.Message myMsg6 = new ApexPages.Message(ApexPages.Severity.ERROR,'All brokers are busy on this date. Plese select another date');
             ApexPages.addMessage(myMsg6 );
         }
-        DayEndTime = tempdt;
-        return MapTimetoBrokeridnew;
-    }
-
-    public List<List<SelectOption>> getAvailableSchedule() {
-        // Define a Method for chose time from given time list in apex page
-        CalList = new List<List<SelectOption>>();
-        for(Date eachdatetime: finalmap.keyset()) {
-            Map<Time,Set<ID>> MapTimetoBrokerid = finalmap.get(eachdatetime);
-            MapTimetoBrokeridnew=MapTimetoBrokerid;
-            List<DateTime> LstMapKey = new List<DateTime>();
-            List<SelectOption> Option = new List<SelectOption>();
-            for(Time obj:MapTimetoBrokerid.keyset()) LstMapKey.add(DateTime.newInstance(eachdatetime.year(), eachdatetime.month(), eachdatetime.day(), obj.hour(), obj.minute(), 0));
-            LstMapKey.sort();
-
-            Map<string,set<id>> showbrokers = new Map<string,set<id>>();
-
-            for(DateTime eacht : LstMapKey) {
-                Datetime dt = Datetime.newInstance(eachdatetime.year(), eachdatetime.month(), eachdatetime.day(), eacht.hour(), eacht.minute(), 0);
-                String ConvertDate = String.valueOf(eacht);
-                Option.add(new SelectOption(ConvertDate,dt.format('hh:mm a')));
-            }
-            CalList.add(option);
-        }
-        return CalList;
+        dayEndTime = tempdt;
+        return mapTimetoBrokeridnew;
     }
 
     Public Pagereference Confirm() {
@@ -323,29 +283,22 @@ public class SaaSFocus_AppointmentController_beta {
         SaaSFocus_Distribute_appointment objct = new SaaSFocus_Distribute_appointment();
         Time selectedT = Datetime.valueOf(selectedtime).time();
         DateTime appdt = Datetime.valueOf(selectedtime);
-        MapTimetoBrokeridnew = finalmap.get(appdt.date());
-        IdBroker = objct.Compensatory_appointment(MapTimetoBrokeridnew.get(selectedT),LstBrokerMarket);
+        mapTimetoBrokeridnew = finalMap.get(appdt.date());
+        IdBroker = objct.Compensatory_appointment(mapTimetoBrokeridnew.get(selectedT),lstBrokerMarket);
 
-        Appointob.Appointment_Date_and_Time__c = appdt;
+        appointob.Appointment_Date_and_Time__c = appdt;
 
-        System.debug('New Date' + appdt.date() + 'String =>' + selectedtime);
-        AppStarttime  =  Datetime.newInstance(Appointob.Appointment_Date_and_Time__c.date(),selectedT);
+        AppStarttime  =  Datetime.newInstance(appointob.Appointment_Date_and_Time__c.date(),selectedT);
         AppStarttime  = AppStarttime.addminutes(offset );
 
-        if(AppStarttime.time() == DayStartTime.addminutes(offset)){
-            EveStartTime = AppStarttime;
-            System.debug('appStarttime' +EveStartTime );
-        } else {
-            EveStartTime  = AppStarttime.addminutes((-1)*Buffer);
-            System.debug('appStarttimeelse' + EveStartTime);
-        }
-        EveEndTime   = AppStarttime.addminutes(Buffer + DurationOfMeeting);
+        if(AppStarttime.time() == dayStartTime.addminutes(offset)) EveStartTime = AppStarttime;
+        else EveStartTime  = AppStarttime.addminutes((-1)*buffer);
+        EveEndTime = AppStarttime.addminutes(buffer + durationOfMeeting);
 
-        if(AppStarttime.time().addMinutes(DurationOfMeeting) >= DayEndTime.addminutes(offset))
-        EveEndTime = AppStarttime.addminutes(DurationOfMeeting);
+        if(AppStarttime.time().addMinutes(durationOfMeeting) >= dayEndTime.addminutes(offset))
+        EveEndTime = AppStarttime.addminutes(durationOfMeeting);
 
         Saasfocus_GetGoogleEvent ob = new Saasfocus_GetGoogleEvent(); //DML
-        system.debug('Eventtime===>'+EveStartTime+'EndTime===>'+EveEndTime+'ID of broker===>'+IdBroker);
 
         Busy b = new Busy();
         b.isBusy = true;
@@ -358,7 +311,7 @@ public class SaaSFocus_AppointmentController_beta {
             String message = 'Broker is busy: ';
             if(b.busyItems != null) {
                 for(GoogleCalendarModel.BusyItem item : b.busyItems) {
-                    message += ' from ' + item.start.addHours(-1).format('MM/dd/yyyy HH:mm:ss', tz.getID()) + ' to ' + item.param_rr_end.addHours(1).format('MM/dd/yyyy HH:mm:ss', tz.getID());
+                    message += ' From ' + item.start.addHours(-1).format('MM/dd/yyyy HH:mm:ss', tz.getID()) + ' to ' + item.param_rr_end.addHours(1).format('MM/dd/yyyy HH:mm:ss', tz.getID());
                 }
             }
             message += ' please book again';
@@ -367,21 +320,21 @@ public class SaaSFocus_AppointmentController_beta {
             pg.setRedirect(true);
             return pg;
         } else {
-            Appointob.Broker__c = IdBroker;
+            appointob.broker__c = IdBroker;
 
-            System.debug('hey' + Appointob.Broker__c);
-            Datetime DT = Datetime.newInstance(Appointob.Appointment_Date_and_Time__c.year(), Appointob.Appointment_Date_and_Time__c.month(), Appointob.Appointment_Date_and_Time__c.day(), selectedT.hour(), selectedT.minute(), 0);
-            Appointob.Appointment_Date_and_Time__c = DT ;
-            update Appointob;
-            Appointob.RecordTypeId = [Select Id from RecordType where Name = 'Confirmed Appointment' limit 1].id;
-            update Appointob;
-            Broker__c Assignedbroker = [select id, Email__c from Broker__c where id =: IdBroker];
-            List<User> brokeruser = [select id ,Email from User where Email = :Assignedbroker.Email__c];
+            System.debug('hey' + appointob.broker__c);
+            Datetime dt = Datetime.newInstance(appointob.Appointment_Date_and_Time__c.year(), appointob.Appointment_Date_and_Time__c.month(), appointob.Appointment_Date_and_Time__c.day(), selectedT.hour(), selectedT.minute(), 0);
+            appointob.Appointment_Date_and_Time__c = dt ;
+            update appointob;
+            appointob.RecordTypeId = [Select Id From RecordType Where Name = 'Confirmed Appointment' limit 1].id;
+            update appointob;
+            broker__c Assignedbroker = [select id, Email__c From broker__c Where id =: IdBroker];
+            List<User> brokeruser = [select id ,Email From User Where Email = :Assignedbroker.Email__c];
             Event e = new Event();
             if(brokeruser.size() > 0)
             e.ownerid = brokeruser[0].id;
-            e.Startdatetime = DT;
-            e.Enddatetime = e.Startdatetime.addminutes(DurationOfMeeting);
+            e.Startdatetime = dt;
+            e.Enddatetime = e.Startdatetime.addminutes(durationOfMeeting);
             // calculate offset . Bijay
             if(offset != null) {
                 e.startdatetime = e.startdatetime.addMinutes(offset);
@@ -390,61 +343,60 @@ public class SaaSFocus_AppointmentController_beta {
 
             String sfdcBaseURL = URL.getSalesforceBaseUrl().toExternalForm();
 
-            e.whatid= Appointob.Broker__c;
-            e.Subject = Appointob.Name+ '-' +Appointob.Street_Address__c +' ' +Appointob.City__c +' ' +Appointob.State__c +' '  +Appointob.Postal_Code__c +'-' +Appointob.Phone__c +'-' +Appointob.Appointment_Type__c;
-            e.Subject = e.Subject.replace('-null','');
-            e.Subject = e.Subject.replace('null-','');
-            e.Subject = e.Subject.replace('null','');
-            e.Location = Appointob.Street_Address__c+','+Appointob.City__c+','+Appointob.State__c+','+Appointob.Postal_Code__c;
-            e.Location = e.Location.replace(',null','');
-            e.Location = e.Location.replace('null,','');
-            e.Location = e.Location.replace('null','N/A');
+            e.whatid= appointob.broker__c;
+            e.subject = appointob.name+ '-' + appointob.street_Address__c + ' ' + appointob.city__c + ' ' + appointob.state__c + ' ' + appointob.postal_Code__c + '-' + appointob.phone__c + '-' + appointob.appointment_Type__c;
+            e.subject = e.subject.replace('-null', '');
+            e.subject = e.subject.replace('null-', '');
+            e.subject = e.subject.replace('null', '');
+            e.location = appointob.street_Address__c + ',' + appointob.city__c + ',' + appointob.state__c + ',' + appointob.postal_Code__c;
+            e.location = e.location.replace(',null','');
+            e.location = e.location.replace('null,','');
+            e.location = e.location.replace('null','N/A');
 
-            string s1 = '';
-            if(Appointob.Pre_Sales_Notes__c != null) {
-                s1 = Appointob.Pre_Sales_Notes__c;
+            String s1 = '';
+            if(appointob.pre_Sales_Notes__c != null) {
+                s1 = appointob.pre_Sales_Notes__c;
                 s1 = s1.stripHtmlTags();
             }
-            string nextline = '\n';
-            e.Description = 'Appointment Reference: ' + Appointob.Name + nextline+ 'Date and Time Of Appointment:' + ' ' + Appointob.Appointment_Date_and_Time__c.format('dd/MM/yyyy hh:mm a')+nextline+
-            'Customer Mobile:' + ' ' + Appointob.Mobile__c + nextline +
-            'Customer Phone:'+' '+ Appointob.Phone__c +nextline+
-            'Customer Location:'+' '+Appointob.Street_Address__c+','+Appointob.City__c+','+Appointob.State__c+','+Appointob.Postal_Code__c+nextline+
-            'Customer Email:'+' '+Appointob.Account_Email__c+nextline+
-            'Customer Name:'+' '+Appointob.Account_Name_Text__c+nextline+nextline+
-            'Notes from Pre Sales' +nextline+
-            +s1+nextline+nextline+
+
+            String nextline = '\n';
+            e.description = 'Appointment Reference: ' + appointob.name + nextline + 'Date And Time Of Appointment:' + ' ' + appointob.appointment_Date_and_Time__c.format('dd/MM/yyyy hh:mm a') + nextline +
+            'Customer Mobile:' + ' ' + appointob.Mobile__c + nextline +
+            'Customer Phone:'+' '+ appointob.Phone__c +nextline+
+            'Customer Location:'+' '+appointob.Street_Address__c+','+appointob.City__c+','+appointob.State__c+','+appointob.Postal_Code__c+nextline+
+            'Customer Email:'+' '+appointob.Account_Email__c+nextline+
+            'Customer Name:'+' '+appointob.Account_Name_Text__c+nextline+nextline+
+            'Notes From Pre Sales' +nextline+
+            s1+nextline+nextline+
             'Opportunity Details:'+' '+nextline+
-            'Transaction Type:'+' '+Appointob.Transaction_Type__c+nextline+
-            'Current Lender:'+' ' +Appointob.Current_Lender__c+nextline+
-            'Current Loan Value:'+' ' +Appointob.Current_Loan_Value__c+nextline+
-            'Current Loan Type:' +' '+Appointob.Current_Loan_Type__c+nextline+
-            'Current Interest Rate:'+' '+Appointob.Current_Interest_Rate__c+nextline+
-            'Current Interest Rate Type:'+' '+Appointob.Current_Interest_Rate_Type__c+nextline+
-            'Current Financials Up to Date:'+' '+Appointob.Current_Financials_Up_to_Date__c+nextline+
-            'Last Refinanced: '+' '+Appointob.Last_Refinance__c+nextline+
-            'Fixed Rate Expiry:'+' '+Appointob.Fixed_Rate_Expiry__c+nextline+
-            'Age of Current Loan:'+' '+Appointob.Age_of_Current_Loan__c+nextline+nextline+nextline+
-            'Income and Liability Details:'+' ' +nextline+
-            'Employment Status:'+' '+ Appointob.Employment_Status__c +nextline+
-            'Industry: '+' '+Appointob.Industry__c +nextline+
-            'Annual Income:'+' '+Appointob.Annual_Income__c +nextline+
-            'Partner Annual Income: '+' '+Appointob.Partner_Income__c +nextline+
-            'Credit Card Balance: '+' '+Appointob.Credit_Card_Balance__c +nextline+
-            'Personal Loan Balance:'+' '+Appointob.Personal_Loan_Balance__c+
-            'Presale notes:'+' '+Appointob.Pre_Sales_Notes__c;
+            'Transaction Type:'+' '+appointob.Transaction_Type__c+nextline+
+            'Current Lender:'+' ' +appointob.Current_Lender__c+nextline+
+            'Current Loan Value:'+' ' +appointob.Current_Loan_Value__c+nextline+
+            'Current Loan Type:' +' '+appointob.Current_Loan_Type__c+nextline+
+            'Current Interest Rate:'+' '+appointob.Current_Interest_Rate__c+nextline+
+            'Current Interest Rate Type:'+' '+appointob.Current_Interest_Rate_Type__c+nextline+
+            'Current Financials Up to Date:'+' '+appointob.Current_Financials_Up_to_Date__c+nextline+
+            'Last Refinanced: '+' '+appointob.Last_Refinance__c+nextline+
+            'Fixed Rate Expiry:'+' '+appointob.Fixed_Rate_Expiry__c+nextline+
+            'Age of Current Loan:'+' '+appointob.Age_of_Current_Loan__c+nextline+nextline+nextline+
+            'Income And Liability Details:'+' ' +nextline+
+            'Employment Status:'+' '+ appointob.Employment_Status__c +nextline+
+            'Industry: '+' '+appointob.Industry__c +nextline+
+            'Annual Income:'+' '+appointob.Annual_Income__c +nextline+
+            'Partner Annual Income: '+' '+appointob.Partner_Income__c +nextline+
+            'Credit Card Balance: '+' '+appointob.Credit_Card_Balance__c +nextline+
+            'Personal Loan Balance:'+' '+appointob.Personal_Loan_Balance__c+
+            'Presale notes:'+' '+appointob.Pre_Sales_Notes__c;
             e.Description=e.Description.replace(',null','');
             e.Description=e.Description.replace('null,','');
             e.Description=e.Description.replace('null','N/A');
 
-            System.debug('capacity' + e);
             insert e;
             SaaSFocus_Distribute_appointment objct2 = new SaaSFocus_Distribute_appointment();
             // Update complementary count / calendar
             objct2.compensatory_appointment_1(IdBroker);
 
             GoogleCalendarUtility.updateGoogleSetting();
-
             Utilities.sendAppointmentConfirmEmail(appointmentId);
             pagereference pg = new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId+'&aid='+e.id);
             pg.setRedirect(true);
@@ -456,40 +408,39 @@ public class SaaSFocus_AppointmentController_beta {
         return new pagereference('/' + appointmentId);
     }
 
-    public Time RoundtoHour(time EventStarttime) {
+    public Time RoundtoHour(time eventStarttime) {
         Time temproundedtime;
 
-        if(EventStarttime < DayStartTime) {
-            for(Time initialtime = DayStartTime; initialtime >= EventStarttime; initialtime = initialtime.addminutes(-IntervalOfMeeting)) temproundedtime = initialtime;
+        if(eventStarttime < dayStartTime) {
+            for(Time initialtime = dayStartTime; initialtime >= eventStarttime; initialtime = initialtime.addminutes(-intervalOfMeeting)) temproundedtime = initialtime;
         } else {
-            for(Time initialtime = DayStartTime; initialtime <= EventStarttime; initialtime = initialtime.addminutes(IntervalOfMeeting)) temproundedtime = initialtime;
+            for(Time initialtime = dayStartTime; initialtime <= eventStarttime; initialtime = initialtime.addminutes(intervalOfMeeting)) temproundedtime = initialtime;
         }
         return temproundedtime ;
     }
 
     // Define a method for convert string to time
     public Time convertStringToTime(String selectedtime) {
-        List<String> newLst = new List<String>();
-        newLst = selectedtime.split(':');
+        List<String> newLst = selectedtime.split(':');
         return Time.newInstance(Integer.valueOf(newLst[0]), Integer.valueOf(newLst[1]), 0, 0);
     }
 
     Public string selfappointment() {
         // if current logged in user Email matches with any of the broker's Email , return broker id else return null
-        User current_user = [SELECT Email FROM User WHERE Id =: UserInfo.getUserId()] ;
-        List<Broker__c> lst = [SELECT Id,Email__c FROM Broker__c WHERE Email__c =: current_user.Email ];
+        User current_user = [SELECT Email From User Where Id =: UserInfo.getUserId()] ;
+        List<broker__c> lst = [SELECT Id,Email__c From broker__c Where Email__c =: current_user.Email ];
         if(lst.size() > 0) return lst[0].Id;
         else return null;
     }
 
     public pagereference phoneapp() {
         // If the type of Appointment is phone appointment
-        Appointob.Appointment_Type__c = 'Phone Appointment';
+        appointob.Appointment_Type__c = 'Phone Appointment';
 
         Appointment__c newapp = new Appointment__c(id = appointmentId);
         newapp.Appointment_Type__c = 'Phone Appointment';
         update newapp;
-        Tempvar = 10;
+        tempvar = 10;
         pagereference pg = new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId);
         pg.setRedirect(true);
         return pg;
