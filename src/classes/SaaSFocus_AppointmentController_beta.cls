@@ -11,9 +11,9 @@
 //   Test coverage for SaaSFocus_AppointmentController :
 
 public class SaaSFocus_AppointmentController_beta {
-    public Integer offset ;
+    public Integer offset;
     public String appointmentId;
-    public String selectedtime {get;set;}
+    public String selectedtime {get; set;}
     public Integer durationOfMeeting;
     public Integer buffer;
     public Integer intervalOfMeeting;
@@ -21,21 +21,21 @@ public class SaaSFocus_AppointmentController_beta {
     public Time dayEndTime;
     public Map<Time, Set<Id>> mapTimetoBrokeridnew;
     Public Set<id> allbrokers;
-    public Appointment__c appointob {get;set;}
+    public Appointment__c appointob {get; set;}
     public Set<id> busyBrokerInThisTime;
     public List<Market_Broker_Association__c> lstBrokerMarket;
     public Map<Date, Map<Time, Set<id>>> finalMap;
     public String selfid;
     public Time eventStarttime;
     public Time eventEndtime;
-    public Datetime appointmentDate {set;get;}
+    public Datetime appointmentDate {set; get;}
     public Integer flag;
     public Integer maxdays;
-    public Boolean chkcolor {set;get;}
-    public Integer tempvar {get;set;}
+    public Boolean chkcolor {get; set;}
+    public Integer tempvar {get; set;}
     public List<List<SelectOption>> availableOptions {
         get {
-            //TODO: use free busy api instead of below bull shit.
+            //TODO: use free busy api instead of below.
 
             // Define a Method for chose time From given time list in apex page
             List<List<SelectOption>> ret = new List<List<SelectOption>>();
@@ -139,7 +139,7 @@ public class SaaSFocus_AppointmentController_beta {
         //This method is used to generate the previous And next Appointment dates according to the custom setting.
         Date dt = appointob.Appointment_Date_and_Time__c.date();
         finalMap = new Map<Date,Map<Time,Set<Id>>>();
-        Define_Appointment_Dates__c appdate = Define_Appointment_Dates__c.getValues('appointmentDate');
+        Define_Appointment_Dates__c appdate = Define_Appointment_Dates__c.getValues('AppointmentDate');
         integer prevdays = Integer.valueOf(appdate.previous_days__c);
         maxdays = Integer.valueOf(appdate.Maximum_days__c);
         // if logged in user is a broker itself, get the broker
@@ -205,7 +205,7 @@ public class SaaSFocus_AppointmentController_beta {
             ApexPages.addMessage(myMsg5);
         }
         //return null;
-        for(Market_Broker_Association__c obj : lstBrokerMarket ) allbrokers.add(obj.Broker__r.Id);
+        for(Market_Broker_Association__c obj : lstBrokerMarket) allbrokers.add(obj.Broker__r.Id);
 
         Datetime sdt = Datetime.newInstance(appdt.date(),dayStartTime.addminutes(offset));
         Datetime edt = Datetime.newInstance(appdt.date(), dayEndTime.addminutes(-intervalOfMeeting+durationOfMeeting+Offset));
@@ -232,11 +232,8 @@ public class SaaSFocus_AppointmentController_beta {
             eventStarttime =RoundtoHour(eventStarttime);
             // loop From start time to end time .. make user busy starttime - buffer time TO end time + interval time
             for(Time st=eventStarttime.addminutes((-1)*(buffer+durationOfMeeting-intervalOfMeeting ));st<eventEndtime.addminutes(buffer);st=st.addminutes(intervalOfMeeting)) {
-                if( st< dayStartTime || st > dayEndTime )
-                continue;
-
+                if( st< dayStartTime || st > dayEndTime ) continue;
                 st = RoundtoHour(st); // Round to nearest hour
-
                 //TODO: could be a bug
                 if (mapTimetoBrokeridnew.get(st)== null)
                 mapTimetoBrokeridnew.put(st,new set<id>());
@@ -248,26 +245,26 @@ public class SaaSFocus_AppointmentController_beta {
         for(Time initialtime = dayStartTime; initialtime <= dayEndTime; initialtime = initialtime.addminutes(intervalOfMeeting)) {
             Set<id> tempAllbrokerid = allbrokers.clone();
             //if value existing in map
-            if(mapTimetoBrokeridnew.get(initialtime )==null) {
+            if(mapTimetoBrokeridnew.get(initialtime) == null) {
                 mapTimetoBrokeridnew.put(initialtime ,allbrokers.clone());
             } else {
-                Set<id> busyBrokerInThisTime = mapTimetoBrokeridnew.get(initialtime );
+                Set<id> busyBrokerInThisTime = mapTimetoBrokeridnew.get(initialtime);
                 tempAllbrokerid.removeAll(busyBrokerInThisTime);
 
-                mapTimetoBrokeridnew.put(initialTime,tempAllbrokerid );
+                mapTimetoBrokeridnew.put(initialTime,tempAllbrokerid);
             }
         }
 
         //  remove all blank keys
         for(Time eacht: mapTimetoBrokeridnew.keyset()) {
-            if(mapTimetoBrokeridnew.get(eacht).size()==0)
+            if(mapTimetoBrokeridnew.get(eacht).size() == 0)
             mapTimetoBrokeridnew.remove(eacht);
         }
 
-        if(mapTimetoBrokeridnew.size() == 0 ) flag++;
-        if(flag==maxdays) {
+        if(mapTimetoBrokeridnew.size() == 0) flag++;
+        if(flag == maxdays) {
             ApexPages.Message myMsg6 = new ApexPages.Message(ApexPages.Severity.ERROR,'All brokers are busy on this date. Plese select another date');
-            ApexPages.addMessage(myMsg6 );
+            ApexPages.addMessage(myMsg6);
         }
         dayEndTime = tempdt;
         return mapTimetoBrokeridnew;
@@ -398,7 +395,7 @@ public class SaaSFocus_AppointmentController_beta {
 
             GoogleCalendarUtility.updateGoogleSetting();
             Utilities.sendAppointmentConfirmEmail(appointmentId);
-            pagereference pg = new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId+'&aid='+e.id);
+            pagereference pg = new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id=' + appointmentId + '&aid=' + e.id);
             pg.setRedirect(true);
             return pg;
         }
@@ -441,7 +438,7 @@ public class SaaSFocus_AppointmentController_beta {
         newapp.Appointment_Type__c = 'Phone Appointment';
         update newapp;
         tempvar = 10;
-        pagereference pg = new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id='+appointmentId);
+        pagereference pg = new pagereference('/apex/SaaSFocus_Allocate_Appointment_beta?id=' + appointmentId);
         pg.setRedirect(true);
         return pg;
     }
