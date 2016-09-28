@@ -1,154 +1,111 @@
-<apex:page controller="SaaSFocus_AppointmentController_beta" showHeader="true" action="{!setDates}" sidebar="false"> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<apex:page controller="SaaSFocus_AppointmentController_beta" showHeader="true" action="{!setDates}" sidebar="false">
 <style>
-.detailList
-{
+.detailList {
     padding-top:30px!important;
     font-size: 1.1em;
     clear:both;
 }
-.whtback{
-background:#fff;
+.whtback {
+    background:#fff;
 }
 
-.blueback{
-
-background:cyan;
+.blueback {
+    background:cyan;
 }
 </style>
 
+<apex:form>
+<div style="display:none;position: absolute;left:40%;opacity: .5;" class="status_logo123">
+    <img style="position: relative;top: 127px;width:300px" src="{!URLFOR($Resource.AppointmentImage)}"  />
+</div>
 
-<script>
-function check() {
+<apex:pageMessages></apex:pageMessages>
 
-$('.status_logo123').show();
-var r = document.getElementsByName("timegroup");
-var c = -1;
+<apex:pageblock>
+<apex:pageBlockSection columns="1">
+<apex:outputText value="{!appointob.Region__r.Name} "/>
+<apex:outputText value="{!appointob.Market__r.Name} "/>
+<apex:outputText value="{!appointob.Appointment_Date_and_Time__c} "/>
+</apex:pageBlockSection>
+<h4 style="width:100% !important;float:left;text-align: center;">Time Availability</h4>
+<apex:variable value="{!0}" var="j"/>
+<div class="main">
+    <apex:repeat value="{!availableOptions}" var="lst">
 
-for(var i=0; i < r.length; i++){
-   if(r[i].checked) {
-      c = i; 
-   }
-}
-if (c == -1) 
-{
-    alert("Please Select at least One Time");
-    $('.status_logo123').hide();
-    return false;
-}else{
-    return true;
-}
-}
-</script>
-<script>
-/*
-function CallEvent(pointer){
+    <div style="width:15%;float:left;margin-right:20px;margin-top:10px;">
+        <apex:outputText value="{0,date,dd'/'MM'/'yyyy}" style="padding-right: 6px;margin-top: 10px;">
+        <apex:param value="{!AppointmentDate+j}"/>
+    </apex:outputText>
+    <br/>
 
-$('.test tr').removeClass('blueback');
-$('.test tr').addClass('whtback');
-
-$parent=$(pointer).parent().parent();
-$tr=$parent.parent();
-
-//$parent.html('asdasdasd');
-
-var $row = $(pointer).closest("tr");
-
-    $tds = $tr.find("td:nth-child(1)");
-  //  $row.css( "background", "blue !important" );
-    $row.removeClass("whtback");
-    $row.addClass("blueback");
-
-//$(".rbtn input[name=selectRadioGroup]:checked").closest('tr').css("color", "red");
-
-
-//alert('success');
-
-}*/
-</script>
-   
- <apex:form >
-    <div style="display:none;position: absolute;left:40%;opacity: .5;" class="status_logo123">
-        <img style="position: relative;top: 127px;width:300px" src="{!URLFOR($Resource.AppointmentImage)}"  />
-    </div>
- 
- <apex:pageMessages ></apex:pageMessages>
- 
- <apex:pageblock >
- <apex:pageBlockSection columns="1">
- <apex:outputText value="{!Appointob.Region__r.Name} "/>
- <apex:outputText value="{!Appointob.Market__r.Name} "/>
-
- <apex:outputText value="{!Appointob.Appointment_Date_and_Time__c} "/> 
-
- </apex:pageBlockSection> 
- <h4  style="width:100% !important;float:left;text-align: center;">  Time Availability </h4>
- <apex:variable value="{!0}" var="j"/>
-  <div class="main">
- <apex:repeat value="{!AvailableSchedule}" var="lst">
- 
-  <div style="width:15%;float:left;margin-right:20px;margin-top:10px;">
- <apex:outputText value="{0,date,dd'/'MM'/'yyyy}" style="padding-right: 6px;margin-top: 10px;">
-    <apex:param value="{!AppointmentDate+j}" />   
-</apex:outputText><br/>
-
-<apex:outputText value="{0,date,EEEE}" style="padding-right: 6px;margin-top: 10px;">
-    <apex:param value="{!AppointmentDate+j}" />   
+    <apex:outputText value="{0, date, EEEE}" style="padding-right: 6px;margin-top: 10px;">
+    <apex:param value="{!AppointmentDate+j}"/>
 </apex:outputText>
 
+<apex:pageBlockTable value="{!lst}" var="schedule" style="width:100%;margin-top:20px;background:{!if(datevalue(appointob.Appointment_Date_and_Time__c)=datevalue(AppointmentDate+j),'cyan','')}">
+<apex:column headerValue="Available Time" value="{!schedule.Label}"/>
+<apex:column headerValue="Select Time" id="id_timeselection">
+<apex:outputPanel style="width:50px">
+<apex:actionSupport event="onclick" rerender="ol" status="id_status">
+<input type="radio" name="timegroup" class="rbtn"/>
+<apex:param name="selectedtime" assignTo="{!selectedtime}" value="{!schedule.Value}"/>
+</apex:actionSupport>
+</apex:outputPanel>
+</apex:column>
+</apex:pageBlockTable>
+</div>
 
- <apex:pageBlockTable value="{!lst}" var="schedule" style="width:100%;margin-top:20px;background:{!if(datevalue(Appointob.Appointment_Date_and_Time__c)=datevalue(AppointmentDate+j),'cyan','')}">
- <apex:column headerValue="Available Time" value="{!schedule.Label}"/>  
- <apex:column headerValue="Select Time" id="id_timeselection">
- <apex:outputPanel style="width:50px">
-     <apex:actionSupport event="onclick" rerender="ol" status="id_status"  >
- <input type="radio" name="timegroup" class="rbtn"/>
- <apex:param name="selectedtime" assignTo="{!selectedtime}" value="{!schedule.Value}" />
- </apex:actionSupport>
- </apex:outputPanel>
- 
- </apex:column>                 
- </apex:pageBlockTable> 
- 
- </div>
- 
- 
- 
- 
- 
- <apex:variable value="{!J+1}" var="j"/>
- </apex:repeat> 
-  </div>
-     <apex:pageBlockSection >
-         <apex:inputField Label="Pre-sales note" value="{!Appointob.Pre_Sales_Notes__c}"   />
-     </apex:pageBlockSection> 
-     <apex:pageBlockButtons >
-     <apex:outputPanel id="olnew"></apex:outputPanel>
-    <apex:commandButton value="Confirm" status="id_status" action="{!confirm}" onclick="return check()" / >
-  <apex:commandButton value="Cancel" action="{!cancel}" />
- 
-  <apex:outputPanel rendered="{!tempvar==1}">
-  <apex:commandButton value="Change Appointment" action="{!phoneapp}" /></apex:outputPanel> 
-  </apex:pageBlockButtons>
- <apex:outputLabel id="ol"><!--  Selectedtime {!selectedtime}--> </apex:outputLabel>
-  </apex:pageblock>
- </apex:form>
+<apex:variable value="{!J+1}" var="j"/>
+</apex:repeat>
+</div>
+<apex:pageBlockSection >
+<apex:inputField Label="Pre-sales note" value="{!appointob.Pre_Sales_Notes__c}"/>
+</apex:pageBlockSection>
+<apex:pageBlockButtons >
+<apex:outputPanel id="olnew"></apex:outputPanel>
+<apex:commandButton value="Confirm" status="id_status" action="{!confirm}" onclick="return check()"/ >
+<apex:commandButton value="Cancel" action="{!cancel}"/>
 
- <apex:actionStatus id="id_status" startText="Processing..." startStyleClass="color:red;">
-    <apex:facet name="start">
-    <div style="text-align:center;width:100%;height:100%;opacity:0.2;background-color:#000;position:fixed;left:0px;top:0px;z-index:99;" class="status_logo">
-        <img style="position: relative;top: 127px;width:300px" src="{!URLFOR($Resource.AppointmentImage)}"  />
-    </div>    
-    </apex:facet>
-    </apex:actionStatus>
-    <script>
-    function replace_text(){
-  
-     var replaced = $(".main").html().replace('Saturday','<span style="color:red;font-weight:bold">Saturday</span>');
-     replaced=replaced.replace('Sunday','<span style="color:red;font-weight:bold">Sunday</span>');
-     $(".main").html(replaced);
+<apex:outputPanel rendered="{!tempvar==1}">
+<apex:commandButton value="Change Appointment" action="{!phoneapp}"/></apex:outputPanel>
+</apex:pageBlockButtons>
+<apex:outputLabel id="ol"></apex:outputLabel>
+</apex:pageblock>
+</apex:form>
+
+<apex:actionStatus id="id_status" startText="Processing..." startStyleClass="color:red;">
+<apex:facet name="start">
+<div style="text-align:center;width:100%;height:100%;opacity:0.2;background-color:#000;position:fixed;left:0px;top:0px;z-index:99;" class="status_logo">
+    <img style="position: relative;top: 127px;width:300px" src="{!URLFOR($Resource.AppointmentImage)}"/>
+</div>
+</apex:facet>
+</apex:actionStatus>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+function check() {
+    $('.status_logo123').show();
+    var r = document.getElementsByName("timegroup");
+    var c = -1;
+
+    for(var i=0; i < r.length; i++) {
+        if(r[i].checked) {
+            c = i;
+        }
     }
-    replace_text();
-    
-    </script>
+    if (c == -1) {
+        alert("Please Select at least One Time");
+        $('.status_logo123').hide();
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function replace_text() {
+    var replaced = $(".main").html().replace('Saturday','<span style="color:red;font-weight:bold">Saturday</span>');
+    replaced=replaced.replace('Sunday','<span style="color:red;font-weight:bold">Sunday</span>');
+    $(".main").html(replaced);
+}
+replace_text();
+</script>
 </apex:page>
