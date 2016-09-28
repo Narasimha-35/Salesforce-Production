@@ -20,8 +20,8 @@ return DataBase.getQueryLocator([SELECT recordtypeid, Address__c, Current_Balanc
 
 
  global void execute(Database.BatchableContext BC,List<Asset_And_Liability__c> appObj) {
- 
-    clsCoreLogicServicesHelper.CreateRpdata(appObj);        
+    clsCoreLogicServicesHelper coreLogicObject = new clsCoreLogicServicesHelper();
+    coreLogicObject.CreateRpdata(appObj);        
 }
 
 //Finish method to execute at last.
