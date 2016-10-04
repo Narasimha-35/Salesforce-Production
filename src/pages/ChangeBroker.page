@@ -1,4 +1,4 @@
-<apex:page controller="ChangeAppointment_Class" id="pageid">
+<apex:page controller="ChangeBrokerController" id="pageid">
 <apex:pageMessages ></apex:pageMessages>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <style>
@@ -25,7 +25,7 @@ function validateFunction(){
             <apex:commandButton id="saveBtn" value="Save" action="{!save}" onclick="return validateFunction();"/>
             <apex:commandButton id="CancelBtn" value="Cancel" action="{!Cancel}"/>
         </apex:pageBlockButtons>
-        <apex:selectList size="1" value="{!brokername}" label=" " id="Broker">
+        <apex:selectList size="1" value="{!brokerId}" label=" " id="Broker">
             <apex:selectOptions value="{!Broker}"/>
         </apex:selectList>
         <div class="response"></div>

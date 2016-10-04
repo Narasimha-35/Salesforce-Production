@@ -1,4 +1,4 @@
-public class ChangeAppointment_Class {
+public class ChangeBrokerController {
     public List<Broker__c> brokerList {get; set;}
     public Appointment__c appobj {get; set;}
     public Appointment__c appobjnew {get; set;}
@@ -10,23 +10,22 @@ public class ChangeAppointment_Class {
 
     public List<SelectOption> getBroker() {
         apptId = ApexPages.currentPage().getParameters().get('id');
-        Appointment__c Appobjtemp = [Select Name,Broker__r.name,Broker__c,Appointment_Type__c,Broker_Email__c,Broker_Mobile__c FROM Appointment__c WHERE id=:apptId];
+        Appointment__c Appobjtemp = [SELECT Name,Broker__r.name,Broker__c,Appointment_Type__c,Broker_Email__c,Broker_Mobile__c FROM Appointment__c WHERE id=:apptId];
         if(Appobjtemp.Appointment_Type__c == 'Phone Appointment') {
-            brokerList = [Select name FROM Broker__c WHERE Active_Broker__c = true AND name != 'Unallocated Broker' AND Channel__c = 'Phone Broker'];
+            brokerList = [SELECT name FROM Broker__c WHERE Active_Broker__c = true AND name != 'Unallocated Broker' AND Channel__c = 'Phone Broker'];
         } else {
-            brokerList = [Select name FROM Broker__c WHERE Active_Broker__c = true AND name != 'Unallocated Broker' AND (Channel__c = 'Partner' OR Channel__c = 'Employee')];
+            brokerList = [SELECT name FROM Broker__c WHERE Active_Broker__c = true AND name != 'Unallocated Broker' AND (Channel__c = 'Partner' OR Channel__c = 'Employee')];
         }
 
         List<SelectOption> options = new List<SelectOption>();
-        options.add(new SelectOption('','--Please select a Broker--'));
-
+        options.add(new SelectOption('','--Please SELECT a Broker--'));
         for (Broker__c br: brokerList) {
             if(br.id != Appobjtemp.Broker__c) options.add(new SelectOption(br.id ,br.name));
         }
         return options;
     }
 
-    public ChangeAppointment_Class() {
+    public ChangeBrokerController() {
         apptId = ApexPages.currentPage().getParameters().get('id');
         appobj = [SELECT name, account_Name__c, street_Address__c, city__c, postal_Code__c, state__c, broker__c, appointment_Date_and_Time__c, broker__r.name, broker_Email__c, broker_Mobile__c FROM Appointment__c WHERE id =: apptId];
         save1completed = false;
@@ -60,12 +59,12 @@ public class ChangeAppointment_Class {
 
     public pagereference Save3() {
         // Step 5 - Send SMS to new broker.
-        Appointment__c appobjnew = [Select Name, Street_Address__c,City__c,Broker__c,Postal_Code__c,State__c,Broker__r.name ,Appointment_Date_and_Time__c,Broker_Email__c,Broker_Mobile__c FROM Appointment__c WHERE id=:apptId ];
+        Appointment__c appobjnew = [SELECT Name, Street_Address__c,City__c,Broker__c,Postal_Code__c,State__c,Broker__r.name ,Appointment_Date_and_Time__c,Broker_Email__c,Broker_Mobile__c FROM Appointment__c WHERE id=:apptId ];
         // Define SMS template++
         String NewSMSTemplate = 'The appointment '+appobjnew.Name+' with '+appobjnew.Street_Address__c+' '+appobjnew.City__c+' '+appobjnew.Postal_Code__c+' '+appobjnew.State__c+' on '+appobjnew.Appointment_Date_and_Time__c+' is allocated to you.';
         acfCommon.sendSMS(appobjnew.Broker__r.name,appobjnew.Broker_Mobile__c,NewSMSTemplate,true);
         // Step 6 - Delete old Event FROM salesforce and google calendar
-        List<Event> lstevobj = [Select id,Google_Event_ID__c FROM Event WHERE whatid =: appobj.Broker__c AND Subject like :appobj.Name+'%'  LIMIT 1];
+        List<Event> lstevobj = [SELECT id,Google_Event_ID__c FROM Event WHERE whatid =: appobj.Broker__c AND Subject like :appobj.Name+'%'  LIMIT 1];
         if(lstevobj.size()>0) {
             if(lstevobj[0].Google_Event_ID__c != null) {
                 String st= Saasfocus_Global.getGoogleId(lstevobj[0].Google_Event_ID__c);
@@ -83,7 +82,7 @@ public class ChangeAppointment_Class {
 
     // Email Notification to old broker
     public void SendNoticationOld() {
-        EmailTemplate templateId = [select id,subject,body, name,HtmlValue FROM EmailTemplate WHERE DeveloperName = 'Old_BrokerTemplate' AND isActive=true];
+        EmailTemplate templateId = [SELECT id,subject,body, name,HtmlValue FROM EmailTemplate WHERE DeveloperName = 'Old_BrokerTemplate' AND isActive=true];
         Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
         email.setSubject(templateId.subject);
         email.setToAddresses(new List<String>{appobj.broker_Email__c});
@@ -94,7 +93,7 @@ public class ChangeAppointment_Class {
 
     // Email Notification to New broker
     public void SendNoticationNew() {
-        Appointment__c appobjnew = [Select name,Car_Loan_Balance__c,Personal_Loan_Balance__c,Credit_Card_Balance__c,Partner_Income__c,Annual_Income__c,Industry__c,Employment_Status__c,Age_of_Current_Loan__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Current_Financials_Up_to_Date__c,Current_Interest_Rate_Type__c,Current_Interest_Rate__c,Current_Loan_Type__c,Current_Loan_Value__c,Current_Lender__c,Transaction_Type__c,Pre_Sales_Notes__c,Appointment_Type__c,Street_Address__c,City__c,Postal_Code__c,State__c,Alternate_Phone__c,Phone__c,Mobile__c,Account_Name__c,Account_Email__c,Pre_Sales_User__c,Broker__r.name,Appointment_Date_and_Time__c,Broker_Email__c,Broker_Mobile__c FROM Appointment__c WHERE id=:apptId LIMIT 1];
+        Appointment__c appobjnew = [SELECT name,Car_Loan_Balance__c,Personal_Loan_Balance__c,Credit_Card_Balance__c,Partner_Income__c,Annual_Income__c,Industry__c,Employment_Status__c,Age_of_Current_Loan__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Current_Financials_Up_to_Date__c,Current_Interest_Rate_Type__c,Current_Interest_Rate__c,Current_Loan_Type__c,Current_Loan_Value__c,Current_Lender__c,Transaction_Type__c,Pre_Sales_Notes__c,Appointment_Type__c,Street_Address__c,City__c,Postal_Code__c,State__c,Alternate_Phone__c,Phone__c,Mobile__c,Account_Name__c,Account_Email__c,Pre_Sales_User__c,Broker__r.name,Appointment_Date_and_Time__c,Broker_Email__c,Broker_Mobile__c FROM Appointment__c WHERE id=:apptId LIMIT 1];
         EmailTemplate templateIdnew = [SELECT id, subject, body, name, htmlValue FROM EmailTemplate WHERE developerName = 'New_BrokerTemplate' AND isActive = true];
         Messaging.SingleEmailMessage emailnew = new Messaging.SingleEmailMessage();
         emailnew.setSubject(templateIdnew.subject);
