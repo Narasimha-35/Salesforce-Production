@@ -12,14 +12,16 @@ public class ChangeBrokerTest {
         Test.startTest();
         Allocate_Appointment__c custobj = new Allocate_Appointment__c(Name = 'Phone_Broker');
         ApexPages.currentPage().getParameters().put('id',app.id);
-        ChangeAppointment_Class obj = new ChangeAppointment_Class();
+        ChangeBrokerController obj = new ChangeBrokerController();
         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
         obj.save2();
-        obj.Save3();
+        obj.save3();
 
         obj.getBroker();
         obj.brokerId = objBrk.id;
+
         System.assertNotEquals(objBrk,null);
+
         obj.save();
         obj.Cancel();
         Test.stopTest();
@@ -46,23 +48,23 @@ public class ChangeBrokerTest {
         objBrk = new Broker__c();
         objBrk.name = 'testuser2';
         objBrk.Active_Broker__c = true;
-        objBrk.Email__c='testuser1@tpoint.com.au';
-        objBrk.MobilePhone__c='9719764989';
-        objBrk.Street_Address__c='ABC';
-        objBrk.City__c='dehradun';
-        objBrk.Primary_Market__c= m.id;
-        objBrk.Next_Sync_Token__c='fhsdjf';
+        objBrk.Email__c = UserInfo.getUserEmail();
+        objBrk.MobilePhone__c = '9719764989';
+        objBrk.Street_Address__c = 'ABC';
+        objBrk.City__c = 'dehradun';
+        objBrk.Primary_Market__c = m.id;
+        objBrk.Next_Sync_Token__c ='fhsdjf';
         insert objBrk;
     }
 
     static void insertAppointment() {
         o = new Opportunity();
-        o.RecordTypeId= '01290000000thgD';
+        o.RecordTypeId = '01290000000thgD';
         o.Name = 'nee';
-        o.StageName= 'Appointed';
+        o.StageName = 'Appointed';
         o.CloseDate = System.Today();
-        o.Transaction_Type__c= 'Refinance';
-        o.Current_Lender__c= 'AMP';
+        o.Transaction_Type__c = 'Refinance';
+        o.Current_Lender__c = 'AMP';
         o.Current_Loan_Value__c = 8888;
         o.Current_Loan_Type__c = 'Construction';
         o.Personal_Loan_Balance__c = 7879;
@@ -70,20 +72,22 @@ public class ChangeBrokerTest {
         o.Car_Loan_Balance__c  = 8748;
         insert o;
 
-        m = new Market__c();
-        m.Name = 'Dash';
-        m.Market_Region__c= 'North';
-        insert m;
-
         s = new State__c();
-        s.Name    = 'sim';
+        s.Name = 'sim';
         insert s;
 
         r = new Region__c();
-        r.State__c = s.Id ;
-        r.Name  = 'North';
-        r.Sydney_Timezone_Offset__c =10;
+        r.State__c = s.Id;
+        r.Name = 'North';
+        r.Sydney_Timezone_Offset__c = 10;
+        r.timeZone__c = 'Perth/Australia';
         insert r;
+
+        m = new Market__c();
+        m.Name = 'Dash';
+        m.Market_Region__c = 'North';
+        m.region__c = r.id;
+        insert m;
 
         app = new Appointment__c();
         app.RecordTypeId= '01290000000ttUO';

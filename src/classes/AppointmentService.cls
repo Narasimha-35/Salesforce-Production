@@ -1,4 +1,10 @@
 public class AppointmentService {
+    public static Map<String, String> channelConfigNameMap = new Map<String, String>{
+        'Phone Broker' => 'Phone_Broker',
+        'Partner' => 'Face_To_face',
+        'Employee' => 'Face_To_face',
+        'Click' => 'Face_To_face'
+    };
 
     public static String constructAppointmentDescription(Appointment__c appt) {
         String ret = DocumentService.getTemplate('appointmentConfirmationDescriptionTemplate');
@@ -33,7 +39,7 @@ public class AppointmentService {
     }
 
     public static Event constructEvent(Appointment__c appt, Datetime startTime, Id ownerId) {
-        Integer durationOfMeeting = Integer.valueOf(Allocate_Appointment__c.getValues('Phone_Broker').DurationOfMeeting__c);
+        Integer durationOfMeeting = Integer.valueOf(Allocate_Appointment__c.getValues(channelConfigNameMap.get(appt.brokerChannel__c)).DurationOfMeeting__c);
 
         Event e = new Event();
         e.ownerid = ownerId == null ? '' : ownerId;

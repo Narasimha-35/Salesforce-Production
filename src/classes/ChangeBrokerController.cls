@@ -8,6 +8,12 @@ public class ChangeBrokerController {
     public Boolean save2completed {get; set;}
     public Id newEventId;
 
+    public static Integer getSydneyLocalMinuteDiff(Datetime dt, String timezone) {
+        Datetime ldt = Datetime.valueOf(dt.format('yyyy-MM-dd HH:mm:ss', timezone));
+        Datetime sdt = Datetime.valueOf(dt.format('yyyy-MM-dd HH:mm:ss', 'Australia/Sydney'));
+        return (Integer) ((sdt.getTime() - ldt.getTime()) / (60 * 1000));
+    }
+
     public List<SelectOption> getBroker() {
         apptId = ApexPages.currentPage().getParameters().get('id');
         Appointment__c Appobjtemp = [SELECT Name,Broker__r.name,Broker__c,Appointment_Type__c,Broker_Email__c,Broker_Mobile__c FROM Appointment__c WHERE id=:apptId];
@@ -77,7 +83,7 @@ public class ChangeBrokerController {
         // Step 8 - SMS to Old broker
         String OldSMSTemplate = 'The appointment '+appobj.Name+' with '+appobj.Street_Address__c+' '+appobj.City__c+' '+appobj.Postal_Code__c+' '+appobj.State__c+' on '+appobj.Appointment_Date_and_Time__c+'  is cancelled.';
         acfCommon.sendSMS(appobj.Broker__r.name,appobj.Broker_Mobile__c,OldSMSTemplate ,true);
-        return new pagereference('/'+apptId);
+        return new pagereference('/' + apptId);
     }
 
     // Email Notification to old broker
@@ -88,7 +94,7 @@ public class ChangeBrokerController {
         email.setToAddresses(new List<String>{appobj.broker_Email__c});
         email.setHtmlBody(AppointmentService.constructEmailBodyToOldBroker(appobj, templateId));
         email.setBccSender(true);
-        Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});
+        if(!Test.isRunningTest()) Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});
     }
 
     // Email Notification to New broker
@@ -100,22 +106,17 @@ public class ChangeBrokerController {
         emailnew.setToAddresses(new List<String>{appobjnew.broker_Email__c});
         emailnew.setHtmlBody(AppointmentService.constructEmailBodyToNewBroker(appobjnew, templateIdnew));
         emailnew.setBccSender(true);
-        Messaging.sendEmail(new Messaging.SingleEmailMessage[]{emailnew});
-    }
-
-    // Define a method for convert string to time
-    public Time convertStringToTime(String selectedtime) {
-        List<String> newLst = new List<String>();
-        newLst= selectedtime.split(':');
-        return Time.newInstance(Integer.valueOf(newLst[0]),Integer.valueOf(newLst[1]),0,0);
+        if(!Test.isRunningTest()) Messaging.sendEmail(new Messaging.SingleEmailMessage[]{emailnew});
     }
 
     // Insert Event under new Broker
     public Id InsertEvent() {
-        Appointment__c appt      = [SELECT Id, Name, Account_Name__c, Account_Email__c,Appointment_Date_and_Time__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Time_and_Date_Adj__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id FROM Appointment__c WHERE id = :apptId];
+        Appointment__c appt      = [SELECT Id, Name, BrokerChannel__c, Account_Name__c, Account_Email__c,Appointment_Date_and_Time__c, Account_Name_Text__c, Mobile__c,Phone__c,Employment_Status__c,Industry__c,Annual_Income__c,Partner_Income__c,Credit_Card_Balance__c,Personal_Loan_Balance__c,Appointment_Time_and_Date_Adj__c,Street_Address__c,City__c,State__c, Pre_Sales_Notes__c,Transaction_Type__c,Current_Lender__c,Current_Loan_Value__c,Current_Loan_Type__c,Current_Interest_Rate__c,Current_Interest_Rate_Type__c,Current_Financials_Up_to_Date__c,Last_Refinance__c,Fixed_Rate_Expiry__c,Age_of_Current_Loan__c,Postal_Code__c,Appointment_Type__c,Speciality_Skills__c,region__r.Sydney_Timezone_Offset__c,Market__r.Id,Market__r.Name,Region__r.Name,Region__c,Broker__r.Id, market__r.region__r.timeZone__c FROM Appointment__c WHERE id = :apptId];
         Broker__c assignedBroker = [SELECT id, Email__c, Primary_Market__r.Region__r.Sydney_Timezone_Offset__c FROM Broker__c WHERE id = :brokerId];
-        User brokeruser          = [SELECT id, Email FROM User WHERE Email = :assignedBroker.Email__c LIMIT 1];
-        Datetime apptStartTime   = Datetime.newInstance(appt.Appointment_Time_and_Date_Adj__c.date(), Datetime.valueOf(appt.Appointment_Time_and_Date_Adj__c).time());
+        User brokeruser          = [SELECT id, Email FROM User WHERE Email =: assignedBroker.email__c LIMIT 1];
+        System.debug(appt.appointment_Date_and_Time__c);
+        System.debug(appt.market__r.region__r.timeZone__c);
+        Datetime apptStartTime   = appt.appointment_Date_and_Time__c.addMinutes(getSydneyLocalMinuteDiff(appt.appointment_Date_and_Time__c, appt.market__r.region__r.timeZone__c));
 
         Event e = AppointmentService.constructEvent(appt, apptStartTime, brokeruser.id);
         insert e;
