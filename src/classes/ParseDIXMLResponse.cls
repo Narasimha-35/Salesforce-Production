@@ -137,6 +137,128 @@ global class ParseDIXMLResponse{
         
     }
     
+   webservice static void parseDIXMLResponseLoanProd(String response, String OpportuntyiD){
+        String strLoanProduct = ''; 
+        Integer loopIndex = 1;
+        List<Pepper_Loan_Product_Fee__c> lstPeeperLoanProductFee = new List<Pepper_Loan_Product_Fee__c>();
+        List<Pepper_Loan_Product__c> lstPeeperLoanProduct = new List<Pepper_Loan_Product__c>();
+        String name = '';
+        if(response.contains('loan_product')){
+            String strdiXmlResponse = response.substringBetween('<loan_product>','</loan_product>'); 
+            name = response.substringBetween('<tx_product_name>','</tx_product_name>');
+            system.debug('strdiXmlResponse######'+strdiXmlResponse); 
+            String strXml = '<?xml version="1.0" encoding="UTF-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
+            strLoanProduct = strXml + strdiXmlResponse + '</soap:Envelope>';
+            //Loan Condition Section
+            Dom.Document doc = new Dom.Document();
+            doc.load(strLoanProduct);
+            Dom.XMLNode rootElement = doc.getRootElement();
+            system.debug('###123'+rootElement);
+            if(rootElement != null){
+               List<DIWrapperLoanProduct> diWrapperLoanList = new List<DIWrapperLoanProduct>();
+               DIWrapperLoanProduct wrapLoanObj = new DIWrapperLoanProduct();
+               for(Dom.XMLNode child : rootElement.getChildElements()) { 
+                   List<FeeList> lstDiWrapperLoanProductFee = new List<FeeList>();
+                   if(child.getName() == 'cd_group') wrapLoanObj.CDGroup = child.getText() != null ? child.getText() : '';
+                   if(child.getName() == 'am_loan_amount') wrapLoanObj.AmLoanAmount = child.getText() != null ? child.getText() : '';
+                   if(child.getName() == 'cd_product') wrapLoanObj.CDProduct = child.getText() != null ? child.getText() : '';
+                   if(child.getName() == 'no_interest_rate') wrapLoanObj.NoInterestRate = child.getText() != null ? child.getText() : '';
+                   if(child.getName() == 'fg_hold_fixed') wrapLoanObj.FgHoldFixed = child.getText() != null ? child.getText() : '';
+                   if(child.getName() == 'no_loan_term') wrapLoanObj.NoLoanTerm = child.getText() != null ? child.getText() : '';
+                   if(child.getName() == 'cd_loan_term_type') wrapLoanObj.CDLoanTermType = child.getText() != null ? child.getText() : '';
+                   if(child.getName() == 'cd_interest_only_type') wrapLoanObj.CDInterestOnlyType = child.getText() != null ? child.getText() : '';
+                   if(child.getName() == 'cd_repayment_frequency') wrapLoanObj.CDRepaymentFrequency = child.getText() != null ? child.getText() : '';
+                   if(child.getName() == 'cd_repayment') wrapLoanObj.CDRepayment = child.getText() != null ? child.getText() : '';
+                   //if(!name.isEmpty()) wrapLoanoBJ.name = name;
+                   
+                   if(child.getChildElements() != null && !child.getChildElements().isEmpty()){               
+                       //for(Dom.XMLNode subchild : child.getChildElements()){
+                           if(child.getName() == 'fee_list'){
+                               for(Dom.XMLNode subChild : child.getChildElements()){
+                                   FeeList objWrapFee = new FeeList();
+                                    for(Dom.XMLNode lowerSubChild:subChild.getChildElements()){
+                                        
+                                        if(lowerSubChild.getName() == 'id_fee') objWrapFee.idFee = lowerSubChild.getText() != null ? lowerSubChild.getText() : '';
+                                        if(lowerSubChild.getName() == 'nm_fee') objWrapFee.nmFee = lowerSubChild.getText() != null ? lowerSubChild.getText() : '';
+                                        if(lowerSubChild.getName() == 'am_amount') objWrapFee.amAmount = lowerSubChild.getText() != null ? lowerSubChild.getText() : '';
+                                        if(lowerSubChild.getName() == 'cd_occurrance') objWrapFee.cdOccurance = lowerSubChild.getText() != null ? lowerSubChild.getText() : '';
+                                        if(lowerSubChild.getName() == 'cd_capitalised') objWrapFee.cdCapitalised = lowerSubChild.getText() != null ? lowerSubChild.getText() : '';
+                                        
+                                    }
+                                    lstDiWrapperLoanProductFee.add(objWrapFee);
+                                }
+                                if(lstDiWrapperLoanProductFee != null && !lstDiWrapperLoanProductFee.isEmpty())
+                                wrapLoanObj.diWrapperLoanProductFee = lstDiWrapperLoanProductFee;
+                            }
+                        //}
+                    }
+                    
+                    
+                    
+               }
+               diWrapperLoanList.add(wrapLoanObj);
+               if(diWrapperLoanList != null && !diWrapperLoanList.isEmpty()){
+                    for(DIWrapperLoanProduct objdiwrapLoanList : diWrapperLoanList)
+                    {               
+                        Pepper_Loan_Product__c objPepperLoanProduct = new Pepper_Loan_Product__c();
+                        objPepperLoanProduct.AmLoanAmount__c = objdiwrapLoanList.AmLoanAmount;
+                        objPepperLoanProduct.CDGroup__c = objdiwrapLoanList.CDGroup;
+                        objPepperLoanProduct.CDInterestOnlyType__c = objdiwrapLoanList.CDInterestOnlyType;
+                        objPepperLoanProduct.CDLoanTermType__c = objdiwrapLoanList.CDLoanTermType;
+                        objPepperLoanProduct.CDProduct__c = objdiwrapLoanList.CDProduct;
+                        objPepperLoanProduct.CDRepayment__c = objdiwrapLoanList.CDRepayment;
+                        objPepperLoanProduct.CDRepaymentFrequency__c = objdiwrapLoanList.CDRepaymentFrequency;
+                        objPepperLoanProduct.FgHoldFixed__c = objdiwrapLoanList.FgHoldFixed;
+                        objPepperLoanProduct.NoInterestRate__c = objdiwrapLoanList.NoInterestRate;
+                        objPepperLoanProduct.NoLoanTerm__c = objdiwrapLoanList.NoLoanTerm;
+                        objPepperLoanProduct.Opportunity__c = OpportuntyiD;
+                        objPepperLoanProduct.name = name;
+                        objPepperLoanProduct.Index__c = string.valueof(loopIndex);
+                        if(objdiwrapLoanList.diWrapperLoanProductFee != null && !objdiwrapLoanList.diWrapperLoanProductFee.isempty())
+                        {
+                            for(FeeList objFee : objdiwrapLoanList.diWrapperLoanProductFee)
+                            {
+                                Pepper_Loan_Product_Fee__c objPepperLoanProductFee = new Pepper_Loan_Product_Fee__c();
+                                objPepperLoanProductFee.Amamount__c = objFee.amAmount;
+                                objPepperLoanProductFee.CDCapitalised__c = objFee.cdCapitalised;
+                                objPepperLoanProductFee.CDOccurrance__c = objFee.cdOccurance;
+                                objPepperLoanProductFee.IDFee__c = objFee.idFee;
+                                objPepperLoanProductFee.NMFee__c = objFee.nmFee;
+                                objPepperLoanProductFee.OpportunityId__c = OpportuntyiD;
+                                objPepperLoanProductFee.index__c = string.valueof(loopIndex);
+                                lstPeeperLoanProductFee.add(objPepperLoanProductFee);
+                            }
+                        }   
+                        lstPeeperLoanProduct.add(objPepperLoanProduct);
+                        loopIndex++;
+                    }
+                }
+        
+            }
+        }
+        system.debug('###opp'+OpportuntyiD);
+        system.debug('##123'+lstPeeperLoanProduct);
+        List<Pepper_Loan_Product__c> pepperList = [Select id from Pepper_Loan_Product__c where Opportunity__c=:OpportuntyiD];
+        Set<id> pepperIdSet = new Set<id>();
+        for(Pepper_Loan_Product__c pLoan:pepperList){
+            pepperIdSet.add(pLoan.id);
+        }
+        if(pepperList !=null && pepperList.size()>0){
+            delete pepperList;
+        }
+        List<Pepper_Loan_Product_Fee__c> pepperFeeList =[Select id from Pepper_Loan_Product_Fee__c where Pepper_Loan_Product__c=:pepperIdSet];
+        if(pepperFeeList !=null && pepperFeeList.size() > 0){
+            delete pepperFeeList;
+            //diCondList.clear();
+        }
+        
+        if(lstPeeperLoanProduct != null && !lstPeeperLoanProduct.isEmpty()){
+            insert lstPeeperLoanProduct;
+        }
+        if(lstPeeperLoanProductFee != null && !lstPeeperLoanProductFee.isEmpty()){
+            insert lstPeeperLoanProductFee;
+        }
+    }
     
     
     public class DIWrapperLoanCondition{
@@ -162,4 +284,29 @@ global class ParseDIXMLResponse{
         public string fgNew;
         public string type;
     }
+    
+    
+    public class DIWrapperLoanProduct
+    {
+        public string CDGroup;
+        public String AmLoanAmount;
+        public String CDInterestOnlyType;
+        public String CDLoanTermType;
+        public String CDProduct;
+        public String CDRepayment;
+        public String CDRepaymentFrequency;
+        public String FgHoldFixed;
+        public String NoInterestRate;
+        public String NoLoanTerm;
+        public FeeList[] diWrapperLoanProductFee;       
+    }
+    
+    public class FeeList{
+        public string idFee;
+        public string nmFee;
+        public string amAmount;
+        public string cdOccurance;
+        public string cdCapitalised;
+    }
+
 }
