@@ -68,9 +68,10 @@ public class SaaSFocus_AppointmentController_beta {
 
     private Boolean isDynamicTimeOffset = Allocate_Appointment__c.getValues('System').dynamicTimeOffset__c;
 
-    public Integer getSydneyLocalMinuteDiff(Datetime dt, String timezone) {
+    public static Integer getSydneyLocalMinuteDiff(Datetime dt, String timezone) {
         Datetime ldt = Datetime.valueOf(dt.format('yyyy-MM-dd HH:mm:ss', timezone));
-        return (Integer) ((dt.getTime() - ldt.getTime()) / (60 * 1000));
+        Datetime sdt = Datetime.valueOf(dt.format('yyyy-MM-dd HH:mm:ss', 'Australia/Sydney'));
+        return (Integer) ((sdt.getTime() - ldt.getTime()) / (60 * 1000));
     }
 
     public SaaSFocus_AppointmentController_beta() {
