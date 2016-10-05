@@ -174,7 +174,7 @@ Public class CoreLogicServices {
   req1.setEndpoint(SearchApiEndPoint + '/search/au/matcher/address?q=' + address);
   HttpResponse res1 = h1.send(req1);
 
-
+  system.debug('SearchPropertyResponse***********'+string.valueof(res1.getbody()));
 
   return res1;
 
@@ -271,6 +271,29 @@ public String avmJson( AvmJsonGenerator  obj) {
    get;
    set;
   }
+ }
+ 
+ // Property Detail Service.
+ public HttpResponse getSinglePropertyDetail(String propertyID) {
+
+  if (propertyID != null) {
+   Http h1 = new Http();
+
+   String accessToken = getToken();
+   HttpRequest req1 = new HttpRequest();
+   req1.setHeader('Authorization', 'Bearer ' + accessToken);
+   req1.setHeader('Content-Type', 'application/json');
+   req1.setHeader('accept', 'application/json');
+  
+   req1.setMethod('GET');
+   req1.setEndpoint('https://property-api.corelogic.asia/bsg-au/v1/property/'+propertyID+'.json'+'?returnFields=address,attributes,avmDetailList,currentOwnershipList,contactList,developmentApplicationList,externalReferenceList,featureList,forRentPropertyCampaignList,forSaleAgencyCampaignList,forSalePropertyCampaignList,legal,parcelList,propertyPhotoList,saleList,site,title');
+   HttpResponse res1 = h1.send(req1);
+   system.debug('res1&&&&&&&&&&%%%%%%%%%%%%%%%%'+string.valueof(res1.getbody()));
+   return res1;
+  } else {
+   return null;
+  }
+
  }
 
 
