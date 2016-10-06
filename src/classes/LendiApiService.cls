@@ -40,6 +40,7 @@ public class LendiApiService extends RestService {
 		HttpRequest req = buildRequest('GET', '/' + LendiApiStaticValue.PRODUCT_RESOURCE + '?' + urlParams);
 		HttpRequestResponse httpReqRes = sendRequest(req);
 		String data = LendiApiUtil.getData(httpReqRes, 'service_calculators');
+		if(data.length() < 50) return null;
 		return (LendiModel.ServiceCalculator) JSON.deserialize(data.subString(1, data.length() - 1), LendiModel.ServiceCalculator.class);
 	}
 
