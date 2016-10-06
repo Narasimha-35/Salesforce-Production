@@ -932,10 +932,20 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             lstId.add(objAsset.Id);
             mapAsset.put(objAsset.Id , objAsset);
             if(objAsset.RpdataApicalled__c != true)
-             IeId.add(objAsset.id);            
-            lstid.add(objAsset.createdById);
+                 IeId.add(objAsset.id);     
+              Asset_And_Liability__c  ast =   (Asset_And_Liability__c)Trigger.oldmap.get(objAsset.Id)    ;
+            if( ast.Street_Number__c  != objAsset.Street_Number__c  ||
+                ast.Street_Name__c != objAsset.Street_Name__c  
+                ||  
+                 ast.Street_Type__c != 
+                objAsset.Street_Type__c ||  ast.City__c != 
+                objAsset.City__c || ast.State__c != 
+                objAsset.State__c   ||  ast.Postcode__c != 
+                objAsset.Postcode__c      ) {          
+                 IeId.add(objAsset.id); 
+            }
             // Condition Added by Ankit
-            if(objAsset.recordtypeid != null)
+            if(objAsset.recordtypeid != null  )
             {
                 string recordtypename = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(objAsset.recordtypeid).getname();
                 if(objAsset.Repayment_Frequency__c != null && objAsset.Repayment_Frequency__c <> '' && objAsset.Repayments__c != null
@@ -946,8 +956,12 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                     }
             }
         }
+        
+        try{
         if(IeId.size() > 0  && !test.isrunningtest())
         Database.executeBatch(new acfCreateRpDataBatch(IeId), 33);
+        }
+        catch(Exception e){}
         List<User> userObj =[SELECT id, profileid FROM User  where id in : userLastModifiedbyId limit 100];
         for(User u :userObj)
         {

@@ -22,71 +22,87 @@ global class Generate_Di_XML
                 {
                     Assetcdtype =  mapType.get( Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(asset.recordtypeid).getname());
                 }
-                security obj = new security();
-                obj.IdNumber = String.valueof(Counter);
-                Counter ++ ;
                 if(asset.Used_as_Security__c == true)
                 {
-                    obj.cdtypetitle ='Owns';
-                }   
-                else{
-                    obj.cdtypetitle ='Purchasing';
+                    security obj = new security();
+                    obj.IdNumber = String.valueof(Counter);
+                    Counter ++ ;
+                    if(asset.Used_as_Security__c == true)
+                    {
+                        obj.cdtypetitle ='Owns';
+                    }   
+                    else{
+                        obj.cdtypetitle ='Purchasing';
+                    }
+                    if(asset.Value__c != null )
+                        obj.amamount = asset.Value__c;
+                    else
+                        obj.amamount = 0.0;
+                    if(asset.To_Be_Purchased__c == true  && asset.Value__c != null )
+                    {
+                        obj.amestimatedvalue = asset.Value__c;
+                        ToBePurchased = true;
+                        obj.txpurchaseprice = String.valueof(asset.Value__c);
+                    }
+                    else
+                    {
+                        obj.amestimatedvalue = 0.0;
+                        obj.txpurchaseprice = String.valueof('0');
+                        ToBePurchased = false;
+                    }
+                    if(asset.Property_Status__c != null)
+                        obj.status = asset.Property_Status__c;
+                    if(asset.Street_Name__c  != null &&  asset.Street_Number__c != null &&  asset.Street_Type__c != null &&  asset.Postcode__c != null
+                        && asset.City__c != null  &&  asset.State__c != null )
+                    {
+                        obj.txunformattedaddress =  asset.Street_Number__c +' ' +asset.Street_Name__c + ' '+  asset.Street_Type__c + ' ' +asset.City__c + ' '+  asset.State__c  +' '+ asset.Postcode__c ;
+                        obj.txsuburb = asset.City__c;
+                        obj.cdstate = asset.State__c ;
+                        obj.nopostcode = String.valueOf(asset.Postcode__c);
+                    }
+                    else if(asset.Address__c  != null)
+                    {
+                        obj.txunformattedaddress  = asset.Address__c  ;
+                        obj.txsuburb = asset.City__c;
+                        obj.cdstate = asset.State__c ;
+                        obj.nopostcode = String.valueOf(asset.Postcode__c);
+                    }
+                    else
+                    {
+                        obj.txunformattedaddress = '';
+                        obj.txsuburb = asset.City__c;
+                        obj.cdstate = asset.State__c ;
+                        obj.nopostcode = String.valueOf(asset.Postcode__c);
+                    }
+                    if(asset.Property_Type__c  != null  )
+                        obj.cdtypeproperty = asset.Property_Type__c  ;
+                    if(asset.Primary_Purpose__c != null  )
+                        obj.cdtypeownership = asset.Primary_Purpose__c.replaceAll( '\\s+', ''); 
+                    else
+                        obj.cdtypeownership =  ''; 
+                    SecurityTag = SecurityTag + obj.createSecurityXml();
                 }
-                if(asset.Value__c != null )
-                    obj.amamount = asset.Value__c;
-                else
-                    obj.amamount = 0.0;
-                if(asset.To_Be_Purchased__c == true  && asset.Value__c != null )
-                {
-                    obj.amestimatedvalue = asset.Value__c;
-                    ToBePurchased = true;
-                    obj.txpurchaseprice = String.valueof(asset.Value__c);
-                }
-                else
-                {
-                    obj.amestimatedvalue = 0.0;
-                    obj.txpurchaseprice = String.valueof('0');
-                    ToBePurchased = false;
-                }
-                if(asset.Property_Status__c != null)
-                    obj.status = asset.Property_Status__c;
-                if(asset.Street_Name__c  != null &&  asset.Street_Number__c != null &&  asset.Street_Type__c != null &&  asset.Postcode__c != null
-                    && asset.City__c != null  &&  asset.State__c != null )
-                {
-                    obj.txunformattedaddress =  asset.Street_Number__c +' ' +asset.Street_Name__c + ' '+  asset.Street_Type__c + ' ' +asset.City__c + ' '+  asset.State__c  +' '+ asset.Postcode__c ;
-                    obj.txsuburb = asset.City__c;
-                    obj.cdstate = asset.State__c ;
-                    obj.nopostcode = String.valueOf(asset.Postcode__c);
-                }
-                else if(asset.Address__c  != null)
-                {
-                    obj.txunformattedaddress  = asset.Address__c  ;
-                    obj.txsuburb = asset.City__c;
-                    obj.cdstate = asset.State__c ;
-                    obj.nopostcode = String.valueOf(asset.Postcode__c);
-                }
-                else
-                {
-                    obj.txunformattedaddress = '';
-                    obj.txsuburb = asset.City__c;
-                    obj.cdstate = asset.State__c ;
-                    obj.nopostcode = String.valueOf(asset.Postcode__c);
-                }
-                if(asset.Property_Type__c  != null  )
-                    obj.cdtypeproperty = asset.Property_Type__c  ;
-                if(asset.Primary_Purpose__c != null  )
-                    obj.cdtypeownership = asset.Primary_Purpose__c.replaceAll( '\\s+', ''); 
-                else
-                    obj.cdtypeownership =  ''; 
-                SecurityTag = SecurityTag + obj.createSecurityXml();
+                Double assetValue = 0.0 ;
+                 if(asset.Value__c != null)
+                 {
+                    assetValue =  asset.Value__c ;
+                 }
+                 Double limitValue = 0.0 ;
+                 if(asset.Value__c != null)
+                 {
+                    limitValue =  asset.Limit__c ;
+                 }
+                 
                 if(asset.recordtypeid != null  && Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(asset.recordtypeid).getname() != null &&  Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(asset.recordtypeid).getname().contains('Asset') )
-                    assetFincetag = assetFincetag +  '<financial><asset><am_amount>'+ asset.Value__c +'</am_amount><cd_type>'+Assetcdtype+'</cd_type></asset></financial>';
+                    assetFincetag = assetFincetag +  '<financial><asset><am_amount>'+ assetValue +'</am_amount><cd_type>'+Assetcdtype+'</cd_type></asset></financial>';
                 else
-                    assetFincetag = assetFincetag +  '<financial><liability><am_amount>'+ asset.Limit__c +'</am_amount><cd_type>'+Assetcdtype+'</cd_type></liability></financial>';
+                    assetFincetag = assetFincetag +  '<financial><liability><am_amount>'+ limitValue +'</am_amount><cd_type>'+Assetcdtype+'</cd_type></liability></financial>';
             }
         }
-        
-        String xmlSecurity = '<securities>' +SecurityTag+'</securities>';
+        String xmlSecurity ='';
+        if(SecurityTag != ''){
+          xmlSecurity    = '<securities>' +SecurityTag+'</securities>';
+        }
         Decimal lvr =0.0;
         String FinanceXml = '';
         List<Opportunity> lstOLI = new List<Opportunity>();
@@ -228,9 +244,17 @@ global class Generate_Di_XML
                 if(applicantObj.acf_applicant_DOB__c != null )
                 {
                     String[] strDate = applicantObj.acf_applicant_DOB__c.split('/');
-                    Integer myIntDate = integer.valueOf(strDate[1]);
-                    Integer myIntMonth = integer.valueOf(strDate[0]);
-                    Integer myIntYear = integer.valueOf(strDate[2]);
+                     Integer myIntDate = 0;
+                     Integer myIntMonth = 0;
+                     
+                     Integer myIntYear =0 ;
+                     
+                    if(strDate.size() > 1)
+                    myIntDate = integer.valueOf(strDate[1]);
+                     if(strDate.size() > 0)
+                    myIntMonth = integer.valueOf(strDate[0]);
+                     if(strDate.size() > 2)
+                    myIntYear = integer.valueOf(strDate[2]);
                     Date dtdate = Date.newInstance(myIntYear, myIntMonth, myIntDate);
                     Date todayDate = System.today();
                     if(dtdate != null)
@@ -390,6 +414,7 @@ global class Generate_Di_XML
         System.debug(doc.toXmlString());
         HttpRequest req = new HttpRequest();
         req.setEndpoint('http://test.inteflow.com.au/Inteport/decisiongateway.asmx?op=ExecuteXMLRequest');
+        req.setTimeout(60000);
         req.setMethod('POST');
         req.setHeader('Content-Type', 'text/xml');
         req.setBody(doc.toXmlString());
