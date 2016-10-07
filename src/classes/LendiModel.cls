@@ -28,24 +28,24 @@ public with sharing class LendiModel {
 		public String num_of_dependant;
 		public String state;
 		public String postcode;
-		public Integer total_asset_security_value;
-		public Integer funds_requested;
-		public Integer funds_required;
+		public Double total_asset_security_value;
+		public Double funds_requested;
+		public Double funds_required;
 		public List<Income> incomes;
 		public List<Expense> expenses;
 		public List<Liability> liabilities;
-		public Integer taxable_incomes;
+		public Double taxable_incomes;
 		public Double tax;
-		public Integer user_recognised_income;
-		public Integer user_total_raw_income;
-		public Integer user_liability_expense;
-		public Integer user_living_expense;
-		public Integer user_recognised_total_expense;
-		public Integer user_total_raw_expense;
+		public Double user_recognised_income;
+		public Double user_total_raw_income;
+		public Double user_liability_expense;
+		public Double user_living_expense;
+		public Double user_recognised_total_expense;
+		public Double user_total_raw_expense;
 		public LivingExpense living_expense_bank_specification;
-		public Integer living_expense_bank_specified_monthly;
-		public Integer living_expense_bank_specified_annually;
-		public Integer living_expense_final_annually;
+		public Double living_expense_bank_specified_monthly;
+		public Double living_expense_bank_specified_annually;
+		public Double living_expense_final_annually;
 		public Double disposable_income_annually;
 		public Double disposable_income_monthly;
 
@@ -163,30 +163,30 @@ public with sharing class LendiModel {
 		public String user_uuid;
 		public Double original_amount;
 		public String frequency;
-		public Integer annually_effective_amount;
+		public Double annually_effective_amount;
 		public String income_expense_type;
-		public Integer credit_limit_amount;
+		public Double credit_limit_amount;
 		public String category;
 		public String recognition_field;
 		public Double recognition_rate;
 		public Boolean tax_applicable;
-		public Integer recognition_amount;
+		public Double recognition_amount;
 	}
 
 	public virtual class Expense extends Model {
 		public String income_and_expense_sf_id;
 		public String user_sf_id;
 		public String user_uuid;
-		public Integer original_amount;
+		public Double original_amount;
 		public String frequency;
-		public Integer annually_effective_amount;
+		public Double annually_effective_amount;
 		public String income_expense_type;
-		public Integer credit_limit_amount;
+		public Double credit_limit_amount;
 		public String category;
 		public String recognition_field;
 		public Double recognition_rate;
 		public Boolean tax_applicable;
-		public Integer recognition_amount;
+		public Double recognition_amount;
 	}
 
 	public class LivingExpense extends Income {
@@ -197,9 +197,9 @@ public with sharing class LendiModel {
 		public String state_name;
 		public String state_short_name;
 		public Integer dependants;
-		public Integer net_income_from;
+		public Double net_income_from;
 		public Long net_income_to;
-		public Integer living_expense;
+		public Double living_expense;
 		public String location_guide_sf_id;
 		public String location_guide_name;
 		public String location_guide_lender;
@@ -211,9 +211,9 @@ public with sharing class LendiModel {
 
 	public class UserGroup extends Model {
 		public List<User> users;
-		public Integer funds_requested;
-		public Integer funds_required;
-		public Integer security_value;
+		public Double funds_requested;
+		public Double funds_required;
+		public Double security_value;
 		public Double lvr_rate;
 		public List<String> dependants;
 		public List<String> postcodes;
