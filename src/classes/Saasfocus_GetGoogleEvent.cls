@@ -15,6 +15,7 @@ public class Saasfocus_GetGoogleEvent {
     public Set<String> recidSet                              = new Set<String>();
     public List<Event> evtList                               = new List<Event>();
     Public List<Google_Recurring_Events__c> glist            = new List<Google_Recurring_Events__c>();
+    public Saasfocus_GenerateToken ob = new Saasfocus_GenerateToken();
     Public String request {get;set;}
 
     // This Method is used for get the Event from the Google Calender and return the list of events
@@ -31,7 +32,7 @@ public class Saasfocus_GetGoogleEvent {
         // Logic for get the Google calender Event
         String key = setting.API_KEY__c != null ? setting.API_KEY__c : '';
         for(Broker__c bobject : broker_list ) {
-            string Endpoint = 'https://www.googleapis.com/calendar/v3/calendars/' + bobject.Email__c
+            String Endpoint = 'https://www.googleapis.com/calendar/v3/calendars/' + bobject.Email__c
                 + '/events?timeMin=' +  EncodingUtil.urlEncode(StartDateTime.format('yyyy-MM-dd\'T\'HH:mm:ssZ'),'UTF-8')
                 +'&timeMax=' + EncodingUtil.urlEncode(EndDateTime.format('yyyy-MM-dd\'T\'HH:mm:ssZ'),'UTF-8') + '&key=' + key;
             HttpRequest req = new HttpRequest();
@@ -57,21 +58,18 @@ public class Saasfocus_GetGoogleEvent {
                 Map<String, Object> EventRes = (Map<String, Object>)JSON.deserializeUntyped(res.getBody());
                 items = (List<Object>)EventRes.get('items');
 
-                // Create Map of user email and id
-                Map<String,Id>  User_Eml_Id_Map= new Map<String,Id>();
-                // Create List of User for getting the id and Email
-                List<User>  Ulist= [select id,Email from User ];
+                Map<String,Id>  User_Eml_Id_Map= new Map<String,Id>();  // Create Map of user email and id
+                List<User>  Ulist= [select id,Email from User ];     // Create List of User for getting the id and Email
 
                 for (User u_obj : Ulist) {
-                    // add email id in the map
-                    User_Eml_Id_Map.put(u_obj.Email, u_obj.id);
+                    User_Eml_Id_Map.put(u_obj.Email, u_obj.id);  // add email id in the map
                 }
 
                 for (Object item : items) {
                     Map<String, Object> Event_item = (Map<String, Object>)item;
-                    Map<String,Object>Stime =(Map<String,Object>)(Event_item.get('start'));
-                    Map<String,Object>Etime =(Map<String,Object>)(Event_item.get('end'));
-                    List<object> RecRule=(List<Object>)(Event_item.get('recurrence'));
+                    Map<String,Object>Stime =(Map<String,Object>)(Event_item .get('start'));
+                    Map<String,Object>Etime =(Map<String,Object>)(Event_item .get('end'));
+                    List<object> RecRule=(List<Object>)(Event_item .get('recurrence'));
 
                     // Condition if single event, multiday and recurring event is Delete from google calender
                     if((String)Event_item.get('status')=='cancelled') {
@@ -287,68 +285,99 @@ public class Saasfocus_GetGoogleEvent {
                             System.debug('Stime ' + Stime +' Etime ' + Etime );
 
                             //Logic to Convert the event start and End  DateTime in the specific format as required to assign th event Start And End time
-                            String sttm = (String)Stime.get('dateTime');
+                            String sttm=(String)Stime.get('dateTime');
                             Boolean IsAllDayEvent = false;
                             // In case of a whole day event
-                            // TODO: remove this
                             if(sttm == null) {
                                 sttm = (String)Stime.get('date');
-                                sttm = sttm + ' 00:00:00';
-                                Datetime alldt = DateTime.valueOf(sttm);
-                                Integer hh1 = (tz.getOffset(alldt))/(1000*60);
+                                sttm = sttm+' 00:00:00';
+                                Datetime alldt=DateTime.valueOf(sttm);
+                                Integer hh1= (tz.getOffset(alldt))/(1000*60);
                                 sttm = string.valueof(alldt.addMinutes(-hh1));
                                 sttm = sttm.replace(' ','T');
-                                sttm = sttm+'Z';
+                                sttm =sttm+'Z';
                             }
-                            sttm = sttm.replace('T',' ');
-                            sttm = sttm.replace('Z','');
+                            sttm=sttm.replace('T',' ');
+                            sttm=sttm.replace('Z','');
 
-                            String entm = (String)Etime .get('dateTime');
+                            String entm=(String)Etime .get('dateTime');
                             // In case of a whole day event
-                            // TODO: remove this
                             if(entm == null) {
-                                entm = (String)Etime .get('date');
+                                entm=(String)Etime .get('date');
                                 entm = entm+' 00:00:00';
                                 Datetime alldt=DateTime.valueof(entm);
-                                Integer hh1 = (tz.getOffset(alldt))/(1000*60);
+                                Integer hh1= (tz.getOffset(alldt))/(1000*60);
                                 entm = string.valueof(alldt.addMinutes(-hh1));
                                 entm= entm.replace(' ','T');
-                                entm = entm + 'Z';
+                                entm = entm+'Z';
                             }
-                            entm = entm.replace('T',' ');
-                            entm = entm.replace('Z','');
+                            entm=entm.replace('T',' ');
+                            entm=entm.replace('Z','');
 
                             // Assign the values in Saasfocus_EventClass Object and add object in the list
                             // e.Email=Saasfocus_Global.setGoogleId((String)Event_item.get('id'),bobject.Email__c,'date');
                             if(((String)Event_item.get('id')).contains('_')) {
-                                e.Email = ((String)Event_item.get('id')).substringBefore('_') + '~' + bobject.Email__c;
+                                e.Email=((String)Event_item.get('id')).substringBefore('_')+'~'+bobject.Email__c;
                             } else {
-                                e.Email = Saasfocus_Global.setGoogleId((String)Event_item.get('id'),bobject.Email__c,'date');
+                                e.Email=Saasfocus_Global.setGoogleId((String)Event_item.get('id'),bobject.Email__c,'date');
                             }
-                            e.StartDateTime = sttm;
-                            e.EndDateTime = entm;
+                            e.StartDateTime=sttm;
+                            e.EndDateTime=entm;
                             Event_list.add(e);
 
-                            // Event object Is Created Here
-                            Event enr = new Event();
+                            Event enr= new Event();                            // Event object Is Created Here
 
                             //Condition for Single Event and Assign the values in the event object
-                            if(((String)Event_item.get('summary')) != null)enr.Subject = ((String)Event_item.get('summary')).left(250);
-
+                            if(((String)Event_item.get('summary'))!=null) {
+                                if(((String)Event_item.get('summary')).length()>=255) {
+                                    enr.Subject=((String)Event_item.get('summary')).left(250);
+                                } else {
+                                    enr.Subject=(String)Event_item.get('summary');
+                                }
+                            }
                             // enr.Subject=(String)Event_item.get('summary');
-                            enr.Description = (String) Event_item.get('description');
-                            if(User_Eml_Id_Map.containsKey(bobject.Email__c)) enr.ownerid = User_Eml_Id_Map.get(bobject.Email__c);
+                            enr.Description=(String)Event_item.get('description');
+                            if(User_Eml_Id_Map.containsKey(bobject.Email__c)) {
+                                enr.ownerid=User_Eml_Id_Map.get(bobject.Email__c);                 // Assign to its owner
+                            }
 
-                            enr.whatid = bobject.id;
-                            enr.Google_Event_ID__c = Saasfocus_Global.setGoogleId((String)Event_item.get('id'),bobject.Email__c,sttm);
-                            enr.StartDateTime = DateTime.valueOfGmt(sttm);
-                            enr.EndDateTime = DateTime.valueOfGmt(entm);
-                            enr.IsAllDayEvent = IsAllDayEvent;
+                            enr.whatid=bobject.id;
+                            enr.Google_Event_ID__c=Saasfocus_Global.setGoogleId((String)Event_item.get('id'),bobject.Email__c,sttm);
+                            enr.StartDateTime=DateTime.valueOfGmt(sttm);
+                            enr.EndDateTime=DateTime.valueOfGmt(entm);
+                            enr.IsAllDayEvent = IsAllDayEvent ;
 
-                            if(enr.EndDateTime < enr.StartDateTime.addDays(1)) evtList.add(enr);
+                            if(enr.EndDateTime < enr.StartDateTime.addDays(1)) {
+                                evtList.add(enr);  // Add event in the List
+                            }
 
                             // Condition For Multiday Event
-                            if(DateTime.valueOfGmt(sttm).adddays(1) <= DateTime.valueOfGmt(entm)) glist.add(constructGoogleRecurringEvent(sttm, entm, bobject, Event_item, User_Eml_Id_Map));
+                            if(DateTime.valueOfGmt(sttm).adddays(1) <=DateTime.valueOfGmt(entm)) {
+                                Google_Recurring_Events__c GObj= new Google_Recurring_Events__c();
+                                if(((String)Event_item.get('summary'))!=null) {
+                                    if(((String)Event_item.get('summary')).length()>=80) {
+                                        GObj.Name=((String)Event_item.get('summary')).left(79);
+                                    } else {
+                                        GObj.Name=(String)Event_item.get('summary');
+                                    }
+
+                                    if(((String)Event_item.get('summary')).length()>=255) {
+                                        GObj.Summary__c=((String)Event_item.get('summary')).left(250);
+                                    } else {
+                                        GObj.Summary__c=(String)Event_item.get('summary');
+                                    }
+                                }
+                                GObj.Description__c=(String)Event_item.get('description');
+                                GObj.Start_Date__c=DateTime.valueOfGmt(sttm);
+                                GObj.End_date__c=DateTime.valueOfGmt(entm);
+                                GObj.Google_Event_Id__c=Saasfocus_Global.setGoogleId((String)Event_item.get('id'),bobject.Email__c,sttm);
+                                GObj.Multiday__c=true;
+                                GObj.Broker__c=bobject.id;
+                                if(User_Eml_Id_Map.containsKey(bobject.Email__c)) {
+                                    GObj.Assigned_To__c=User_Eml_Id_Map.get(bobject.Email__c);
+                                }
+                                glist.add(GObj);
+                            }
                         }
                     }
                 }
@@ -373,21 +402,5 @@ public class Saasfocus_GetGoogleEvent {
         Database.delete(delList, false);
         Database.delete(googleEventlst, false);
         return GoogleCalendarUtility.getRetrunList(Event_list, deleteEventIDset, recidSet);
-    }
-
-    public static Google_Recurring_Events__c constructGoogleRecurringEvent(String sttm, String entm, Broker__c bobject, Map<String, Object> event, Map<String,Id>  userEmailIdMap) {
-        Google_Recurring_Events__c GObj = new Google_Recurring_Events__c();
-        if(((String) event.get('summary')) != null) {
-            GObj.Name = ((String) event.get('summary')).left(79);
-            GObj.Summary__c = ((String) event.get('summary')).left(250);
-        }
-        GObj.Description__c = (String) event.get('description');
-        GObj.Start_Date__c = DateTime.valueOfGmt(sttm);
-        GObj.End_date__c = DateTime.valueOfGmt(entm);
-        GObj.Google_Event_Id__c = Saasfocus_Global.setGoogleId((String) event.get('id'), bobject.Email__c,sttm);
-        GObj.Multiday__c = true;
-        GObj.Broker__c = bobject.id;
-        if(userEmailIdMap.containsKey(bobject.Email__c)) GObj.Assigned_To__c = userEmailIdMap.get(bobject.Email__c);
-        return GObj;
     }
 }
