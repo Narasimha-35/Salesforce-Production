@@ -26,12 +26,14 @@ public class Saasfocus_GetGoogleEvent {
 
         // Get the List of Broker
         List<Broker__c> broker_list =[select id,Email__c from Broker__c where id =: BrokerId];
-
+        //Get API KEY
+        Google_API_Setting__c setting = [SELECT id, API_KEY__c, access_Token__c, access_Token_Time_Stamp__c, client_Email_ID__c, google_Calender_ID__c FROM google_API_Setting__c WHERE Name = 'Google_Setting' FOR UPDATE];
         // Logic for get the Google calender Event
+        String key = setting.API_KEY__c != null ? setting.API_KEY__c : '';
         for(Broker__c bobject : broker_list ) {
             string Endpoint = 'https://www.googleapis.com/calendar/v3/calendars/' + bobject.Email__c
-                + '/events?timeMin=' + StartDateTime.format('yyyy-MM-dd\'T\'HH:mm:ssZ')
-                +'&timeMax=' + EndDateTime.format('yyyy-MM-dd\'T\'HH:mm:ssZ');
+                + '/events?timeMin=' +  EncodingUtil.urlEncode(StartDateTime.format('yyyy-MM-dd\'T\'HH:mm:ssZ'),'UTF-8')
+                +'&timeMax=' + EncodingUtil.urlEncode(EndDateTime.format('yyyy-MM-dd\'T\'HH:mm:ssZ'),'UTF-8') + '&key=' + key;
             HttpRequest req = new HttpRequest();
             req.setEndpoint(Endpoint);
             req.setHeader('Content-Type','application/json');
@@ -41,7 +43,7 @@ public class Saasfocus_GetGoogleEvent {
             Http http = new Http();
             Httpresponse res = http.send(req);
 
-            System.debug(LoggingLevel.INFO, 'Body:\n' + request);
+            System.debug(LoggingLevel.INFO, 'Body:\n' + res.getBody());
 
             b.busyItems = GoogleCalendarUtility.getListOfBusyItems(StartDateTime, EndDateTime, bobject.Email__c);
             b.isBusy = b.busyItems.size() > 0;
@@ -363,6 +365,7 @@ public class Saasfocus_GetGoogleEvent {
         delList.addAll([select id from Event where Event_ID__c in : gObjId_set]);
 
         // Condition if Event is update, delete previous event and insert new Event
+        System.debug('event to be inserted into R:' + glist.size() + ' S:' + evtList.size());
         GoogleCalendarUtility.upsertSFEventAndGoogleEvent(glist, evtList);
 
         // Condition delete events from salesforce
