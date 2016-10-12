@@ -98,9 +98,8 @@ user-select: none;
   </script>
   
   <apex:form >
-      
+     
   <body>
-
     <main class="container-fluid">
         <section class="login_section">
             <div class="iner_login">
@@ -112,7 +111,7 @@ user-select: none;
                     <span style="color:red" id="idMsg">{!strmsgs}</span >
                     <form role="form" class="col-md-12 custom_login_form">
                         <div class="form-group form-group_login">
-                            <label for="email">Username &nbsp;</label>
+                            <label for="email">Email &nbsp;</label>
                             <apex:inputText styleclass="form-control" id="email" value="{!username}"/>
                         </div>
                         
@@ -124,7 +123,7 @@ user-select: none;
                         
                     
                     <div class="form-group">
-                    <label class="forg_pass" id="fgp">Forgot Password</label>
+                    <label class="forg_pass" id="fgp">Forgot Your Password?</label>
                     <apex:commandButton styleclass="cstm_btn_submit btn btn-success" action="{!Userlogin}" value="{!$Label.site.login_button}"/>
                     
                     </div>
@@ -137,7 +136,7 @@ user-select: none;
                         <span style="color:red" id="idMsg">{!fstrmsgs}</span >
                         <apex:outputPanel rendered="{!!success }" >
                         <div class="form-group form-group_login">
-                            <label for="email">Username &nbsp;</label>
+                            <label for="email">Email &nbsp;</label>
                             <apex:inputText styleclass="form-control" id="femail" value="{!fusername}"/>
                         </div>
                         </apex:outputPanel>
