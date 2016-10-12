@@ -156,7 +156,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                         </apex:facet>
                        </apex:actionStatus>
                         <apex:outputPanel rendered="{!if(strmsg != null && strmsg != '' && strmsg !='acfMailIdAlreadyRegister', true,false)}" style="color:red;margin-bottom:20px;text-align:center;"><p>{!$Label[strmsg]}</p></apex:outputPanel>
-                        <apex:outputPanel rendered="{!if(strmsg == 'acfMailIdAlreadyRegister',true,false)}" style="color:red;margin-bottom:20px;text-align:center;"><p>{!$Label[strmsg]} Please<apex:commandLink value="Click here" action="{!RedirectToLandingPage}"/> to Login<br/> (OR) Enter another email ID for registration</p></apex:outputPanel>            
+                        <apex:outputPanel rendered="{!if(strmsg == 'acfMailIdAlreadyRegister',true,false)}" style="color:red;margin-bottom:20px;text-align:center;"><p>{!$Label[strmsg]} Please<apex:commandLink value="Click here" action="{!RedirectToLandingPage}" style="color:#337ab7;"/> to Login<br/> or reset your password </p></apex:outputPanel>  <!-- (OR) Enter another email ID for registration   -->          
                         <div class="form-group cstm_form_grp" style="position:relative;">
                             <div class="col-md-8 col-md-offset-2">
                                 <apex:inputText id="txtEmail" value="{!username}" styleClass="form-control cstm_input" onBlur="if (this.placeholder == '') {this.placeholder = 'Enter your E-Mail';} VerifyMail();" onFocus="if (this.placeholder == 'Enter your E-Mail') {this.placeholder = '';}" html-placeholder="Enter your E-Mail"/>
