@@ -343,8 +343,8 @@ public class Saasfocus_GetGoogleEvent {
 
                             enr.whatid=bobject.id;
                             enr.Google_Event_ID__c=Saasfocus_Global.setGoogleId((String)Event_item.get('id'),bobject.Email__c,sttm);
-                            enr.StartDateTime=DateTime.valueOfGmt(sttm);
-                            enr.EndDateTime=DateTime.valueOfGmt(entm);
+                            enr.StartDateTime=DateTime.valueOf(sttm);
+                            enr.EndDateTime=DateTime.valueOf(entm);
                             enr.IsAllDayEvent = IsAllDayEvent ;
 
                             if(enr.EndDateTime < enr.StartDateTime.addDays(1)) {
