@@ -22,7 +22,7 @@ public class ChangeBrokerTest {
 
         System.assertNotEquals(objBrk,null);
 
-        obj.save();
+        //obj.save();
         obj.Cancel();
         Test.stopTest();
     }
