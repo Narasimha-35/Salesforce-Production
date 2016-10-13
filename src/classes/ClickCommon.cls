@@ -467,9 +467,10 @@ public class ClickCommon
         system.debug('objCommunity%%%%%%%%'+objCommunity);
         string strNewLoanType = objCommunity.Click_Page_Prefix__c+' New Loans';
         string strRefiType = objCommunity.Click_Page_Prefix__c+' Refi';
-        List_opp = [select id,Recordtype.Name from opportunity where accountId=:lstUser[0].AccountId AND (Recordtype.Name=:strNewLoanType OR Recordtype.Name=:strRefiType)];
+        if(lstUser[0].AccountId != null)
+            List_opp = [select id,Recordtype.Name from opportunity where accountId=:lstUser[0].AccountId AND (Recordtype.Name=:strNewLoanType OR Recordtype.Name=:strRefiType)];
         system.debug('List_opp%%%%%%%%'+List_opp);
-        If(!List_opp.isEmpty())
+        If(List_opp != null && !List_opp.isEmpty())
         {
             system.debug('##########################');
             return List_opp[0].Id;
