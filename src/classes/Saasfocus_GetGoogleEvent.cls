@@ -150,8 +150,8 @@ public class Saasfocus_GetGoogleEvent {
                                 }
                             }
                             GObj.Description__c=(String)Event_item.get('description');
-                            GObj.Start_Date__c=DateTime.valueOfGmt(sttm);
-                            GObj.End_date__c=DateTime.valueOfGmt(entm);
+                            GObj.Start_Date__c=DateTime.valueOf(sttm);
+                            GObj.End_date__c=DateTime.valueOf(entm);
                             GObj.Google_Event_Id__c=Saasfocus_Global.setGoogleId((String)Event_item.get('id'),bobject.Email__c,sttm);
                             GObj.Recurring_Events__c=true;
                             GObj.Broker__c=bobject.id;
@@ -368,8 +368,8 @@ public class Saasfocus_GetGoogleEvent {
                                     }
                                 }
                                 GObj.Description__c=(String)Event_item.get('description');
-                                GObj.Start_Date__c=DateTime.valueOfGmt(sttm);
-                                GObj.End_date__c=DateTime.valueOfGmt(entm);
+                                GObj.Start_Date__c=DateTime.valueOf(sttm);
+                                GObj.End_date__c=DateTime.valueOf(entm);
                                 GObj.Google_Event_Id__c=Saasfocus_Global.setGoogleId((String)Event_item.get('id'),bobject.Email__c,sttm);
                                 GObj.Multiday__c=true;
                                 GObj.Broker__c=bobject.id;
