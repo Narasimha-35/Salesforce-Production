@@ -22,86 +22,74 @@ global class Generate_Di_XML
                 {
                     Assetcdtype =  mapType.get( Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(asset.recordtypeid).getname());
                 }
+                security obj = new security();
+                obj.IdNumber = String.valueof(Counter);
+                Counter ++ ;
                 if(asset.Used_as_Security__c == true)
                 {
-                    security obj = new security();
-                    obj.IdNumber = String.valueof(Counter);
-                    Counter ++ ;
-                    if(asset.Used_as_Security__c == true)
-                    {
-                        obj.cdtypetitle ='Owns';
-                    }   
-                    else{
-                        obj.cdtypetitle ='Purchasing';
-                    }
-                    if(asset.Value__c != null )
-                        obj.amamount = asset.Value__c;
-                    else
-                        obj.amamount = 0.0;
-                    if(asset.To_Be_Purchased__c == true  && asset.Value__c != null )
-                    {
-                        obj.amestimatedvalue = asset.Value__c;
-                        ToBePurchased = true;
-                        obj.txpurchaseprice = String.valueof(asset.Value__c);
-                    }
-                    else
-                    {
-                        obj.amestimatedvalue = 0.0;
-                        obj.txpurchaseprice = String.valueof('0');
-                        ToBePurchased = false;
-                    }
-                    if(asset.Property_Status__c != null)
-                        obj.status = asset.Property_Status__c;
-                    if(asset.Street_Name__c  != null &&  asset.Street_Number__c != null &&  asset.Street_Type__c != null &&  asset.Postcode__c != null
-                        && asset.City__c != null  &&  asset.State__c != null )
-                    {
-                        obj.txunformattedaddress =  asset.Street_Number__c +' ' +asset.Street_Name__c + ' '+  asset.Street_Type__c + ' ' +asset.City__c + ' '+  asset.State__c  +' '+ asset.Postcode__c ;
-                        obj.txsuburb = asset.City__c;
-                        obj.cdstate = asset.State__c ;
-                        obj.nopostcode = String.valueOf(asset.Postcode__c);
-                    }
-                    else if(asset.Address__c  != null)
-                    {
-                        obj.txunformattedaddress  = asset.Address__c  ;
-                        obj.txsuburb = asset.City__c;
-                        obj.cdstate = asset.State__c ;
-                        obj.nopostcode = String.valueOf(asset.Postcode__c);
-                    }
-                    else
-                    {
-                        obj.txunformattedaddress = '';
-                        obj.txsuburb = asset.City__c;
-                        obj.cdstate = asset.State__c ;
-                        obj.nopostcode = String.valueOf(asset.Postcode__c);
-                    }
-                    if(asset.Property_Type__c  != null  )
-                        obj.cdtypeproperty = asset.Property_Type__c  ;
-                    if(asset.Primary_Purpose__c != null  )
-                        obj.cdtypeownership = asset.Primary_Purpose__c.replaceAll( '\\s+', ''); 
-                    else
-                        obj.cdtypeownership =  ''; 
-                    SecurityTag = SecurityTag + obj.createSecurityXml();
+                    obj.cdtypetitle ='Owns';
+                }   
+                else{
+                    obj.cdtypetitle ='Purchasing';
                 }
-                Double assetValue = 0.0 ;
-                 if(asset.Value__c != null)
-                 {
-                    assetValue =  asset.Value__c ;
-                 }
-                 Double limitValue = 0.0 ;
-                 if(asset.Value__c != null)
-                 {
-                    limitValue =  asset.Limit__c ;
-                 }
-                 
-                if(asset.recordtypeid != null  && Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(asset.recordtypeid).getname() != null &&  Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(asset.recordtypeid).getname().contains('Asset') )
-                    assetFincetag = assetFincetag +  '<financial><asset><am_amount>'+ assetValue +'</am_amount><cd_type>'+Assetcdtype+'</cd_type></asset></financial>';
+                if(asset.Value__c != null )
+                    obj.amamount = asset.Value__c;
                 else
-                    assetFincetag = assetFincetag +  '<financial><liability><am_amount>'+ limitValue +'</am_amount><cd_type>'+Assetcdtype+'</cd_type></liability></financial>';
+                    obj.amamount = 0.0;
+                if(asset.To_Be_Purchased__c == true  && asset.Value__c != null )
+                {
+                    obj.amestimatedvalue = asset.Value__c;
+                    ToBePurchased = true;
+                    obj.txpurchaseprice = String.valueof(asset.Value__c);
+                }
+                else
+                {
+                    obj.amestimatedvalue = 0.0;
+                    obj.txpurchaseprice = String.valueof('0');
+                    ToBePurchased = false;
+                }
+                if(asset.Property_Status__c != null)
+                    obj.status = asset.Property_Status__c;
+                if(asset.Street_Name__c  != null &&  asset.Street_Number__c != null &&  asset.Street_Type__c != null &&  asset.Postcode__c != null
+                    && asset.City__c != null  &&  asset.State__c != null )
+                {
+                    obj.txunformattedaddress =  asset.Street_Number__c +' ' +asset.Street_Name__c + ' '+  asset.Street_Type__c + ' ' +asset.City__c + ' '+  asset.State__c  +' '+ asset.Postcode__c ;
+                    obj.txsuburb = asset.City__c;
+                    obj.cdstate = asset.State__c ;
+                    obj.nopostcode = String.valueOf(asset.Postcode__c);
+                }
+                else if(asset.Address__c  != null)
+                {
+                    obj.txunformattedaddress  = asset.Address__c  ;
+                    obj.txsuburb = asset.City__c;
+                    obj.cdstate = asset.State__c ;
+                    obj.nopostcode = String.valueOf(asset.Postcode__c);
+                }
+                else
+                {
+                    obj.txunformattedaddress = '';
+                    obj.txsuburb = asset.City__c;
+                    obj.cdstate = asset.State__c ;
+                    obj.nopostcode = String.valueOf(asset.Postcode__c);
+                }
+                if(asset.Property_Type__c  != null  )
+                    obj.cdtypeproperty = asset.Property_Type__c  ;
+                else
+                  obj.cdtypeproperty = ''  ;
+                if(asset.Primary_Purpose__c != null  )
+                    obj.cdtypeownership = asset.Primary_Purpose__c.replaceAll( '\\s+', ''); 
+                else
+                    obj.cdtypeownership =  ''; 
+                SecurityTag = SecurityTag + obj.createSecurityXml();
+                if(asset.recordtypeid != null  && Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(asset.recordtypeid).getname() != null &&  Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(asset.recordtypeid).getname().contains('Asset') )
+                    assetFincetag = assetFincetag +  '<financial><asset><am_amount>'+ asset.Value__c +'</am_amount><cd_type>'+Assetcdtype+'</cd_type></asset></financial>';
+                else
+                    assetFincetag = assetFincetag +  '<financial><liability><am_amount>'+ asset.Limit__c +'</am_amount><cd_type>'+Assetcdtype+'</cd_type></liability></financial>';
             }
         }
-        String xmlSecurity ='';
-        if(SecurityTag != ''){
-          xmlSecurity    = '<securities>' +SecurityTag+'</securities>';
+        String xmlSecurity = '';
+        if(lstAsset.size() > 0){
+         xmlSecurity = '<securities>' +SecurityTag+'</securities>';
         }
         Decimal lvr =0.0;
         String FinanceXml = '';
@@ -117,18 +105,18 @@ global class Generate_Di_XML
         {
             Finance  obj = new Finance ();
             Set<ID>  setObj = mapAppIdToApplicantObj.keyset();
-            for(ID id : mapAppIdToApplicantObj.keyset())
+            /*for(ID id : mapAppIdToApplicantObj.keyset())
             {
                 if(setObj.contains(id)  && setObj.size() > 1  )
                 {
                     obj.cdtypefinance  = 'JointwithSpouse';
                 }
-            }
-            if(obj.cdtypefinance  != 'JointwithSpouse'  &&  setObj.size() == 2  )
+            }*/
+            if( setObj.size() == 2  )
             {
                 obj.cdtypefinance  = 'Joint';
             }
-            if(obj.cdtypefinance  != 'JointwithSpouse'  &&  setObj.size() == 1  )
+            if(  setObj.size() == 1  )
             {
                 obj.cdtypefinance  = 'Sole';
             }
@@ -182,8 +170,10 @@ global class Generate_Di_XML
         lstApplicant = [Select Gst_Registered__C ,Gst_Months__C ,Address__c,  acf_How_Long_have_you_been_employed__c ,status_residential__c ,Id, Title__c , Citizen_ship__c ,
                         click_Applicant_Number__c ,acf_Applicant_Name__c  , Gender__c  ,acfLast_2_years_Tax_Return_or_ATO_NOA__c,ABN__C,acf_applicant_Marital_Status__c ,acf_applicant_Dependants__c,
                         acf_applicant_DOB__c ,acfEmployment_Type__c , (Select  Category__c ,Id , recordtypeid ,Amount__c ,Frequency__c , Income_And_Expense_Detail__c ,                        
-                        Credit_Limit__c  from   Income_And_Expenses__r),acfRelationship_code__c,acf_applicant_Employer_Name__c from click_Applicant__c  where clickOpportunity__c  = : OpportuntyiD];
-        if(lstApplicant  != null  && !lstApplicant.isEmpty() )
+           
+           Credit_Limit__c  from   Income_And_Expenses__r),acfRelationship_code__c,acf_applicant_Employer_Name__c from click_Applicant__c  where clickOpportunity__c  = : OpportuntyiD];
+       Integer numberOfdependent =  0;
+       if(lstApplicant  != null  && !lstApplicant.isEmpty() )
         {
             for(click_Applicant__c  applicantObj  : lstApplicant)
             {
@@ -233,28 +223,29 @@ global class Generate_Di_XML
                     obj.cdstsmarital = applicantObj.acf_applicant_Marital_Status__c ;
                 else
                     obj.cdstsmarital = '' ;
-                if(applicantObj.acf_applicant_Dependants__c != null )
+                if(applicantObj.acf_applicant_Dependants__c != null ){
                     obj.ctdependants = applicantObj.acf_applicant_Dependants__c ;
-                else
+                numberOfdependent =numberOfdependent +  Integer.valueof(applicantObj.acf_applicant_Dependants__c);
+                }
+                else{
                     obj.ctdependants = '';
+                    }
                 if(applicantObj.Citizen_ship__c != null )
                     obj.cdcitizenship =applicantObj.Citizen_ship__c ;
                 else
                     obj.cdcitizenship = '' ;
                 if(applicantObj.acf_applicant_DOB__c != null )
-                {
+                {   
+                    Integer myIntDate =0;
+                    Integer myIntMonth = 0;
+                    Integer myIntYear =0;
                     String[] strDate = applicantObj.acf_applicant_DOB__c.split('/');
-                     Integer myIntDate = 0;
-                     Integer myIntMonth = 0;
-                     
-                     Integer myIntYear =0 ;
-                     
                     if(strDate.size() > 1)
                     myIntDate = integer.valueOf(strDate[1]);
-                     if(strDate.size() > 0)
-                    myIntMonth = integer.valueOf(strDate[0]);
-                     if(strDate.size() > 2)
-                    myIntYear = integer.valueOf(strDate[2]);
+                   if(strDate.size() > 0)
+                     myIntMonth = integer.valueOf(strDate[0]);
+                    if(strDate.size() > 2)
+                     myIntYear = integer.valueOf(strDate[2]);
                     Date dtdate = Date.newInstance(myIntYear, myIntMonth, myIntDate);
                     Date todayDate = System.today();
                     if(dtdate != null)
@@ -380,7 +371,7 @@ global class Generate_Di_XML
             // This section for paper application.
             Pepperapplication pepObj = new Pepperapplication();
             pepObj.noadults =  String.valueof(lstApplicant.size());
-            pepObj.nochildren    = '0';
+            pepObj.nochildren    =  String.valueof( numberOfdependent );
             if( lstApplicant != null  &&  lstApplicant[0].acfLast_2_years_Tax_Return_or_ATO_NOA__c   != null  && lstApplicant[0].acfLast_2_years_Tax_Return_or_ATO_NOA__c == 'Yes, I\'ve got one of these')
                 pepObj.doctype = 'FullDoc';
             else
@@ -414,7 +405,6 @@ global class Generate_Di_XML
         System.debug(doc.toXmlString());
         HttpRequest req = new HttpRequest();
         req.setEndpoint('http://test.inteflow.com.au/Inteport/decisiongateway.asmx?op=ExecuteXMLRequest');
-        req.setTimeout(60000);
         req.setMethod('POST');
         req.setHeader('Content-Type', 'text/xml');
         req.setBody(doc.toXmlString());
