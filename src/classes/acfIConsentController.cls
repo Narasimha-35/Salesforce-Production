@@ -66,11 +66,11 @@ public class acfIConsentController
                 update objAppToUpdate;
                 isSubmited=true;
                 
-                List<E_Consent__c> eConsentList = [Select id,Consent_IP__c,Applicant__c FROM E_Consent__c where Applicant__c=:applicantId];
+                List<E_Consent__c> eConsentList = [Select id,Consent_IP__c,Consent_Method__c,Applicant__c FROM E_Consent__c where Applicant__c=:applicantId];  
                 system.debug('##econs'+eConsentList);
                 if(eConsentList.size() > 0){
                     eConsentList[0].Consent_IP__c = ipAddress;
-                    eConsentList[0].Consent_Method__c = 'Online Verify';
+                    eConsentList[0].Consent_Method__c = 'Verify from SMS/Email';
                     update eConsentList;
                 }
             } 
