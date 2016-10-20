@@ -42,6 +42,7 @@ public with sharing class EmailHistoryService {
     public static void saveEmailHistoryUnderOpportunity(List<String> recipants, List<String> ccRecipants, String emailSubject, String htmlBody, List<S3DocumentModel.UploadRequest> uploadRequests,Id OppId)
     {
         //update doc to s3
+        system.debug('test********************************');
         List<S3Document__c> s3Docs;
         if(uploadRequests != null && !uploadRequests.isEmpty())
         {
@@ -66,34 +67,42 @@ public with sharing class EmailHistoryService {
          }
 
         //register to SF as doc Reference email history
-          if(recipants != null && OppId != null)
-          {
-              EmailHistory__c eh = new EmailHistory__c();
-              if(htmlBody != null && htmlBody != '')
-                  eh.emailContent__c = htmlBody;
-              if(emailSubject != null && emailSubject != '')
-                  eh.subject__c = emailSubject; 
-              eh.recipants__c = JSON.serialize(recipants);
-              if(ccRecipants != null && !ccRecipants.IsEmpty())
-                  eh.ccRecipants__c = JSON.serialize(ccRecipants);
-              eh.AcfOpportunity__c = OppId;
-              insert eh;
-              
-              System.debug(LoggingLevel.INFO, 'Create Email History success...');
-              
-              if(s3Docs != null && !s3Docs.IsEmpty())
+        try
+        {
+            system.debug('test1********************************');
+              if(recipants != null && OppId != null)
               {
-                  for(S3Document__c doc : s3Docs)
+                  EmailHistory__c eh = new EmailHistory__c();
+                  if(htmlBody != null && htmlBody != '')
+                      eh.emailContent__c = htmlBody;
+                  if(emailSubject != null && emailSubject != '')
+                      eh.subject__c = emailSubject; 
+                  eh.recipants__c = JSON.serialize(recipants);
+                  if(ccRecipants != null && !ccRecipants.IsEmpty())
+                      eh.ccRecipants__c = JSON.serialize(ccRecipants);
+                  eh.AcfOpportunity__c = OppId;
+                  insert eh;
+                  
+                  System.debug(LoggingLevel.INFO, 'Create Email History success...');
+                  
+                  if(s3Docs != null && !s3Docs.IsEmpty())
                   {
-                    doc.EmailHistory__c = eh.id;
+                      for(S3Document__c doc : s3Docs)
+                      {
+                        doc.EmailHistory__c = eh.id;
+                      }
+                      insert s3Docs;
                   }
-                  insert s3Docs;
-              }
-          } 
-
-          if(s3Docs != null && !s3Docs.IsEmpty() && uploadRequests != null && !uploadRequests.IsEmpty())
-              insert S3DocumentService.constructFailureAsAttachment(s3Docs, uploadRequests);
-          System.debug(LoggingLevel.INFO, 'Create S3 docs success...');
+              } 
+              system.debug('s3Docs********************************'+s3Docs);
+              if(s3Docs != null && !s3Docs.IsEmpty() && uploadRequests != null && !uploadRequests.IsEmpty())
+                  insert S3DocumentService.constructFailureAsAttachment(s3Docs, uploadRequests);
+              System.debug(LoggingLevel.INFO, 'Create S3 docs success...');
+         }
+         catch (CalloutException e)
+         {
+             system.debug('CalloutException******************************'+e);
+         }             
     }
 
 }
