@@ -19,7 +19,7 @@ public  class acfTriggerOnOpportunityHandler
     public void onAfterUpdate(list<opportunity> triggernew,map<id,opportunity> triggerOldMap)
     {
         updateOppLIMonthlyPayments(triggernew,triggerOldMap);
-        sendEmailonOppUpdate(triggernew,triggerOldMap);
+        //sendEmailonOppUpdate(triggernew,triggerOldMap);
         createRequiresDocumentForLendi(triggernew,triggerOldMap);
     }
     //Create task after opportunity created.
@@ -441,24 +441,41 @@ public  class acfTriggerOnOpportunityHandler
             update updateAsset;
         }
     }
+    //===================================================================================
+    //     Name             createdDate               Version
+    //===================================================================================
+    //    Ankit Singh       23-05-2016                 1.0
+    //===================================================================================
+    // This method is used to Tag Applicant from Account to opportunity   
+    //===================================================================================
+    //   Ankit Singh       18-10-2016                  2.0
+    //===================================================================================
+    // This method is used to Tag IncomeAndExpense from Account to Opportunity.
+    //===================================================================================
 
-    // This method is used to Tag Applicant from Account to opportunity
     public void TagApplicantWithOpportunity(List<opportunity>lstTriggerNew)
     {
         List<click_Applicant__c> lstupdatedApplicant = new List<click_Applicant__c>();
+        List<Income_And_Expense__c> lstupdatedIncomeAndExp = new List<Income_And_Expense__c>();
+        list<Income_And_Expense__c> lstIncomeAndExpense = new list<Income_And_Expense__c>();
         map<id,id> mapAccountIdToOppId = new map<id,id>();
+        map<id,id> mapAccountIdsToOppIds = new map<id,id>();
+        set<id> setOfApplicantID = new set<Id>();
         if(lstTriggerNew != null && lstTriggerNew.size() > 0)
         {
             for(opportunity objopp : lstTriggerNew)
             {
                 if(objopp.AccountId != null)
                 {   if(objopp.create_from_custom_clone_button__c == false && objopp.Id <> null)
-                      mapAccountIdToOppId.put(objopp.AccountId,objopp.Id);
+                    {
+                        mapAccountIdToOppId.put(objopp.AccountId,objopp.Id);
+                    }
+                    mapAccountIdsToOppIds.put(objopp.AccountId,objopp.Id);  
                 }
             }
 
             List<click_Applicant__c> lstApplicant = [select id,click_Account__c,clickOpportunity__c from click_Applicant__c
-                                                     where click_Account__c =: mapAccountIdToOppId.keyset()];
+                                                     where click_Account__c =: mapAccountIdToOppId.keyset()];                                                     
             if(lstApplicant != null && lstApplicant.size() > 0)
             {
                 for(click_Applicant__c objApplicant : lstApplicant)
@@ -468,6 +485,7 @@ public  class acfTriggerOnOpportunityHandler
                     {
                         objApplicant.clickOpportunity__c = mapAccountIdToOppId.get(objApplicant.click_Account__c);
                         lstupdatedApplicant.add(objApplicant);
+                        setOfApplicantID.add(objApplicant.id);
                     }
                 }
             }
@@ -476,27 +494,44 @@ public  class acfTriggerOnOpportunityHandler
             {
                 update lstupdatedApplicant;
             }
-        }
-
-    }
-
-  //-----------*************Created by Bhasin on 31-05-16*****************--------------//
-  // This method is used to send email template to the broker when applicant is updated on the basis of stage name and status.
-    public void sendEmailonOppUpdate(List<opportunity> lstTriggerNew,map<id,Opportunity> mapTriggerOld)
-    {
-      /*  Set<Id> setOppIds = new Set<Id>();
-        for(Opportunity objOpp : lstTriggerNew)
-        {
-          if((objOpp.StageName != mapTriggerOld.get(objOpp.id).StageName && objOpp.StageName == 'Application Taken')
-                || (objOpp.acf_Status__c != mapTriggerOld.get(objOpp.id).acf_Status__c && objOpp.acf_Status__c == 'Submitted'))
+            
+            if(setOfApplicantID != null && setOfApplicantID.size() > 0)
             {
-              setOppIds.add(objOpp.id);
-              system.debug('setOppIds-----'+setOppIds);
+                lstIncomeAndExpense = [select id,Account__c,Opportunity__c,Applicant__c,Applicant__r.click_Account__c,Applicant__r.clickOpportunity__c
+                                       from Income_And_Expense__c where Applicant__c IN: setOfApplicantID and Applicant__r.clickOpportunity__c != null];
+                if(lstIncomeAndExpense != null && !lstIncomeAndExpense.isEmpty())
+                {
+                    for(Income_And_Expense__c objIncomeAndExp : lstIncomeAndExpense)
+                    {
+                        if(objIncomeAndExp.Applicant__c != null && objIncomeAndExp.Applicant__r.clickOpportunity__c != null)
+                        {
+                            objIncomeAndExp.Opportunity__c = objIncomeAndExp.Applicant__r.clickOpportunity__c;                       
+                            lstupdatedIncomeAndExp.add(objIncomeAndExp);
+                        }
+                    }
+                }
+            }
+            
+            /*lstIncomeAndExpense = [select id,Account__c,Opportunity__c from Income_And_Expense__c where Account__c=: mapAccountIdsToOppIds.keyset()];
+            if(lstIncomeAndExpense != null && !lstIncomeAndExpense.isEmpty())
+            {
+                for(Income_And_Expense__c objIncomeAndExp : lstIncomeAndExpense)
+                {
+                    if(objIncomeAndExp.Account__c != null && mapAccountIdsToOppIds != null && mapAccountIdsToOppIds.keyset() != null
+                       && mapAccountIdsToOppIds.get(objIncomeAndExp.Account__c) != null)
+                    {
+                        objIncomeAndExp.Opportunity__c = mapAccountIdsToOppIds.get(objIncomeAndExp.Account__c);                       
+                        lstupdatedIncomeAndExp.add(objIncomeAndExp);
+                    }
+                }
+            }*/
+
+            if(lstupdatedIncomeAndExp != null && !lstupdatedIncomeAndExp.isempty())
+            {
+                update lstupdatedIncomeAndExp;
             }
         }
-        ClickCommon.sendEmailNotification(setOppIds);    */
     }
-
 
     //===================================================================================
     //     Name             createdDate               Version
@@ -981,7 +1016,7 @@ public void createFundingPosition(List<Opportunity>  lstOpp)
         {
             mapFunding.put(fpObj.Opportunity__c , fpObj );
         }
-        Set<ID>  oppId = new Set<Id>();
+        Set<ID> oppId = new Set<Id>();
         for(Opportunity  opp :  lstOpp)
         {
             oppId.add(opp.id);
