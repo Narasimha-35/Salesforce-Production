@@ -1,14 +1,14 @@
 public class LendiProductService {
 
 	@future(callout=true)
-	public static void persistServiceCalculator(Id oppoProdId, Double amount) {
+	public static void persistServiceCalculator(Id oppoProdId, Double loanAmount, Double securityValue) {
 		Opportunitylineitem oppoProd = [SELECT id, assessmentRate__c, rateBuffer__c, click_Type__c, acfRate__c, product2Id, product2.click_Loans_Bank_Detail__c, opportunityId FROM OpportunityLineItem WHERE id = :oppoProdId];
 		LendiApiService lendiService = new LendiApiService();
 		LendiModel.ServiceCalculator lendiSC;
 		if(Test.isRunningTest()) {
 			lendiSC = new LendiModel.ServiceCalculator();
 		} else {
-			lendiSC = lendiService.getLendiServiceCalculator(oppoProd, amount);
+			lendiSC = lendiService.getLendiServiceCalculator(oppoProd, loanAmount, securityValue);
 		}
 		if(lendiSC == null) return;
 		ServicingCalculator__c sfSC = lendiSC.convertToServiceCalculator(oppoProd.opportunityId);

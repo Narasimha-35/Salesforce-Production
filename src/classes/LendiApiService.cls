@@ -30,9 +30,9 @@ public class LendiApiService extends RestService {
 		return lendiUser.token;
 	}
 
-	public LendiModel.ServiceCalculator getLendiServiceCalculator(Opportunitylineitem oppoProd, Double amount) {
+	public LendiModel.ServiceCalculator getLendiServiceCalculator(Opportunitylineitem oppoProd, Double loanAmount, Double securityValue) {
 		String filterParam = EncodingUtil.urlEncode(QSUtil.stringify('product_ids', (Object) new List<String>{oppoProd.product2Id}), ENCODING_SCHEME);
-		String loanParam = EncodingUtil.urlEncode('loan_amount=' + amount, ENCODING_SCHEME);
+		String loanParam = EncodingUtil.urlEncode('loan_amount=' + loanAmount + '&security_value=' + securityValue, ENCODING_SCHEME);
 		List<LendiModel.Product> lendiProducts = new List<LendiModel.Product>();
 		LendiModel.Product lendiProd = new LendiModel.Product();
 		lendiProd.is_interest_only = oppoProd.click_Type__c == 'Interest Only' ? true : false;
