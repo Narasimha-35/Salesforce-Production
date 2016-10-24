@@ -16,7 +16,7 @@ public static string strreq = '';
         req.setHeader('Accept', 'application/json');
         req.setHeader('X-API-KEY',strApiKey);
         req.setbody(body);
-        req.setTimeout(120000);
+        req.setTimeout(60000);
         
         strreq = body;
         System.debug('!!!!Statement Body -'+body);
