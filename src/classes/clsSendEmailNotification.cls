@@ -404,7 +404,7 @@ global class clsSendEmailNotification
                                     if(oopObj !=null && oopObj.Applicants__r !=null && oopObj.CurrentAssignedBroker__c != null && lstOLI != null && lstProduct != null && oopObj.Funding_Positions__r !=null )
                                     {
                                         emailFileAttachment = getComplianceAttachment(oopObj);
-                                        system.debug('emailFileAttachment---' +emailFileAttachment);
+                                        //system.debug('emailFileAttachment---' +emailFileAttachment);
                                         if(emailFileAttachment.size() > 0)
                                         {
                                             mail.setFileAttachments(emailFileAttachment);
@@ -422,15 +422,18 @@ global class clsSendEmailNotification
                     
                 if(mails.size() > 0)
                    {
-                       system.debug('###'+mails);
                        Messaging.sendEmail(mails);
                        if(emailFileAttachment.size() > 0)
                        {
+                            system.debug('###');
                             for(Messaging.EmailFileAttachment objAttach : emailFileAttachment)
                             {
+                                system.debug('###11111');
                                 if(objAttach.fileName != null && objAttach.Body != null)
-                                    uploadRequests.add(new S3DocumentModel.UploadRequest(objAttach.fileName, objAttach.Body, S3StaticValue.PDF_MINE_TYPE));
+                                    uploadRequests.add(new S3DocumentModel.UploadRequest(objAttach.fileName, objAttach.Body, S3StaticValue.PDF_MINE_TYPE));                                    
                             }
+                            system.debug('###uploadRequests***************************'+uploadRequests);
+                            system.debug('###sendTo ***************************'+sendTo);
                             // Save history
                             if(sendTo != null && !sendTo.isempty() && uploadRequests != null && !uploadRequests.isempty())
                             {
@@ -438,13 +441,13 @@ global class clsSendEmailNotification
                                 string strSubject = '';
                                 if(lsttemplateId != null && lsttemplateId.size()>0)
                                 {
-                                     Messaging.SingleEmailMessage mail = Messaging.renderStoredEmailTemplate(lsttemplateId[0].id, strContactId, strAccountId);
+                                    Messaging.SingleEmailMessage mail = Messaging.renderStoredEmailTemplate(lsttemplateId[0].id, strContactId, strAccountId);
                                     if(mail != null)
                                     strHTML = mail.HtmlBody;
                                     strSubject = lsttemplateId[0].subject;
                                 }
-                                    EmailHistoryService.saveEmailHistoryUnderOpportunity(sendTo,ccTo,strSubject, strHTML, uploadRequests,oppID);
-                                
+                                system.debug('!@#########'+sendTo+ '^^^'+ccTo+'test****'+strSubject+'!@#$'+strHTML+'%%%%'+uploadRequests+'@@@@@'+oppID);
+                                EmailHistoryService.saveEmailHistoryUnderOpportunity(sendTo,ccTo,strSubject, strHTML, uploadRequests,oppID);                                
                             }
                        }
                        
@@ -501,15 +504,16 @@ global class clsSendEmailNotification
                 
                     for(Opportunity OppValidate : lstOpp)
                     {
-                    if(string.isempty(OppValidate.CurrentAssignedBroker__r.ACL_Licence__c))
-                    {    
-                      strValidationError = 'Please fill Broker ACL Licence.';                                     
+                        if(string.isempty(OppValidate.CurrentAssignedBroker__r.ACL_Licence__c))
+                        {    
+                            strValidationError = 'Please fill Broker ACL Licence.';                                     
+                        }
+                        else
+                        {
+                            mailsAttachments.add(CreditGuidePartnerefa);
+                        }
                     }
-                    else{
-                        mailsAttachments.add(CreditGuidePartnerefa);
-                    }
-                    }
-                    return mailsAttachments;
+                    //return mailsAttachments;
                        
                     }
                 }
