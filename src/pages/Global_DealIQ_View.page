@@ -9,10 +9,9 @@
                //margin-right:80%;
             }
             
-        </style>
-        
-        
+        </style>  
         <apex:outputPanel id="thePanel">
+        <apex:pageMessages />
             <apex:pageBlock id="theBlock">
                 <apex:pageBlockButtons >
                     <apex:commandButton value="New" action="/apex/ClickGlobalConditionsRuleSet"></apex:commandButton>
@@ -21,8 +20,7 @@
                    <apex:column >
                         <apex:facet name="header" >Delete</apex:facet>
                         
-                        <apex:commandLink action="{!deleteCondition}"  rerender="theTable" status="counterStatus" >
-                           
+                        <apex:commandLink action="{!deleteCondition}"  rerender="theTable,thePanel" status="counterStatus" >
                             <apex:image value="{!$Resource.deleteimage}" height="30" width="30" />
                        <apex:param name="dealId"  value="{!deall.id}" assignTo="{!dealId}"/>
                         </apex:commandLink>
