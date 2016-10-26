@@ -124,13 +124,13 @@ public with sharing class LendiModel {
 					for(Liability lia : u.liabilities) {
 						if(lia.clearing_from_this_loan == true) continue;
 						ServiceCalculatorDetail__c liaSCDetail = new ServiceCalculatorDetail__c();
-						liaSCDetail.amount__c                  = lia.repayments;
+						liaSCDetail.amount__c                  = lia.annually_effective_amount;
 						liaSCDetail.opportunity__c             = lia.opportunity;
 						liaSCDetail.frequency__c               = lia.repayment_frequency;
 						liaSCDetail.assetAndLiability__c       = lia.asset_and_liability_sf_id;
 						liaSCDetail.assetAndLiabilityId__c     = lia.asset_and_liability_sf_id;
-						liaSCDetail.recogitionAmount__c        = lia.repayments;
-						liaSCDetail.recogitionPercentage__c    = 100;
+						liaSCDetail.recogitionAmount__c        = lia.recognition_amount;
+						liaSCDetail.recogitionPercentage__c    = lia.recognition_rate * 100;
 						liaSCDetail.servicingCalculator__c     = scId;
 						ret.add(liaSCDetail);
 					}
@@ -155,6 +155,9 @@ public with sharing class LendiModel {
 		public String opportunity;
 		public Double repayments;
 		public String repayment_frequency;
+		public Double annually_effective_amount;
+		public Double recognition_rate;
+		public Double recognition_amount;
 	}
 
 	public virtual class Income extends Model {
@@ -256,6 +259,7 @@ public with sharing class LendiModel {
 		public Double annual_fee;
 		public Double monthly_fee;
 		public String credit_history;
+		public Double interest_only_term;
 
 		public Product() {
 		}

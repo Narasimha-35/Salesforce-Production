@@ -30,18 +30,21 @@ public class LendiApiService extends RestService {
 		return lendiUser.token;
 	}
 
-	public LendiModel.ServiceCalculator getLendiServiceCalculator(Opportunitylineitem oppoProd, Double amount) {
+	public LendiModel.ServiceCalculator getLendiServiceCalculator(Opportunitylineitem oppoProd, Double loanAmount, Double securityValue) {
 		String filterParam = EncodingUtil.urlEncode(QSUtil.stringify('product_ids', (Object) new List<String>{oppoProd.product2Id}), ENCODING_SCHEME);
-		String loanParam = EncodingUtil.urlEncode('loan_amount=' + amount, ENCODING_SCHEME);
+		String loanParam = EncodingUtil.urlEncode('loan_amount=' + loanAmount + '&security_value=' + securityValue + '&tenure=' + oppoProd.click_Tenure__c, ENCODING_SCHEME);
 		List<LendiModel.Product> lendiProducts = new List<LendiModel.Product>();
 		LendiModel.Product lendiProd = new LendiModel.Product();
 		lendiProd.is_interest_only = oppoProd.click_Type__c == 'Interest Only' ? true : false;
-		lendiProd.final_rate = oppoProd.assessmentRate__c > oppoProd.acfRate__c + oppoProd.rateBuffer__c ? oppoProd.assessmentRate__c : oppoProd.acfRate__c + oppoProd.rateBuffer__c;
+		lendiProd.final_rate = oppoProd.assessmentRate__c * 100 > oppoProd.acfRate__c + oppoProd.rateBuffer__c * 100 ? oppoProd.assessmentRate__c * 100 : oppoProd.acfRate__c + oppoProd.rateBuffer__c * 100;
 		lendiProd.interest_rate = oppoProd.acfRate__c;
 		lendiProd.product_sf_id = oppoProd.product2Id;
 		lendiProd.bank_sf_id = oppoProd.product2.click_Loans_Bank_Detail__c;
+		lendiProd.interest_only_term = oppoProd.interest_Only_term__c;
 		lendiProducts.add(lendiProd);
+		System.debug(lendiProducts);
 		String productParam = EncodingUtil.urlEncode(QSUtil.stringify('products', lendiProducts), ENCODING_SCHEME);
+		System.debug(productParam);
 		String urlParams = 'filter_data=' + filterParam;
 		urlParams += '&application_id=' + oppoProd.opportunityId;
 		urlParams += '&loan_data=' + loanParam;
