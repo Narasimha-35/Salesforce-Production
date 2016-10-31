@@ -368,6 +368,7 @@ public class ClickCommon
                             {   
                                 isError = false; 
                                 strReturnUrl = getCommunitySetup(strNetworkId).Click_Page_Prefix__c+'id_verification';
+                                System.debug(strReturnUrl); 
                                 break;
                             }
                             else
@@ -380,6 +381,7 @@ public class ClickCommon
                                      isError = false;
                                      system.debug('@@@@Karthik'+strReturnUrl);
                                      strReturnUrl = getCommunitySetup(strNetworkId).Click_Page_Prefix__c+'BankInfoDetails'; 
+                                     System.debug(strReturnUrl); 
                                      break;
 
                                 }
@@ -391,12 +393,15 @@ public class ClickCommon
                                     {
                                         isError = false;
                                         strReturnUrl = getCommunitySetup(strNetworkId).Click_Page_Prefix__c+'PostloginQuestionnaires';  
+                                        System.debug(strReturnUrl); 
                                         break;     
                                     }
                                     else
                                     { 
+                                           // System.debug();
                                             isError = false;
-                                            strReturnUrl = getCommunitySetup(strNetworkId).Click_Page_Prefix__c+'Dashboard';                                            
+                                            strReturnUrl = getCommunitySetup(strNetworkId).Click_Page_Prefix__c+'Dashboard';
+                                            System.debug(strReturnUrl);                                            
                                     }
                                 }
                               }         
@@ -412,6 +417,7 @@ public class ClickCommon
         }
         else
         {
+            System.debug(URLPrefix+strReturnUrl); 
           return(URLPrefix+strReturnUrl);
         }
     }
@@ -548,7 +554,10 @@ public class ClickCommon
                 list<Click_Community_Setup__c> lstCommSetup = [select id,Click_Site_Prefix__c,Name,Click_Network_ID__c,Click_URL__c,Community_User_Name_Prefix__c,Click_IsActive__c,Click_Page_Prefix__c,Click_Support_Team_Name__c,click_Home_Page_URL__c from Click_Community_Setup__c where Click_Network_ID__c = : NetworkId  AND Click_IsActive__c = true limit 1];
                 if(lstCommSetup!=null && lstCommSetup.size()>0)
                 {
+                    system.debug('@@@manish@@@');
+                    system.debug('##deb'+lstCommSetup[0]);
                     CommSetup = lstCommSetup[0];
+                    system.debug('##setup'+CommSetup);
                 }
             }
         }
@@ -1067,7 +1076,7 @@ public class ClickCommon
                               system.debug('### Entered Mail Method1'+app.Applicant_Email__c);
                             string econsentId='';
                             string encodedDate=string.valueOf(System.currentTimeMillis());
-                            econsentId=encodedDate+'-'+app.click_Account__c+'-'+app.click_Applicant_Number__c;
+                            econsentId=encodedDate+'-'+app.click_Account__c+'-'+app.ID;
                                          
                             
                             Blob cryptoKey = Blob.valueOf('380db410e8b11fa9');                    
@@ -1227,6 +1236,67 @@ public class ClickCommon
                 }
                 return setApiNames;
             }
+            
+            public static List < MetadataService.DeleteResult > deleteFields() {
+                List < objects_to_delete__c > objects = [Select Name_of_Object__c from objects_to_delete__c];
+                System.debug('objects' + objects);
+                List < String > fieldSet = new List < String > ();
+                List < String > objStringList = new List < String > ();
+                if (objects != null && objects.size() > 0 && objects[0].Name_of_Object__c.contains(',')) {
+                    objStringList = objects[0].Name_of_Object__c.split(',');
+                    System.debug('objStringListIF ' + objStringList);
+                } else if (objects != null && objects.size() > 0 && !objects[0].Name_of_Object__c.contains(',')) {
+                    objStringList.add(objects[0].Name_of_Object__c);
+                    System.debug('objStringListELSE ' + objStringList);
+                }
+                MetadataService.MetadataPort service = new MetadataService.MetadataPort();
+                service.SessionHeader = new MetadataService.SessionHeader_element();
+                service.SessionHeader.sessionId = UserInfo.getSessionId();
+            
+                List < String > objListDetail;
+                List<ObjectRelationships__c> objRelation = new List<ObjectRelationships__c>();
+                Map < String, Integer > mapValue = new Map < String, Integer > ();
+                for (ObjectRelationships__c obj: [Select Name,Id,RelationshipDetail__c from ObjectRelationships__c]) {
+                    System.debug('ObjectRelationships__c obj' + obj);
+                    objRelation.add(obj);
+                    if (obj.RelationshipDetail__c != null && obj.RelationshipDetail__c.contains(',')) {
+                        objListDetail = new List < String > ();
+                        objListDetail = obj.RelationshipDetail__c.split(',');
+                        Integer noOfRelation = objListDetail.size();
+                        mapValue.put(obj.Name, noOfRelation);
+                    } else if (obj.RelationshipDetail__c != null && !obj.RelationshipDetail__c.contains(',')) {
+                        mapValue.put(obj.Name, 1);
+                    }
+            
+                    System.debug('mapValue' + mapValue);
+                }
+            
+                if (objStringList.size() > 0 && !objStringList.isEmpty()) {
+                    System.debug('objStringList' + objStringList);
+                    for (string objValue: objStringList) {
+                        Integer value = mapValue.get(objValue);
+                        for (integer i = 1; i <= 5; i++) {
+                            fieldSet.add(objValue + '.commonAPI' + i + '__c');
+            
+                        }
+                    }
+                }
+            
+                List < String > strList = new List < String > ();
+                //for(String objName:objStringList){
+                for (String field: fieldSet) {
+                    string fullFieldName = field;
+                    strList.add(fullFieldName);
+                }
+                //}
+                system.debug('###' + strList);
+            
+                List < MetadataService.DeleteResult > results = service.deleteMetadata('CustomField', strList);
+                if(objRelation !=null && objRelation.size() > 0){
+                    delete objRelation;
+                }
+                return results;
+        }
            
                  
  }

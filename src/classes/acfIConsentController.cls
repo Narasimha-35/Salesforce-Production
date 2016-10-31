@@ -35,15 +35,13 @@ public class acfIConsentController
        
         if(lstAccts != null && lstAccts.size()>0)
         {
-            for(click_Applicant__c objApplicant : lstAccts[0].Applicants__r)
+            for(click_Applicant__c objApplicant : [select id,acfEconsent__c from click_Applicant__c where id=:applicantNumber])
             { 
-                if(objApplicant.click_Applicant_Number__c == applicantNumber)
+                if(objApplicant.id == applicantNumber)
                 {
                     objAppToUpdate = objApplicant;
                     if(objApplicant.acfEconsent__c == 'I Consent')
                         isSubmited=true; 
-                     
-                     
                 }
             }
         }     
