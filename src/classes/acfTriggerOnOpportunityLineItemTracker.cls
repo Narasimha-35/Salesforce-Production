@@ -13,7 +13,9 @@ public class acfTriggerOnOpportunityLineItemTracker
     private static Document_Master__c objDocMas;
     private static Required_Document__c objReqDoc;
     private static OpportunityLineItem oli2;
-
+    private static Click_Applicant__c oppClick;
+	private static E_Consent__c eobj;
+    
 static testMethod void validate()
 {
         LoadData();
@@ -33,7 +35,8 @@ static testMethod void validate()
         oppLine.clickTitle_Protection_Fee__c= 1;
         oppLine.acfComparison_Rate__c = 1;
         oppLine.clickTotal_Upfront_Fee__c = 12;
-        update oppLine;   
+        update oppLine;
+    	Delete oppline;
 } 
  
     private static void LoadData()
@@ -47,10 +50,10 @@ static testMethod void validate()
         createOpportunityLineItem();
         createDocumentMaster();
         createRequiredDocument();
-
-    }
+     	createClickApplicant();
+	}
     
-       static void createAccount()
+    static void createAccount()
     {
         objAccount = new Account();
         objAccount.acfApproximately_how_much_is_your_house__pc = 10000000;
@@ -109,6 +112,14 @@ static testMethod void validate()
         oppLine.lender__c = 'ANZ';
         insert oppLine;
     }
+    static void createClickApplicant(){
+        oppClick = new Click_Applicant__c();
+        oppClick = WLCommonTrackerClass.createApplicant(oppClick,objAccount,objOpportunity1);
+    }
+    static void createEConsent(){
+        eObj = new E_Consent__c();
+        eObj = WLCommonTrackerClass.createEconsent(oppClick);
+    }
     
       static void createDocumentMaster()
     {
@@ -121,4 +132,5 @@ static testMethod void validate()
         objReqDoc = new Required_Document__c();
         objReqDoc= WLCommonTrackerClass.createRequiredDocument(objReqDoc,objDocMas,objOpportunity1);
     }
+    
 }

@@ -5,6 +5,26 @@ public  class acfTriggerOnOpportunityLineItemHandler
     UpdateOpportunityLineItem(triggerNew);  
     //Added on 02-03-2016 regarding multiple product funtionality
     ValidateExistingBankProducts(triggerNew);
+    copyProductFields(triggerNew);
+  }
+  
+  public void copyProductFields(List<Opportunitylineitem>triggerNew){
+      Set<id> productId = new Set<Id>();
+      Map<id,PricebookEntry> priceBookMap = new Map<id,PricebookEntry>([Select id,Product2Id FROM PricebookEntry]);
+      for(Opportunitylineitem pro:triggerNew){
+          if(pro.PricebookEntryId !=null && priceBookMap.containsKey(pro.PricebookEntryId))
+              productId.add(priceBookMap.get(pro.PricebookEntryId).Product2Id);
+      }
+      
+      
+      Map<Id,Product2> prodObjectMap = new Map<Id,Product2>([Select id,acfInterest_Only_term__c,acfTenure_in_Years__c From Product2 where id IN:productId]);
+      for(Opportunitylineitem pro:triggerNew){
+          if(prodObjectMap !=null && pro.PriceBookEntryId !=null && priceBookMap.containsKey(pro.PricebookEntryId) && priceBookMap.get(pro.PricebookEntryId).Product2Id  != null){
+              pro.Interest_Only_term__c = prodObjectMap.get(priceBookMap.get(pro.PricebookEntryId).Product2Id).acfInterest_Only_term__c;
+              pro.Click_Tenure__c= String.valueOf(prodObjectMap.get(priceBookMap.get(pro.PricebookEntryId).Product2Id).acfTenure_in_Years__c) ;
+          }
+      }
+      
   }
   public void OnBeforeUpdate(List<Opportunitylineitem>triggerNew)
   {
@@ -14,9 +34,10 @@ public  class acfTriggerOnOpportunityLineItemHandler
   {
     
     UpdateFeeInOpportunity(triggerNew);
+    createEConsentForProduct(triggerNew,triggernewMap,'Insert');
     updateRequiredDocumentOnOpportunity(triggerNew);
     updateFundingPosition(triggerNew);
-    createEConsentForProduct(triggerNew,triggernewMap,'Insert');
+    
   }
   public void OnAfterUpdate(List<Opportunitylineitem>triggerNew)
   {
@@ -110,18 +131,17 @@ public  class acfTriggerOnOpportunityLineItemHandler
             System.debug('###deleted'+deletedLineItem.get(opp.id));
             for(OpportunityLineItem oppLi:deletedLineItem.get(opp.id)){
                 //if(oppLi.OpportunityId == opp.id){
-                   if(!bankStringSet.contains(prodBankMap.get(oppProductMap.get(oppLi.id)))){
-                      for(click_Applicant__c app:opp.Applicants__r){
-                          if(appConsentMap.containsKey(app.id)){
-                              for(E_Consent__c econ:appConsentMap.get(app.id)){
-                                  if(econ.Related_Bank_Id__c == prodBankMap.get(oppProductMap.get(oppLi.id)) && econ.Consent_Completed__c == false){
-                                      consentToDelete.add(econ);
-                                  }
+               if(!bankStringSet.contains(prodBankMap.get(oppProductMap.get(oppLi.id)))){
+                  for(click_Applicant__c app:opp.Applicants__r){
+                      if(appConsentMap.containsKey(app.id)){
+                          for(E_Consent__c econ:appConsentMap.get(app.id)){
+                              if(econ.Related_Bank_Id__c == prodBankMap.get(oppProductMap.get(oppLi.id)) && econ.Consent_Completed__c == false){
+                                  consentToDelete.add(econ);
                               }
                           }
-                      }  
-                   } 
-                //}
+                      }
+                  }  
+               } 
             }
                
          }  
@@ -245,22 +265,7 @@ public  class acfTriggerOnOpportunityLineItemHandler
          insert consentList;
      }
         
-        
-    if(event == 'Delete'){
-         List<E_Consent__c> econsentList = [Select id,Consent_Completed__c,EConsent_Type__c From E_Consent__c where Related_Product_Id__c=:productSet];
-         if(econsentList !=null && econsentList.size() >0){
-             for(E_Consent__c eCon:econsentList){
-                 if(eCon.Consent_Completed__c == false && eCon.EConsent_Type__c == 'Product Specific Econsent'){
-                      consentToDelete.add(eCon);
-                 }
-    
-             }
-             system.debug('###consent'+consentToDelete);
-             if(consentToDelete.size() > 0)
-                delete consentToDelete;
-            }
-    }
-     
+      
   }
   
   public void updateFundingPosition(List<opportunitylineitem> triggernew){
