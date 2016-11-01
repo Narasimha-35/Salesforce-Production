@@ -92,7 +92,7 @@ public class ChangeBrokerController {
         Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
         email.setSubject(templateId.subject);
         email.setToAddresses(new List<String>{appobj.broker_Email__c});
-        email.setHtmlBody(AppointmentService.constructEmailBodyToOldBroker(appobj, templateId));
+        email.setHtmlBody(AppointmentUtil.constructEmailBodyToOldBroker(appobj, templateId));
         email.setBccSender(true);
         if(!Test.isRunningTest()) Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});
     }
@@ -104,7 +104,7 @@ public class ChangeBrokerController {
         Messaging.SingleEmailMessage emailnew = new Messaging.SingleEmailMessage();
         emailnew.setSubject(templateIdnew.subject);
         emailnew.setToAddresses(new List<String>{appobjnew.broker_Email__c});
-        emailnew.setHtmlBody(AppointmentService.constructEmailBodyToNewBroker(appobjnew, templateIdnew));
+        emailnew.setHtmlBody(AppointmentUtil.constructEmailBodyToNewBroker(appobjnew, templateIdnew));
         emailnew.setBccSender(true);
         if(!Test.isRunningTest()) Messaging.sendEmail(new Messaging.SingleEmailMessage[]{emailnew});
     }
@@ -118,7 +118,7 @@ public class ChangeBrokerController {
         System.debug(appt.market__r.region__r.timeZone__c);
         Datetime apptStartTime   = appt.appointment_Date_and_Time__c.addMinutes(getSydneyLocalMinuteDiff(appt.appointment_Date_and_Time__c, appt.market__r.region__r.timeZone__c));
 
-        Event e = AppointmentService.constructEvent(appt, apptStartTime, brokeruser.id);
+        Event e = AppointmentUtil.constructEvent(appt, apptStartTime, brokeruser.id, assignedBroker, 'appointmentConfirmationDescriptionTemplate');
         insert e;
         return e.id;
     }
