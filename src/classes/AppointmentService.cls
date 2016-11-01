@@ -1,102 +1,161 @@
-public class AppointmentService {
-    public static Map<String, String> channelConfigNameMap = new Map<String, String>{
-        'Phone Broker' => 'Phone_Broker',
-        'Partner' => 'Face_To_face',
-        'Employee' => 'Face_To_face',
-        'Click' => 'Face_To_face'
-    };
+global class AppointmentService {
+	public static final Map<String, String> CHANNEL_TO_CONFIG_NAME = new Map<String, String>{
+		'Phone Broker' => 'Phone_Broker',
+		'Partner' => 'Face_To_face',
+		'Employee' => 'Face_To_face',
+		'Click' => 'Face_To_face'
+	};
+	public static final Allocate_Appointment__c FACE_TO_FACE_SETTING = Allocate_Appointment__c.getValues('Face_To_face');
+	public static final Allocate_Appointment__c PHONE_BROKER_SETTING = Allocate_Appointment__c.getValues('Phone_Broker');
+	public Appointment__c appt;
+	public List<Broker__c> orderedBrokers;
+	public Map<Id, Broker__c> brokerMap;
+	public Integer workStartTime;
+	public Integer workEndTime;
+	public Integer displayMargin;
+	public Integer eventDuration;
+	public Integer eventCoolDown;
+	public Datetime displayStartTime;
+	public Datetime displayEndTime;
+	public BrokerService brokerServ;
 
-    public static String constructAppointmentDescription(Appointment__c appt) {
-        String ret = DocumentService.getTemplate('appointmentConfirmationDescriptionTemplate');
-        ret = ret.replace('{!appointmentName}', appt.name == null ? '' : appt.name);
-        ret = ret.replace('{!appointmentDatetime}', appt.appointment_Date_and_Time__c == null ? '' : appt.appointment_Date_and_Time__c.format('dd/MM/yyyy hh:mm a'));
-        ret = ret.replace('{!contactMobile}', appt.mobile__c == null ? '' : appt.mobile__c);
-        ret = ret.replace('{!contactPhone}', appt.phone__c == null ? '' : appt.phone__c);
-        ret = ret.replace('{!contactAddress}', EventService.constructAppointmentEventLocation(appt, ','));
-        ret = ret.replace('{!contactEmail}', appt.account_Email__c == null ? '' : appt.account_Email__c);
-        ret = ret.replace('{!contactName}', appt.account_Name_Text__c == null ? '' : appt.account_Name_Text__c);
-        ret = ret.replace('{!appointmentNotes}', appt.pre_Sales_Notes__c == null ? '' : appt.pre_Sales_Notes__c.stripHtmlTags());
-        ret = ret.replace('{!transactionType}', appt.transaction_Type__c == null ? '' : appt.transaction_Type__c);
-        ret = ret.replace('{!currentLender}', appt.current_Lender__c == null ? '' : appt.current_Lender__c);
-        ret = ret.replace('{!currentLoanType}', appt.current_Loan_Type__c == null ? '' : appt.current_Loan_Type__c);
-        ret = ret.replace('{!currentInterestRateType}', appt.current_Interest_Rate_Type__c == null ? '' : appt.current_Interest_Rate_Type__c);
-        ret = ret.replace('{!currentFinancials}', appt.current_Financials_Up_to_Date__c == null ? '' : appt.current_Financials_Up_to_Date__c);
-        ret = ret.replace('{!lastRefinance}', appt.last_Refinance__c == null ? '' : appt.last_Refinance__c.format());
-        ret = ret.replace('{!fixedRateExpiry}', appt.fixed_Rate_Expiry__c == null ? '' : appt.fixed_Rate_Expiry__c.format());
-        ret = ret.replace('{!currentLoanAge}', appt.age_of_Current_Loan__c == null ? '' : appt.age_of_Current_Loan__c);
-        ret = ret.replace('{!incomeLiabilityDetails}', ' ');
-        ret = ret.replace('{!employmentStatus}', appt.employment_Status__c == null ? '' : appt.employment_Status__c);
-        ret = ret.replace('{!industry}', appt.industry__c == null ? '' : appt.industry__c);
+	public AppointmentService(Id apptId) {
+		this.appt = [SELECT id, name, googleEventId__c, broker_Email__c, mobile__c, street_Address__c, city__c, postal_Code__c, state__c, employment_Status__c, industry__c, credit_Card_Balance__c, personal_Loan_Balance__c, current_Loan_Value__c, current_Interest_Rate__c, annual_Income__c, partner_Income__c, transaction_Type__c, fixed_Rate_Expiry__c, age_of_Current_Loan__c, phone__c, current_Loan_Type__c, current_Interest_Rate_Type__c, current_Financials_Up_to_Date__c, last_Refinance__c, current_Lender__c, account_Email__c, account_Name_Text__c, pre_Sales_Notes__c, appointment_Type__c, market__c, market__r.name, appointment_Date_and_Time__c, region__r.name, region__r.timeZone__c, brokerChannel__c, speciality_Skills__c FROM Appointment__c WHERE id =: apptId];
+		brokerServ = new BrokerService(appt);
+		orderedBrokers = brokerServ.getBrokers();
+		brokerMap = brokerServ.getBrokerMap();
 
-        ret = ret.replace('{!currentLoanValue}', appt.current_Loan_Value__c == null ? '' : '' + appt.current_Loan_Value__c);
-        ret = ret.replace('{!currentInterestRate}', '' + appt.current_Interest_Rate__c);
-        ret = ret.replace('{!annualIncome}', appt.annual_Income__c == null ? '' : '' + appt.annual_Income__c);
-        ret = ret.replace('{!partnerAnualIncome}', appt.partner_Income__c == null ? '' : '' + appt.partner_Income__c);
-        ret = ret.replace('{!creditCardBalance}', appt.credit_Card_Balance__c == null ? '' : '' + appt.credit_Card_Balance__c);
-        ret = ret.replace('{!personalLoanBalance}', appt.personal_Loan_Balance__c == null ? '' : '' + appt.personal_Loan_Balance__c);
+		workStartTime = Integer.valueOf(appt.appointment_Type__c == 'Phone Appointment' ? PHONE_BROKER_SETTING.dayStartTime__c : FACE_TO_FACE_SETTING.dayStartTime__c);
+		workEndTime = Integer.valueOf(appt.appointment_Type__c == 'Phone Appointment' ? PHONE_BROKER_SETTING.dayEndTime__c : FACE_TO_FACE_SETTING.dayEndTime__c);
+		displayMargin = Integer.valueOf(appt.appointment_Type__c == 'Phone Appointment' ? PHONE_BROKER_SETTING.intervalOfMeeting__c : FACE_TO_FACE_SETTING.intervalOfMeeting__c);
+		eventDuration = Integer.valueOf(appt.appointment_Type__c == 'Phone Appointment' ? PHONE_BROKER_SETTING.durationOfMeeting__c : FACE_TO_FACE_SETTING.durationOfMeeting__c);
+		eventCoolDown = Integer.valueOf(appt.appointment_Type__c == 'Phone Appointment' ? PHONE_BROKER_SETTING.buffer__c : FACE_TO_FACE_SETTING.buffer__c);
 
-        return ret;
-    }
+		setDisplayStartTime(getDisplayStartTime());
+	}
 
-    public static Event constructEvent(Appointment__c appt, Datetime startTime, Id ownerId) {
-        Integer durationOfMeeting = Integer.valueOf(Allocate_Appointment__c.getValues(channelConfigNameMap.get(appt.brokerChannel__c)).DurationOfMeeting__c);
+	public Datetime getDisplayStartTime() {
+		Date apptDate = appt.appointment_Date_and_Time__c.date();
+		Datetime ret;
 
-        Event e = new Event();
-        e.ownerid = ownerId == null ? '' : ownerId;
-        e.startdatetime = startTime;
-        e.enddatetime = startTime.addminutes(durationOfMeeting);
-        e.whatid = appt.broker__c;
-        e.description = constructAppointmentDescription(appt);
-        e.location = EventService.constructAppointmentEventLocation(appt, ',');
-        e.subject = EventService.constructAppointmentEventSubject(appt);
-        return e;
-    }
+		if(apptDate > Date.today()) {
+			ret = AppointmentUtil.convertToLocalDatetime(apptDate.addDays(-1), appt.region__r.timeZone__c);
+		} else if(apptDate == Date.today()) {
+			ret = AppointmentUtil.convertToLocalDatetime(apptDate, appt.region__r.timeZone__c);
+		} else {
+			// error?
+			ret = AppointmentUtil.convertToLocalDatetime(Date.today(), appt.region__r.timeZone__c);
+		}
+		return ret.addHours(workStartTime);
+	}
 
-    public static String constructEmailBodyToNewBroker(Appointment__c appt, EmailTemplate emailTemplate) {
-        string ret = '';
-        ret = emailTemplate.htmlValue;
-        ret = ret.replace('{!Broker.Name}', appt.broker__r.name == null ? '' : appt.broker__r.name);
-        ret = ret.replace('[[AppRef]]', appt.name == null ? '' : appt.name);
-        ret = ret.replace('[[Presales]]', appt.pre_Sales_User__c == null ? '' : appt.pre_Sales_User__c);
-        ret = ret.replace('[[CustName]]', appt.account_Name__c == null ? '' : appt.account_Name__c);
-        ret = ret.replace('[[CustEmail]]', appt.account_Email__c == null ? '' : appt.account_Email__c);
-        ret = ret.replace('[[Mobile]]', appt.mobile__c == null ? '' : appt.mobile__c);
-        ret = ret.replace('[[Phone]]', appt.phone__c == null ? '' : appt.phone__c);
-        ret = ret.replace('[[AlternatePhone]]', appt.alternate_Phone__c == null ? '' : appt.alternate_Phone__c);
-        ret = ret.replace('[[AppDateTime]]', appt.appointment_Date_and_Time__c == null ? '' : String.valueOf(appt.appointment_Date_and_Time__c.format('dd/MM/yyyy hh:mm a')));
-        ret = ret.replace('[[StreetAddress]]', appt.street_Address__c == null ? '' : appt.street_Address__c);
-        ret = ret.replace('[[City]]', appt.city__c == null ? '' : appt.city__c);
-        ret = ret.replace('[[PostalCode]]', appt.postal_Code__c == null ? '' : appt.postal_Code__c);
-        ret = ret.replace('[[State]]', appt.state__c == null ? '' : appt.state__c);
-        ret = ret.replace('[[AppType]]', appt.appointment_Type__c == null ? '' : appt.appointment_Type__c);
-        ret = ret.replace('[[preNote]]', appt.pre_Sales_Notes__c == null ? '' : appt.pre_Sales_Notes__c);
-        ret = ret.replace('[[TransactionType]]', appt.transaction_Type__c == null ? '' : appt.transaction_Type__c);
-        ret = ret.replace('[[CurrentLender]]', appt.current_Lender__c == null ? '' : appt.current_Lender__c);
-        ret = ret.replace('[[CurrentLoanValue]]', appt.current_Loan_Value__c == null ? '' : String.valueOf(appt.current_Loan_Value__c));
-        ret = ret.replace('[[CurrentLoanType]]', appt.current_Loan_Type__c == null ? '' : appt.current_Loan_Type__c);
-        ret = ret.replace('[[CurrentInterestRate]]', appt.current_Interest_Rate__c == null ? '' : String.valueOf(appt.current_Interest_Rate__c));
-        ret = ret.replace('[[CurrentInterestRateType]]', appt.current_Interest_Rate_Type__c == null ? '' : appt.current_Interest_Rate_Type__c);
-        ret = ret.replace('[[CurrentFinancials]]', appt.current_Financials_Up_to_Date__c == null ? '' : appt.current_Financials_Up_to_Date__c);
-        ret = ret.replace('[[FixedRate]]', appt.fixed_Rate_Expiry__c == null ? '' : String.valueOf(appt.fixed_Rate_Expiry__c));
-        ret = ret.replace('[[lastRefinance]]', appt.last_Refinance__c == null ? '' : String.valueOf(appt.last_Refinance__c));
-        ret = ret.replace('[[AgeCurrent]]', appt.age_of_Current_Loan__c == null ? '' : appt.age_of_Current_Loan__c);
-        ret = ret.replace('[[EmploymentStatus]]', appt.employment_Status__c == null ? '' : appt.employment_Status__c);
-        ret = ret.replace('[[Industry]]', appt.industry__c == null ? '' : appt.industry__c);
-        ret = ret.replace('[[AnnualIncome]]', appt.annual_Income__c == null ? '' : String.valueOf(appt.annual_Income__c));
-        ret = ret.replace('[[CreditCardBalance]]', appt.credit_Card_Balance__c == null ? '' : String.valueOf(appt.credit_Card_Balance__c));
-        ret = ret.replace('[[PartnerIncome]]', appt.partner_Income__c == null ? '' : String.valueOf(appt.partner_Income__c));
-        ret = ret.replace('[[CarLoanBalance]]', appt.car_Loan_Balance__c == null ? '' : String.valueOf(appt.car_Loan_Balance__c));
-        ret = ret.replace('[[PersonalLoanBalance]]', appt.personal_Loan_Balance__c == null ? '' : String.valueOf(appt.personal_Loan_Balance__c));
-        return ret;
-    }
+	public AppointmentService(Appointment__c appt) {
+		this.appt = appt;
+	}
 
-    public static String constructEmailBodyToOldBroker(Appointment__c appt, EmailTemplate emailTemplate) {
-        String ret = emailTemplate.htmlValue;
-        ret = ret.replace('{!Broker.Name}', appt.Broker__r.name == null ? '' : appt.Broker__r.name);
-        ret = ret.replace('[[apptref]]', appt.name == null ? '' : appt.Name);
-        ret = ret.replace('[[customer name and address]]', appt.Street_Address__c != null || appt.City__c!= null || appt.Postal_Code__c != null || appt.State__c!= null ? '' : EventService.constructAppointmentEventLocation(appt, ' '));
-        ret = ret.replace('[[appointment date and time]]', String.valueOf(appt.Appointment_Date_and_Time__c == null ? '' : appt.Appointment_Date_and_Time__c.format('dd/MM/yyyy hh:mm a')));
-        return ret;
-    }
+	public Appointment__c getAppointment() {
+		return this.appt;
+	}
+
+	public void setDisplayStartTime(Datetime displayStartTime) {
+		this.displayStartTime = displayStartTime;
+		this.displayEndTime = displayStartTime.addHours(workEndTime - workStartTime);
+	}
+
+	public List<List<Datetime>> generateAvaliableDatetime(Integer numOfDay) {
+		List<List<Datetime>> ret = new List<List<Datetime>>();
+		for(Integer i = 0; i < numOfDay; i++) {
+			Datetime startTime = displayStartTime.addDays(i);
+			Datetime endTime = startTime.addHours(workEndTime - workStartTime);
+			ret.add(AppointmentUtil.getAvailabileDatetime(startTime, endTime, displayMargin));
+		}
+		return ret;
+	}
+
+	public List<List<SelectOption>> generateSelectOption(List<List<Datetime>> avaliableTime) {
+		List<Datetime> firstDayAvaliableDatetimes = avaliableTime[0];
+		Datetime queryStartTime = firstDayAvaliableDatetimes[0].addMinutes(-eventCoolDown);
+		List<Datetime> lastDayAvaliableDatetimes = avaliableTime[avaliableTime.size() - 1];
+		Datetime queryEndTime = lastDayAvaliableDatetimes[lastDayAvaliableDatetimes.size() - 1].addMinutes(eventCoolDown);
+		List<String> brokerIds = brokerServ.getGoogleCalendarIds();
+		GoogleCalendarModel.FreeBusyResponse apiResponse = GoogleCalendarUtility.getFreeBusy(queryStartTime, queryEndTime, brokerIds);
+
+		List<List<SelectOption>> ret = new List<List<SelectOption>>();
+		for(Integer i = 0; i < avaliableTime.size(); i++) {
+			ret.add(AppointmentUtil.getAvailabileOptions(avaliableTime[i], orderedBrokers, apiResponse.calendars, appt.region__r.timeZone__c, eventCoolDown, eventDuration));
+		}
+		return ret;
+	}
+
+	public void updateAppointment() {
+
+	}
+
+	Webservice static void cancelAppointment(Id apptId) {
+		AppointmentService apptServ = new AppointmentService(apptId);
+		apptServ.cancelAppointment();
+	}
+
+	public void cancelAppointment() {
+		HttpRequestResponse apiRes = GoogleCalendarUtility.deleteCalendarEvent(appt.broker_Email__c, appt.googleEventId__c);
+		if(apiRes.res.getBody() != '') {
+			//Error
+			return;
+		}
+		appt.is_Rescheduled_Appointment__c = true;
+		// record type to new
+		appt.recordTypeId = Schema.SObjectType.Appointment__c.getRecordTypeInfosByName().get('New').getRecordTypeId();
+		//save the phone number
+		appt.previous_Broker_Mobile__c = appt.broker_Mobile__c;
+		// status to new
+		appt.appointment_Status__c = 'New';
+		// broker to ? workflow
+		Broker__c broker = [SELECT id FROM Broker__c WHERE email__c = 'who@creditandfinance.com.au'];
+		appt.broker__c = broker.id;
+		update appt;
+	}
+
+	public void bookAppointment(Datetime apptStartTime) {
+		appt.recordTypeId = [SELECT id FROM RecordType WHERE name = 'Confirmed Appointment' LIMIT 1].id;
+		appt.appointment_Date_and_Time__c = Datetime.valueOf(apptStartTime.format('yyyy-MM-dd HH:mm:ss', appt.region__r.timeZone__c));
+		appt.appointmentDateTime__c = apptStartTime;
+
+		//check free busy again
+		Datetime queryStartTime = apptStartTime.addMinutes(eventCoolDown);
+		Datetime queryEndTime = apptStartTime.addMinutes(eventCoolDown + eventDuration);
+		GoogleCalendarModel.FreeBusyResponse apiResponse = GoogleCalendarUtility.getFreeBusy(queryStartTime, queryEndTime, brokerServ.getGoogleCalendarIds());
+		Broker__c broker = AppointmentUtil.selectBroker(BrokerServ.getBrokers(), apiResponse.calendars, apptStartTime.addMinutes(-eventCoolDown), apptStartTime.addMinutes(eventDuration + eventCoolDown));
+
+		List<User> ul = [SELECT id FROM User WHERE email = :broker.email__c AND isActive = true LIMIT 1];
+		User defaultUser = [SELECT id FROM User WHERE isActive = true LIMIT 1];
+		Id userId = ul.size() > 0 ? ul[0].id : defaultUser.id;
+		Event e = AppointmentUtil.constructEvent(appt, apptStartTime, userId, broker, 'appointmentConfirmationDescriptionTemplate');
+		HttpRequestResponse apiRes = GoogleCalendarUtility.insertCalenderEvent(e, broker);
+		GoogleCalendarModel.ResponseBody body = (GoogleCalendarModel.ResponseBody) JSON.deserialize(apiRes.res.getBody(), GoogleCalendarModel.ResponseBody.class);
+        appt.googleEventId__c = body.id;
+		appt.eventCalendar__c = broker.email__c;
+		appt.broker__c = broker.id;
+
+		AppointmentUtil.adjustCounts(broker);
+		update appt;
+		insert e;
+
+		Utilities.sendAppointmentConfirmEmail(appt.id);
+	}
+
+	public void print() {
+		System.debug('Appointment: ' + appt);
+		System.debug('Avaliable Brokers: ' + orderedBrokers);
+		System.debug('Appointment time zone: ' + appt.region__r.timeZone__c);
+
+		System.debug('workStartTime: ' + workStartTime);
+		System.debug('workEndTime: ' + workEndTime);
+		System.debug('displayMargin: ' + displayMargin);
+		System.debug('eventDuration: ' + eventDuration);
+		System.debug('eventCoolDown: ' + eventCoolDown);
+
+		System.debug('displayStartTime: ' + displayStartTime.format('yyyy-MM-dd\'T\'HH:mm:ssXXX', appt.region__r.timeZone__c));
+		System.debug('displayEndTime: ' + displayEndTime.format('yyyy-MM-dd\'T\'HH:mm:ssXXX', appt.region__r.timeZone__c));
+	}
 
 }

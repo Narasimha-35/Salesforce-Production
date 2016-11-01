@@ -1,0 +1,9 @@
+<apex:page controller="AppointmentChangeBrokerController" showHeader="true" sidebar="true" >
+	<apex:form style="text-align: center">
+		<h2>Select Broker</h2>
+		<apex:selectList value="{!selection}" multiselect="false" size="1">
+			<apex:selectOptions value="{!options}"/>
+		</apex:selectList>
+		<apex:commandButton value="Confirm" action="{!confirm}"/>
+	</apex:form>
+</apex:page>
