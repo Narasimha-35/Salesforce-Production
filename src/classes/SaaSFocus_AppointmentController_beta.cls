@@ -102,7 +102,7 @@ public class SaaSFocus_AppointmentController_beta {
             ApexPages.addMessage(myMsg);
         }
 
-        if(appointob.Appointment_Type__c == 'Phone Appointment') {
+        if(appointob.Appointment_Type__c == 'Phone Appointment' || appointob.Appointment_Type__c == 'Lendi Phone Appointment') {
             // If the type of Appointment is phone appointment
             tempvar = 10;
             Allocate_Appointment__c  obj = Allocate_Appointment__c.getValues('Phone_Broker');
