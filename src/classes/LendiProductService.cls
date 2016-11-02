@@ -5,7 +5,9 @@ public class LendiProductService {
 	public static void persistServiceCalculator(Id oppoProdId, Double loanAmount, Double securityValue) {
 		Opportunitylineitem oppoProd = [SELECT id, assessmentRate__c, rateBuffer__c, click_Type__c, acfRate__c, product2Id, product2.click_Loans_Bank_Detail__c, opportunityId, click_Tenure__c, interest_Only_term__c FROM OpportunityLineItem WHERE id = :oppoProdId];
 		if(validateProductData(oppoProd) || validateLoanData(loanAmount, securityValue)) {
-			insert errorLogs;
+			ServicingCalculator__c sfSC = new ServicingCalculator__c();
+			insert sfSc;
+			insertErrorLog(sfSc);
 			return;
 		}
 
@@ -38,11 +40,11 @@ public class LendiProductService {
 	public static Boolean validateLoanData(Double loanAmount, Double securityValue) {
 		Boolean ret = false;
 		if(loanAmount == null || loanAmount == 0) {
-			insertErrorLog('Loan amount can not be null or 0, please check.');
+			stageErrorLog('Loan amount can not be null or 0, please check.');
 			ret = true;
 		}
 		if(securityValue == null || securityValue == 0) {
-			insertErrorLog('Security value can not be null or 0, please check.');
+			stageErrorLog('Security value can not be null or 0, please check.');
 			ret = true;
 		}
 		return ret;
@@ -52,45 +54,52 @@ public class LendiProductService {
 		Boolean ret = false;
 
 		if(oppoProd.product2Id == null || oppoProd.product2Id == '') {
-			insertErrorLog('Product id can not be null, please check.');
+			stageErrorLog('Product id can not be null, please check.');
 			ret = true;
 		}
 		if(oppoProd.click_Tenure__c == null || oppoProd.click_Tenure__c == '') {
-			insertErrorLog('Product tenure can not be null, please check.');
+			stageErrorLog('Product tenure can not be null, please check.');
 			ret = true;
 		}
 		if(oppoProd.click_Type__c == null || oppoProd.click_Type__c == '') {
-			insertErrorLog('Product loan type can not be null, please check.');
+			stageErrorLog('Product loan type can not be null, please check.');
 			ret = true;
 		}
 		if(oppoProd.assessmentRate__c == null || oppoProd.assessmentRate__c == 0) {
-			insertErrorLog('Product assessment rate can not be null nor 0, please check.');
+			stageErrorLog('Product assessment rate can not be null nor 0, please check.');
 			ret = true;
 		}
 		if(oppoProd.acfRate__c == null || oppoProd.acfRate__c == 0) {
-			insertErrorLog('Product rate can not be null nor 0, please check.');
+			stageErrorLog('Product rate can not be null nor 0, please check.');
 			ret = true;
 		}
 		if(oppoProd.rateBuffer__c == null || oppoProd.rateBuffer__c == 0) {
-			insertErrorLog('Product rate buffer can not be null nor 0, please check.');
+			stageErrorLog('Product rate buffer can not be null nor 0, please check.');
 			ret = true;
 		}
 		if(oppoProd.product2.click_Loans_Bank_Detail__c == null || oppoProd.product2.click_Loans_Bank_Detail__c == '') {
-			insertErrorLog('Product bank id can not be null, please check.');
+			stageErrorLog('Product bank id can not be null, please check.');
 			ret = true;
 		}
 		if(oppoProd.interest_Only_term__c == null || oppoProd.interest_Only_term__c == 0) {
-			insertErrorLog('Product interest only term can not be null nor 0, please check.');
+			stageErrorLog('Product interest only term can not be null nor 0, please check.');
 			ret = true;
 		}
 		return ret;
 	}
 
-	public static void insertErrorLog(String msg) {
+	public static void stageErrorLog(String msg) {
 		ErrorLog__c e = new ErrorLog__c();
 		e.message__c = msg;
 		e.name = msg;
 		errorLogs.add(e);
+	}
+
+	public static void insertErrorLog(ServicingCalculator__c sfSC) {
+		for(ErrorLog__c el : errorLogs) {
+			el.servicingCalculator__c = sfSc.id;
+		}
+		insert errorLogs;
 	}
 
 }
