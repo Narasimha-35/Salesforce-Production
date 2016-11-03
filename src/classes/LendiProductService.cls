@@ -5,8 +5,10 @@ public class LendiProductService {
 	public static void persistServiceCalculator(Id oppoProdId, Double loanAmount, Double securityValue) {
 		Opportunitylineitem oppoProd = [SELECT id, assessmentRate__c, rateBuffer__c, click_Type__c, acfRate__c, product2Id, product2.click_Loans_Bank_Detail__c, opportunityId, click_Tenure__c, interest_Only_term__c FROM OpportunityLineItem WHERE id = :oppoProdId];
 		if(validateProductData(oppoProd) || validateLoanData(loanAmount, securityValue)) {
-			ServicingCalculator__c sfSC = new ServicingCalculator__c();
+            ServicingCalculator__c sfSC = new ServicingCalculator__c();
+			sfSc.opportunity__c = oppoProd.opportunityId;
 			sfSc.opportunityId__c = oppoProd.opportunityId;
+			Delete [SELECT id FROM ServicingCalculator__c WHERE opportunity__c = :oppoProd.opportunityId];
 			insert sfSc;
 			insertErrorLog(sfSc);
 			return;
