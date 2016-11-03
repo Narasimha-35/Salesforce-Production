@@ -6,6 +6,7 @@ public class LendiProductService {
 		Opportunitylineitem oppoProd = [SELECT id, assessmentRate__c, rateBuffer__c, click_Type__c, acfRate__c, product2Id, product2.click_Loans_Bank_Detail__c, opportunityId, click_Tenure__c, interest_Only_term__c FROM OpportunityLineItem WHERE id = :oppoProdId];
 		if(validateProductData(oppoProd) || validateLoanData(loanAmount, securityValue)) {
 			ServicingCalculator__c sfSC = new ServicingCalculator__c();
+			sfSc.opportunityId__c = oppoProd.opportunityId;
 			insert sfSc;
 			insertErrorLog(sfSc);
 			return;
@@ -53,7 +54,7 @@ public class LendiProductService {
 	public static Boolean validateProductData(Opportunitylineitem oppoProd) {
 		Boolean ret = false;
 
-		if(oppoProd.product2Id == null || oppoProd.product2Id == '') {
+		if(oppoProd.product2Id == null) {
 			stageErrorLog('Product id can not be null, please check.');
 			ret = true;
 		}
@@ -77,18 +78,19 @@ public class LendiProductService {
 			stageErrorLog('Product rate buffer can not be null nor 0, please check.');
 			ret = true;
 		}
-		if(oppoProd.product2.click_Loans_Bank_Detail__c == null || oppoProd.product2.click_Loans_Bank_Detail__c == '') {
+		if(oppoProd.product2.click_Loans_Bank_Detail__c == null) {
 			stageErrorLog('Product bank id can not be null, please check.');
 			ret = true;
 		}
-		if(oppoProd.interest_Only_term__c == null || oppoProd.interest_Only_term__c == 0) {
-			stageErrorLog('Product interest only term can not be null nor 0, please check.');
+		if(oppoProd.interest_Only_term__c == null) {
+			stageErrorLog('Product interest only term can not be null, please check.');
 			ret = true;
 		}
 		return ret;
 	}
 
 	public static void stageErrorLog(String msg) {
+		System.debug(msg);
 		ErrorLog__c e = new ErrorLog__c();
 		e.message__c = msg;
 		e.name = msg;
