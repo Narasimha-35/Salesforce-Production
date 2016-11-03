@@ -261,7 +261,12 @@ global class Utilities {
 
         try {
           emailWithActivityTracking.setCcAddresses(emailAddress);
-          OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress where Address = 'appointments@creditandfinance.com.au'];
+          OrgWideEmailAddress[] owea = new List<OrgWideEmailAddress>();
+          if (appointment.Appointment_Type__c == 'Lendi Phone Appointment') {
+              owea = [select Id from OrgWideEmailAddress where Address = 'heretohelp@lendi.com.au'];
+          } else {
+              owea = [select Id from OrgWideEmailAddress where Address = 'appointments@creditandfinance.com.au'];
+          }
           if ( owea.size() > 0 ) {
             emailWithActivityTracking.setOrgWideEmailAddressId(owea.get(0).Id);
           }
