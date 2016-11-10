@@ -232,7 +232,9 @@ global class Utilities {
           emailTemplate = [select id, name, Subject, HtmlValue, Body from EmailTemplate where Name= 'Account Appointment Confirmation (V1)'];
        } else if (appointment.Appointment_Type__c == 'Lendi Phone Appointment' && appointment.Appointment_Status__c != 'Cancelled' && appointment.Appointment_Status__c != 'Rescheduled') {
           emailTemplate = [select id, name, Subject, HtmlValue, Body from EmailTemplate where Name= 'Confirmed Appointment Lendi'];
-        }
+       } else if (appointment.Appointment_Type__c == 'Commercial Appointment' && appointment.Appointment_Status__c != 'Cancelled' && appointment.Appointment_Status__c != 'Rescheduled') {
+          emailTemplate = [select id, name, Subject, HtmlValue, Body from EmailTemplate where Name= 'acf_commercial_confirmation'];
+       }
       } catch (Exception e) {
         System.debug(e);
       }
