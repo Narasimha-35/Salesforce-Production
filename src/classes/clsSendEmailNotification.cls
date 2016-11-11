@@ -728,7 +728,85 @@ global class clsSendEmailNotification
                 }
             }   
             system.debug('mb789####'+mailsAttachments);
-         }   
+         }  
+         //Lendi.
+         if(Channel == 'Lendi')
+        {
+            // 1 attachment
+            system.debug('mb####'+mailsAttachments);
+            PageReference PreliminaryAssessment = page.PreliminaryAssessmentLendi;
+            PreliminaryAssessment.getParameters().put('id',(String) oopObj.id);
+            PreliminaryAssessment.setRedirect(true);
+            Blob PreliminaryAssesmentLendiObj;
+            if(!test.isRunningTest())
+            {
+              PreliminaryAssesmentLendiObj= PreliminaryAssessment.getContent();
+            }else{
+                PreliminaryAssesmentLendiObj = blob.valueof('test');
+            }
+            Messaging.EmailFileAttachment PreliminaryAssesmentLendiefa = new Messaging.EmailFileAttachment();
+            PreliminaryAssesmentLendiefa.setFileName('PreliminaryAssesmentLendi.pdf');
+            PreliminaryAssesmentLendiefa.setBody(PreliminaryAssesmentLendiObj);
+            
+            if(lstwrapSelectpdfComp !=null && lstwrapSelectpdfComp.size() > 0){
+                for(wrapSelectPdf objwrapSelectPdf : lstwrapSelectpdfComp){
+                    if(objwrapSelectPdf.strDocName == 'Preliminary Assesment' && objwrapSelectPdf.IsDocSelected == true){
+                        mailsAttachments.add(PreliminaryAssesmentLendiefa);
+                    }
+                 }
+             }
+            
+            system.debug('mb####123'+mailsAttachments);
+            // 2nd attachment       
+            PageReference CreditProposalDisclosure = page.CreditProposalDisclosureLendi;
+            CreditProposalDisclosure.getParameters().put('id',(String) oopObj.id);
+            CreditProposalDisclosure.setRedirect(true);
+            Blob CreditProposalDisclosureDocLendiObj;
+            if(!test.isRunningtest())
+            {
+                CreditProposalDisclosureDocLendiObj= CreditProposalDisclosure.getContent();
+            }else{
+                CreditProposalDisclosureDocLendiObj = blob.valueof('test');
+            }
+            Messaging.EmailFileAttachment CreditProposalDisclosureDocLendiefa = new Messaging.EmailFileAttachment();
+            CreditProposalDisclosureDocLendiefa.setFileName('CreditProposalDisclosureLendi.pdf');
+            CreditProposalDisclosureDocLendiefa.setBody(CreditProposalDisclosureDocLendiObj);
+            
+            if(lstwrapSelectpdfComp !=null && lstwrapSelectpdfComp.size() > 0){
+                for(wrapSelectPdf objwrapSelectPdf : lstwrapSelectpdfComp){
+                    if(objwrapSelectPdf.strDocName == 'Credit Proposal Disclosure' && objwrapSelectPdf.IsDocSelected == true){
+                        mailsAttachments.add(CreditProposalDisclosureDocLendiefa);
+                    }     
+                 }
+             }
+            system.debug('mb####456'+mailsAttachments);
+            
+            // 3rd attachment   
+            PageReference CreditGuide = page.CreditGuideLendi;
+            CreditGuide.getParameters().put('id',(String) oopObj.id);
+            CreditGuide.setRedirect(true);
+            
+            blob CreditGuideLendiObj;
+            if(!test.isRunningTest())
+            {
+             CreditGuideLendiObj= CreditGuide.getContent();
+            }else{
+                CreditGuideLendiObj = blob.valueof('test');
+            }
+            
+            Messaging.EmailFileAttachment CreditGuideLendiefa  = new Messaging.EmailFileAttachment();
+            CreditGuideLendiefa .setFileName('CreditGuideLendi.pdf');
+            CreditGuideLendiefa .setBody(CreditGuideLendiObj);
+            
+            if(lstwrapSelectpdfComp!=null && lstwrapSelectpdfComp.size() > 0){
+                for(wrapSelectPdf objwrapSelectPdf : lstwrapSelectpdfComp){
+                    if(objwrapSelectPdf.strDocName == 'Credit Guide' && objwrapSelectPdf.IsDocSelected == true){
+                        mailsAttachments.add(CreditGuideLendiefa );
+                    }
+                }
+            }   
+            system.debug('mb789####'+mailsAttachments);
+         }  
          return mailsAttachments;      
      }
 

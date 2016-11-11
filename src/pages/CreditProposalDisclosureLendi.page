@@ -3,11 +3,11 @@
       <!-- Stylesheets -->
       <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
       <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
-   </head>
+   </head>   
    <body>
       <!-- First Page Header -->
-      <apex:stylesheet value="{!$Resource.pdfstylesheet}" />
-      <c:PDFHeaderFooter type="header" position="center"><img style="margin:0px auto; display:inline-block;" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/logo.jpg')}" alt="click Refi"/></c:PDFHeaderFooter>
+      <apex:stylesheet value="{!$Resource.LendiPdfStyle}" /><!-- styleclass="headerHeight"   -->
+      <c:PDFHeaderFooter type="header" position="center"><img style="margin:0px auto;  display:inline-block;" src="{!URLFOR($Resource.Lendi_Logo)}" alt="Lendi"/></c:PDFHeaderFooter>
       <c:PDFHeaderFooter type="footer" position="left">
          <h6 style="font-weight:normal;padding:10px 0px;text-align:left; font-size:14px; font-family:sans-serif;">{D1182976:1}</h6>
       </c:PDFHeaderFooter>
@@ -17,7 +17,8 @@
       </c:PDFHeaderFooter>
       <!-- Content -->
       <div class="pageAfter page-break">
-         <table border="0" cellspacing="0" cellpadding="0" align="center" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif; margin-bottom:40px; ">
+      
+         <table border="0" cellspacing="0" cellpadding="0" align="center" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif; ">
             <tbody>
                <tr>
                   <td align="center"  valign="top">
@@ -28,16 +29,12 @@
                   <td align="left" valign="top">
                      <h5 style="font-size:18px; font-weight:600;margin: 0px 0px 10px;">Credit Assistance Provider</h5>
                      <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:25px;">
-                        <apex:outputPanel rendered="{!if(lstOpp !=null,true,false)}">
-                           {!strAclHolder}
-                        </apex:outputPanel>
-                        <br/> {!strAclAddress}<br/>
-                        Australian Credit Licence Number: {!strAclLicenceNo} 
-                        <br/><br/>
+                        <apex:outputPanel rendered="{!if(lstOpp !=null,true,false)}">{!strAclHolder}</apex:outputPanel><br/>
+                        {!strAclAddress}<br/>
+                        Australian Credit Licence Number: {!strAclLicenceNo}<br/><br/>
                         {!strApplicantName}<br/>
-                        {!strAccountAddress}
-                        <br/><br/>
-                        Click Loans is the trading name for Click Loans Pty Ltd which is a related body corporate of the licensed credit assistance provider, Auscred Services Pty Ltd. 
+                        {!strAccountAddress}<br/><br/>
+                        Lendi is the trading name for Lendi Pty Ltd which is a related body corporate of the licensed credit assistance provider, Auscred Services Pty Ltd. 
                         <br/><br/>
                         This Credit Proposal Disclosure Document sets out important information about the particular credit contract that you have selected or are interested in.
                         <br/><br/>
@@ -57,13 +54,14 @@
                         The product with which we are providing credit assistance is:<br/><br/>
                         {!strCurrentLender}
                      </p>
-                     <br/> <br/> <br/><br/>
+                     <br/> 
                   </td>
                </tr>
                <tr>
                   <td>
                      <apex:variable value="{!1}" var="xyz"/>
                      <apex:repeat value="{!lstOLI}" var="oli">
+                     
                         <table width="99%" border="0" cellspacing="0" cellpadding="5" align="center" style="border-collapse: initial; box-shadow:0px; margin:0px 0px 10px;font-size:14px; text-align:left;  ">
                            <thead>
                               <tr>
@@ -107,6 +105,7 @@
                               </tr>
                            </tbody>
                         </table>
+                        
                         <apex:variable value="{!xyz+1}" var="xyz"/>
                      </apex:repeat>
                      <h6 style="font-size:16px; font-weight: 600;margin: 0px 0px 25px;">Disclaimer: The above figures are current  at the time that this document was issued.</h6>
@@ -124,10 +123,9 @@
                   <td align="left" valign="top">
                      <h5 style="font-size:14px; font-weight:600;margin: 0px 0px 10px;">Fees and charges that apply to your credit application</h5>
                      <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
-                        We estimate that the credit provider {!strCurrentLender} , will charge the following fees and charges in relation to this credit application:
+                        We estimate that the credit provider {!strCurrentLender}, will charge the following fees and charges in relation to this credit application:
                         <br/>
                         <br/>
-                        <!-- Application Fee: ${!Product2ApplFee} <br/>  -->
                         Application Fee:&nbsp;
                         <apex:outputText value="${0,number,###,###,###,##0.00}">
                            <apex:param value="{!strOLIApplFee}"/>
