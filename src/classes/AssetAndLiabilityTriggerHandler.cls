@@ -147,7 +147,7 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             }
              if(assLiab.recordtypeid !=null){
                  string recordtypename = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(assLiab.recordtypeid).getname();
-                 if(recordtypename == 'Liability Mortgage Loan' && assLiab.Name.contains('Liabilities Mortgage Loan')){
+                 if(recordtypename == 'Liability Mortgage Loan' && assLiab.Name != null && assLiab.Name.contains('Liabilities Mortgage Loan')){
                     assLiab.Clearing_From_This_Loan__c = true; 
                  }
              }
@@ -628,8 +628,6 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         fPosd.Name = assLiab.Name + '-' + assLiab.Limit__c;
         fPosd.Detail_Type__c = 'Home Loan to Repay';
         fPosd.Category__c = 'Debt';
-        system.debug('@@@PPPPPPP************'+assLiab.Opportunity__c+'####'+mapOfrecordType+'%%%'+mapOfrecordType.get(assLiab.Opportunity__c));
-        system.debug('@@@PPPPPPP1************'+Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname()+'####1'+OppFPtMap+'%%%1'+OppFPtMap.get(assLiab.Opportunity__c));
         if(assLiab.Account__c !=null && accountFPCountMap != null && !accountFPCountMap.isEmpty() && accountFPCountMap.get(assLiab.Account__c) !=null 
            && mapOfrecordType != null && !mapOfrecordType.IsEmpty() && mapOfrecordType.get(assLiab.Account__c) != null  
            &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi')
@@ -934,14 +932,15 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             if(objAsset.RpdataApicalled__c != true)
                  IeId.add(objAsset.id);     
               Asset_And_Liability__c  ast =   (Asset_And_Liability__c)Trigger.oldmap.get(objAsset.Id)    ;
-            if( ast.Street_Number__c  != objAsset.Street_Number__c  ||
+            if( (ast.Street_Number__c  != objAsset.Street_Number__c  ||
                 ast.Street_Name__c != objAsset.Street_Name__c  
                 ||  
                  ast.Street_Type__c != 
                 objAsset.Street_Type__c ||  ast.City__c != 
                 objAsset.City__c || ast.State__c != 
                 objAsset.State__c   ||  ast.Postcode__c != 
-                objAsset.Postcode__c      ) {          
+                objAsset.Postcode__c ) &&   (ast.Street_Number__c != null  &&  ast.Street_Type__c  != null &&   ast.City__c != null
+                    &&  ast.State__c  != null  &&   ast.Postcode__c != null )  ) {          
                  IeId.add(objAsset.id); 
             }
             // Condition Added by Ankit
