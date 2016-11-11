@@ -8,8 +8,25 @@ global class ParseDIXMLResponse{
         List<DIWrapperLoanCondition> diWrapperLoanList = new List<DIWrapperLoanCondition>();
         List<DIWrapperApplicationAlert> diWrapperApplicantList = new List<DIWrapperApplicationAlert>();
         system.debug('###resp'+reponse);
-        reponse = reponse.replaceFirst('<result>', '<bill>');
-        reponse = reponse.replaceFirst('</result>', '</bill>');
+        string strrespon= reponse;
+        if(strrespon.contains('<result>'))
+        {
+            integer replaceFirstResult = reponse.indexOf('<result>');
+            integer replaceSecondResult = reponse.indexOf('</result>');
+            strrespon = strrespon.substring(0,replaceFirstResult) + '<bill>';
+            string strMidresponse = reponse.substring(replaceFirstResult+8,replaceSecondResult);
+            system.debug('strMidresponse ***************************'+strMidresponse);
+            strrespon += strMidresponse + '</bill>';
+            system.debug('strrespon__________________________'+strrespon);
+            string strEndresponse = reponse.substring(replaceSecondResult+9,reponse.length());
+            system.debug('strEndresponse_________________________________'+strEndresponse);
+            strrespon += strEndresponse;
+        }
+        system.debug('__________________________strrespon'+strrespon);
+        
+        //reponse = reponse.replaceFirst('<result>', '<bill>');
+        //reponse = reponse.replaceFirst('</result>', '</bill>');
+        reponse =strrespon ;
         if(reponse.contains('<pepper_response')){
             string pepperString = reponse.substringBetween('pepper_response>');
             pepperStringFinal = pepperString.removeEnd('</');
