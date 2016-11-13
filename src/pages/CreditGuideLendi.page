@@ -7,9 +7,9 @@
 </head>
 <body>
     <!-- First Page Header -->
-<apex:stylesheet value="{!$Resource.pdfstylesheet}" />
-  <c:PDFHeaderFooter type="header" position="center"><img style="margin:0px auto; display:inline-block;" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/logo.jpg')}" alt="click Refi"/></c:PDFHeaderFooter>
-  <c:PDFHeaderFooter type="footer" position="left"><h6 style="font-family:sans-serif; font-weight:normal;border-top:1px solid #ccc; padding:10px 0px;text-align:left; font-size:14px;">Credit Guide – Click Loans </h6></c:PDFHeaderFooter>
+<apex:stylesheet value="{!$Resource.LendiPdfStyle}" />
+  <c:PDFHeaderFooter type="header" position="center"><img style="margin:0px auto; display:inline-block;" src="{!URLFOR($Resource.Lendi_Logo)}" alt="Lendi"/></c:PDFHeaderFooter>
+  <c:PDFHeaderFooter type="footer" position="left"><h6 style="font-family:sans-serif; font-weight:normal;border-top:1px solid #ccc; padding:10px 0px;text-align:left; font-size:14px;">Credit Guide – Lendi </h6></c:PDFHeaderFooter>
 
     <!-- Content -->
   <div class="pageAfter page-break">
@@ -17,14 +17,14 @@
 <tbody>
         <tr>
             <td align="center"  valign="top">
-                <h1 style="font-size:25px;">CREDIT GUIDE</h1>
+                <h1 style="font-size:25px;margin-bottom:20px;">CREDIT GUIDE</h1>
             </td>
         </tr>
         <tr style="margin-bottom:40px;">
             <td align="left" valign="top">
                 <h5 style="font-size:18px; font-weight:600;margin: 0px 0px 10px;">About Us</h5>
                 <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
-                    Click Loans is the trading name of Auscred Pty Ltd, the parent company of your licensed credit assistance provider, Auscred Services Pty Ltd. This Credit Guide sets out important information about the license holder and the services we provide.
+                    Lendi is the trading name of Lendi Pty Ltd, the parent company of your licensed credit assistance provider, Auscred Services Pty Ltd. This Credit Guide sets out important information about the license holder and the services we provide.
                 </p>
                 
             </td>
@@ -86,15 +86,8 @@
      </table>
         <br/>
         <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <br/><br/><br/><br/><br/>
+
  </div>
 <div class="pageAfter page-break">
      <table border="0" cellspacing="0" cellpadding="0" align="center" style="color:#000;font-family:sans-serif;  margin-bottom:40px; ">
@@ -134,22 +127,14 @@
         
         <tr>
             <td>
-               <h5 style="font-size:18px; font-weight: 600;margin: 10px 0px 0px;">Our Credit Funders</h5>
+               <h5 style="font-size:18px; font-weight: 600;margin: 10px 0px 0px;">Our Top 6 credit provider</h5>
               <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;margin-bottom:25px;">
-              Our credit funders are Macquarie Bank and Pepper Money.
-              
-              </p>
-              
+                  Our credit funders are Macquarie Bank and Pepper Money.              
+              </p>              
             </td>
         </tr>
      </tbody>
      </table>
-       <br/>
-        <br/>
-        <br/>
-        <br/> 
-        <br/> 
-        <br/> 
      
   </div>
      <div class="pageAfter page-break">
