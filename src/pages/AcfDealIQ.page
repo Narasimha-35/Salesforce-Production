@@ -15,11 +15,15 @@
                 $('#myModal').modal('toggle');
                 $('#myModal').modal('show');
            }
+            function checkDiRequest()
+           {
+               sendDealIqRequest();
+           }
            function hdnDealIqPopUp()
            {
                 $('#myModal').modal('toggle');
                 $('#myModal').modal('hide');
-           }   
+           }  
         </script>
         <style>
             .verticalsroll{ 
@@ -45,13 +49,9 @@
             .pointer{
                 cursor:pointer;
             }
-           
-
-
-.scrollit {
-    overflow:scroll;
-   // height:100px;
-}
+            .scrollit {
+                overflow:scroll;
+            }
 
         </style>
     </head>
@@ -74,6 +74,11 @@
     <apex:actionFunction action="{!updateDealIqRecord}" name="updateDealIQRec" status="ProcessStatus"
                           reRender="optpnl">
        <!-- <apex:param value="" name="DealIqIds"/>   opbtnchar,opbtncapa,opbtncoll,opbtncap,opbtnoth      oncomplete="hdnDealIqPopUp();" -->
+    </apex:actionFunction>
+    <apex:actionFunction action="{!goBack}" name="goBackToOpportunity"></apex:actionfunction>
+    
+    <apex:actionFunction action="{!sendDealIqRequest}" name="sendDealIqRequest" status="ResetstatusId"
+                                            reRender="optpnl"   oncomplete="location.reload()">
     </apex:actionFunction>
 
 <!-- Modal -->
@@ -105,18 +110,24 @@
                                         </span>
                                   </apex:outputPanel></td>
                               </tr>
-                              <tr></tr>
                               <tr>
                                 <td><b>Comments:</b></td>
                                 <td><apex:outputPanel rendered="{!if(lstDealIqCondition != null && lstDealIqCondition.size > 0,true,false)}" id="optcomm">
                                         <apex:outputPanel rendered="{!if(lstDealIqCondition[0].acfStatus__c == 'Open',true,false)}">
-                                            <span><apex:inputField value="{!lstDealIqCondition[0].acfComments__c}"/>
+                                            <span><apex:inputField value="{!lstDealIqCondition[0].acfComments__c}" style="margin-top:10px;"/>
                                             </span>
                                         </apex:outputPanel>
-                                        <apex:outputPanel rendered="{!if(lstDealIqCondition[0].acfStatus__c == 'Mitigated',true,false)}">
-                                            <span><apex:inputField value="{!lstDealIqCondition[0].acfComments__c}"/>
+                                        <apex:outputPanel rendered="{!if(lstDealIqCondition[0].acfStatus__c == 'Mitigated' || lstDealIqCondition[0].acfStatus__c == 'System Mitigated',true,false)}">
+                                            <span><apex:inputField value="{!lstDealIqCondition[0].acfComments__c}" style="margin-top:10px;"/>
                                             </span>
                                         </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td><b>Rule Description:</b></td>
+                                <td><apex:outputPanel rendered="{!if(lstDealIqCondition != null && lstDealIqCondition.size > 0 && lstDealIqCondition[0].acfGlobal_DealIQ_Rule__c != null,true,false)}">                                       
+                                         <span><apex:outputfield value="{!lstDealIqCondition[0].acfGlobal_DealIQ_Rule__r.acfRule_Description__c}" style="margin-top:10px;"/></span>
                                     </apex:outputPanel>
                                 </td>
                               </tr>
@@ -142,19 +153,21 @@
     <section class="comn-section clearfix">
         <div class="col-md-4 col-sm-12">
             <h2  class="pull-left-sm">Deal lQ</h2>
-            <span class="raiting">
+            <!--<span class="raiting">
             <span class="glyphicon glyphicon-star active"></span>
             <span class="glyphicon glyphicon-star active"></span>
             <span class="glyphicon glyphicon-star active"></span>
             <span class="glyphicon glyphicon-star"></span>
             <span class="glyphicon glyphicon-star"></span>
-            </span>
+            </span>-->
         </div>
 
          <div class="col-md-8 col-sm-12">
             <div class="pull-right-sm btn-cstm">
-                <button class="btn btn-primary">Request Approval</button>
-                <input type="submit" value="Submit" class="btn btn-primary"></input>
+                 
+                <!--<button class="btn btn-primary">Request Approval</button>-->
+                <input type="submit" value="Back" class="btn btn-primary" onclick="goBackToOpportunity();"></input>   <!--   -->
+                <input type="submit" value="Check DealIQ Conditions" class="btn btn-primary"  onclick="checkDiRequest()"></input>
             </div>
         </div>
     </section>
@@ -223,10 +236,10 @@
                               <tr>
                                 <th>Condition</th>
                                 <th>Mltigated</th>
+                                <th>Notes Provided</th>
                               </tr>
                             </thead>
-                            <tbody>
-                            
+                            <tbody>                           
                                 <apex:repeat value="{!lstopportunity[0].acf_DealIQ_Conditions__r}" var="ObjDealIQCondition" rendered="{!if(lstopportunity != null && lstopportunity.size > 0
                                                      && lstopportunity[0].acf_DealIQ_Conditions__r != null && lstopportunity[0].acf_DealIQ_Conditions__r.size > 0 ,true,false)}">
                                     <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfCategory__c == 'Character',true,false)}" id="opbtnchar">                 
@@ -237,9 +250,17 @@
                                             <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Open',true,false)}"> 
                                                  <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">Miltigate</button>
                                             </apex:outputPanel>
-                                            <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Mitigated',true,false)}"> 
+                                            <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Mitigated' || ObjDealIQCondition.acfStatus__c == 'System Mitigated',true,false)}"> 
                                                  <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">View</button>
                                             </apex:outputPanel>        
+                                            </td>
+                                            <td>
+                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfComments__c != null && ObjDealIQCondition.acfComments__c != '',true,false)}"> 
+                                                     <apex:image url="{!$Resource.checked}" width="20" height="20" style="margin-left:50px; display:inline-block;"/>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!if(ISNULL(ObjDealIQCondition.acfComments__c) && ISBLANK(ObjDealIQCondition.acfComments__c),true,false)}"> 
+                                                     <apex:image url="{!$Resource.Unchecked}" width="20" height="20" style="margin-left:50px; display:inline-block;"/>
+                                                </apex:outputPanel>
                                             </td>
                                         </tr>
                                     </apex:outputPanel>
@@ -257,6 +278,7 @@
                               <tr>
                                 <th>Condition</th>
                                 <th>Mltigated</th>
+                                <th>Notes Provided</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -270,8 +292,16 @@
                                                 <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Open',true,false)}"> 
                                                     <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">Miltigate</button>
                                                 </apex:outputPanel>
-                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Mitigated',true,false)}"> 
-                                                        <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">View</button>
+                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Mitigated' || ObjDealIQCondition.acfStatus__c == 'System Mitigated',true,false)}"> 
+                                                    <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">View</button>
+                                                </apex:outputPanel> 
+                                            </td>
+                                            <td>
+                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfComments__c != null && ObjDealIQCondition.acfComments__c != '',true,false)}"> 
+                                                     <apex:image url="{!$Resource.checked}" width="20" height="20" style="margin-left:50px; display:inline-block;"/>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!if(ISNULL(ObjDealIQCondition.acfComments__c) && ISBLANK(ObjDealIQCondition.acfComments__c),true,false)}"> 
+                                                     <apex:image url="{!$Resource.Unchecked}" width="20" height="20" style="margin-left:50px; display:inline-block;"/>
                                                 </apex:outputPanel>
                                             </td>
                                         </tr>
@@ -291,6 +321,7 @@
                               <tr>
                                 <th>Condition</th>
                                 <th>Mltigated</th>
+                                <th>Notes Provided</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -304,8 +335,16 @@
                                                 <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Open',true,false)}"> 
                                                     <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">Miltigate</button>
                                                 </apex:outputPanel>
-                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Mitigated',true,false)}"> 
-                                                        <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">View</button>
+                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Mitigated' || ObjDealIQCondition.acfStatus__c == 'System Mitigated',true,false)}"> 
+                                                    <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">View</button>
+                                                </apex:outputPanel>  
+                                            </td>
+                                            <td>
+                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfComments__c != null && ObjDealIQCondition.acfComments__c != '',true,false)}"> 
+                                                     <apex:image url="{!$Resource.checked}" width="20" height="20" style="margin-left:50px; display:inline-block;"/>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!if(ISNULL(ObjDealIQCondition.acfComments__c) && ISBLANK(ObjDealIQCondition.acfComments__c),true,false)}"> 
+                                                     <apex:image url="{!$Resource.Unchecked}" width="20" height="20" style="margin-left:50px; display:inline-block;"/>
                                                 </apex:outputPanel>
                                             </td>
                                         </tr>
@@ -325,6 +364,7 @@
                               <tr>
                                 <th>Condition</th>
                                 <th>Mltigated</th>
+                                <th>Notes Provided</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -338,8 +378,16 @@
                                                 <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Open',true,false)}"> 
                                                     <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">Miltigate</button>
                                                 </apex:outputPanel>
-                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Mitigated',true,false)}"> 
-                                                        <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">View</button>
+                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Mitigated' || ObjDealIQCondition.acfStatus__c == 'System Mitigated',true,false)}"> 
+                                                    <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">View</button>
+                                                </apex:outputPanel>  
+                                            </td>
+                                            <td>
+                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfComments__c != null && ObjDealIQCondition.acfComments__c != '',true,false)}"> 
+                                                     <apex:image url="{!$Resource.checked}" width="20" height="20" style="margin-left:50px; display:inline-block;"/>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!if(ISNULL(ObjDealIQCondition.acfComments__c) && ISBLANK(ObjDealIQCondition.acfComments__c),true,false)}"> 
+                                                     <apex:image url="{!$Resource.Unchecked}" width="20" height="20" style="margin-left:50px; display:inline-block;"/>
                                                 </apex:outputPanel>
                                             </td>
                                         </tr>
@@ -359,6 +407,7 @@
                               <tr>
                                 <th>Condition</th>
                                 <th>Mltigated</th>
+                                <th>Notes Provided</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -372,8 +421,16 @@
                                                 <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Open',true,false)}"> 
                                                     <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">Miltigate</button>
                                                 </apex:outputPanel>
-                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Mitigated',true,false)}"> 
+                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfStatus__c == 'Mitigated' || ObjDealIQCondition.acfStatus__c == 'System Mitigated',true,false)}"> 
                                                         <button type="button" class="btn btn-default btn-primary btnwidth" onclick="DealIQId('{!ObjDealIQCondition.id}')">View</button>
+                                                </apex:outputPanel>  
+                                            </td>
+                                            <td>
+                                                <apex:outputPanel rendered="{!if(ObjDealIQCondition.acfComments__c != null && ObjDealIQCondition.acfComments__c != '',true,false)}"> 
+                                                     <apex:image url="{!$Resource.checked}" width="20" height="20" style="margin-left:50px; display:inline-block;"/>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!if(ISNULL(ObjDealIQCondition.acfComments__c) && ISBLANK(ObjDealIQCondition.acfComments__c),true,false)}"> 
+                                                     <apex:image url="{!$Resource.Unchecked}" width="20" height="20" style="margin-left:50px; display:inline-block;"/>
                                                 </apex:outputPanel>
                                             </td>
                                         </tr>
@@ -449,12 +506,6 @@
                                     <td>   {!bankData.Bank.bank_full_name }</td>
                                     <td>   {!bankData.maximum_borrowing }</td>
                                 </tr>
-                          
-                       
-                      
-                     
-                         
-                     
                      </apex:repeat>
                        </tbody>
                         </table>
