@@ -53,15 +53,29 @@ public class ApplicantTriggerHandler extends TriggerHandler
                 && objApplicant.get(strIncomeSelfEmployedAPI) != Trigger.oldmap.get(objApplicant.id).get(strIncomeSelfEmployedAPI)))
             {
                 Income_And_Expense__c objIncome = new Income_And_Expense__c();
+                //acfAnnual_profit_income__c
                 objIncome.Amount__c = double.valueof(objApplicant.get(strIncomeSelfEmployedAPI));
                 objIncome.Account__c = objApplicant.click_Account__c;
                 objIncome.Applicant__c = objApplicant.id;
                 objIncome.Category__c = objApplicant.acfEmployment_Type__c;
                 objIncome.acfDetails__c = 'Business Income';
+                objIncome.Income_And_Expense_Detail__c = 'Self Employed - Business Income';
                 if(IncomeRecTypeId <> null)
                     objIncome.recordTypeId = IncomeRecTypeId;
                 lstIncomeExpense.add(objIncome);
                
+            }
+            if(  objApplicant.acf_applicant_Annual_profit_income__c  != null  ){
+            Income_And_Expense__c objIncome = new Income_And_Expense__c();
+                objIncome.Amount__c = double.valueof(objApplicant.get('acf_applicant_Annual_profit_income__c'));
+                objIncome.Account__c = objApplicant.click_Account__c;
+                objIncome.Applicant__c = objApplicant.id;
+                objIncome.Category__c = objApplicant.acfEmployment_Type__c;
+                objIncome.acfDetails__c = 'Business Income';
+                objIncome.Income_And_Expense_Detail__c = 'Self Employed - Business Income';
+                if(IncomeRecTypeId <> null)
+                    objIncome.recordTypeId = IncomeRecTypeId;
+                //lstIncomeExpense.add(objIncome);
             }
            // system.debug('objIncomenamout---'+objIncome.Amount__c);
             system.debug('lstIncomeExpense------'+lstIncomeExpense);
@@ -74,6 +88,7 @@ public class ApplicantTriggerHandler extends TriggerHandler
                 objIncome.Applicant__c = objApplicant.id;
                 objIncome.Category__c = objApplicant.acfEmployment_Type__c;
                 objIncome.acfDetails__c = 'Base Salary';
+                objIncome.Income_And_Expense_Detail__c = 'PAYG - Base Salary';
                 if(IncomeRecTypeId <> null)
                     objIncome.recordTypeId = IncomeRecTypeId;
                 lstIncomeExpense.add(objIncome);
@@ -89,6 +104,7 @@ public class ApplicantTriggerHandler extends TriggerHandler
                 objIncome.Applicant__c = objApplicant.id;
                 objIncome.Category__c = 'Basic Living Expense';
                 objIncome.acfDetails__c = 'Living Expenses';
+                objIncome.Income_And_Expense_Detail__c = 'Basic Living Expenses';
                 if(ExpenseRecTypeId <> null)
                     objIncome.recordTypeId = ExpenseRecTypeId;
                 lstIncomeExpense.add(objIncome);

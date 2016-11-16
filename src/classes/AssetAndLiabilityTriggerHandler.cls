@@ -932,15 +932,12 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             if(objAsset.RpdataApicalled__c != true)
                  IeId.add(objAsset.id);     
               Asset_And_Liability__c  ast =   (Asset_And_Liability__c)Trigger.oldmap.get(objAsset.Id)    ;
-            if( (ast.Street_Number__c  != objAsset.Street_Number__c  ||
-                ast.Street_Name__c != objAsset.Street_Name__c  
-                ||  
-                 ast.Street_Type__c != 
-                objAsset.Street_Type__c ||  ast.City__c != 
-                objAsset.City__c || ast.State__c != 
-                objAsset.State__c   ||  ast.Postcode__c != 
-                objAsset.Postcode__c ) &&   (ast.Street_Number__c != null  &&  ast.Street_Type__c  != null &&   ast.City__c != null
-                    &&  ast.State__c  != null  &&   ast.Postcode__c != null )  ) {          
+            if(string.isNotEmpty(objAsset.Street_Number__c) && string.isNotEmpty(objAsset.Street_Name__c ) && string.isNotEmpty(objAsset.Street_Type__c)
+               && string.isNotEmpty(objAsset.City__c) && string.isNotEmpty(objAsset.State__c) && objAsset.Postcode__c != null
+               && (ast.Street_Number__c  != objAsset.Street_Number__c  || ast.Street_Name__c != objAsset.Street_Name__c  
+               || ast.Street_Type__c != objAsset.Street_Type__c ||  ast.City__c != objAsset.City__c || ast.State__c != 
+               objAsset.State__c   ||  ast.Postcode__c != objAsset.Postcode__c )) 
+            {          
                  IeId.add(objAsset.id); 
             }
             // Condition Added by Ankit
@@ -958,7 +955,10 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         
         try{
         if(IeId.size() > 0  && !test.isrunningtest())
-        Database.executeBatch(new acfCreateRpDataBatch(IeId), 33);
+        {
+            if(checkRecursive.runOnce())
+                Database.executeBatch(new acfCreateRpDataBatch(IeId), 33);
+        }
         }
         catch(Exception e){}
         List<User> userObj =[SELECT id, profileid FROM User  where id in : userLastModifiedbyId limit 100];
