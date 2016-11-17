@@ -86,8 +86,6 @@ STring XMl =    '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soa
                  XMl = XMl +   '<ved:family-name>'+familyname+'</ved:family-name>';
                  XMl = XMl +  '<ved:first-given-name>'+firstgivenname+'</ved:first-given-name>';
                 
-                
-                  XMl = XMl +  '<ved:other-given-name>'+othergivenname+'</ved:other-given-name>';
               XMl = XMl +   '</ved:current-name>';
               // <!--Previous name is optional-->
               // <!--<ved:previous-names>-->
