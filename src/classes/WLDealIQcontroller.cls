@@ -1,5 +1,5 @@
 public class WLDealIQcontroller {
-public String opportunityId;
+public String opportunityId{get;set;}
 public List<Opportunity> lstopportunity{get;set;}
 public List<acfDealIQ_Condition__c> lstDealIqCondition{get;set;}
 public Boolean creditGuide{get;set;}
@@ -9,6 +9,7 @@ public String creditGuideId{get;set;}
 public String creditProposalDisclosureId{get;set;}
 public String preliminaryAssesmentId{get;set;}
 public acfDealIQ_Condition__c objDealIqCondition{get;set;}
+
     public WLDealIQcontroller () {
       
        opportunityId = '';
@@ -25,6 +26,7 @@ public acfDealIQ_Condition__c objDealIqCondition{get;set;}
        List<EmailHistory__c> lstEmailHistory = new List<EmailHistory__c>();
        Set<Id> setOfEmailHistoryId= new Set<Id>();
        List<S3Document__c> lstS3Doc = new List<S3Document__c>();
+       
        if(opportunityId != null && opportunityId != '')
        {
            lstopportunity = [SELECT Id, Name ,amount ,(SELECT Id,Name,acfClick_Loans_Bank_Detail__c,acfClick_Loans_Suggested_Product__c,acfComments__c,
@@ -88,8 +90,8 @@ public acfDealIQ_Condition__c objDealIqCondition{get;set;}
         {
            lstDealIqCondition = [SELECT Id,Name,acfClick_Loans_Bank_Detail__c,acfClick_Loans_Suggested_Product__c,acfComments__c,acfCondition_Closed_DateTime__c,
                                  acfOpportunity__c,acfGlobal_DealIQ_Rule__c,acfGlobal_DealIQ_Rule__r.Name,acfGlobal_DealIQ_Rule__r.Category__c,acfCategory__c,
-                                 acfProduct__c,acfStatus__c,acfSystem_Mitigated_Notes__c,acfTrigger_String__c,acfUser__c From acfDealIQ_Condition__c
-                                 where id=:DealIqConditionIds limit 1];
+                                 acfProduct__c,acfStatus__c,acfSystem_Mitigated_Notes__c,acfTrigger_String__c,acfUser__c,acfGlobal_DealIQ_Rule__r.acfRule_Description__c
+                                 From acfDealIQ_Condition__c where id=:DealIqConditionIds limit 1];
            system.debug('lstDealIqCondition *****************'+lstDealIqCondition);
         }
     }
@@ -188,4 +190,71 @@ public  String bank_uuid {get ;set ;}
 public  String bank_short_name {get ;set ;}
 public  String bank_full_name {get ;set ;}
 } 
+
+
+ public void   sendDealIqRequest(   )
+    {
+    String OpportunityID =opportunityId  ;
+         String oppoIdString ='';
+         Set<Id> setOli = new set<Id>();
+        try
+        {
+        List<OpportUnity>  listOpportunity = [Select Id , (Select Id from  OpportUnityLineItems )  from  OpportUnity where Id = : OpportunityID] ;
+        if(listOpportunity.size() > 0)
+        {   String postBody ='';
+           
+            for( Opportunity opp :  listOpportunity )
+            {
+                oppoIdString = 'oppoId='+opp.id +'&';
+                for( OpportUnityLineItem oli  :  opp.OpportUnityLineItems )
+                {
+                    postBody =postBody +'oppoProductId='+oli.Id+ '&';
+                    setOli.add(oli.ID);
+                }
+            }
+            if(postBody  != '')
+            {
+                postBody =postBody.substring(0, postBody.lastIndexOf('&'));
+            }
+            oppoIdString =  oppoIdString + postBody;
+        }       
+        
+            Http h = new Http();
+            HttpRequest req = new HttpRequest();
+            req.setEndpoint('https://lendi-dealiq.herokuapp.com/dealiq');
+            req.setMethod('POST');
+            req.setBody(oppoIdString);
+            HttpResponse res = h.send(req); 
+            //return oppoIdString+'---'+res.getBody();
+            List<OpportunityLineItem>  listOli = new  List<OpportunityLineItem>();
+            if(setOli.size() > 0)
+            {
+            for(Id ID : setOli)
+                {
+                    OpportunityLineItem obj = new OpportunityLineItem();
+                    obj.ID =  id;
+                    obj.Di_Response__c =res.getBody();
+                    listOli.add(obj);
+                }
+            }
+            
+            if(listOli.size() > 0)
+            {
+                update listOli ;
+            }
+        }
+        catch(Exception e)
+        {
+            //return 'Error';
+        }
+    }
+    
+    public pagereference goBack()
+    {
+        if(string.isNotEmpty(opportunityId))
+        {
+            return new pagereference('/'+opportunityId);
+        }
+        return null;
+    }
 }
