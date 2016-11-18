@@ -153,7 +153,111 @@ global class ParseDIXMLResponse{
         }
         
     }
-    
+   webservice static void parseDIXMLResponseLoanFinalProd(String response, String OpportuntyiD){
+   	 if(response.contains('<final_product')){
+        	String finalProd = response.substringBetween('<final_product>','</final_product>');
+        	String strXml = '<?xml version="1.0" encoding="UTF-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
+            finalProd = strXml + finalProd + '</soap:Envelope>';
+        	Dom.Document docFirst = new Dom.Document();
+            docFirst.load(finalProd);
+            Dom.XMLNode rootElementFirst = docFirst.getRootElement();
+            if(rootElementFirst !=null){
+            	ProductList prodObj = new ProductList();
+            	List<Product_Feature__c> profFeatureList = new List<Product_Feature__c>();
+            	List<FeatureList> featureRealList = new List<FeatureList>();
+            	//List<ProductList> diFinalProductList = new List<ProductList>();
+            	List<FeatureList> featureList = new List<FeatureList>();
+	        	for(Dom.XMLNode child : rootElementFirst.getChildElements()) {
+	        		if(child.getName() == 'cd_product_id') prodObj.cdProductId = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'tx_category_impairment') prodObj.categoryImpairment = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'cd_loan_doc') prodObj.cdLoanDoc = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_lvr') prodObj.noLVR = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'tx_product_code') prodObj.txProductCode = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'nm_armid_product') prodObj.nmAmidProduct = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_mths_etia') prodObj.noMonthsEtia = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'fg_fixed_available') prodObj.fgFixedVariable = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'fg_completion_fee_fixed') prodObj.noMonthsFixed = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'fg_completion_fee_percent') prodObj.fgCompletionFeePercent = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_fee_completion') prodObj.noFeeCompletion = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'fg_valfee_deductable_less_750k') prodObj.fgValFreeDeducatable = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_valfee_deductable_maxsecuritycount') prodObj.fgValFreeDeducatableSecurity = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_fee_min_completion') prodObj.noFeeMinCompletion = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_min_amount') prodObj.noMinAmount = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_max_amount') prodObj.noMaxAmount = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'tx_allow_capitalisation') prodObj.allowCapitalisation = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_percent_commission_upfront') prodObj.noPercentCommissionUpfront = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_percent_commission_trail') prodObj.noPercentCommissionTrail = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'tx_product_name') prodObj.name = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_actual_rate') prodObj.noActualRate = child.getText() != null ? child.getText() : '';
+                    if(child.getName() == 'no_fixed_baseid') prodObj.noFixedBaseId = child.getText() != null ? child.getText() : '';
+                    if(child.getChildElements() != null && !child.getChildElements().isEmpty()){               
+                    if(child.getName() == 'Features'){
+                       for(Dom.XMLNode subChild : child.getChildElements()){
+	                       // for(Dom.XMLNode lowerSubChild:subChild.getChildElements()){
+	                        	 FeatureList objFeature = new FeatureList();
+	                        	 objFeature.typeFeature = subChild.getAttribute('Type','');
+                    		     objFeature.available = subChild.getAttribute('Available',''); 
+                    		     featureRealList.add(objFeature);
+	                        //}
+                        }
+                        prodObj.feature = featureRealList;
+                        //diFinalProductList.add();
+                    }
+                    system.debug('@@@prodObj'+prodObj.feature);
+                  // diFinalProductList.add(prodObj);
+				   }
+    			}
+    			if(prodObj !=null){
+                    //for(ProductList objWrapProd : diFinalProductList)
+                    //{               
+	                Resolve_Suggested_Product__c objResSugProduct = new Resolve_Suggested_Product__c();
+	                objResSugProduct.Actual_Rate__c = prodObj.noActualRate;
+	                objResSugProduct.Allow_Capitalisation__c = prodObj.allowCapitalisation;
+	                objResSugProduct.Amid_Products__c = prodObj.nmAmidProduct;
+	                objResSugProduct.Category_Impairment__c = prodObj.categoryImpairment;
+	                objResSugProduct.Fee_Completion__c = prodObj.noFeeCompletion;
+	                objResSugProduct.Fixed_BaseId__c = prodObj.noFixedBaseId;
+	                objResSugProduct.Free_Min_Completion__c = prodObj.noFeeMinCompletion;
+	                objResSugProduct.Is_Completion_Fee_Fixed__c = prodObj.fgCompletionFeeFixed;
+	                objResSugProduct.Is_Completion_Fee_Percent__c = prodObj.fgCompletionFeePercent;
+	                objResSugProduct.Is_Fixed_Available__c = prodObj.fgFixedVariable;
+	                objResSugProduct.Opportunity__c = OpportuntyiD;
+	                objResSugProduct.Is_Valfree_Deductable__c = prodObj.fgValFreeDeducatable;
+	                objResSugProduct.Loan_Doc__c = prodObj.cdLoanDoc;
+	                objResSugProduct.LVR__c = prodObj.noLVR;
+	                objResSugProduct.Max_Amount__c = prodObj.noMaxAmount;
+	                objResSugProduct.Minimum_Amount__c = prodObj.noMinAmount;
+	                objResSugProduct.Months_ETIA__c = prodObj.noMonthsEtia;
+	                objResSugProduct.Months_Fixed__c = prodObj.noMonthsfixed;
+	                objResSugProduct.Percent_Commission_Trail__c = prodObj.noPercentCommissionTrail;
+	                objResSugProduct.Percent_Commission_Upfront__c = prodObj.noPercentCommissionUpfront;
+	                objResSugProduct.Product_Id__c =prodObj.cdProductId;
+	                objResSugProduct.Valfree_Deductable__c = prodObj.fgValFreeDeducatableSecurity;
+	                objResSugProduct.name = prodObj.name;
+	                
+	                for(FeatureList feature:prodObj.feature){
+	                	
+	                }
+	            //}
+	                insert objResSugProduct;
+	                if(prodObj.feature != null && !prodObj.feature.isempty()){
+	                    for(FeatureList objFeature : prodObj.feature){
+	                    	system.debug('@@@obj'+objFeature);
+	                        Product_Feature__c objProdFeature = new Product_Feature__c();
+	                        objProdFeature.Is_Available__c = objFeature.available;
+	                        objProdFeature.Type__c = objFeature.typeFeature;
+	                        objProdFeature.Resolve_Suggested__c = objResSugProduct.id;
+	                        profFeatureList.add(objProdFeature);
+	                    }
+	                }
+	                system.debug('@@@prof'+profFeatureList);
+	                if(profFeatureList!=null && profFeatureList.size() > 0){
+	                	insert profFeatureList;
+	                }   
+                }
+    		}
+    	}
+   }
    webservice static void parseDIXMLResponseLoanProd(String response, String OpportuntyiD){
         String strLoanProduct = ''; 
         Integer loopIndex = 1;
@@ -208,10 +312,7 @@ global class ParseDIXMLResponse{
                                 wrapLoanObj.diWrapperLoanProductFee = lstDiWrapperLoanProductFee;
                             }
                         //}
-                    }
-                    
-                    
-                    
+                    }  
                }
                diWrapperLoanList.add(wrapLoanObj);
                if(diWrapperLoanList != null && !diWrapperLoanList.isEmpty()){
@@ -324,6 +425,38 @@ global class ParseDIXMLResponse{
         public string amAmount;
         public string cdOccurance;
         public string cdCapitalised;
+    }
+    
+    public class ProductList{
+    	public string cdProductId;
+        public string categoryImpairment;
+        public string cdLoanDoc;
+        public string noLVR;
+        public string txProductCode;
+        public string nmAmidProduct;
+        public string noMonthsEtia;
+        public string fgFixedVariable;
+        public string noMonthsFixed;
+        public string noFixedBaseId;
+        public string fgCompletionFeeFixed;
+        public string fgCompletionFeePercent;
+        public string noFeeCompletion;
+        public string fgValFreeDeducatable;
+        public string fgValFreeDeducatableSecurity; 
+        public string noFeeMinCompletion;
+        public string noMinAmount;
+        public string noMaxAmount;
+        public string allowCapitalisation;
+        public string noPercentCommissionUpfront;
+        public string noPercentCommissionTrail;
+        public string noActualRate;
+        public string name;
+        public list<FeatureList> feature;                       
+    }
+    
+    public class FeatureList{
+    	public string typeFeature;
+    	public string available;
     }
 
 }
