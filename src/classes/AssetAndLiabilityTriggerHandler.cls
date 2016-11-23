@@ -798,17 +798,17 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                             if(objAsset.Repayment_Frequency__c == 'Weekly'  && objAsset.Repayments__c != null)
                             {
                                 ieObj.Amount__c = objAsset.Repayments__c * 52;
-                                ieObj.Frequency__c = 'Weekly' ;
+                                ieObj.Frequency__c = 'Yearly' ;
                             }
                             if(objAsset.Repayment_Frequency__c == 'Fortnightly' && objAsset.Repayments__c != null)
                             {
                                 ieObj.Amount__c = objAsset.Repayments__c * 26 ;
-                                ieObj.Frequency__c = 'Fortnightly' ;
+                                ieObj.Frequency__c = 'Yearly' ;
                             }
                             if(objAsset.Repayment_Frequency__c == 'Monthly' && objAsset.Repayments__c != null)
                             {
                                 ieObj.Amount__c = objAsset.Repayments__c *12 ; 
-                                ieObj.Frequency__c = 'Monthly' ;
+                                ieObj.Frequency__c = 'Yearly' ;
                             }
                             if(objAsset.Repayment_Frequency__c == 'Anually' && objAsset.Repayments__c != null)
                             {
@@ -932,15 +932,12 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             if(objAsset.RpdataApicalled__c != true)
                  IeId.add(objAsset.id);     
               Asset_And_Liability__c  ast =   (Asset_And_Liability__c)Trigger.oldmap.get(objAsset.Id)    ;
-            if( (ast.Street_Number__c  != objAsset.Street_Number__c  ||
-                ast.Street_Name__c != objAsset.Street_Name__c  
-                ||  
-                 ast.Street_Type__c != 
-                objAsset.Street_Type__c ||  ast.City__c != 
-                objAsset.City__c || ast.State__c != 
-                objAsset.State__c   ||  ast.Postcode__c != 
-                objAsset.Postcode__c ) &&   (ast.Street_Number__c != null  &&  ast.Street_Type__c  != null &&   ast.City__c != null
-                    &&  ast.State__c  != null  &&   ast.Postcode__c != null )  ) {          
+            if(string.isNotEmpty(objAsset.Street_Number__c) && string.isNotEmpty(objAsset.Street_Name__c ) && string.isNotEmpty(objAsset.Street_Type__c)
+               && string.isNotEmpty(objAsset.City__c) && string.isNotEmpty(objAsset.State__c) && objAsset.Postcode__c != null
+               && (ast.Street_Number__c  != objAsset.Street_Number__c  || ast.Street_Name__c != objAsset.Street_Name__c  
+               || ast.Street_Type__c != objAsset.Street_Type__c ||  ast.City__c != objAsset.City__c || ast.State__c != 
+               objAsset.State__c   ||  ast.Postcode__c != objAsset.Postcode__c )) 
+            {          
                  IeId.add(objAsset.id); 
             }
             // Condition Added by Ankit
@@ -949,16 +946,20 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                 string recordtypename = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(objAsset.recordtypeid).getname();
                 if(objAsset.Repayment_Frequency__c != null && objAsset.Repayment_Frequency__c <> '' && objAsset.Repayments__c != null
                     && (Trigger.oldmap.get(objAsset.Id).get(repaymentFrequencyApi) != objAsset.Repayment_Frequency__c 
-                    || Trigger.oldmap.get(objAsset.Id).get(repaymentApi) != objAsset.Repayments__c ) && recordtypename.contains('Liability'))
-                    {
-                        setOfLiabilityId.add(objAsset.id);
-                    }
+                    || Trigger.oldmap.get(objAsset.Id).get(repaymentApi) != objAsset.Repayments__c ) && recordtypename.contains('Liability') 
+                    && objAsset.Clearing_From_This_Loan__c == false)
+                {
+                    setOfLiabilityId.add(objAsset.id);
+                }
             }
         }
         
         try{
         if(IeId.size() > 0  && !test.isrunningtest())
-        Database.executeBatch(new acfCreateRpDataBatch(IeId), 33);
+        {
+            if(checkRecursive.runOnce())
+                Database.executeBatch(new acfCreateRpDataBatch(IeId), 33);
+        }
         }
         catch(Exception e){}
         List<User> userObj =[SELECT id, profileid FROM User  where id in : userLastModifiedbyId limit 100];
@@ -971,7 +972,11 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         }
 
         List<Financials_Source__c>  tempFsObj = new List<Financials_Source__c>();
-        List<Financials_Source__c>  fsObj = [Select  id , Asset_And_Liability__c , Source__c , Amount__c  from   Financials_Source__c where Asset_And_Liability__c in : lstId] ;
+        List<Financials_Source__c>  fsObj = [Select  id , Asset_And_Liability__c , Source__c , Amount__c  from   Financials_Source__c
+                                              where Asset_And_Liability__c in : lstId] ;
+        List<Income_And_Expense__c>  lstUpdateIncomeAndExp = new List<Income_And_Expense__c>();                                   
+        List<Income_And_Expense__c>  lstIncomeAndExp = new List<Income_And_Expense__c>();
+        lstIncomeAndExp = [Select Asset_And_Liability__c,Amount__c,Frequency__c  from Income_And_Expense__c where Asset_And_Liability__c IN: setOfLiabilityId] ;                                      
         if(fsObj != null && fsObj.size() > 0)
         {
             for(Financials_Source__c  obj : fsObj )
@@ -1001,9 +1006,45 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                 }
             }
         }  
-            if( tempFsObj.size() > 0)
-                update tempFsObj;
-    }
-     
+        if(lstIncomeAndExp != null && !lstIncomeAndExp.isEmpty())
+        {
+            for(Income_And_Expense__c objIncomeAndExp : lstIncomeAndExp)
+            {
+                if(mapAsset.get(objIncomeAndExp.Asset_And_Liability__c) != null)
+                {
+                    Asset_And_Liability__c objAsset = mapAsset.get(objIncomeAndExp.Asset_And_Liability__c);
+                    string recordtypename = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(objAsset.recordtypeid).getname();
+                    if(recordtypename.contains('Liability'))
+                    {
+                        if(objAsset.Repayment_Frequency__c == 'Weekly'  && objAsset.Repayments__c != null)
+                        {
+                            objIncomeAndExp.Amount__c = objAsset.Repayments__c * 52;
+                            objIncomeAndExp.Frequency__c = 'Yearly' ;
+                        }
+                        if(objAsset.Repayment_Frequency__c == 'Fortnightly' && objAsset.Repayments__c != null)
+                        {
+                            objIncomeAndExp.Amount__c = objAsset.Repayments__c * 26 ;
+                            objIncomeAndExp.Frequency__c = 'Yearly' ;
+                        }
+                        if(objAsset.Repayment_Frequency__c == 'Monthly' && objAsset.Repayments__c != null)
+                        {
+                            objIncomeAndExp.Amount__c = objAsset.Repayments__c *12 ; 
+                            objIncomeAndExp.Frequency__c = 'Yearly' ;
+                        }
+                        if(objAsset.Repayment_Frequency__c == 'Anually' && objAsset.Repayments__c != null)
+                        {
+                             objIncomeAndExp.Amount__c = objAsset.Repayments__c; 
+                             objIncomeAndExp.Frequency__c = 'Yearly' ;
+                        } 
+                        lstUpdateIncomeAndExp.add(objIncomeAndExp);
+                    }                   
+                }
+            }
+        }
+        if( tempFsObj.size() > 0)
+            update tempFsObj;
+        if(lstUpdateIncomeAndExp != null && !lstUpdateIncomeAndExp.isEmpty())
+            update lstUpdateIncomeAndExp;
+    } 
     
 }
