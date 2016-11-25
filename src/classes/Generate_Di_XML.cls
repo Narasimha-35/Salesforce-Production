@@ -116,7 +116,7 @@ global class Generate_Di_XML
         Decimal lvr =0.0;
         String FinanceXml = '';
         List<Opportunity> lstOLI = new List<Opportunity>();
-        lstOLI = [Select account.acfWhat_is_your_current_payment_type__pc ,Id , Amount , Primary_Purpose__c ,   account.acfCurrent_Loan_Amount__pc ,
+        lstOLI = [Select account.acfWhat_is_your_current_payment_type__pc ,Any_Mortgage_Arrears_current__c,Any_Mortgage_Arrears_Last_6mths__c,Id , Amount , Primary_Purpose__c ,   account.acfCurrent_Loan_Amount__pc ,
                   account.acfApproximately_how_much_is_your_house__pc  ,(Select  Opportunityid , Click_Estimated_Monthly_Payment__c ,Product2Id
                   from Opportunitylineitems) from Opportunity where id=:OpportuntyiD];
 
@@ -437,9 +437,41 @@ global class Generate_Di_XML
             else
                 pepObj.doctype = 'FULLDOC';
                
+            if(lstOLI != null  &&  !lstOLI.isEmpty() && string.isNotEmpty(lstOLI[0].Any_Mortgage_Arrears_current__c))
+            {
+                if(lstOLI[0].Any_Mortgage_Arrears_current__c == 'Partially Missed Payments')
+                    pepObj.nomthscurrent = '0.8';
+                if(lstOLI[0].Any_Mortgage_Arrears_current__c == '1 Month Arrears')
+                    pepObj.nomthscurrent = '1';
+                if(lstOLI[0].Any_Mortgage_Arrears_current__c == '2 Month Arrears')
+                    pepObj.nomthscurrent = '2';
+                if(lstOLI[0].Any_Mortgage_Arrears_current__c == 'More than 2 Months Arrears')
+                    pepObj.nomthscurrent = '2.1';
+                if(lstOLI[0].Any_Mortgage_Arrears_current__c == 'None')
+                    pepObj.nomthscurrent = '0';
+            }   
+            else{
+                pepObj.nomthscurrent  = '0';
+            }
+            
+            if(lstOLI != null  &&  !lstOLI.isEmpty() && string.isNotEmpty(lstOLI[0].Any_Mortgage_Arrears_Last_6mths__c))
+            {
+                if(lstOLI[0].Any_Mortgage_Arrears_Last_6mths__c == 'Partially Missed Payments')
+                    pepObj.no6mths = '0.8';
+                if(lstOLI[0].Any_Mortgage_Arrears_Last_6mths__c == '1 Month Arrears')
+                    pepObj.no6mths = '1';
+                if(lstOLI[0].Any_Mortgage_Arrears_Last_6mths__c == '2 Month Arrears')
+                    pepObj.no6mths = '2';
+                if(lstOLI[0].Any_Mortgage_Arrears_Last_6mths__c == 'More than 2 Months Arrears')
+                    pepObj.no6mths = '2.1';
+                if(lstOLI[0].Any_Mortgage_Arrears_Last_6mths__c == 'None')
+                    pepObj.no6mths = '0';
+            }   
+            else{
+                pepObj.no6mths ='0';
+            }
                 
-            pepObj.nomthscurrent  = '';
-            pepObj.no6mths ='';
+            
             pepObj.nolvr = String.valueof(lvr.setscale(2)) ;
             pepapplication = pepObj.createPepperapplicationXml();
             
