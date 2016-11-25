@@ -8,11 +8,14 @@ public class acf_netverifyResponse_verificationData{
   public class cls_document {
     public String type_response;  //ID_CARD
     public String dob;  //1989-06-08
+    public String expiry;  //1989-06-08 -- Added by Ankit 23/11/2016
     public String firstName;  //PRASHANT
     public String issuingCountry;  //IND
     public String lastName;  //KUMAR
     public String number_response;  //BNSPK6990D
+    public String personalNumber; //61268329N--Added by Ankit 23/11/2016
     public String status;  //APPROVED_VERIFIED
+    public String usState;//CLIFTON HILL -- Added by Ankit 23/11/2016
     public cls_address address;//added by karthik on 11/05/2016
   }
   public class cls_address {
@@ -26,6 +29,7 @@ public class acf_netverifyResponse_verificationData{
   }
   public class cls_transaction_response{
     public String clientIp;  //125.63.92.90
+    public String customerId;  //Muhunthan Murugappan --Added by Ankit on 23/11/2016
     public String date_response;  //2014-11-18T12:15:48.183Z
     public String merchantScanReference;  //TestScanReference
     public String source;  //WEB_CAM
