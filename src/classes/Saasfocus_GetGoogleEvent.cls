@@ -59,7 +59,7 @@ public class Saasfocus_GetGoogleEvent {
                 items = (List<Object>)EventRes.get('items');
 
                 Map<String,Id>  User_Eml_Id_Map= new Map<String,Id>();  // Create Map of user email and id
-                List<User>  Ulist= [select id,Email from User ];     // Create List of User for getting the id and Email
+                List<User>  Ulist= [select id,Email from User where profile.name != 'Community User' and profile.name != 'Community User ACF'];     // Create List of User for getting the id and Email
 
                 for (User u_obj : Ulist) {
                     User_Eml_Id_Map.put(u_obj.Email, u_obj.id);  // add email id in the map
