@@ -117,22 +117,33 @@ public without sharing class MercuryModel {
         public People(Click_Applicant__c apct, String branchId) {
             init();
             uniqueId = apct.id;
+            if(apct.acf_Applicant_Name__c  != null){
             String[] names = apct.acf_Applicant_Name__c.split(' ');
             if(names.size() > 1) {
                 firstName = names[0];
                 lastName = names.get(names.size() - 1);
+               }
             }
+         if(apct.acf_applicant_DOB__c  != null    || apct.acf_applicant_DOB__c  != null )
             dateOfBirth = ApplicantUtilities.getDateFieldInGMT(apct.acf_applicant_DOB__c);
+        if(apct.acf_applicant_Marital_Status__c  != ''  || apct.acf_applicant_Marital_Status__c  != null )
             maritalStatus = apct.acf_applicant_Marital_Status__c;
+        if(apct.acf_applicant_Dependants__c  != null    || apct.acf_applicant_Dependants__c  != null )
             numberOfDependents = ApplicantUtilities.cleanInteger(apct.acf_applicant_Dependants__c);
+        if(apct.acf_applicant_Employer_Name__c  != null    || apct.acf_applicant_Employer_Name__c  != null )
             employer = apct.acf_applicant_Employer_Name__c;
+        if(apct.current_Role__c  !=  ''  || apct.current_Role__c  != null )
             occupation = apct.current_Role__c;
+        if(apct.acfEmployment_Type__c  !=  ''  || apct.acfEmployment_Type__c  != null )
             employmentStatus = apct.acfEmployment_Type__c;
+        if(apct.aCf1_Current_employer_Start_Date__c  != ''  || apct.aCf1_Current_employer_Start_Date__c  != null )
             employmentCommenced = ApplicantUtilities.getDateFieldInGMT(apct.aCf1_Current_employer_Start_Date__c);
             isPrimaryApplicant = false;
 
             contactMethods = new List<ContactMethod>();
+                if(apct.applicant_Phone__c  != ''  || apct.applicant_Phone__c  != null )
             contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.MOBILE, apct.applicant_Phone__c));
+          if(apct.applicant_Email__c  != ''  || apct.applicant_Email__c  != null )
             contactMethods.add(new ContactMethod(uniqueId, ContactMethodType.EMAIL1, apct.applicant_Email__c));
 
             validateAndClean();
@@ -290,7 +301,7 @@ public without sharing class MercuryModel {
             init();
            // uniqueId = oppo.id;
           // prateek code started 
-          
+            System.debug(oppo);
             if(oppo.Sync_With_Mercury_Success__c  == true  && oppo.Sync_With_Mercury__c  == true )
             {
             uniqueId = oppo.id; 
@@ -305,13 +316,16 @@ public without sharing class MercuryModel {
             }  
             else
             {
-            uniqueId = '';  
+               uniqueId = ''; 
+              
             }
                     
           
          
-            loanName = oppo.name;
-            amount = oppo.current_Loan_Value__c;
+            //loanName = oppo.ID;
+           
+              loanName = oppo.Name;
+            amount = oppo.Amount;
             company = branchId;
             tranxType = oppo.transaction_Type__c;
             if(oppo.currentAssignedBroker__c != null  &&  MercuryStaticValue.brokerMap.get(oppo.currentAssignedBroker__c) != null
@@ -826,7 +840,9 @@ public without sharing class MercuryModel {
             uniqueId = aal.id;
             company = branchId;
             parentId = loan.uniqueId;
+            if(AssetAndLiabilityRecordType.getInstance().rtMapById.get(aal.recordTypeId) != null)
             name = AssetAndLiabilityRecordType.getInstance().rtMapById.get(aal.recordTypeId).getName().replaceFirst('Asset ', '');
+            if(name  != null )
             type = name.replace(' ', '');
             value = aal.value__c;
             valueBasis = aal.value_Basis__c;
@@ -900,7 +916,9 @@ public without sharing class MercuryModel {
             uniqueId = aal.id;
             company = branchId;
             parentId = loan.uniqueId;
+             if(AssetAndLiabilityRecordType.getInstance().rtMapById.get(aal.recordTypeId) != null)
             name = AssetAndLiabilityRecordType.getInstance().rtMapById.get(aal.recordTypeId).getName().replaceFirst('Liability ', '');
+            if(name  != null )
             type = name.replace(' ', '');
             value = aal.current_Balance__c;
             param_rr_limit = aal.limit__c;
