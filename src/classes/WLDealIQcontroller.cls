@@ -22,7 +22,7 @@ public acfDealIQ_Condition__c objDealIqCondition{get;set;}
        lstopportunity = new List<Opportunity>();
        lstDealIqCondition = new List<acfDealIQ_Condition__c>();
        opportunityId = ApexPages.currentPage().getParameters().get('id');
-        getBankList();
+     //  getBankList();
        List<EmailHistory__c> lstEmailHistory = new List<EmailHistory__c>();
        Set<Id> setOfEmailHistoryId= new Set<Id>();
        List<S3Document__c> lstS3Doc = new List<S3Document__c>();
@@ -189,9 +189,11 @@ public  String bank_sf_id {get ;set ;}
 public  String bank_uuid {get ;set ;}
 public  String bank_short_name {get ;set ;}
 public  String bank_full_name {get ;set ;}
+
+
 } 
 
-
+public  String MESS {get ;set ;}
  public void   sendDealIqRequest(   )
     {
     String OpportunityID =opportunityId  ;
@@ -206,10 +208,17 @@ public  String bank_full_name {get ;set ;}
             for( Opportunity opp :  listOpportunity )
             {
                 oppoIdString = 'oppoId='+opp.id +'&';
+                if( opp.OpportUnityLineItems.size() > 0)
+                {
                 for( OpportUnityLineItem oli  :  opp.OpportUnityLineItems )
                 {
                     postBody =postBody +'oppoProductId='+oli.Id+ '&';
                     setOli.add(oli.ID);
+                }
+                }
+                else
+                {
+                     postBody =postBody +'oppoProductId=1234567890&';
                 }
             }
             if(postBody  != '')
@@ -226,6 +235,7 @@ public  String bank_full_name {get ;set ;}
             req.setBody(oppoIdString);
             HttpResponse res = h.send(req); 
             //return oppoIdString+'---'+res.getBody();
+            MESS =  res.getBody();
             List<OpportunityLineItem>  listOli = new  List<OpportunityLineItem>();
             if(setOli.size() > 0)
             {
