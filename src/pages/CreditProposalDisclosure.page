@@ -9,25 +9,25 @@
       <apex:stylesheet value="{!$Resource.pdfstylesheet}" />
       <c:PDFHeaderFooter type="header" position="center"><img style="margin:0px auto; display:inline-block;" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/logo.jpg')}" alt="click Refi"/></c:PDFHeaderFooter>
       <c:PDFHeaderFooter type="footer" position="left">
-         <h6 style="font-weight:normal;padding:10px 0px;text-align:left; font-size:14px; font-family:sans-serif;">{D1182976:1}</h6>
+         <h6 style="font-weight:normal;padding:10px 0px;text-align:left; font-size:14px; font-family: Arial Unicode MS; ">{D1182976:1}</h6>
       </c:PDFHeaderFooter>
       <c:PDFHeaderFooter type="footer" position="center" showPageNumbers="true"></c:PDFHeaderFooter>
       <c:PDFHeaderFooter type="footer" position="right">
-         <h6 style="font-weight:normal; padding:10px 0px;text-align:right; font-size:14px; font-family:sans-serif;">NCCP - Credit Proposal Disclosure Document</h6>
+         <h6 style="font-weight:normal; padding:10px 0px;text-align:right; font-size:14px; font-family: Arial Unicode MS;">NCCP - Credit Proposal Disclosure Document</h6>
       </c:PDFHeaderFooter>
       <!-- Content -->
       <div class="pageAfter page-break">
-         <table border="0" cellspacing="0" cellpadding="0" align="center" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif; margin-bottom:40px; ">
+         <table border="0" cellspacing="0" cellpadding="0" align="center" class="clearfix" style="overflow:hidden; color:#000; font-family: Arial Unicode MS; margin-bottom:40px; ">
             <tbody>
                <tr>
                   <td align="center"  valign="top">
-                     <h1 style="font-size:20px;">CREDIT PROPOSAL DISCLOSURE DOCUMENT</h1>
+                     <h1 style="font-size:20px;font-family: Arial Unicode MS;">CREDIT PROPOSAL DISCLOSURE DOCUMENT</h1>
                   </td>
                </tr>
                <tr style="margin-bottom:40px;">
                   <td align="left" valign="top">
-                     <h5 style="font-size:18px; font-weight:600;margin: 0px 0px 10px;">Credit Assistance Provider</h5>
-                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:25px;">
+                     <h5 style="font-size:18px; font-weight:600;margin: 0px 0px 10px;font-family: Arial Unicode MS;">Credit Assistance Provider</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:25px;font-family: Arial Unicode MS;">
                         <apex:outputPanel rendered="{!if(lstOpp !=null,true,false)}">
                            {!strAclHolder}
                         </apex:outputPanel>
@@ -42,18 +42,18 @@
                         This Credit Proposal Disclosure Document sets out important information about the particular credit contract that you have selected or are interested in.
                         <br/><br/>
                         We are required to provide this Credit Proposal Disclosure Document to you at the same time that we provide credit assistance to you.  We provide “credit assistance” when we:
-                     <ol start="1" style="margin: 0px;font-size: 14px;font-weight: normal;padding:0px 20px 15px;">
-                        <li style="margin:0px 0px 0px; padding-bottom:20px;">suggest or assist you to apply for a particular credit contract with a particular credit provider; or</li>
-                        <li style="margin:0px 0px 0px; padding-bottom:20px; ">suggest or assist you to apply for an increase to the credit limit of a particular credit contract with a particular credit provider; or</li>
-                        <li style="margin:0px 0px 0px;">suggest you remain in a particular credit contract with a particular credit provider </li>
+                     <ol start="1" style="margin: 0px;font-size: 14px;font-weight: normal;padding:0px 20px 15px;font-family: Arial Unicode MS;">
+                        <li style="margin:0px 0px 0px; padding-bottom:20px;font-family: Arial Unicode MS;">suggest or assist you to apply for a particular credit contract with a particular credit provider; or</li>
+                        <li style="margin:0px 0px 0px; padding-bottom:20px;font-family: Arial Unicode MS; ">suggest or assist you to apply for an increase to the credit limit of a particular credit contract with a particular credit provider; or</li>
+                        <li style="margin:0px 0px 0px;font-family: Arial Unicode MS;">suggest you remain in a particular credit contract with a particular credit provider </li>
                      </ol>
                      </p>
                   </td>
                </tr>
                <tr>
                   <td align="left" valign="top">
-                     <h5 style="font-size:14px; font-weight:600;margin: 10px 0px 10px;">Your credit application</h5>
-                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                     <h5 style="font-size:14px; font-weight:600;margin: 10px 0px 10px;font-family: Arial Unicode MS;">Your credit application</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;font-family: Arial Unicode MS;">
                         The product with which we are providing credit assistance is:<br/><br/>
                         {!strCurrentLender}
                      </p>
@@ -67,7 +67,7 @@
                         <table width="99%" border="0" cellspacing="0" cellpadding="5" align="center" style="border-collapse: initial; box-shadow:0px; margin:0px 0px 10px;font-size:14px; text-align:left;  ">
                            <thead>
                               <tr>
-                                 <th colspan="2" style="font-weight:bold; font-size:14px;" width="40%">Product {!xyz}</th>
+                                 <th colspan="2" style="font-weight:bold; font-size:14px;font-family: Arial Unicode MS;" width="40%">Product {!xyz}</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -76,12 +76,31 @@
                                     <hr/>
                                  </td>
                               </tr>
+                              
                               <tr >
-                                 <td style="border-collapse:collaspe;  box-shadow:initial; font-weight:600;">Product Name</td>
+                                <td style="border-collapse:collaspe;  box-shadow:initial; font-weight:600;font-family: Arial Unicode MS;">Application Fee</td>
+                                <td> <apex:outputText value="${0,number,###,###,###,##0.00}"><apex:param value="{!oli.Opportunity.Car_Application_Fee__c}"/></apex:outPutText></td>                                          
+                              </tr>
+                                        
+                              <tr >
+                                <td style="border-collapse:collaspe;  box-shadow:initial; font-weight:600;font-family: Arial Unicode MS;"> Legal Fee</td>
+                                <td> <apex:outputText value="${0,number,###,###,###,##0.00}"><apex:param value="{!oli.Opportunity.acfLegal_Fees__c}"/></apex:outPutText></td>  
+                                           
+                              </tr>
+                                        
+                              <tr >
+                                 <td style="border-collapse:collaspe;  box-shadow:initial; font-weight:600;font-family: Arial Unicode MS;">LMI Mortgage Risk Fee</td>
+                                  <td> <apex:outputText value="${0,number,###,###,###,##0.00}"><apex:param value="{!oli.Opportunity.ClickMortgage_Risk_Fee__c}"/></apex:outPutText></td>  
+                                            
+                              </tr>
+                              
+                              
+                              <tr >
+                                 <td style="border-collapse:collaspe;  box-shadow:initial; font-weight:600;font-family: Arial Unicode MS;">Product Name</td>
                                  <td style="border-collapse:collaspe; box-shadow:initial; ">  {!oli.Product2.Name} </td>
                               </tr>
                               <tr >
-                                 <td style="font-weight:600;">Loan Amount</td>
+                                 <td style="font-weight:600;font-family: Arial Unicode MS;">Loan Amount</td>
                                  <!--   <td>  {!OLILoanAmt} </td> -->
                                  <td>
                                     <apex:outputText value="${0,number,###,###,###,##0.00}">
@@ -90,26 +109,28 @@
                                  </td>
                               </tr>
                               <tr>
-                                 <td style="font-weight:600;">Interest Rate</td>
+                                 <td style="font-weight:600;font-family: Arial Unicode MS;">Interest Rate</td>
                                  <td> <apex:outputPanel rendered="{!if(oli.acfRate__c != null,true,false)}"> {!oli.acfRate__c}% </apex:outputPanel></td>
                               </tr>
                               <tr>
-                                 <td style="font-weight:600;">Repayments</td>
+                                 <td style="font-weight:600;font-family: Arial Unicode MS;">Repayments</td>
                                  <td>
-                                    <apex:outputText value="${0,number,###,###,###,##0.00}">
-                                       <apex:param value="{!oli.Click_Estimated_Monthly_Payment__c}"/>
-                                    </apex:outputText>
+                                     <apex:outputPanel rendered="{!if(oli.Click_Estimated_Monthly_Payment__c != null,true,false)}">
+                                        <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                           <apex:param value="{!oli.Click_Estimated_Monthly_Payment__c}"/>
+                                        </apex:outputText> per Month
+                                     </apex:outputPanel>   
                                  </td>
                               </tr>
                               <tr>
-                                 <td style="font-weight:600;">Loan Term</td>
+                                 <td style="font-weight:600;font-family: Arial Unicode MS;">Loan Term</td>
                                  <td>  {!oli.Click_Tenure__c} years </td>
                               </tr>
                            </tbody>
                         </table>
                         <apex:variable value="{!xyz+1}" var="xyz"/>
                      </apex:repeat>
-                     <h6 style="font-size:16px; font-weight: 600;margin: 0px 0px 25px;">Disclaimer: The above figures are current  at the time that this document was issued.</h6>
+                     <h6 style="font-size:16px; font-weight: 600;margin: 0px 0px 25px;font-family: Arial Unicode MS;">Disclaimer: The above figures are current  at the time that this document was issued.</h6>
                   </td>
                </tr>
             </tbody>
@@ -118,7 +139,7 @@
 
       </div>
       <div class="pageAfter page-break">
-         <table border="0" cellspacing="0" cellpadding="0" align="center" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif; margin-bottom:40px; ">
+         <table border="0" cellspacing="0" cellpadding="0" align="center" class="clearfix" style="overflow:hidden; color:#000; font-family: Arial Unicode MS; margin-bottom:40px; ">
             <tbody>
                <tr>
                   <td align="left" valign="top">
@@ -130,12 +151,12 @@
                         <!-- Application Fee: ${!Product2ApplFee} <br/>  -->
                         Application Fee:&nbsp;
                         <apex:outputText value="${0,number,###,###,###,##0.00}">
-                           <apex:param value="{!strOLIApplFee}"/>
+                           <apex:param value="{!totalApplicationFee}"/>
                         </apex:outPutText>
                         <br/>
                         Legal Fee:&nbsp;  
                         <apex:outputText value="${0,number,###,###,###,##0.00}">
-                           <apex:param value="{!strProd2LegalFee}" />
+                           <apex:param value="{!strProd2LegalsFee}" />
                         </apex:outPutText>
                         <br/>
                         LMI / Mortgage Risk Fee:&nbsp;
@@ -149,7 +170,7 @@
                </tr>
                <tr>
                   <td>
-                     <table width="99%" border="1" cellspacing="0" cellpadding="5" align="center" style="border-collapse: initial; box-shadow:0px; margin:20px 0px;font-size:14px; text-align:left;   ">
+                     <table width="99%" border="1" cellspacing="0" cellpadding="5" align="center" style="border-collapse: initial; box-shadow:0px; margin:20px 0px;font-size:14px; text-align:left;font-family: Arial Unicode MS;   ">
                         <tbody>
                            <tr>
                               <td width="40%">Loan Requested</td>
@@ -181,15 +202,15 @@
                </tr>
                <tr>
                   <td>
-                     <p  style="font-size:16px; font-weight:600;margin: 0px 0px 25px;">
+                     <p  style="font-size:16px; font-weight:600;margin: 0px 0px 25px;font-family: Arial Unicode MS;">
                         The law compels us to disclose the above fees to you as the fees payable for applying for this loan.  There WILL be other fees payable to the lender and to other parties.  The “credit available” amount shown above will not be the final amount available to you.  See the final lender documentation/credit contract for firm details of amounts to be paid by you.
                      </p>
                   </td>
                </tr>
                <tr>
                   <td align="left" valign="top">
-                     <h5 style="font-size:14px; font-weight:600;margin: 0px 0px 10px;">Commissions we receive</h5>
-                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                     <h5 style="font-size:14px; font-weight:600;margin: 0px 0px 10px;font-family: Arial Unicode MS;">Commissions we receive</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;font-family: Arial Unicode MS;">
                         We (or our directors, employees and any authorised credit representatives) will receive a commission from the credit provider, {!strCurrentLender} , in relation to assisting you to apply for this credit contract.<span  style="font-size:14px; font-weight:600;margin: 0px;">  Any up front or trailing commission paid to us will be from the credit provider (and related parties) and NOT paid by the client. </span>
                         <br/><br/>
                         Based on the information we currently have, we estimate that we will receive the following commissions:
@@ -204,11 +225,8 @@
                         <!--<apex:outputText value=" ${0,number,###,###,###,##0.00}">
                            <apex:param value="{!Produt2TCRatePm}" />
                         </apex:outputText>   -->
-                        of your outstanding loan balance will be payable to us 
-                        <br/>
-                        monthly. We reasonably estimate that the highest this ongoing commission I/we receive
-                        <br/>
-                        will be is &nbsp;<apex:outputPanel ><apex:outputText value="${0,number,###,###,###,##0.00}"><apex:param value="{!totalTrailingCommPerMonth}"/></apex:outPutText> per Month</apex:outputPanel>
+                        of your outstanding loan balance will be payable to us monthly. We reasonably estimate that the highest this ongoing commission I/we receive
+                        will be is&nbsp;<apex:outputPanel ><apex:outputText value="${0,number,###,###,###,##0.00}"><apex:param value="{!totalTrailingCommPerMonth}"/></apex:outPutText> per Month</apex:outputPanel>
                         <!--<apex:outputText value=" ${0,number,###,###,###,##0.00}">
                            <apex:param value="{!formulaTCpm}" />
                         </apex:outputText>    -->
@@ -232,11 +250,11 @@
          <br/>
       </div>
       <div class="pageAfter page-break">
-         <table border="0" cellspacing="0" cellpadding="0" align="left" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif; margin-bottom:40px; ">
+         <table border="0" cellspacing="0" cellpadding="0" align="left" class="clearfix" style="overflow:hidden; color:#000; font-family: Arial Unicode MS; margin-bottom:40px; ">
             <tbody>
                <tr>
                   <td align="left" valign="top">
-                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; text-align:left;">
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; text-align:left;font-family: Arial Unicode MS;">
                         Thank you
                         <br/>
                         <br/>

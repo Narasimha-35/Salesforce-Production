@@ -57,7 +57,7 @@
                      <h5 style="font-size:18px; font-weight:600;margin: 0px 0px 10px;">About Us</h5>
                      <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
                         Australian Credit and Finance is the trading name of Auscred Pty Ltd, the parent company of your licensed credit assistance provider, Auscred Services Pty Ltd. 
-                        {!strBrokerFullName} is an authorised Credit Representative of Auscred Services Pty Ltd. . This Credit Guide sets out important information about the license holder, the credit representative and the services we provide
+                        {!strBrokerFullName} is an authorised Credit Representative of Auscred Services Pty Ltd . This Credit Guide sets out important information about the license holder, the credit representative and the services we provide
                      </p>
                   </td>
                </tr>

@@ -7,24 +7,24 @@
       <apex:stylesheet value="{!$Resource.pdfstylesheet}" />
       <c:PDFHeaderFooter type="header" position="center"><img style="margin:0px auto; display:inline-block;" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_headerlogo.png')}" alt="WL Refi"/></c:PDFHeaderFooter>
       <c:PDFHeaderFooter type="footer" position="left">
-         <h6 style="font-weight:normal;padding:10px 0px;text-align:left; font-size:14px; font-family:sans-serif; width:30px; display:inline-block;">{D1182976}</h6>
+         <h6 style="font-weight:normal;padding:10px 0px;text-align:left; font-size:14px; font-family: Arial Unicode MS; width:30px; display:inline-block;">{D1182976}</h6>
       </c:PDFHeaderFooter>
       <c:PDFHeaderFooter type="footer" position="center" showPageNumbers="true"></c:PDFHeaderFooter>
       <c:PDFHeaderFooter type="footer" position="right">
-         <h6 style="font-weight:normal; padding:10px 0px;text-align:right; font-size:14px; font-family:sans-serif; ">NCCP - Credit Proposal Disclosure Document</h6>
+         <h6 style="font-weight:normal; padding:10px 0px;text-align:right; font-size:14px; font-family: Arial Unicode MS; ">NCCP - Credit Proposal Disclosure Document</h6>
       </c:PDFHeaderFooter>
       <!-- Content -->
       <div class="pageAfter page-break">
-         <table border="0" cellspacing="0" cellpadding="0" align="center" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif; margin-bottom:40px; ">
+         <table border="0" cellspacing="0" cellpadding="0" align="center" class="clearfix" style="overflow:hidden; color:#000; font-family: Arial Unicode MS; margin-bottom:40px; ">
             <tbody>
                <tr>
                   <td align="center"  valign="top">
-                     <h1 style="font-size:20px;">CREDIT PROPOSAL DISCLOSURE DOCUMENT</h1>
+                     <h1 style="font-size:20px;font-family: Arial Unicode MS;">CREDIT PROPOSAL DISCLOSURE DOCUMENT</h1>
                   </td>
                </tr>
                <tr style="margin-bottom:40px;">
                   <td align="left" valign="top">
-                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:25px;">
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:25px;font-family: Arial Unicode MS;">
                         {!strBrokerFullName}<br/>
                         {!strBrokerAddress}<br/>
                         {!strBrokerEmail}<br/>
@@ -39,10 +39,10 @@
                         {!strBrokerFullName} is an authorised Credit Representative of Auscred Services Pty Ltd.<br/><br/>
                         This Credit Proposal Disclosure Document sets out important information about the particular credit contract that you have selected or are interested in.<br/><br/>
                         We are required to provide this Credit Proposal Disclosure Document to you at the same time that we provide credit assistance to you.  We provide “credit assistance” when we:
-                     <ol start="1" style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; padding:0px 20px;">
-                        <li style="margin:5px 0px; padding-bottom:15px;">suggest or assist you to apply for a particular credit contract with a particular credit provider; or</li>
-                        <li style="margin:5px 0px; padding-bottom:15px;">suggest or assist you to apply for an increase to the credit limit of a particular credit contract with a particular credit provider; or</li>
-                        <li style="margin:5px 0px; padding-bottom:15px;">suggest you remain in a particular credit contract with a particular credit provider </li>
+                     <ol start="1" style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; padding:0px 20px;font-family: Arial Unicode MS;">
+                        <li style="margin:5px 0px; padding-bottom:15px;font-family: Arial Unicode MS;">suggest or assist you to apply for a particular credit contract with a particular credit provider; or</li>
+                        <li style="margin:5px 0px; padding-bottom:15px;font-family: Arial Unicode MS;">suggest or assist you to apply for an increase to the credit limit of a particular credit contract with a particular credit provider; or</li>
+                        <li style="margin:5px 0px; padding-bottom:15px;font-family: Arial Unicode MS;">suggest you remain in a particular credit contract with a particular credit provider </li>
                      </ol>
                      </p>
                   </td>
@@ -54,10 +54,10 @@
       <div class="pageAfter page-break">
          <table>
             <tbody>
-               <tr style="font-family:sans-serif;">
+               <tr style="font-family: Arial Unicode MS;">
                   <td align="left" valign="top">
-                     <h5 style="font-size:14px; font-weight:600;margin: 0px 0px 10px;">Your credit application</h5>
-                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                     <h5 style="font-size:14px; font-weight:600;margin: 0px 0px 10px;font-family: Arial Unicode MS;">Your credit application</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;font-family: Arial Unicode MS;">
                         The product with which we are providing credit assistance is:<br/>
                         {!strCurrentLender}
                      </p>
@@ -68,10 +68,10 @@
                   <td>
                      <apex:variable value="{!1}" var="xyz"/>
                      <apex:repeat value="{!lstOLI}" var="oli">
-                        <table width="99%" border="0" cellspacing="0" cellpadding="5" align="center" style="border-collapse: initial; box-shadow:0px; margin:0px 0px 10px;font-size:14px; text-align:left;  ">
+                        <table width="99%" border="0" cellspacing="0" cellpadding="5" align="center" style="border-collapse: initial; box-shadow:0px; margin:0px 0px 10px;font-size:14px; text-align:left;font-family: Arial Unicode MS;  ">
                            <thead>
                               <tr>
-                                 <th colspan="2" style="font-weight:bold; font-size:14px;" width="40%">Product {!xyz}</th>
+                                 <th colspan="2" style="font-weight:bold; font-size:14px;font-family: Arial Unicode MS;" width="40%">Product {!xyz}</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -80,12 +80,31 @@
                                     <hr/>
                                  </td>
                               </tr>
+                              
+                              
                               <tr >
-                                 <td style="border-collapse:collaspe;  box-shadow:initial; font-weight:600;">Product Name</td>
+                                <td style="border-collapse:collaspe;  box-shadow:initial; font-weight:600;font-family: Arial Unicode MS;">Application Fee</td>
+                                <td> <apex:outputText value="${0,number,###,###,###,##0.00}"><apex:param value="{!oli.Opportunity.Car_Application_Fee__c}"/></apex:outPutText></td>                                          
+                              </tr>
+                                        
+                              <tr >
+                                <td style="border-collapse:collaspe;  box-shadow:initial; font-weight:600;font-family: Arial Unicode MS;"> Legal Fee</td>
+                                <td> <apex:outputText value="${0,number,###,###,###,##0.00}"><apex:param value="{!oli.Opportunity.acfLegal_Fees__c}"/></apex:outPutText></td>  
+                                           
+                              </tr>
+                                        
+                              <tr >
+                                <td style="border-collapse:collaspe;  box-shadow:initial; font-weight:600;font-family: Arial Unicode MS;">LMI Mortgage Risk Fee</td>
+                                <td> <apex:outputText value="${0,number,###,###,###,##0.00}"><apex:param value="{!oli.Opportunity.ClickMortgage_Risk_Fee__c}"/></apex:outPutText></td>  
+                                            
+                              </tr>
+                              
+                              <tr >
+                                 <td style="border-collapse:collaspe;  box-shadow:initial; font-weight:600;font-family: Arial Unicode MS;">Product Name</td>
                                  <td style="border-collapse:collaspe; box-shadow:initial; ">  {!oli.Product2.Name} </td>
                               </tr>
                               <tr >
-                                 <td style="font-weight:600;">Loan Amount</td>
+                                 <td style="font-weight:600;font-family: Arial Unicode MS;">Loan Amount</td>
                                  <td>
                                     <apex:outputText value="${0,number,###,###,###,##0.00}">
                                        <apex:param value="{!mapOliIDToLoanAmt[oli.id]}" />
@@ -93,11 +112,11 @@
                                  </td>
                               </tr>
                               <tr>
-                                 <td style="font-weight:600;">Interest Rate</td>
+                                 <td style="font-weight:600;font-family: Arial Unicode MS;">Interest Rate</td>
                                  <td> <apex:outputPanel rendered="{!if(oli.acfRate__c != null,true,false)}"> {!oli.acfRate__c}% </apex:outputPanel></td>
                               </tr>
                               <tr>
-                                 <td style="font-weight:600;">Repayments</td>
+                                 <td style="font-weight:600;font-family: Arial Unicode MS;">Repayments</td>
                                  <td>
                                      <apex:outputPanel rendered="{!if(oli.Click_Estimated_Monthly_Payment__c != null,true,false)}">
                                          <apex:outputText value="${0,number,###,###,###,##0.00}">
@@ -107,31 +126,31 @@
                                  </td>
                               </tr>
                               <tr>
-                                 <td style="font-weight:600;">Loan Term</td>
+                                 <td style="font-weight:600;font-family: Arial Unicode MS;">Loan Term</td>
                                  <td> <apex:outputPanel rendered="{!if(oli.Click_Tenure__c != null,true,false)}"> {!oli.Click_Tenure__c} years </apex:outputPanel> </td>
                               </tr>
                            </tbody>
                         </table>
                         <apex:variable value="{!xyz+1}" var="xyz"/>
                      </apex:repeat>
-                     <h6 style="font-size:16px; font-weight: 600;margin: 0px 0px 25px; font-family:sans-serif;">Disclaimer: The above figures are current  at the time that this document was issued.</h6>
+                     <h6 style="font-size:16px; font-weight: 600;margin: 0px 0px 25px; font-family: Arial Unicode MS;">Disclaimer: The above figures are current  at the time that this document was issued.</h6>
                   </td>
                </tr>
                <tr>
-                  <td align="left" valign="top" style="font-family:sans-serif;">
-                     <h5 style="font-size:14px; font-weight:600;margin: 0px 0px 10px;">Fees and charges that apply to your credit application</h5>
-                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                  <td align="left" valign="top" style="font-family: Arial Unicode MS;">
+                     <h5 style="font-size:14px; font-weight:600;margin: 0px 0px 10px;font-family: Arial Unicode MS;">Fees and charges that apply to your credit application</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;font-family: Arial Unicode MS;">
                         We estimate that the credit provider {!strCurrentLender}, will charge the following fees and charges in relation to this credit application:
                         <br/>
                         <br/>
                         Application Fee:&nbsp;
                         <apex:outputText value="${0,number,###,###,###,##0.00}">
-                           <apex:param value="{!strOLIApplFee}"/>
+                           <apex:param value="{!totalApplicationFee}"/>
                         </apex:outPutText>
                         <br/>
                         Legal Fee:&nbsp;
                         <apex:outputText value="${0,number,###,###,###,##0.00}">
-                           <apex:param value="{!strProd2LegalFee}" />
+                           <apex:param value="{!strProd2LegalsFee}" />
                         </apex:outPutText>
                         <br/>
                         LMI / Mortgage Risk Fee:&nbsp;
@@ -146,7 +165,7 @@
                </tr>
                <tr>
                   <td>
-                     <table width="99%" border="1" cellspacing="0" cellpadding="5" align="center" style="font-family:sans-serif;border-collapse: initial; box-shadow:0px; margin:10px 0px;font-size:14px; text-align:left; font-size:14px;  ">
+                     <table width="99%" border="1" cellspacing="0" cellpadding="5" align="center" style="font-family: Arial Unicode MS;border-collapse: initial; box-shadow:0px; margin:10px 0px;font-size:14px; text-align:left; font-size:14px;  ">
                         <tbody>
                            <tr>
                               <td width="40%">Loan Requested</td>
@@ -182,15 +201,15 @@
                </tr>
                <tr>
                   <td>
-                     <p  style="font-size:16px; font-weight:600;margin: 0px 0px 25px; font-family:sans-serif;">
+                     <p  style="font-size:16px; font-weight:600;margin: 0px 0px 25px; font-family: Arial Unicode MS;">
                         The law compels us to disclose the above fees to you as the fees payable for applying for this loan.  There WILL be other fees payable to the lender and to other parties.  The “credit available” amount shown above will not be the final amount available to you.  See the final lender documentation/credit contract for firm details of amounts to be paid by you.
                      </p>
                   </td>
                </tr>
                <tr>
-                  <td align="left" valign="top" style="font-family:sans-serif;">
-                     <h5 style="font-size:14px; font-weight:600;margin: 0px 0px 10px;font-family:sans-serif;">Commissions we receive</h5>
-                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; font-family:sans-serif;">
+                  <td align="left" valign="top" style="font-family: Arial Unicode MS;">
+                     <h5 style="font-size:14px; font-weight:600;margin: 0px 0px 10px;font-family: Arial Unicode MS;">Commissions we receive</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; font-family: Arial Unicode MS;">
                         We (or our directors, employees and any authorised credit representatives) will receive a commission from the credit provider, {!strCurrentLender}, in relation to assisting you to apply for this credit contract.<span  style="font-size:14px; font-weight:600;margin: 0px;">  Any up front or trailing commission paid to us will be from the credit provider (and related parties) and NOT paid by the client. </span><br/><br/>
                         Based on the information we currently have, we estimate that we will receive the following commissions:<br/><br/><br/> 
                         Type of commissions: Upfront and Trailing<br/>
@@ -213,11 +232,11 @@
          <br/><br/><br/>
       </div>
       <div class="pageAfter page-break">
-         <table border="0" cellspacing="0" cellpadding="0" align="left" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif; margin-bottom:40px; ">
+         <table border="0" cellspacing="0" cellpadding="0" align="left" class="clearfix" style="overflow:hidden; color:#000; font-family: Arial Unicode MS; margin-bottom:40px; ">
             <tbody>
                <tr>
                   <td align="left" valign="top">
-                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; text-align:left;">
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; text-align:left;font-family: Arial Unicode MS;">
                         Thank you
                         <br/><br/>
                         {!strBrokerFullName}
