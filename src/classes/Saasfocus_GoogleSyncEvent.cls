@@ -67,7 +67,11 @@ public class Saasfocus_GoogleSyncEvent
         endtime = endtime+'Z';
 
         User_Eml_Id_Map= new Map<String,Id>();  // Create Map of user email and id
-        Ulist= [select id,Email from User];     // Create List of User for getting the id and Email
+        //Ulist= [select id,Email from User];     // Create List of User for getting the id and Email
+
+        //Amarendra changed the query as per requested by cheg ACF-2016-Q1ACFQ-458
+        
+        Ulist= [select id,Email from User where profile.name != 'Community User' and profile.name != 'Community User ACF'];     // Create List of User for getting the id and Email
 
         for (User u_obj : Ulist){
             User_Eml_Id_Map.put(u_obj.Email, u_obj.id);  // add email id in the map
