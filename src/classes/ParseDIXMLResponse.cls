@@ -4,10 +4,11 @@ global class ParseDIXMLResponse{
         String pepperStringFinal = ''; 
         String resultStringFinal = '';
         String  applicantStringFinal = '';
+        String appcantNameFinal  = '';
         List<DIWrapperResultAlert> diWrapperResultList = new List<DIWrapperResultAlert>();
         List<DIWrapperLoanCondition> diWrapperLoanList = new List<DIWrapperLoanCondition>();
         List<DIWrapperApplicationAlert> diWrapperApplicantList = new List<DIWrapperApplicationAlert>();
-        system.debug('###resp'+reponse);
+        system.debug('###resp amar '+reponse);
         string strrespon= reponse;
         if(strrespon.contains('<result>'))
         {
@@ -26,6 +27,142 @@ global class ParseDIXMLResponse{
         
         //reponse = reponse.replaceFirst('<result>', '<bill>');
         //reponse = reponse.replaceFirst('</result>', '</bill>');
+        
+        
+        /*** Code by amarendra ***/
+       
+        
+       
+        if(reponse .contains('<application')){
+          system.debug('###123 AMAr application ');
+          string appcantName= reponse .substringBetween('<application','</application>');
+          
+          system.debug('###123 AMAr  30 '+appcantName);
+          appcantNameFinal = appcantName.removeEnd('</');
+          
+          system.debug('###123 AMAr  305 '+appcantNameFinal );
+          
+          appcantName = '<?xml version="1.0" encoding="UTF-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
+          appcantNameFinal  = appcantName + appcantNameFinal  ;
+          appcantNameFinal  = appcantNameFinal  +  '</soap:Envelope>';
+          
+          Dom.Document docApp = new Dom.Document();
+          
+          system.debug('###123 AMAr  301 '+appcantNameFinal  );
+          
+          docApp.load(appcantNameFinal  );
+          Dom.XMLNode rootElementApp = docApp.getRootElement();
+          system.debug('###123 AMAr'+rootElementApp );
+         
+          
+          
+          if(rootElementApp != null){
+              for(Dom.XMLNode child : rootElementApp.getChildElements()) {
+                 if(child.getName() == 'applicant'){
+                    String applicantName = '' ;
+                    for(Dom.XMLNode childDataIndi : child.getChildElements()){
+                         // For applicant name start 
+                            
+                            if(childDataIndi.getName() =='individual'){
+                                 applicantName  = '';
+                                 for(Dom.XMLNode childData : childDataIndi.getChildElements()){
+                                    if(childData.getName() =='nm_firstname') {                     
+                                      applicantName = childData.getText(); 
+                                      System.debug('!#$ AMAR 3 '+applicantName  );                      
+                                    }
+                                    if(childData.getName() =='nm_surname') {
+                                      applicantName = applicantName +' '+ childData.getText(); 
+                                      System.debug('!#$ AMAR 4 '+applicantName  );
+                                    }
+                                 }
+                            }
+                            
+                            // For applicant name end
+                            if(childDataIndi.getName() =='result'){
+                                for(Dom.XMLNode childDataResult : childDataIndi.getChildElements()){
+                                    if(childDataResult.getName() =='alert_list') {
+                                        for(Dom.XMLNode childDataAlert : childDataResult.getChildElements()){
+                                            
+                                            DIWrapperApplicationAlert wrapAppObj = new DIWrapperApplicationAlert();
+                                            wrapAppObj.id = childDataAlert .getAttribute('id','');
+                                            wrapAppObj.description = childDataAlert .getAttribute('tx_description','');
+                                            wrapAppObj.txStatus = childDataAlert .getAttribute('cd_status','');
+                                            wrapAppObj.txSection = childDataAlert .getAttribute('tx_section','');
+                                            wrapAppObj.fgNew = childDataAlert .getAttribute('fg_new','');
+                                            wrapAppObj.type = 'Applicant Alert';
+                                            wrapAppObj.applicantName  = applicantName ;
+                                            
+                                            system.debug('amar!@#$ '+wrapAppObj);
+                                            diWrapperApplicantList.add(wrapAppObj);
+                                        }
+                                    }
+                                }   
+                                
+                            }
+                 
+                       }                              
+                   }
+                }
+            }
+          
+        }
+        
+      
+        
+        /*** Code by amarendra end ***/
+        
+        
+        if(reponse .contains('<application')){
+          system.debug('###123 AMAr AMAr application ');
+          string appcantName= reponse .substringBetween('<application','</application>');
+          
+          system.debug('###123 AMAr AMAr  30 '+appcantName);
+          appcantNameFinal = appcantName.removeEnd('</');
+          
+          system.debug('###123 AMAr AMAr  305 '+appcantNameFinal );
+          
+          appcantName = '<?xml version="1.0" encoding="UTF-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
+          appcantNameFinal  = appcantName + appcantNameFinal  ;
+          appcantNameFinal  = appcantNameFinal  +  '</soap:Envelope>';
+          
+          Dom.Document docApp = new Dom.Document();
+          
+          system.debug('###123 AMAr AMAr  301 '+appcantNameFinal  );
+          
+          docApp.load(appcantNameFinal  );
+          Dom.XMLNode rootElementApp = docApp.getRootElement();
+          system.debug('###123 AMAr AMAr'+rootElementApp );
+         
+          
+          
+          if(rootElementApp != null){
+              for(Dom.XMLNode child : rootElementApp.getChildElements()) {
+                 if(child.getName() == 'result' && child.getName() != 'applicant'){
+                        System.debug('Test AMAR !@# '+child.getChildElements());
+                        for(Dom.XMLNode childResult : child.getChildElements()) {
+                             if(childResult.getName() == 'alert_list'){
+                                 for(Dom.XMLNode childResultAlert : childResult.getChildElements()) {
+                                    System.debug(childResultAlert.getText());
+                                    system.debug('###'+childResultAlert.getAttribute('id',''));
+                                    DIWrapperResultAlert wrapResultObj = new DIWrapperResultAlert();
+                                    wrapResultObj.id = childResultAlert.getAttribute('id','');
+                                    wrapResultObj.description = childResultAlert.getAttribute('tx_description','');
+                                    wrapResultObj.txStatus = childResultAlert.getAttribute('cd_status','');
+                                    wrapResultObj.txSection = childResultAlert.getAttribute('tx_section','');
+                                    wrapResultObj.fgNew = childResultAlert.getAttribute('fg_new','');
+                                    wrapResultObj.type = 'Result Alert';
+                                    diWrapperResultList.add(wrapResultObj);
+                                 }
+                                 
+                             }
+                        }                        
+                   }
+                }
+            }
+          
+        }
+        
+        
         reponse =strrespon ;
         if(reponse.contains('<pepper_response')){
             string pepperString = reponse.substringBetween('pepper_response>');
@@ -50,10 +187,13 @@ global class ParseDIXMLResponse{
                     wrapLoanObj.comment = child.getAttribute('comment','');
                     wrapLoanObj.type = 'Loan Condition';
                     diWrapperLoanList.add(wrapLoanObj);
+                    
                 }
             }
         }
         
+        
+        /*
         if(reponse.contains('<bill')){
             String applicantString =reponse.substringBetween('bill>');
             system.debug('###res'+applicantString);
@@ -86,7 +226,8 @@ global class ParseDIXMLResponse{
            
             
         }
-        
+        */
+        /*
         if(reponse.contains('<result')){
             String resultString = reponse.substringBetween('result>');
             resultStringFinal = resultString.removeEnd('</');
@@ -122,7 +263,7 @@ global class ParseDIXMLResponse{
         system.debug('###'+pepperStringFinal);
         system.debug('###result'+resultStringFinal);
         
-       
+       */
         
         
         
@@ -143,32 +284,34 @@ global class ParseDIXMLResponse{
                 }
                 
                 for(DIWrapperApplicationAlert dWrapApplication:diWrapperApplicantList){
-                   diCondList.add(new DI_Condition_Response__c(Code_Id__c = dWrapApplication.id,Fg_New__c=dWrapApplication.fgNew,Section__c=dWrapApplication.txSection,Status__c=dWrapApplication.txStatus,Opportunity__c = OpportuntyiD,Description__c=dWrapApplication.description,Return_Type__c = dWrapApplication.type));
+                   system.debug('amar &^%$# '+dWrapApplication);
+                   diCondList.add(new DI_Condition_Response__c(Code_Id__c = dWrapApplication.id,Fg_New__c=dWrapApplication.fgNew,Section__c=dWrapApplication.txSection,Status__c=dWrapApplication.txStatus,Opportunity__c = OpportuntyiD,Description__c=dWrapApplication.description,Return_Type__c = dWrapApplication.type ,Applicant_Name__c =dWrapApplication.applicantName));
                 }
             }
             
             if(diCondList.size() > 0){
+                system.debug('!@$$ diCondList amar '+diCondList);
                 insert diCondList;
             }
         }
         
     }
    webservice static void parseDIXMLResponseLoanFinalProd(String response, String OpportuntyiD){
-   	 if(response.contains('<final_product')){
-        	String finalProd = response.substringBetween('<final_product>','</final_product>');
-        	String strXml = '<?xml version="1.0" encoding="UTF-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
+     if(response.contains('<final_product')){
+            String finalProd = response.substringBetween('<final_product>','</final_product>');
+            String strXml = '<?xml version="1.0" encoding="UTF-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
             finalProd = strXml + finalProd + '</soap:Envelope>';
-        	Dom.Document docFirst = new Dom.Document();
+            Dom.Document docFirst = new Dom.Document();
             docFirst.load(finalProd);
             Dom.XMLNode rootElementFirst = docFirst.getRootElement();
             if(rootElementFirst !=null){
-            	ProductList prodObj = new ProductList();
-            	List<Product_Feature__c> profFeatureList = new List<Product_Feature__c>();
-            	List<FeatureList> featureRealList = new List<FeatureList>();
-            	//List<ProductList> diFinalProductList = new List<ProductList>();
-            	List<FeatureList> featureList = new List<FeatureList>();
-	        	for(Dom.XMLNode child : rootElementFirst.getChildElements()) {
-	        		if(child.getName() == 'cd_product_id') prodObj.cdProductId = child.getText() != null ? child.getText() : '';
+                ProductList prodObj = new ProductList();
+                List<Product_Feature__c> profFeatureList = new List<Product_Feature__c>();
+                List<FeatureList> featureRealList = new List<FeatureList>();
+                //List<ProductList> diFinalProductList = new List<ProductList>();
+                List<FeatureList> featureList = new List<FeatureList>();
+                for(Dom.XMLNode child : rootElementFirst.getChildElements()) {
+                    if(child.getName() == 'cd_product_id') prodObj.cdProductId = child.getText() != null ? child.getText() : '';
                     if(child.getName() == 'tx_category_impairment') prodObj.categoryImpairment = child.getText() != null ? child.getText() : '';
                     if(child.getName() == 'cd_loan_doc') prodObj.cdLoanDoc = child.getText() != null ? child.getText() : '';
                     if(child.getName() == 'no_lvr') prodObj.noLVR = child.getText() != null ? child.getText() : '';
@@ -193,70 +336,70 @@ global class ParseDIXMLResponse{
                     if(child.getChildElements() != null && !child.getChildElements().isEmpty()){               
                     if(child.getName() == 'Features'){
                        for(Dom.XMLNode subChild : child.getChildElements()){
-	                       // for(Dom.XMLNode lowerSubChild:subChild.getChildElements()){
-	                        	 FeatureList objFeature = new FeatureList();
-	                        	 objFeature.typeFeature = subChild.getAttribute('Type','');
-                    		     objFeature.available = subChild.getAttribute('Available',''); 
-                    		     featureRealList.add(objFeature);
-	                        //}
+                           // for(Dom.XMLNode lowerSubChild:subChild.getChildElements()){
+                                 FeatureList objFeature = new FeatureList();
+                                 objFeature.typeFeature = subChild.getAttribute('Type','');
+                                 objFeature.available = subChild.getAttribute('Available',''); 
+                                 featureRealList.add(objFeature);
+                            //}
                         }
                         prodObj.feature = featureRealList;
                         //diFinalProductList.add();
                     }
                     system.debug('@@@prodObj'+prodObj.feature);
                   // diFinalProductList.add(prodObj);
-				   }
-    			}
-    			if(prodObj !=null){
+                   }
+                }
+                if(prodObj !=null){
                     //for(ProductList objWrapProd : diFinalProductList)
                     //{               
-	                Resolve_Suggested_Product__c objResSugProduct = new Resolve_Suggested_Product__c();
-	                objResSugProduct.Actual_Rate__c = prodObj.noActualRate;
-	                objResSugProduct.Allow_Capitalisation__c = prodObj.allowCapitalisation;
-	                objResSugProduct.Amid_Products__c = prodObj.nmAmidProduct;
-	                objResSugProduct.Category_Impairment__c = prodObj.categoryImpairment;
-	                objResSugProduct.Fee_Completion__c = prodObj.noFeeCompletion;
-	                objResSugProduct.Fixed_BaseId__c = prodObj.noFixedBaseId;
-	                objResSugProduct.Free_Min_Completion__c = prodObj.noFeeMinCompletion;
-	                objResSugProduct.Is_Completion_Fee_Fixed__c = prodObj.fgCompletionFeeFixed;
-	                objResSugProduct.Is_Completion_Fee_Percent__c = prodObj.fgCompletionFeePercent;
-	                objResSugProduct.Is_Fixed_Available__c = prodObj.fgFixedVariable;
-	                objResSugProduct.Opportunity__c = OpportuntyiD;
-	                objResSugProduct.Is_Valfree_Deductable__c = prodObj.fgValFreeDeducatable;
-	                objResSugProduct.Loan_Doc__c = prodObj.cdLoanDoc;
-	                objResSugProduct.LVR__c = prodObj.noLVR;
-	                objResSugProduct.Max_Amount__c = prodObj.noMaxAmount;
-	                objResSugProduct.Minimum_Amount__c = prodObj.noMinAmount;
-	                objResSugProduct.Months_ETIA__c = prodObj.noMonthsEtia;
-	                objResSugProduct.Months_Fixed__c = prodObj.noMonthsfixed;
-	                objResSugProduct.Percent_Commission_Trail__c = prodObj.noPercentCommissionTrail;
-	                objResSugProduct.Percent_Commission_Upfront__c = prodObj.noPercentCommissionUpfront;
-	                objResSugProduct.Product_Id__c =prodObj.cdProductId;
-	                objResSugProduct.Valfree_Deductable__c = prodObj.fgValFreeDeducatableSecurity;
-	                objResSugProduct.name = prodObj.name;
-	                
-	                for(FeatureList feature:prodObj.feature){
-	                	
-	                }
-	            //}
-	                insert objResSugProduct;
-	                if(prodObj.feature != null && !prodObj.feature.isempty()){
-	                    for(FeatureList objFeature : prodObj.feature){
-	                    	system.debug('@@@obj'+objFeature);
-	                        Product_Feature__c objProdFeature = new Product_Feature__c();
-	                        objProdFeature.Is_Available__c = objFeature.available;
-	                        objProdFeature.Type__c = objFeature.typeFeature;
-	                        objProdFeature.Resolve_Suggested__c = objResSugProduct.id;
-	                        profFeatureList.add(objProdFeature);
-	                    }
-	                }
-	                system.debug('@@@prof'+profFeatureList);
-	                if(profFeatureList!=null && profFeatureList.size() > 0){
-	                	insert profFeatureList;
-	                }   
+                    Resolve_Suggested_Product__c objResSugProduct = new Resolve_Suggested_Product__c();
+                    objResSugProduct.Actual_Rate__c = prodObj.noActualRate;
+                    objResSugProduct.Allow_Capitalisation__c = prodObj.allowCapitalisation;
+                    objResSugProduct.Amid_Products__c = prodObj.nmAmidProduct;
+                    objResSugProduct.Category_Impairment__c = prodObj.categoryImpairment;
+                    objResSugProduct.Fee_Completion__c = prodObj.noFeeCompletion;
+                    objResSugProduct.Fixed_BaseId__c = prodObj.noFixedBaseId;
+                    objResSugProduct.Free_Min_Completion__c = prodObj.noFeeMinCompletion;
+                    objResSugProduct.Is_Completion_Fee_Fixed__c = prodObj.fgCompletionFeeFixed;
+                    objResSugProduct.Is_Completion_Fee_Percent__c = prodObj.fgCompletionFeePercent;
+                    objResSugProduct.Is_Fixed_Available__c = prodObj.fgFixedVariable;
+                    objResSugProduct.Opportunity__c = OpportuntyiD;
+                    objResSugProduct.Is_Valfree_Deductable__c = prodObj.fgValFreeDeducatable;
+                    objResSugProduct.Loan_Doc__c = prodObj.cdLoanDoc;
+                    objResSugProduct.LVR__c = prodObj.noLVR;
+                    objResSugProduct.Max_Amount__c = prodObj.noMaxAmount;
+                    objResSugProduct.Minimum_Amount__c = prodObj.noMinAmount;
+                    objResSugProduct.Months_ETIA__c = prodObj.noMonthsEtia;
+                    objResSugProduct.Months_Fixed__c = prodObj.noMonthsfixed;
+                    objResSugProduct.Percent_Commission_Trail__c = prodObj.noPercentCommissionTrail;
+                    objResSugProduct.Percent_Commission_Upfront__c = prodObj.noPercentCommissionUpfront;
+                    objResSugProduct.Product_Id__c =prodObj.cdProductId;
+                    objResSugProduct.Valfree_Deductable__c = prodObj.fgValFreeDeducatableSecurity;
+                    objResSugProduct.name = prodObj.name;
+                    
+                    for(FeatureList feature:prodObj.feature){
+                        
+                    }
+                //}
+                    insert objResSugProduct;
+                    if(prodObj.feature != null && !prodObj.feature.isempty()){
+                        for(FeatureList objFeature : prodObj.feature){
+                            system.debug('@@@obj'+objFeature);
+                            Product_Feature__c objProdFeature = new Product_Feature__c();
+                            objProdFeature.Is_Available__c = objFeature.available;
+                            objProdFeature.Type__c = objFeature.typeFeature;
+                            objProdFeature.Resolve_Suggested__c = objResSugProduct.id;
+                            profFeatureList.add(objProdFeature);
+                        }
+                    }
+                    system.debug('@@@prof'+profFeatureList);
+                    if(profFeatureList!=null && profFeatureList.size() > 0){
+                        insert profFeatureList;
+                    }   
                 }
-    		}
-    	}
+            }
+        }
    }
    webservice static void parseDIXMLResponseLoanProd(String response, String OpportuntyiD){
         String strLoanProduct = ''; 
@@ -401,6 +544,7 @@ global class ParseDIXMLResponse{
         public string txSection;
         public string fgNew;
         public string type;
+        public String applicantName ;
     }
     
     
@@ -428,7 +572,7 @@ global class ParseDIXMLResponse{
     }
     
     public class ProductList{
-    	public string cdProductId;
+        public string cdProductId;
         public string categoryImpairment;
         public string cdLoanDoc;
         public string noLVR;
@@ -455,8 +599,8 @@ global class ParseDIXMLResponse{
     }
     
     public class FeatureList{
-    	public string typeFeature;
-    	public string available;
+        public string typeFeature;
+        public string available;
     }
 
 }
