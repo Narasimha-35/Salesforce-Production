@@ -6,7 +6,6 @@ public class CreditProposalDisclosureController {
     public string strAccountAddress{get;set;}
     public Decimal OLILoanAmt{get;set;}
     public decimal OLIRate{get;set;}
-    //public Decimal OLIRepayment{get;set;}
     public string strOLILoanTerm{get;set;}
     public string strOLILender{get;set;}
     public string strBrokerFullName{get;set;}
@@ -102,6 +101,7 @@ public class CreditProposalDisclosureController {
     public decimal trailingCommission {get;set;}
     public decimal totalTrailingCommPerMonth {get;set;}
     public decimal reasonableAmount {get;set;}
+    public decimal strProd2LegalsFee{get;set;}
     
     public CreditProposalDisclosureController()
     {
@@ -148,6 +148,7 @@ public class CreditProposalDisclosureController {
         trailingCommission = 0;
         totalTrailingCommPerMonth =0;
         reasonableAmount =0;
+        strProd2LegalsFee = 0;
         
         lstOpp = new List<Opportunity>();
         lstProduct = new List<Product2>();
@@ -265,8 +266,24 @@ public class CreditProposalDisclosureController {
                                 apiname == 'Funds_Requested__c' || apiname == 'Funds_Requested_Inc_LMI__c' || apiname == 'Funds_Required__c' || apiname=='Lender_Set_Up_Fees__c' ||
                                 apiname == 'Net_Surplus__c' || apiname == 'Other_Sundries__c' || apiname == 'Summary_From_Details__c' )
                             {
-                                String strfp = (Decimal.valueOf(fundpos==null || fundpos.trim()==''?'0':fundpos).setScale(2)).format();
-                                objwrapFPDetails.strFPValue = '$' +strfp;    
+                                decimal formatDecimal = Decimal.valueOf(fundpos==null || fundpos.trim()==''?'0':fundpos).setScale(2)+ 0.00;
+                                String strDecimal = string.valueof(formatDecimal);
+                                string strLastTwoDigit = '';
+                                if(strdecimal.contains('.'))
+                                    strLastTwoDigit = strdecimal.right(2);
+                                list<String> args = new String[]{'0','number','###,###,###,##0.00'};
+                                String strfp = String.format(formatDecimal.format(),args);
+                                if(string.isNotEmpty(strLastTwoDigit))
+                                {     
+                                    if(!strfp.contains('.') )                           
+                                        objwrapFPDetails.strFPValue = '$' +strfp +'.'+strLastTwoDigit; 
+                                    else
+                                        objwrapFPDetails.strFPValue = '$' +strfp;
+                                }
+                                else  
+                                {
+                                    objwrapFPDetails.strFPValue = '$' +strfp +'.00'; 
+                                }    
                             }
                             else 
                             {
@@ -449,7 +466,7 @@ public class CreditProposalDisclosureController {
 
                 lstOLI = new List<OpportunityLineItem>();
                 if(OpportunityId != null)
-                    lstOLI = [select id,Product2.Name,PricebookEntry.Product2.Name,PricebookEntry.Product2.acfApplication_Fee__c,Click_Loans_LVR_Rate__r.acfEstablishment_Fee__c,Click_Loans_LVR_Rate__r.acfLegal_Fees__c,PricebookEntry.Product2.acfLegal_Fees__c,
+                    lstOLI = [select id,Opportunity.Car_Application_Fee__c,Opportunity.acfLegal_Fees__c,Opportunity.ClickMortgage_Risk_Fee__c,Product2.Name,PricebookEntry.Product2.Name,PricebookEntry.Product2.acfApplication_Fee__c,Click_Loans_LVR_Rate__r.acfEstablishment_Fee__c,Click_Loans_LVR_Rate__r.acfLegal_Fees__c,PricebookEntry.Product2.acfLegal_Fees__c,
                               PricebookEntry.Product2.Annual_Fee__c,PricebookEntry.Product2.Monthly_Fee__c,PricebookEntry.Name,click_Loan_Amount__c,click_Type__c,Click_Loans_LVR_Rate__r.acfMonthly_Fees__c,Click_Loans_LVR_Rate__r.acfAnnual_Fees__c,
                               Click_Estimated_Monthly_Payment__c,Click_Tenure__c,acfRate__c,lender__c,OpportunityId,PricebookEntry.Product2.Upfront_Commission__c,PricebookEntry.Product2.Trailing_Commission__c,
                               UnitPrice,clickEstablishment_Fee__c,acfLegal_Fees__c,acfApplication_Fee__c from OpportunityLineItem where OpportunityId =: OpportunityId ORDER BY CreatedDate DESC]; 
@@ -477,19 +494,23 @@ public class CreditProposalDisclosureController {
                     formulaTotalFee = oppProductEstablishmentFee + oppProductLegalFee + FundingPosLMI; // Total Fee Payable 
                     if(lstOpp != null && !lstOpp.isEmpty())
                         formulaCreditAvailable = integer.valueOf(lstOpp[0].Amount) - integer.valueOf(formulaTotalFee); // Credit Available
-                    if(lstOLI[0].acfApplication_Fee__c != null)    
-                        strOLIApplFee = lstOLI[0].acfApplication_Fee__c;  // Application fee.
+                    //if(lstOLI[0].acfApplication_Fee__c != null)    
+                        //strOLIApplFee = lstOLI[0].acfApplication_Fee__c;  // Application fee.
                     
                     for(OpportunityLineItem objOLI : lstOLI)
                     {                           
                         strOLILender    = objOLI.lender__c;
                         strOLIProdName  = objOLI.Product2.Name;
                         if(objOLI.PricebookEntry.Product2.Upfront_Commission__c != null && objOLI.PricebookEntry.Product2.Upfront_Commission__c > maxUpfrontCommission)
-                            maxUpfrontCommission = objOLI.PricebookEntry.Product2.Upfront_Commission__c ; 
+                            maxUpfrontCommission = objOLI.PricebookEntry.Product2.Upfront_Commission__c ;
+                        if(objOLI.PricebookEntry.Product2.acfLegal_Fees__c != null && objOLI.PricebookEntry.Product2.acfLegal_Fees__c > strProd2LegalsFee)
+                            strProd2LegalsFee  = objOLI.PricebookEntry.Product2.acfLegal_Fees__c;    
+                            
                         if(objOLI.PricebookEntry.Product2.acfApplication_Fee__c != null && objOLI.PricebookEntry.Product2.acfApplication_Fee__c > totalApplicationFee)
                             totalApplicationFee = objOLI.PricebookEntry.Product2.acfApplication_Fee__c;   
                         if(objOLI.PricebookEntry.Product2.Trailing_Commission__c != null && objOLI.PricebookEntry.Product2.Trailing_Commission__c > trailingCommission)
-                            trailingCommission = objOLI.PricebookEntry.Product2.Trailing_Commission__c;
+                            //trailingCommission = (objOLI.PricebookEntry.Product2.Trailing_Commission__c / 12).setscale(2);
+                            trailingCommission = (objOLI.PricebookEntry.Product2.Trailing_Commission__c).setscale(2);
                         if(objOLI.PricebookEntry.Product2.Trailing_Commission__c != null && objOLI.UnitPrice != null)
                             totalTrailingCommPerMonth += objOLI.PricebookEntry.Product2.Trailing_Commission__c * objOLI.UnitPrice;    
                         if(objOLI.PricebookEntry.Product2.Upfront_Commission__c != null && objOLI.UnitPrice != null)
@@ -504,8 +525,8 @@ public class CreditProposalDisclosureController {
                             OLIRate         = objOLI.acfRate__c;
                         if(objOLI.click_Type__c != null)
                             strOLIPaymentType = objOLI.click_Type__c;                           
-                        //if(objOLI.Click_Loans_LVR_Rate__c!= null && objOLI.Click_Loans_LVR_Rate__r.acfEstablishment_Fee__c != null)
-                            //strOLIApplFee = objOLI.Click_Loans_LVR_Rate__r.acfEstablishment_Fee__c;
+                        if(objOLI.Click_Loans_LVR_Rate__c!= null && objOLI.Click_Loans_LVR_Rate__r.acfEstablishment_Fee__c != null)
+                            strOLIApplFee = objOLI.Click_Loans_LVR_Rate__r.acfEstablishment_Fee__c;
                         if(objOLI.Click_Loans_LVR_Rate__c != null && objOLI.Click_Loans_LVR_Rate__r.acfAnnual_Fees__c != null)
                             strOLIAnnualFee = objOLI.Click_Loans_LVR_Rate__r.acfAnnual_Fees__c;
                         if(objOLI.Click_Loans_LVR_Rate__c != null && objOLI.Click_Loans_LVR_Rate__r.acfMonthly_Fees__c != null)
@@ -576,6 +597,8 @@ public class CreditProposalDisclosureController {
                 } 
             }
             
+            reasonableAmount = reasonableAmount /100;
+            totalTrailingCommPerMonth = totalTrailingCommPerMonth / 1200;
             formulaPartnerCommMin = (reasonableAmount * 0.45).setScale(2);
             formulaPartnerCommMax = (reasonableAmount * 0.85).setScale(2);
              
