@@ -6,21 +6,26 @@ public  class acfTriggerOnOpportunityHandler
     public acfTriggerOnOpportunityHandler()
     {
     }
+    
     //Method to call on opportunity after Update.
     public void OnAfterInsert(List<opportunity>lstTriggerNew)
     {
+       calculateAssetLiabilty(lstTriggerNew);
        createRequiresDocumentForLendi(lstTriggerNew,null);
        //Create Task from TaskMaster
        CreateTaskFromTaskMaster(lstTriggerNew);
        CreateOpportunityLineItems(lstTriggerNew);
        mapOpportunityWIthFpRecord(lstTriggerNew);
        TagApplicantWithOpportunity(lstTriggerNew);
+       
     }
     public void onAfterUpdate(list<opportunity> triggernew,map<id,opportunity> triggerOldMap)
     {
+        system.debug('EnteredAfterUpdate');
         updateOppLIMonthlyPayments(triggernew,triggerOldMap);
         //sendEmailonOppUpdate(triggernew,triggerOldMap);
         createRequiresDocumentForLendi(triggernew,triggerOldMap);
+        calculateAssetLiabilty(triggernew);
     }
     //Create task after opportunity created.
     public void CreateTaskFromTaskMaster(List<opportunity>lstTriggerNew)
@@ -47,7 +52,186 @@ public  class acfTriggerOnOpportunityHandler
         if(lstTaskToInsert <> null && lstTaskToInsert.size()>0)
           insert lstTaskToInsert;
     }
-
+    
+    /**** Code By Amarendra 16 - 12 - 2016  start ****/
+    public void calculateAssetLiabilty(List<opportunity> lstTriggerNew){
+        System.debug('!@#$ AMAr in calculateAssetLiabilty');
+        Set<Id> oppIdSet = new Set<Id>();
+        for(opportunity oppId :lstTriggerNew){
+            oppIdSet.add(oppId.id);
+        }
+        System.debug('!@#$ AMAr '+oppIdSet);
+        Map<ID ,Decimal> oppIdToAssetLiabilityAmount = new Map<ID ,Decimal>();
+        Map<ID ,Decimal> accIdToAssetLiabilityAmount = new Map<ID ,Decimal>();
+        
+        Map<ID ,List<Asset_And_Liability__c>> oppIdToAssetLiabilityList = new Map<ID ,List<Asset_And_Liability__c>>();
+        
+        Map<Id,List<Asset_And_Liability__c>> accountIdToAssetLiabMap = new Map<Id,List<Asset_And_Liability__c>>();
+        
+        //Id asetLiabRecordTypeId = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosByName().get('Assets Real Estate').getRecordTypeId();
+        Set<id> accountIdSet = new Set<ID>();
+        
+        String[] types = new String[]{'Asset_And_Liability__c'}; 
+        List<Schema.DescribeSobjectResult> results = Schema.describeSObjects(types); 
+        Map<String, Schema.RecordTypeInfo> rmap = new Map<String, Schema.RecordTypeInfo> (); 
+        for (Schema.RecordTypeInfo ri: results[0].getRecordTypeInfos()) { 
+        rmap.put(ri.getname(), ri);
+        }
+        Id asetLiabRecordTypeId = rmap.get('Asset Real Estate').getRecordTypeId();
+        
+        System.debug('!@#$ AMAr asetLiabRecordTypeId '+asetLiabRecordTypeId);
+        
+        
+        Map<ID ,Account> oppIdToAccountMap = new Map<ID ,Account>();
+        for(Opportunity accObj : [select id,Account.Name,Account.id,Account.acfAsset_House_Worth__c from Opportunity where id in :oppIdSet]){
+            if(accObj.Account.id != null){
+                Account acc = new Account(id=accObj.Account.id ,acfAsset_House_Worth__c = accObj.Account.acfAsset_House_Worth__c,name = accObj.Account.Name);
+                oppIdToAccountMap.put(accObj.id ,acc);
+            }
+            if(accObj.Account.id != null){
+                accountIdSet.add(accObj.Account.id);
+            }
+            
+        }
+        System.debug('!@#$ AMAr oppIdToAccountMap '+oppIdToAccountMap );
+        
+        System.debug('!@#$ AMAr test '+oppIdSet +' 123 '+asetLiabRecordTypeId);
+        
+       for(Asset_And_Liability__c assetAndLiabObj :[select id,Account__c,Account_Name__c,Value__c,Opportunity__c from Asset_And_Liability__c where Opportunity__c in :oppIdSet and Used_as_Security__c = true and recordtypeid = :asetLiabRecordTypeId]){       
+           if(assetAndLiabObj!= null){
+                /**** Map for opp id with asset liability list start ****/
+                if(oppIdToAssetLiabilityList.get(assetAndLiabObj.Opportunity__c) <> null && oppIdToAssetLiabilityList.get(assetAndLiabObj.Opportunity__c).size() > 0 )
+                {
+                    List<Asset_And_Liability__c> assetLiabList = oppIdToAssetLiabilityList.get(assetAndLiabObj.Opportunity__c) ;
+                    assetLiabList.add(assetAndLiabObj);
+                    oppIdToAssetLiabilityList.put(assetAndLiabObj.Opportunity__c , assetLiabList);
+                
+                }else{
+                    
+                    List<Asset_And_Liability__c> assetLiabList = new List<Asset_And_Liability__c>();
+                    assetLiabList.add(assetAndLiabObj);
+                    oppIdToAssetLiabilityList.put(assetAndLiabObj.Opportunity__c ,assetLiabList);
+                }
+                
+                
+                /**** Map for opp id with asset liability list end  ****/
+                
+           }   
+            
+        }
+        System.debug('!@#$ AMAr accountIdSet '+accountIdSet);
+        
+        for(Asset_And_Liability__c assetAndLiabObj :[select id,Account__c,Account_Name__c,Value__c,Opportunity__c from Asset_And_Liability__c where Account__c in :accountIdSet and Used_as_Security__c = true and recordtypeid = :asetLiabRecordTypeId]){
+            if(assetAndLiabObj!= null){
+                
+                
+                /**** Map for account id with asset liability list start  ****/
+                if(accountIdToAssetLiabMap.get(assetAndLiabObj.Account__c) <> null && accountIdToAssetLiabMap.get(assetAndLiabObj.Account__c).size() > 0 )
+                {
+                    List<Asset_And_Liability__c> assetLiabListForAcc = accountIdToAssetLiabMap.get(assetAndLiabObj.Account__c) ;
+                    assetLiabListForAcc.add(assetAndLiabObj);
+                    accountIdToAssetLiabMap.put(assetAndLiabObj.Account__c , assetLiabListForAcc);
+                
+                }else{
+                    List<Asset_And_Liability__c> assetLiabListForAcc = new List<Asset_And_Liability__c>();
+                    assetLiabListForAcc.add(assetAndLiabObj);
+                    accountIdToAssetLiabMap.put(assetAndLiabObj.Account__c ,assetLiabListForAcc);
+                }
+                /**** Map for account id with asset liability list end  ****/
+                
+            }   
+            
+        }
+        
+        
+        
+        
+        System.debug('!@#$ AMAr oppIdToAssetLiabilityList '+oppIdToAssetLiabilityList +' accountIdToAssetLiabMap '+accountIdToAssetLiabMap);
+        
+        for(Id oppId : oppIdToAssetLiabilityList.keySet()){
+            if(oppId != null){
+                List<Asset_And_Liability__c> assetLiabilityList = oppIdToAssetLiabilityList.get(oppId);
+                
+                Decimal assetLiblityAmount = 0 ;
+                if(assetLiabilityList != null && assetLiabilityList.size() > 0){
+                    for(Asset_And_Liability__c assetLibOBJ : assetLiabilityList){
+                        if(assetLibOBJ.Value__c != null){
+                            assetLiblityAmount = assetLiblityAmount + assetLibOBJ.Value__c ;
+                        }
+                    }
+                }
+                oppIdToAssetLiabilityAmount.put(oppId , assetLiblityAmount);
+            }
+        }
+        
+        System.debug('!@#$ AMAr oppIdToAssetLiabilityAmount '+oppIdToAssetLiabilityAmount );
+        
+        for(Id accId : accountIdToAssetLiabMap.keySet()){
+            if(accId != null){
+                List<Asset_And_Liability__c> assetLiabilityList = accountIdToAssetLiabMap.get(accId);
+                
+                Decimal assetLiblityAmount = 0 ;
+                if(assetLiabilityList != null && assetLiabilityList.size() > 0){
+                    for(Asset_And_Liability__c assetLibOBJ : assetLiabilityList){
+                        if(assetLibOBJ.Value__c != null){
+                            assetLiblityAmount = assetLiblityAmount + assetLibOBJ.Value__c ;
+                        }
+                    }
+                }
+                accIdToAssetLiabilityAmount.put(accId , assetLiblityAmount);
+            }
+        }
+        System.debug('!@#$ AMAr accIdToAssetLiabilityAmount '+accIdToAssetLiabilityAmount );
+        
+        
+        
+        
+        
+        
+        Map<ID ,Decimal> oppIdToAssetLiabilityAmountUpdateMap = new Map<ID ,Decimal>();
+        /**** Logic for account total security value ****/
+        for(Id oppourId : oppIdSet){
+            if(oppourId != null){
+                if(oppIdToAssetLiabilityAmount == null || oppIdToAssetLiabilityAmount.get(oppourId) == null || oppIdToAssetLiabilityAmount.get(oppourId) == 0){
+                    System.debug('!@#$ AMAr from account ' );
+                    Account accObj = oppIdToAccountMap.get(oppourId) ;
+                    if(oppIdToAccountMap.get(oppourId) != null && oppIdToAccountMap.get(oppourId).acfAsset_House_Worth__c != null && oppIdToAccountMap.get(oppourId).acfAsset_House_Worth__c > 0){
+                        System.debug('!@#$ AMAr from account execute ' );
+                        oppIdToAssetLiabilityAmountUpdateMap.put(oppourId,oppIdToAccountMap.get(oppourId).acfAsset_House_Worth__c);
+                    }else{
+                        System.debug('!@#$ AMAr from account aset lib execute  ' );
+                        if(accIdToAssetLiabilityAmount != null && accObj!=null && accObj.ID!= null &&accIdToAssetLiabilityAmount.get(accObj.ID) != null){
+                         oppIdToAssetLiabilityAmountUpdateMap.put(oppourId ,accIdToAssetLiabilityAmount.get(accObj.ID) );
+                        }
+                    }
+                    
+                }else{
+                    oppIdToAssetLiabilityAmountUpdateMap.put(oppourId ,oppIdToAssetLiabilityAmount.get(oppourId));
+                    
+                }
+            }
+            
+        }
+        
+        System.debug('!@#$ AMAr oppIdToAssetLiabilityAmountUpdateMap '+oppIdToAssetLiabilityAmountUpdateMap );
+        
+        List<opportunity> oppListToBeUpdated = new List<opportunity>();
+        for(id oppIdupdate : oppIdToAssetLiabilityAmountUpdateMap.keySet()){
+            if(oppIdupdate != null && oppIdToAssetLiabilityAmountUpdateMap.get(oppIdupdate) != null){
+                opportunity oppObjNew = new opportunity(id=oppIdupdate ,acfAsset_House_Worth__c = oppIdToAssetLiabilityAmountUpdateMap.get(oppIdupdate)  );
+                oppListToBeUpdated.add(oppObjNew);
+            }
+        }
+        
+        System.debug('!@#$ AMAr oppListToBeUpdated '+oppListToBeUpdated );
+        
+        if(oppListToBeUpdated != null && oppListToBeUpdated.size() > 0){
+            update oppListToBeUpdated ;
+        }
+        
+    }
+     /**** Code By Amarendra 16 - 12 - 2016  end  ****/
+    
     public void updateExistingTaskStatus(List<opportunity>lstTriggerNew)
     {
         set<Id> setOpportunityBankIds = new set<Id>();
@@ -165,6 +349,7 @@ public  class acfTriggerOnOpportunityHandler
     //method to recalculate LVR on oppLI based on total amount
     public void updateOppLIMonthlyPayments(list<opportunity> triggernew,map<id,opportunity> triggerOldMap)
     {
+        system.debug('EnteredOPpli');
         set<Id>setAccountId = new set<Id>();
         List<OpportunityLineItem> updateOLI = new List<OpportunityLineItem>();
         set<id> setObj = new set<id>();
@@ -251,8 +436,12 @@ public  class acfTriggerOnOpportunityHandler
 
             for(Opportunity ObjOpp  : Triggernew)
             {
-                if(mapOLI.get(ObjOpp.id)  <> null  &&  (ObjOpp.Amount != triggerOldMap.get(ObjOpp.Id).Amount || ObjOpp.acfAsset_House_Worth__c != triggerOldMap.get(ObjOpp.Id).acfAsset_House_Worth__c))
+                system.debug('@@@123'+objOpp);
+                System.debug('&& (ObjOpp.Amount != triggerOldMap.get(ObjOpp.Id).Amount || ObjOpp.acfAsset_House_Worth__c != triggerOldMap.get(ObjOpp.Id).acfAsset_House_Worth__c)');
+                if(mapOLI.get(ObjOpp.id)  <> null )
                 {
+                  system.debug('@@@125'+ObjOpp.Amount);
+                  system.debug('@@@126'+ triggerOldMap.get(ObjOpp.Id).Amount);
                   for(OpportunityLineItem objOppLi: mapOLI.get(ObjOpp.id) )
                   {
                     objOppLi.Quantity = 1;
@@ -260,9 +449,11 @@ public  class acfTriggerOnOpportunityHandler
                     if(mapPBEIdToPBE.get(objOppLi.PricebookEntryId)<>null
                     && mapProductIdToListOfLVR.get(mapPBEIdToPBE.get(objOppLi.PricebookEntryId).Product2Id)<>null)
                     {
+                      system.debug('@@@124'+objOpp.acfCurrentLoanAmount__c);
                       if(ObjOpp.acfCurrentLoanAmount__c <> null)
                       {
                        // List<decimal> lstFinalRate = new List<decimal>();
+                       
                         string PaymentType = ObjOpp.acfPayment_Type__c;
                         decimal acfRate = 0;
                         decimal TenureInYears;
@@ -303,7 +494,7 @@ public  class acfTriggerOnOpportunityHandler
                                 System.debug('__LVR__'+LVR);
                                 System.debug('objLVR.acfLVR__c'+objLVR.acfLVR__c);
 
-                                if(objLVR.acfLVR__c>=LVR && objLVR.clickLVR_From__c<=LVR && objLVR.clickLoan_Size_From__c<=objopp.acfCurrentLoanAmount__c && objLVR.acfLoan_Size__c >= objopp.acfCurrentLoanAmount__c)
+                                if(objLVR.acfLVR__c>=LVR && objLVR.clickLVR_From__c<=LVR && objLVR.clickLoan_Size_From__c<=objopp.Amount && objLVR.acfLoan_Size__c >= objopp.Amount)
                                 {
                                   if((objLVR.acfProduct__r.RecordType.Name == 'Variable' && (objLVR.acfRate__c < decTempRate)) || (objLVR.acfProduct__r.RecordType.Name == 'Fixed' && (objLVR.clickFixed_Interest_Rate__c < decTempRate)) || decTempRate == 0)
                                   {
