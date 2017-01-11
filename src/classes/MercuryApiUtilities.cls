@@ -1,4 +1,5 @@
-public without sharing class MercuryApiUtilities {
+public without sharing class MercuryApiUtilities
+ {
     public static Boolean emailSwh                        = false;
     public static List<String> recipients                 = null;
     public static List<Map<String, String>> pendingEmails = null;

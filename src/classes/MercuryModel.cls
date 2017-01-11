@@ -1,4 +1,6 @@
-public without sharing class MercuryModel {
+public without sharing class MercuryModel 
+
+{
 
     public static String getResourceName(Object mercModel) {
         if(mercModel instanceOf MercuryModel.People) return 'person';
