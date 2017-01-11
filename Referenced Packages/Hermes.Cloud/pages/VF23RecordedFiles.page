@@ -1,0 +1,129 @@
+<apex:page controller="vhc.Ctrl23RecordedFiles" showHeader="true" action="{!init}">
+
+<style type="text/css">
+
+.submit {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf) );
+	background:-moz-linear-gradient( center top, #63b8ee 5%, #468ccf 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf');
+	background-color:#63b8ee;
+	-webkit-border-top-left-radius:2px;
+	-moz-border-radius-topleft:2px;
+	border-top-left-radius:2px;
+	-webkit-border-top-right-radius:2px;
+	-moz-border-radius-topright:2px;
+	border-top-right-radius:2px;
+	-webkit-border-bottom-right-radius:2px;
+	-moz-border-radius-bottomright:2px;
+	border-bottom-right-radius:2px;
+	-webkit-border-bottom-left-radius:2px;
+	-moz-border-radius-bottomleft:2px;
+	border-bottom-left-radius:2px;
+	text-indent:0;
+	border:1px solid #3866a3;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:normal;
+	font-style:normal;
+	height:34px;
+	line-height:34px;
+	width:200px;
+	text-decoration:none;
+	text-align:center;
+}
+
+.submit:hover {
+	color:#ffffff;
+	text-decoration:none;
+}
+
+.submit:active {
+	position:relative;
+	top:1px;
+}
+
+</style>
+
+<apex:includeScript value="{!$Resource.vhc__JQuery}"/>
+<apex:sectionHeader title="{!$Label.Recorded_Files}" />
+
+<apex:pageMessages id="messages" /> 
+
+<!-- if everything is ok on server side from controller, display form to login -->
+
+<apex:outputPanel rendered="{!isSalesforceUserConnectedToAnAgent && agentHasSomeFileMgmtRight}">
+    <div id="stationDiv">
+		<a onclick="submitForm();" href="#" class="submit">{!$Label.Open_files_manager}</a>
+    </div>
+</apex:outputPanel>
+
+<!-- display info message when supervision has been launched in a new window  -->
+
+<div id="supervision_opened" style="display:none">
+	<apex:outputPanel > 
+		<apex:pageMessage summary="{!$Label.RecordedFiles_Launched}" severity="info" strength="3"></apex:pageMessage>
+	</apex:outputPanel>
+</div>
+
+<!-- empty frame hidden by default -->
+
+<div>
+	<iframe id="myIframe" style="width:95%;height:500px;display:none;"/>
+</div>
+
+<!-- JS to open popup -->
+
+<script>
+function  submitForm() {
+	// add parameters to open only table with recorded files
+	
+	var isIE8OrIE9 = {!isIE8OrIE9};
+	
+	var url = '{!JSENCODE(JsEncode(url))}';
+	
+	// Open as popup
+	
+	if (isIE8OrIE9) {
+		var popUp = window.open(url, 'Recorded_files');	
+		
+		// Check if some popup blocker has blocked previous instruction
+		
+		if (popUp == null || typeof(popUp)=='undefined') { 	
+			alert('{!$Label.Disable_Popup_Blocker}'); 
+		} else { 	
+			$('#supervision_opened').show();
+			$('#stationDiv').hide();
+			popUp.focus();
+		}
+	} 
+	
+	// Open as Iframe
+	
+	else {
+		$('#stationDiv').hide();
+		document.getElementById('myIframe').src = url;
+		$('#myIframe').show();
+	}
+
+}
+</script>
+
+<!-- 
+
+<apex:outputPanel id="submitPanel" layout="block" rendered="{!isSalesforceUserConnectedToAnAgent && agentHasSomeFileMgmtRight}">
+	<script>
+		submitForm();
+	</script>
+</apex:outputPanel>
+
+ -->
+
+<apex:outputPanel id="submitPanel" layout="block">
+	<script>
+		submitForm();
+	</script>
+</apex:outputPanel>
+
+</apex:page>

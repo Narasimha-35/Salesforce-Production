@@ -1,0 +1,495 @@
+<apex:page docType="html-5.0" standardStylesheets="false" showHeader="false" applyHtmlTag="false" controller="WLCustomerRegisterController" id="prelimPageId" cache="false">
+<!-- action="{!redirect}" -->
+<head>
+ <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
+<!-- <c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer>  -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<title>Preliminary Quote</title>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
+<script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/> 
+<apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+</head>
+ <c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
+<style>
+
+.img{
+    position: absolute;
+    left: 27%;
+    top: -12px;
+  }
+
+.resendLink {
+    text-align: center;
+    padding-bottom: 25px;
+    font-size: 0.9em;
+    color: #1f8acb;
+    
+}
+.otp_verfy{
+    margin-top: -15px!important;
+}
+.otp_codcheckbox h4.h4{ margin-left:-14px;}
+
+.plcholder_61:before {
+  top: 13px;
+  left: 31px;
+  font-weight: normal!important;
+  font-size: 1em;
+  color: #999;
+  font-family: 'open_sanslight';
+}
+
+@media(max-width : 800px;){
+    .ask_ques_cstm {
+        display: none;
+    }
+    .april_footer, .footer{
+         display: none;
+    }
+    .cstm_smal_text{padding-bottom:0px;}
+    .april_foter_font_small p{display:block;}
+    .april_foter_left{display:none;}
+    .fot_apr_link{display:none;}
+    
+ }
+ 
+    .premSelect label{
+        display:none;
+    }
+@media (max-width:800px){
+    .modal-backdrop
+    {
+        z-index:100;
+    }
+    body{
+        overflow-y:hidden!important;
+    }
+    .premSelect label{
+        display:block;
+    }
+    .premSelect select {
+        -webkit-border-radius:5px;
+        -moz-border-radius:5px;
+        border-radius:5px;
+        border:none;
+        outline:none;
+        display:block;
+        -webkit-appearance:none;
+        -moz-appearance:none;
+        appearance:none;
+        cursor:pointer;
+        font-family: 'open_sanslight';
+        font-size:1em;
+        color:#fff;
+        text-transform:capitalize;
+        padding-bottom:10px;
+        padding:15px 0px 16px 40%;
+        background-color:#2a8ecc;
+        text-align:center;
+    }
+    .premSelect label {position:relative; width:100%; text-align:center;  height:55px;}
+    .premSelect label:after {
+        content:'';
+        background-image:url("{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/sprite_client.png')}");
+        background-repeat:no-repeat;
+        width:19px;
+        height:12px;
+        background-position:-339px -70px;
+        display:block; 
+        color:#aaa;
+        position:absolute;
+        right:15px;
+        top:15px;
+    }
+ }
+</style>
+<body>
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-N5NLKF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-N5NLKF');</script>
+<!-- End Google Tag Manager -->
+<main class="container-fluid">
+<header class="row">
+ <div class="header">
+ <c:WLHeader ></c:WLHeader>
+</div>  
+</header><!--row fluid close-->
+<div class="clearfix"></div>
+<apex:outputPanel id="pnlId">
+<div class="row pree_login">
+    <!--Popup start here-->
+   <apex:outputpanel id="regMainPnlId" rendered="{!showformVar}">
+    <div class="modal in" id="regPopId" style="display: block;overflow-y:auto;overflow-x: hidden;" aria-hidden="false">
+        <div class="modal-dialog">
+          <div class="modal-content popup_modalcontent cstm_pop_cont">
+           <apex:outputPanel id="mob_email_verify"> 
+           <apex:outputPanel rendered="{!mob_email_verify}">
+            <div class="modal-header cstm_modal_header">
+              <h4 class="modal-title text-center"><apex:outputtext value="{!objRegHeaderCMS.acfHeading__c}" escape="false"/></h4>
+              <h5 class="h5"> <apex:outputtext value="{!objRegHeaderCMS.acfDescription__c}" escape="false"/> </h5>
+            </div>
+            <div class="modal-body">
+              <apex:form styleclass="form-horizontal">
+                  
+                  <apex:pageMessages ></apex:pageMessages>                        
+                  <apex:actionFunction name="VerifyMail" action="{!VerifyEmail}" rerender="pnlEmailVerify,txtEmail" status="Loadstatus"/><!-- pnlEmailVerify -->
+                  <apex:actionFunction name="SendSms" action="{!SendSmsAfterRegistration}" rerender="mob_verify,mob_email_verify" status="RegLoadstatus"/>  
+                    
+                      <apex:outputPanel id="pnlEmailVerify">
+                         <apex:actionstatus id="Loadstatus" starttext="verifying">
+                        <apex:facet name="start">
+                            <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute;right: 50px; top: 34px;"/>                      
+                        </apex:facet>
+                       </apex:actionStatus>
+                        <apex:outputPanel rendered="{!if(strmsg != null && strmsg != '' && strmsg !='acfMailIdAlreadyRegister', true,false)}" style="color:red;margin-bottom:20px;text-align:center;"><p>{!$Label[strmsg]}</p></apex:outputPanel>
+                        <apex:outputPanel rendered="{!if(strmsg == 'acfMailIdAlreadyRegister',true,false)}" style="color:red;margin-bottom:20px;text-align:center;"><p>{!$Label[strmsg]} Please<apex:commandLink value="Click here" action="{!RedirectToLandingPage}" style="color:#337ab7;"/> to Login<br/> or reset your password </p></apex:outputPanel>  <!-- (OR) Enter another email ID for registration   -->          
+                        <div class="form-group cstm_form_grp" style="position:relative;">
+                            <div class="col-md-8 col-md-offset-2">
+                                <apex:inputText id="txtEmail" value="{!username}" styleClass="form-control cstm_input" onBlur="if (this.placeholder == '') {this.placeholder = 'Enter your E-Mail';} VerifyMail();" onFocus="if (this.placeholder == 'Enter your E-Mail') {this.placeholder = '';}" html-placeholder="Enter your E-Mail"/>
+                                <span style="{!IF(isEmailVeriried,'display:block;','display:none;')}">&nbsp;</span>  
+                                <p>{!objRegHeaderCMS.acfShort_Description__c}</p>
+                              </div> 
+                        </div>
+                         </apex:outputPanel>
+                        <div class="form-group cstm_form_grp">
+                          <div class="col-md-8 col-md-offset-2 plcholder_61 clsOnlynumeric">                      
+                          <apex:inputText id="inptMobId" value="{!mobile}" styleClass="form-control cstm_input" onFocus="if (this.placeholder == 'Mobile Number' && this.value == ' Mobile Number') {this.placeholder = '';this.value= '';}else{this.placeholder = '';}" onBlur="if (this.placeholder == '') {this.placeholder = 'Mobile Number';}" html-placeholder="Mobile Number"></apex:inputText>    
+                            <p>{!objRegHeaderCMS.acfHeading_Caption__c}</p>
+                          </div>
+                        </div>
+                       <script>
+                            $('.clsOnlynumeric').keypress(function(e) {
+                                var keyCode;
+                                if (window.event) // IE
+                                {
+                                    keyCode = e.keyCode;
+                                }
+                                else if (e.which) // Netscape/Firefox/Opera
+                                {
+                                    keyCode = e.which;
+                                }
+                                //alert(keyCode == undefined);
+                               // alert($(this).val());            
+                                return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8));
+                            });
+                      </script>
+                      <div class="form-group">        
+                          <div class="col-md-12">
+                            <apex:commandButton action="{!Registration}" styleClass="btn btn-default center-block cstm_btn_input cstm_btn_w180 gtm-account" value="Create Account" status="RegLoadstatus" reRender="mob_verify,mob_email_verify" onComplete="SendSms();"/> 
+                            <apex:actionstatus id="RegLoadstatus" starttext="verifying...">
+                                <apex:facet name="start">
+                                    Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                                </apex:facet>
+                            </apex:actionStatus>    
+                          </div>
+                     </div>
+                       
+               </apex:form>
+            </div>
+            </apex:outputPanel>
+            </apex:outputPanel>
+            
+             <!-- ============ /for email and mobile ================ -->
+            
+            <!-- ============ for otp ================ -->
+            <apex:outputPanel id="mob_verify">
+            <apex:outputPanel rendered="{!mob_verify}">
+              <div class="modal-header cstm_modal_header">
+                 <h4 class="modal-title text-center"><apex:outputtext value="{!objRegHeaderCMS.acfHeading__c}" escape="false"/></h4>
+                 <h5 class="otp_subheading"><apex:outputtext value="{!objRegHeaderCMS.acfShort_Description__c}" escape="false"/></h5>
+              </div>               
+              <div class="modal-body">
+                 <apex:form styleclass="form-horizontal" id="otpFrmId">
+                      <p class="resendLink">Didnt receive your code?<apex:commandLink action="{!showResendOTPfrm}" reRender="pnlId" status="ResendLinkLoadstatus"><span class="upd-bold">Click Here</span></apex:commandLink> to request a new one</p>
+                        <apex:actionstatus id="ResendLinkLoadstatus" starttext="verifying...">
+                                    <apex:facet name="start">
+                                        Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                                    </apex:facet>
+                                </apex:actionStatus>
+                        <div class="form-group cstm_form_grp">
+                          <div class="col-md-8 col-md-offset-2">
+                          <apex:outputPanel rendered="{!if(strmsg != null && strmsg != '', true,false)}"><p style="color:red;padding-top:0px;font-size:1.1em;">{!$Label[strmsg]}</p></apex:outputPanel>
+                             <apex:inputText value="{!mobile_otp}" styleClass="form-control cstm_input" onBlur="if (this.placeholder == '') {this.placeholder = '{!objRegHeaderCMS.acfHeading_Caption__c}';}" onFocus="if (this.placeholder == '{!objRegHeaderCMS.acfHeading_Caption__c}') {this.placeholder = '';}" html-placeholder="{!objRegHeaderCMS.acfHeading_Caption__c}"/>                     
+                          </div>
+                        </div>
+                       <p class="creat-acount otp_verfy">Please enter your verification code</p>
+                       <div class="otp_codcheckbox">
+                           <div class="col-md-1 col-xs-1 col-md-offset-2 otp_check">
+                           <div class="row">
+                             <apex:inputcheckbox value="{!istermsConditionsConfirmed}" styleclass="css-otp" id="check1"/>
+                             <label for="prelimPageId:otpFrmId:check1" class="css-label">&nbsp;</label>
+                           </div>
+                           </div>
+                           <div class="col-md-7 col-xs-10">
+                               <div class="row">
+                                   <hgroup>
+                                       <h4 class="h4"><apex:outputtext value="{!objRegHeaderCMS.acfDescription__c}" escape="false"/></h4>
+                                   </hgroup>
+                               </div>
+                           </div>  
+                           </div>
+                           <div class="clearfix"></div>
+                          <div class="form-group"> 
+                              <div class="col-md-12">       
+                              <apex:commandButton action="{!verifyOTP}" styleClass="btn btn-default center-block cstm_btn_input cstm_btn_w180" value="Verify Details" status="OTPfrmLoadstatus"/>  
+                                 <apex:actionstatus id="OTPfrmLoadstatus" starttext="verifying...">
+                                    <apex:facet name="start">
+                                        Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                                    </apex:facet>
+                                </apex:actionStatus>
+                              </div>
+                          </div> 
+                          
+                         <div class="col-md-8 col-md-offset-2">
+                           <p class="creat-acount row">Don’t worry, it’s free and your details are safe with us</p>
+                          </div>
+                  </apex:form>
+               </div> 
+            </apex:outputPanel>
+            </apex:outputPanel>
+            
+             <!-- ============ for enter resend otp ============  -->  
+           <apex:outputPanel id="resendOtp">
+            <apex:outputPanel rendered="{!showResendfrm}">
+              <div class="modal-header cstm_modal_header">
+                 <h4 class="modal-title text-center"><apex:outputtext value="{!objRegHeaderCMS.acfHeading__c}" escape="false"/></h4>
+                 <h5 class="otp_subheading"><apex:outputtext value="{!objRegHeaderCMS.acfShort_Description__c}" escape="false"/></h5>
+              </div>               
+              <div class="modal-body">
+                 <apex:form styleclass="form-horizontal">
+                     <apex:outputPanel rendered="{!if(strmsg != null && strmsg != '', true,false)}" style="color:red;margin-bottom:20px;text-align:center;"><p>{!$Label[strmsg]}</p></apex:outputPanel>   
+                        <div class="form-group cstm_form_grp">
+                          <div class="col-md-8 col-md-offset-2 plcholder_61 clsOnlynumeric ">
+                             <apex:inputText value="{!mobile_num}" styleClass="form-control cstm_input" onBlur="if (this.placeholder == '') {this.placeholder = '{!objRegHeaderCMS.acfHeading_Caption__c}';}" onFocus="if (this.placeholder == '{!objRegHeaderCMS.acfHeading_Caption__c}') {this.placeholder = '';}" html-placeholder="{!objRegHeaderCMS.acfHeading_Caption__c}"/>
+                          </div>
+                        </div>
+                      
+                          <div class="form-group">        
+                              <div class="col-md-offset-3 col-md-5 col-xs-12 col-xs-offset-0">
+                               <div class="col-md-offset-2">
+                               <apex:commandLink action="{!resendOTP}" styleClass="btn btn-default center-block cstm_btn_input" reRender="fidmsg,resendOtp,show_msg" value="Resend Code" status="resendfrmLoadstatus"/>
+                                <apex:actionstatus id="resendfrmLoadstatus" starttext="verifying...">
+                                    <apex:facet name="start">
+                                        Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                                    </apex:facet>
+                                </apex:actionStatus>
+                                </div>
+                              </div>
+                          </div> 
+                           <script>
+                            $('.clsOnlynumeric').keypress(function(e) {
+                                var keyCode;
+                                if (window.event) // IE
+                                {
+                                    keyCode = e.keyCode;
+                                }
+                                else if (e.which) // Netscape/Firefox/Opera
+                                {
+                                    keyCode = e.which;
+                                }
+                                //alert(keyCode == undefined);
+                               // alert($(this).val());            
+                                return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8));
+                            });
+                            
+                        </script>
+                         <div class="col-md-8 col-md-offset-2">
+                           <p class="creat-acount row">Don’t worry, it’s free and your details are safe with us</p>
+                          </div>
+                  </apex:form>
+               </div> 
+            </apex:outputPanel>
+            </apex:outputPanel>
+                 
+            <!-- ============ for show msg ================ -->
+            <apex:outputPanel id="show_msg">
+            <apex:outputPanel rendered="{!showMsgPopup}">
+            <div class="modal-header cstm_modal_header">
+                 <h4 class="modal-title text-center"><apex:outputtext value="{!objRegHeaderCMS.acfHeading__c}" escape="false"/></h4>
+                 <h5 class="otp_subheading"><apex:outputtext value="{!objRegHeaderCMS.acfShort_Description__c}" escape="false"/></h5>
+              </div> 
+            <div class="modal-body">
+                 <apex:form styleclass="form-horizontal">  
+                    <div class="hr-color">&nbsp;</div>
+                    <div style="position:relative;text-align:center;margin-left:0%;padding-bottom: 30px;">
+                        <h1 class="resent_otp_text">   We have sent you an OTP on <span>{!mobile_num}</span> </h1>
+                    </div>
+            
+                  <div class="form-group">        
+                      <div class="col-md-12">
+                        <apex:commandLink action="{!OK}" reRender="mob_verify,show_msg" styleClass="btn btn-default center-block cstm_btn_input" value="OK" status="resendOTPstatus"/>   
+                        <apex:actionstatus id="resendOTPstatus" starttext="verifying...">
+                            <apex:facet name="start">
+                                Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                            </apex:facet>
+                        </apex:actionStatus>
+                      </div>
+                  </div>
+                </apex:form>
+               </div> 
+            </apex:outputPanel>
+            </apex:outputPanel>
+            <!-- ============ /for show msg ================ -->
+          </div>
+        </div>
+    </div>
+    <div class="modal-backdrop  in"></div>
+    </apex:outputpanel>
+<!--Pop up close here-->
+
+    <div class="container">
+        <h2 class="preelog_heading text-center"><apex:outputtext value="{!objRegHeaderCMS.acfHeading__c}" escape="false"/></h2>
+         <apex:form id="frmPreLimQuote">      
+          <div class="premSelect">
+                <label>
+               
+                        <apex:selectList value="{!selectedProductId}" styleClass="col-md-12 col-xs-12"  onchange="hello('{!selectedProductId}');" id="prodselect" size="1">
+                           <apex:selectOptions value="{!ProductIdsList}"></apex:selectOptions> 
+                        </apex:selectList>
+                        
+                      <!--  <select class="col-md-12 col-xs-12">
+                            <apex:repeat value="{!lstWrapperProduct}" var="pvar">
+                               <option onchange="ChangeProductmob('{!pvar.ProdLVRID}');">{!pvar.strRateType}</option>
+                            </apex:repeat>
+                        </select> -->
+                </label>
+        </div>
+            
+        <article class="col-md-9 col-md-offset-2 col-xs-12 col-xs-offset-0">
+          <div class="row">
+          
+             <style>
+                .displaynone{
+                    display:none;
+                }
+             </style>
+        <script>
+                      
+            function hello(){
+               var productid = document.getElementById("prelimPageId:frmPreLimQuote:prodselect").value;
+               document.getElementById("prelimPageId:frmPreLimQuote:selectedProdId").value = productid;           
+                $('.lvrprodTab').removeClass('active');
+                $('#'+productid+'tab').addClass('active');
+                $('.lvrprod').addClass('displaynone');
+                $('#'+productid).removeClass('displaynone');
+                
+                return false;
+                
+            }
+            
+            function ChangeProduct(productid)
+            {
+               
+                document.getElementById("prelimPageId:frmPreLimQuote:selectedProdId").value = productid;           
+                $('.lvrprodTab').removeClass('active');
+                $('#'+productid+'tab').addClass('active');
+                $('.lvrprod').addClass('displaynone');
+                $('#'+productid).removeClass('displaynone');
+                
+                return false;
+            }
+           function setTimeZoneMethod()
+           {   
+            var tz = jstz.determine();
+            $('[id$=hiddenTzoneId]').val(tz.name())
+           }
+        </script>
+        <apex:outputPanel rendered="{!if(ProductIdslist != null,false,true)}">
+          <apex:outputLabel value="Based on your loan detail we could be saving you upto $96,120 over the life of your Loan" styleClass="col-md-10 text-center cstm_smal_text"></apex:outputLabel>
+        </apex:outputPanel>  
+          <apex:inputhidden id="selectedProdId" value="{!strProductLVRId}"/>  
+          <apex:inputHidden value="{!strTimezoneId}" id="hiddenTzoneId"/>      
+          <ul class="nav nav-pills cstm_pills orange_cstm_pill">
+            <apex:repeat value="{!lstWrapperProduct}" var="pvar"> 
+            
+                <li class="{!if(pvar.ProdLVRID== strProductLVRId, 'active','')} col-md-2 col-xs-12 lvrprodTab" id="{!pvar.ProdLVRID}tab">
+                    <a onclick="ChangeProduct('{!pvar.ProdLVRID}');">{!pvar.strRateType}</a>
+                </li>
+            </apex:repeat>
+          </ul>
+          
+          <apex:repeat value="{!lstWrapperProduct}" var="pvar">
+          <div class="row pre_cstm_sec lvrprod {!if(pvar.ProdLVRID == strProductLVRId, '','displaynone')}" id="{!pvar.ProdLVRID}">
+             
+            <div class="row">
+                <div class="col-sm-10 img-port_mod">  <img src="{!pvar.strBnkImgURL}" class="img-responsive center-block" alt="Bank Logo" height="80" width="150" border="0"/></div>
+            </div>
+           
+            <hgroup class="col-md-3 col-xs-3 col-sm-3 pree_hdng pree_hdng_orange">
+                <div class="row">
+                    <h5 style="font-weight:bold;">{!pvar.decComparisionRate}%</h5>
+                    <h6 >Comparison Rate</h6>
+                </div>
+            </hgroup>
+            
+            <hgroup class="col-md-4 col-xs-6 col-sm-6 pree_hdng_large pree_hdng_orange">
+               
+                <div class="row">
+                
+                    <h5>{!pvar.decRate}%</h5>
+                    <h6>{!pvar.strProdName}</h6>
+                </div>
+            </hgroup>
+            
+            <hgroup class="col-md-3 col-xs-3 col-sm-3 pree_hdng pree_hdng_orange" style="border-right-color:white;">
+                <div class="row">
+                    <h5 style="font-weight:bold;">${!pvar.decMonthlyPayment}</h5>
+                    <h6 >Monthly Repayment</h6>
+                </div>
+            </hgroup>  
+            <apex:outputPanel rendered="{!if(pvar.EstimatedMonthlySaving != 0,true,false)}">
+            
+               <div class="col-md-10 col-xs-12 col-sm-12 pree_log_cption pree_log_cption_orange">
+                    <p>Based on your loan details we could be saving you up to 
+                    <span>$<apex:outputText value="{0, number, ###,##0}">
+                        <apex:param value="{!pvar.EstimatedMonthlySaving}"/>
+                    </apex:outputText></span>
+                   <!--  <span>${!pvar.EstimatedMonthlySaving}</span> --> over the life of your loan</p>
+                </div> 
+           </apex:outputPanel>       
+          </div>
+            </apex:repeat>
+           
+            <div class="col-md-4 col-md-offset-3">
+                <apex:commandButton action="{!Login}" styleClass="btn btn-default btn_cstm btn_w100" value="Continue" style="margin-right:0px; background-color:#f98b02!important;" status="loginstatus" onclick="setTimeZoneMethod();"/>          
+               <apex:actionstatus id="loginstatus" starttext="verifying...">
+                    <apex:facet name="start">
+                        Verifying...<apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                    </apex:facet>
+                </apex:actionStatus>             
+            </div>
+         
+            <p class="col-md-10 text-center cstm_smal_text">Tell us more about your situation and lets see if we can get you a better deal</p>          
+            <!--<c:ClickPostQuestion ></c:ClickPostQuestion>
+            <p class="col-md-10 text-center ask_ques_cstm">Not ready to proceed but have some questions you would like to discuss<a href="#myModal9" data-toggle="modal" class="col-md-10 text-center ask_ques_cstm" id="usrfeed" onclick="PopupReset();">Ask A Question</a></p>   -->       
+         </div>
+        </article>
+       </apex:form>
+    </div><!--container close-->
+
+</div><!--row fluid close-->
+</apex:outputPanel>
+<footer class="footer april_footer row">
+  <c:WLFooter ></c:WLFooter>
+<p class="feed">Disclaimer</p>
+<p class="feed Back">Back</p>
+</footer><!--footer close--><!--footer close-->
+
+</main><!--main div close-->
+
+</body>
+</apex:page>

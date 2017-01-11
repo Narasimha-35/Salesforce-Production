@@ -1,0 +1,34 @@
+<!-- <apex:page standardController="WorkflowSMSConfig__c" extensions="WorkflowSMSConfigExtension">
+<apex:form id="formId">
+<apex:pageMessages />
+<apex:pageBlock id="workflowSMSConfigBlock" title="Worlflow SMS Configuration">
+    <table>
+        <tr>
+            <td class="labelCol" style="width:120px;">
+                Workflow Configuration Name
+            </td>
+            <td>
+                <apex:outputPanel id="requiredNameId" styleClass="requiredInput" layout="block">
+                <apex:outputPanel styleClass="requiredBlock" layout="block"/>   
+                <apex:inputField id="workflowSMSConfigName" value="{!workflowConfigObject.Name}" />
+                </apex:outputPanel>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelCol" style="width:120px;">
+                isFromTask
+            </td>
+            <td>
+                <apex:inputField id="workflowSMSConfigFromTask" value="{!workflowConfigObject.isFromTask__c}" label=""/>
+            </td>
+        </tr>
+    </table>
+    <apex:pageBlockButtons location="bottom" >
+        <apex:commandButton action="{!save}" value="Save" title="Save"/>
+        <apex:commandButton action="{!cancel}" value="Cancel" title="Cancel"/>
+    </apex:pageBlockButtons>
+</apex:pageBlock>
+</apex:form>
+-->
+<apex:page >
+</apex:page>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rollup Helper - Real-Time</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <description>Enables Rollup Helper to run in real-time.</description>
+    <namespacePrefix>rhx</namespacePrefix>
+    <types>
+        <members>AggregateFunctionHelper</members>
+        <members>AggregateFunctionHelper_TEST</members>
+        <members>DescribeHelper</members>
+        <members>DescribeHelper_TEST</members>
+        <members>RHX_AccountPartner_Controller</members>
+        <members>RHX_AccountPartner_Controller_TEST</members>
+        <members>RHX_Account_Action_Controller</members>
+        <members>RHX_Account_Action_Controller_TEST</members>
+        <members>RHX_AggregateFunction</members>
+        <members>RHX_Describe_Helper1</members>
+        <members>RHX_License_Handler</members>
+        <members>RHX_Package_Handler</members>
+        <members>RHX_Package_Handler_TEST</members>
+        <members>RHX_Rollup_Runner_Controller</members>
+        <members>RHX_Rollup_Runner_Controller_TEST</members>
+        <members>RHX_Test_Utility</members>
+        <members>RHX_Trigger_Handler</members>
+        <members>RHX_Trigger_TEST</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>RHX_Rollup_Runner</members>
+        <name>ApexComponent</name>
+    </types>
+    <types>
+        <members>RHX_AccountPartner</members>
+        <members>RHX_Account_Action</members>
+        <members>RHX_Case_Action</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>RHX_Attachment</members>
+        <members>RHX_Case</members>
+        <members>RHX_CaseComment</members>
+        <members>RHX_Event</members>
+        <name>ApexTrigger</name>
+    </types>
+    <version>30.0</version>
+</Package>

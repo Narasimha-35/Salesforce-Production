@@ -1,0 +1,8 @@
+<apex:page standardController="Lead">
+
+  <c:ZendeskList for="lead" email="{!record.email}" />
+
+  <!-- Workaround to have the email field part of the SOQL -->
+  <apex:outputText value="{!Lead.email}" rendered="false"/>
+
+</apex:page>

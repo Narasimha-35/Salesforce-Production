@@ -1,0 +1,3 @@
+<apex:page controller="WLViewPdf" showHeader="false" standardStylesheets="false">
+<apex:iframe src="{!URLFOR($Action.Document.Download, strDocumentId)}"/>
+</apex:page>

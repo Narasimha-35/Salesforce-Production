@@ -1,0 +1,39 @@
+<apex:page sidebar="false" showHeader="false" standardController="MC4SF__MC_Campaign__c" extensions="MC4SF.CampaignContentSelectorController" action="{!initPage}">
+
+<apex:outputText value="{!templatesInfoResponse.source}" escape="false"/>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>
+var template = {!templateInfoResponseJson};
+
+$(function() {
+	for (var i in template.sections) {
+		var decodedContent = jQuery('<div/>').html(template.default_content[template.sections[i]]).text();
+		$('[mc\\:edit="' + template.sections[i] + '"]').html(decodedContent);
+	}
+
+	var currentSection;
+
+	var $div = $('<div>')
+	    .css({ 'border': '2px solid gray', 'position': 'absolute', 'z-index': '65535' })
+	    .appendTo('body')
+	    .mouseout(function() {
+	    	$div.hide();
+	    })
+	    .click(function() {
+	    	parent.changeSection(currentSection);
+	    })
+	    ;
+
+	$('[mc\\:edit]').mouseover(function() {
+		currentSection = $(this).attr('mc:edit');
+		$div.offset($(this).offset()).width($(this).outerWidth() - 4).height($(this).outerHeight() - 4).show();
+	});
+});
+
+function updateContent(section, html) {
+	$('[mc\\:edit="' + section + '"]').html(html);
+}
+</script>
+
+</apex:page>

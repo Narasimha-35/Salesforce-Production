@@ -1,0 +1,5 @@
+<apex:page standardController="Account">
+
+	<c:RHX_Rollup_Runner scope="Partner, AccountTeamMember"/>
+	
+</apex:page>

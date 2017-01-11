@@ -1,0 +1,250 @@
+<apex:page standardcontroller="vhc__Campaign__c" extensions="vhc.Ctrl06CallFile" action="{!init}">
+  		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css" type="text/css" />
+  		<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.WS_Ressource, 'CSS/progress.css')}" /> 
+  		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>  
+  		
+<apex:sectionHeader title="{!$ObjectType.vhc__Campaign__c.label}" subtitle="{!$Label.Call_File_Synchronisation}" />
+<apex:pageMessages />
+
+	<br/>&nbsp; 
+	<apex:form id="myForm">
+        &laquo; <apex:commandLink action="{!returnBack}" >{!$Label.Back}</apex:commandLink>
+    </apex:form>
+    <br/><br/>
+    
+   <style>
+   	.ui-progressbar {
+		height: 1em;
+		width: 22%;
+	}
+	.ui-widget-header{
+		background: url(/img/alohaSkin/btn_sprite.png);
+		background-position-y: -183px;
+	}
+
+	a{
+		color: #015BA7;
+		text-decoration: none;
+	}
+   </style> 
+   <script>
+   		var campaignId="{!JsEncode(campaign.id)}";
+   		var outgoingCampaignId="{!JSENCODE(campaign.Outgoing_Campaign__r.Oid__c)}";
+   		var sync={};
+   		sync.create={};
+   		sync.create.size={!totalToCreate};
+   		sync.create.index=1;
+   		sync.create.tasks={};
+   		sync.create.timer=100000;
+   		sync.create.syncNext=function (res){
+   			syncNext('create');
+   		};
+		sync.create.syncNextCallback = function (res){
+   			syncNextCallback(res,'create');
+   		};
+   		sync.create.checkTask = function (res){
+   			checkTask(res,'create');
+   		};
+   		sync.create.checkTaskCallBack = function (res){
+   			checkTaskCallBack(res,'create');
+   		};
+   		
+   		sync.update={};
+   		sync.update.size={!totalToupdate};
+   		sync.update.index=1;
+   		sync.update.tasks={};
+   		sync.update.timer=100000;
+   		sync.update.syncNext=function (res){
+   			syncNext('update');
+   		};
+		sync.update.syncNextCallback = function (res){
+   			syncNextCallback(res,'update');
+   		};
+   		sync.update.checkTask = function (res){
+   			checkTask(res,'update');
+   		};
+  		sync.update.checkTaskCallBack = function (res){
+   			checkTaskCallBack(res,'update');
+   		};
+   		
+   		
+   		sync.delete2={};
+   		
+   		sync.delete2.size={!totalTodelete};
+   		sync.delete2.index=1;
+   		sync.delete2.tasks={};
+   		
+   		sync.delete2.timer=100000;
+   		
+   		sync.delete2.syncNext=function (res){
+   			syncNext('delete2');
+   		};
+		sync.delete2.syncNextCallback = function (res){
+   			syncNextCallback(res,'delete2');
+   		};
+   		sync.delete2.checkTask = function (res){
+   			checkTask(res,'delete2');
+   		};
+   		sync.delete2.checkTaskCallBack = function (res){
+   			checkTaskCallBack(res,'delete2');
+   		};
+   		
+   		   	
+   		log("create: Size: "+sync.create.size);
+   		log("update: Size: "+sync.update.size);
+   		log("delete: Size: "+sync.delete2.size);
+   		
+   		function syncNext(op){
+   			//log(sync[op].index);   		
+   			if(sync[op].size>=sync[op].index){
+   				if(sync[op].index==1)initProgressbar(op);
+   				$("#status_"+op).html("Sync "+op.replace("2",'')+" stage:"+sync[op].index+" of "+sync[op].size+". ");
+   				
+   				
+   				log(" ** Create Task " + sync[op].index);
+   				
+   				sync[op].timer=100000;
+   				
+   				vhc.Ctrl06CallFile.createTask(op,outgoingCampaignId,campaignId,sync[op].syncNextCallback,log);
+   			}
+   			else{
+   				$("#status_"+op).html("{!JsEncode($label.Sync_finished)}");
+   				setProgressbar(op,100,100);	
+   			}
+   		}
+   		  		
+   		function syncNextCallback(res,op){
+   			//log(sync[op].index + " task: "+res);
+   			setProgressbar(op,sync[op].index/*-0.5*/,sync[op].size);
+   			sync[op].tasks[res]=sync[op].index;
+   			sync[op].index++;
+
+   			if(res==null){ 
+   				$("#err_"+op).append("<div>error sync stage: "+(sync[op].index-1)+", can't get task number from server.</div>");
+   				if(typeof(console) !== 'undefined' && console != null)
+   					console.log(" server response task id = null at : "+new Date());
+   				sync[op].syncNext();
+   			}
+   			else {
+   			/*	sync[op].checkTask(res);*/
+   			   	var ok = $("#recCounter_"+op);
+   				ok.html(res + parseInt(ok.html()));
+   				sync[op].syncNext();
+   			}
+   		}
+   		
+   		function log(res){
+   			if(typeof(console) !== 'undefined' && console != null)
+   				console.log(res);
+   		}
+   		function checkTask(task,op){
+   			vhc.Ctrl06CallFile.checkTaskProgression(task,campaignId,sync[op].checkTaskCallBack,log)
+   		} 
+   	
+   		function checkTaskCallBack(res,op) {
+   			res= JSON.parse($("<div/>").html(res).text());
+   		 	var task=res[1];
+   			res= res[0];	
+   			log(" ** Task: "+task+" has been checked Position: " + res.Position+" Total: " +res.Total +" LastError:"+res.LastError);
+   			
+   			if(res.Position==res.Total && res.Position!=-1){
+   				var ok = $("#recCounter_"+op);
+   				ok.html(res.Total + parseInt(ok.html()));
+   				setProgressbar(op,sync[op].index,sync[op].size);
+   				sync[op].syncNext();
+   				
+   				// TODO reset timer could be cleaner in this case to initial value
+   				
+   			} else {
+   			
+	   			//TODO test F-0080. if fixed - remove following "if"
+	   			//	if(sync[op].timer>=100000){
+	   			//		//$("#err_"+op).append("<div id='task"+sync[op].tasks[task]+"'>error sync stage (task approval): "+sync[op].tasks[task]+", sync error timeout.</div>");
+	   			//		setProgressbar(op,sync[op].index,sync[op].size);
+	   			//		sync[op].syncNext();
+	   			//		return;
+	   			//	}
+   			
+   				sync[op].timer *= 1.2;	
+   				
+   				log(" **************************************************************************");
+   				log(" **** Task: " + task + " will be checked again in " + sync[op].timer + " ms");
+   				log(" **************************************************************************");
+   				
+   				//$("#err_"+op).append("<div id='task"+sync[op].tasks[task]+"'>error sync stage (task approval): "+sync[op].tasks[task]+", not total sync. Try again on "+sync[op].timer+" millisecond.</div>");
+   				setTimeout(sync[op].checkTask(task),sync[op].timer);
+   			}
+   		}
+   		$(document).ready(function(){
+   			//sync(1);
+   		});
+   		
+   		
+   		// Init progress bar
+   		
+   		function initProgressbar(op){
+   			$( "#progressbar_"+op ).progressbar({value: 0});  		
+   			
+   			// Set progress bar color
+   			
+   			var progressbar = $( "#progressbar_" + op );
+        	var progressbarValue = progressbar.find( ".ui-progressbar-value" );
+			progressbarValue.css({
+         		"background": '#4E718F' 
+        	});
+   						
+   		}
+   		
+   		// Manage progress bar position
+   		
+   		function setProgressbar(op,index,size){
+   			var pc = parseInt(100 - ( (index/size) * 100)); 		
+	       	$("#progressbar_"+op).progressbar( "option", "value", 100-pc );		 					
+   		}
+   		 
+   </script>
+
+ 	<apex:pageBlock title="{!$Label.Call_File_Information}" mode="view">
+        <apex:pageBlockSection title="{!$Label.Informations}" columns="2">
+            <apex:outputField value="{!vhc__Campaign__c.name}"/>
+            <apex:outputField value="{!vhc__Campaign__c.vhc__Outgoing_Campaign__c}"/>
+            <apex:outputField value="{!vhc__Campaign__c.vhc__Total_Contacts__c}"/>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+
+  <div class="box">
+  <h6>{!$label.Create} </h6>
+  <div class="sync_box">
+	   <button class="create" onclick="syncNext('create');">sync create</button> <br/>
+	   <div class="bar" id="progressbar_create"></div>
+	   <div id="status_create"></div>
+	   <div class="val_rslt">Total created: <span class="counter" id="recCounter_create" title="this number may be less than the target at the end of the synchronization. This is due to the fact members without phones won't be synchronized.">0</span > of {!totalRecordsToCreate}.</div>
+	   <div id="err_create" ></div>
+  </div>
+  </div>
+
+  <div class="box">
+  <h6>{!$label.Update}</h6>
+  <div class="sync_box">
+	   <button class="update" onclick="syncNext('update');">sync update</button> <br/>
+	   <div class="bar" id="progressbar_update"></div>
+  	 <div id="status_update"></div>
+	   <div class="val_rslt">Total updated: <span class="counter" id="recCounter_update">0</span > of {!totalRecordsToupdate}.</div>
+	   <div id="err_update" ></div>
+  </div>
+  </div>
+  
+
+ <div class="box">
+ <h6>{!$label.Delete}</h6>
+  <div class="sync_box">
+	   <button class="delete" onclick="syncNext('delete2');">sync delete</button> <br/>
+	   <div class="bar" id="progressbar_delete2"></div>
+	   <div id="status_delete2"></div>
+	   <div class="val_rslt">Total deleted: <span class="counter" id="recCounter_delete2">0</span > of {!totalRecordsTodelete}.</div>
+	   <div id="err_delete2" ></div>
+  </div>
+  </div>
+  
+</apex:page>

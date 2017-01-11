@@ -1,0 +1,350 @@
+<apex:page sidebar="false" standardController="MC4SF__MC_Campaign__c" extensions="MC4SF.CampaignRecipientsController">
+
+<apex:stylesheet value="{!URLFOR($Resource.MC4SF__Assets, '/css/wizard.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.MC4SF__Assets, 'css/introjs.min.css')}"/>
+<style>
+.introjs-tooltip {
+	max-width: 425px;
+	width: 425px;
+}
+
+.introjs-tooltipbuttons {
+	text-align: center;
+}
+</style>
+
+<apex:sectionHeader title="MailChimp Campaign" subtitle="New MailChimp Campaign"/>
+
+<apex:pageMessages />
+
+<apex:form id="form">
+<apex:inputHidden id="mcOption" value="{!mcOption}"/>
+<apex:actionfunction name="setup" action="{!setup}"/>
+<apex:actionfunction name="content" action="{!content}"/>
+<apex:actionfunction name="plainText" action="{!plainText}"/>
+<apex:actionfunction name="confirm" action="{!confirm}"/>
+
+<apex:pageBlock title="Step 1: Select Recipients">
+	Select the list to populate with this query's results. You may also select segments and campaign members* for your selected list.<br/><br/>
+
+	<div style="padding: 10px 0; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
+		<apex:selectList styleClass="introStep1" value="{!mcCampaign.MC4SF__MC_List__c}" size="1">
+			<apex:selectOption itemValue="" itemLabel="--Select List--"/>
+			<apex:selectOptions value="{!mcListOptions}"/>
+			<apex:actionSupport event="onchange" action="{!changeList}" rerender="form"/>
+		</apex:selectList>
+	</div>
+
+	<apex:outputPanel id="step" rendered="{!mcList != null}">
+		<table width="100%">
+			<tr valign="top">
+				<td width="50%">
+					<img src="{!URLFOR($Resource.MC4SF__Assets, '/img/freddie.png')}" style="width: 32px; height: 32px; vertical-align: middle;"/>
+					<span style="font-family: Arial; font-size: 14px; font-weight: bold; color: #333;">MailChimp Options</span><br/>
+					<table>
+						<tr valign="top">
+							<td>
+								<apex:outputPanel rendered="{!mcOption == 'entireList'}">
+									<input id="mcOptionEntireList" type="radio" name="mcOption" value="entireList" checked="checked"/>
+								</apex:outputPanel>
+								<apex:outputPanel rendered="{!mcOption != 'entireList'}">
+									<input id="mcOptionEntireList" type="radio" name="mcOption" value="entireList"/>
+								</apex:outputPanel>
+							</td>
+							<td><label for="mcOptionEntireList">Send to entire list ({!mcList.Member_Count__c} recipient{!IF(mcList.Member_Count__c == 1, '', 's')})</label></td>
+						</tr>
+						<tr valign="top" style="{!IF(mcStaticSegmentOptions.size == 0, 'display: none;', '')}">
+							<td>
+								<apex:outputPanel rendered="{!mcOption == 'savedSegment'}">
+									<input id="mcOptionSavedSegment" type="radio" name="mcOption" value="savedSegment" checked="checked"/>
+								</apex:outputPanel>
+								<apex:outputPanel rendered="{!mcOption != 'savedSegment'}">
+									<input id="mcOptionSavedSegment" type="radio" name="mcOption" value="savedSegment"/>
+								</apex:outputPanel>
+							</td>
+							<td>
+								<label for="mcOptionSavedSegment">Send to a saved segment</label><br/>
+								<span id="savedSegment" style="{!IF(mcOption != 'savedSegment', 'display: none;', '')}">
+									<apex:selectList value="{!mcStaticSegmentId}" size="1">
+										<apex:selectOption itemValue="" itemLabel="--Select Saved Segment--"/>
+										<apex:selectOptions value="{!mcStaticSegmentOptions}"/>
+									</apex:selectList>
+								</span>
+							</td>
+						</tr>
+						<tr valign="top">
+							<td>
+								<apex:outputPanel rendered="{!mcOption == 'newSegment'}">
+									<input id="mcOptionNewSegment" type="radio" name="mcOption" value="newSegment" checked="checked"/>
+								</apex:outputPanel>
+								<apex:outputPanel rendered="{!mcOption != 'newSegment'}">
+									<input id="mcOptionNewSegment" type="radio" name="mcOption" value="newSegment"/>
+								</apex:outputPanel>
+							</td>
+							<td>
+								<label for="mcOptionNewSegment">Send to a new segment</label><br/>
+								<span id="newSegment" style="{!IF(mcOption != 'newSegment', 'display: none;', '')}">
+									<apex:inputText value="{!mcCampaign.MC4SF__New_Segment_Name__c}" html-placeholder="Enter Segment Name" style="width: 300px; font-family: 'Arial'; font-size: 13px; color: #999;"/><br/>
+									<apex:outputPanel rendered="{!mcCampaign.MC4SF__Campaign_Id__c != null}">
+										<input type="checkbox" name="salesforceOnly"/><span style="font-family: Arial; font-size: 13px; color: #990000;"> Send to Salesforce Campaign Members only</span><br/>
+									</apex:outputPanel>
+									<span id="newSegmentOptions">
+										<span style="font-family: Arial; font-size: 13px; font-weight: bold; color:#333;">Subscribers match</span>&nbsp;
+										<apex:selectList value="{!mcCampaign.MC4SF__New_Segment_Match__c}" size="1">
+											<apex:selectOption itemValue="any" itemLabel="any"/>
+											<apex:selectOption itemValue="all" itemLabel="all"/>
+										</apex:selectList>
+										<span style="font-family: Arial; font-size: 13px; font-weight: bold; color:#333;">of the following:</span><br/>
+										
+										<apex:variable var="index" value="{!0}"/>
+										<apex:repeat value="{!newSegmentConditions}" var="segmentCondition">
+											<div style="{!IF(index == 0, 'margin-top: 5px; border-top: 1px solid #ccc;', '')} {!IF(index + 1 == newSegmentConditions.size, 'margin-bottom: 5px;', '')} padding: 10px 0; border-bottom: 1px solid #ccc;">
+												<apex:inputHidden id="field" value="{!segmentCondition.field}"/>
+												<apex:inputHidden id="fieldType" value="{!segmentCondition.fieldType}"/>
+												<apex:inputHidden id="operator" value="{!segmentCondition.operator}"/>
+
+												<select class="fieldSelect">
+													<optgroup label="Subscriber Data">
+														<apex:repeat value="{!subscriberDataFieldOptions}" var="option">
+															<apex:outputPanel layout="none" rendered="{!option.value == segmentCondition.field}">
+																<option value="{!option.value}" type="date" selected="selected">{!option.label}</option>
+															</apex:outputPanel>
+															<apex:outputPanel layout="none" rendered="{!option.value != segmentCondition.field}">
+																<option value="{!option.value}" type="date">{!option.label}</option>
+															</apex:outputPanel>
+														</apex:repeat>
+													</optgroup>
+													
+													<optgroup label="Merge Fields">
+														<apex:repeat value="{!mcMergeVariables}" var="mcMergeVariable">
+															<apex:outputPanel layout="none" rendered="{!mcMergeVariable.MC4SF__Tag__c == segmentCondition.field}">
+																<option value="{!mcMergeVariable.Tag__c}" type="{!mcMergeVariable.Field_Type__c}" selected="selected">{!mcMergeVariable.Name}</option>
+															</apex:outputPanel>
+															<apex:outputPanel layout="none" rendered="{!mcMergeVariable.MC4SF__Tag__c != segmentCondition.field}">
+																<option value="{!mcMergeVariable.Tag__c}" type="{!mcMergeVariable.Field_Type__c}">{!mcMergeVariable.Name}</option>
+															</apex:outputPanel>
+														</apex:repeat>
+													</optgroup>
+												</select>
+												&nbsp;
+												<select class="operatorSelect">
+													<apex:outputPanel layout="none" rendered="{!segmentCondition.fieldType == 'date'}">
+														<apex:repeat value="{!dateOperatorOptions}" var="option">
+															<apex:outputPanel layout="none" rendered="{!option.value == segmentCondition.operator}">
+																<option value="{!option.value}" selected="selected">{!option.label}</option>
+															</apex:outputPanel>
+															<apex:outputPanel layout="none" rendered="{!option.value != segmentCondition.operator}">
+																<option value="{!option.value}">{!option.label}</option>
+															</apex:outputPanel>
+														</apex:repeat>
+													</apex:outputPanel>
+													<apex:outputPanel layout="none" rendered="{!segmentCondition.fieldType != 'date'}">
+														<apex:repeat value="{!textOperatorOptions}" var="option">
+															<apex:outputPanel layout="none" rendered="{!option.value == segmentCondition.operator}">
+																<option value="{!option.value}" selected="selected">{!option.label}</option>
+															</apex:outputPanel>
+															<apex:outputPanel layout="none" rendered="{!option.value != segmentCondition.operator}">
+																<option value="{!option.value}">{!option.label}</option>
+															</apex:outputPanel>
+														</apex:repeat>
+													</apex:outputPanel>
+												</select>
+												&nbsp;
+												<select class="dateTypeSelect" style="{!IF(segmentCondition.fieldType == 'date', '', 'display: none')}">
+													<option>a specific date</option>
+												</select>
+												&nbsp;
+												<apex:outputPanel id="date" style="{!IF(segmentCondition.fieldType == 'date', '', 'display: none')}">
+													<apex:inputField value="{!segmentCondition.task.ActivityDate}"/>
+												</apex:outputPanel>
+												<apex:inputText id="value" value="{!segmentCondition.value}" style="{!IF(segmentCondition.fieldType != 'date', '', 'display: none')}"/>
+												&nbsp;&nbsp;
+												<apex:commandLink action="{!removeCondition}" value="Remove Condition" rerender="step" rendered="{!newSegmentConditions.size > 1}">
+													<apex:param name="conditionIndex" assignTo="{!conditionIndex}" value="{!index}"/>
+												</apex:commandLink>
+											</div>
+											
+											<apex:variable var="index" value="{!index + 1}"/>
+										</apex:repeat>
+										<apex:commandLink action="{!addCondition}" value="Add Condition" rerender="step" rendered="{!newSegmentConditions.size < 5}"/>
+									</span>
+								</span>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td width="50%">
+					<apex:outputPanel rendered="{!mcCampaign.MC4SF__Campaign_Id__c != null}">
+						<img src="{!URLFOR($Resource.Assets, '/img/salesforce.png')}" style="width: 33px; height: 33px; vertical-align: middle;"/>
+						<span style="font-family: Arial; font-size: 14px; font-weight: bold; color: #333;">Salesforce Options</span><br/>
+						<table>
+							<tr valign="top">
+								<td><input type="radio" name="sfOption" value="none" checked="checked"/></td>
+								<td>None (0 recipients)</td>
+							</tr>
+							<tr valign="top">
+								<td><input type="radio" name="sfOption" value="all"/></td>
+								<td>All Salesforce Campaign Members ({!totalCampaignMembers} recipient{!IF(totalCampaignMembers == 1, '', 's')})</td>
+							</tr>
+							<tr valign="top">
+								<td><input type="radio" name="sfOption" value="specific"/></td>
+								<td>
+									Salesforce Campaign Members w/ Status of:<br/>
+									<span id="statuses" style="display: none;">
+										<apex:repeat value="{!campaignMemberStatuses}" var="campaignMemberStatus">
+											<apex:inputCheckbox value="{!campaignMemberStatus.selected}"/><label for="">{!campaignMemberStatus.name} ({!campaignMemberStatus.count} recipient{!IF(campaignMemberStatus.count == 1, '', 's')})</label><br/>
+										</apex:repeat>
+									</span>
+								</td>
+							</tr>
+						</table>
+					</apex:outputPanel>
+				</td>
+			</tr>
+		</table>
+	</apex:outputPanel>
+
+</apex:pageBlock>
+
+</apex:form>
+
+<div id="footer">
+	<apex:outputPanel layout="none" rendered="{!mcCampaign.Id == null}">
+		<ul>
+			<li class="current introStep2"><a href="#" onclick="return false;">Recipients</a></li>
+			<li><a href="#" onclick="setup(); return false;">Setup</a></li>
+			<li><a href="#" onclick="return false;">Content</a></li>
+			<li><a href="#" onclick="return false;">Plain-Text</a></li>
+			<li><a href="#" onclick="return false;">Confirm</a></li>
+		</ul>
+	</apex:outputPanel>
+	
+	<apex:outputPanel layout="none" rendered="{!mcCampaign.Id != null}">
+		<ul>
+			<li class="current introStep2"><a href="#" onclick="return false;">Recipients</a></li>
+			<li><a href="#" onclick="setup(); return false;">Setup</a></li>
+			<li><a href="#" onclick="content(); return false;">Content</a></li>
+			<li><a href="#" onclick="plainText(); return false;">Plain-Text</a></li>
+			<li><a href="#" onclick="confirm(); return false;">Confirm</a></li>
+		</ul>
+	</apex:outputPanel>
+
+	<a class="next-button introStep3" href="#" onclick="setup(); return false;">Next<span class="freddicon raquo on-right"></span></a>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="{!URLFOR($Resource.Assets, '/js/intro.min.js')}"></script>
+<script>
+	var operatorOptions = {!operatorOptionsJson};
+
+	$(function() {
+
+		$(document).on('change', 'input[name="mcOption"]', function() {
+			$('#savedSegment').hide();
+			$('#newSegment').hide();
+			
+			var mcOption = jQuery(this).val();
+
+			if (mcOption == 'savedSegment') {
+				$('#savedSegment').show();
+			} else if (mcOption == 'newSegment') {
+				$('#newSegment').show();
+			}
+			
+			$('input[type="hidden"][name$="mcOption"]').val(mcOption);
+		});
+		
+		$(document).on('click', 'input[name="salesforceOnly"]', function() {
+			$('#newSegmentOptions').toggle(!$(this).is(':checked'));
+		});
+		
+		$(document).on('change', 'input[name="sfOption"]', function() {
+			$('#statuses').hide();
+			
+			var sfOption = $(this).val();
+			if (sfOption == 'specific') {
+				$('#statuses').show();
+			}
+		});
+		
+		$(document).on('change', '.fieldSelect', function() {
+			var type = $(this).find('option:selected').attr('type');
+		
+			var options = operatorOptions['text'];
+			if (type == 'date') {
+				options = operatorOptions['date'];
+			} else if (type == 'number') {
+				options = operatorOptions['number'];
+			}
+			
+			var optionsHtml = '';
+					
+			for (var i = 0; i < options.length; i++) {
+				optionsHtml += '<option value="' + options[i].value + '">' + options[i].label + '</option>';
+			}
+					
+			$(this).closest('div').find('.operatorSelect').empty().append(optionsHtml);
+		
+			$(this).closest('div').find('input[id$="field"]').val($(this).val());
+			$(this).closest('div').find('input[id$="fieldType"]').val(type);
+			$(this).closest('div').find('input[id$="operator"]').val(options[0].value);
+			
+			$(this).closest('div').find('.dateTypeSelect').toggle(type == 'date');
+			$(this).closest('div').find('span[id$="date"]').toggle(type == 'date');
+			$(this).closest('div').find('input[id$="value"]').toggle(type != 'date');
+		});
+		
+		$(document).on('change', '.operatorSelect', function() {
+			$(this).closest('div').find('input[id$="operator"]').val($(this).val());
+		});
+		
+		if ({!IF(dontShowTour, 'false', 'true')}) {
+        	showTour();
+        }
+		
+	});
+	
+	function showTour() {
+		jQuery('.introStep1').prop('disabled', true);
+	
+    	var steps = [];
+
+		steps.push(
+			{
+				element: jQuery('.introStep1')[0],
+				intro: '<b>SELECT RECIPIENTS</b><br/><br/>The "Select List" drop down menu allows you to choose the MailChimp list.',
+				position: 'right'
+			}
+		);
+		
+		steps.push(
+			{
+				element: jQuery('.introStep2')[0],
+				intro: '<b>CAMPAIGN FLOW</b><br/><br/>The bottom navigation bar displays the campaign builder steps: Recipients, Setup, Content, Plain Text, and Confirm.<br/><br/>Use the "Next" button to proceed through the campaign builder initially, and then use the navigation buttons to go back to a specific step of the campaign builder.',
+				position: 'top'
+			}
+		);
+		
+		steps.push(
+			{
+				intro: '<b>NEXT</b><br/><br/>The "Next" button in the bottom right section of this page will navigate to the next step in the campaign builder.'
+			}
+		);
+    
+    	introJs()
+    		.setOption('steps', steps)
+    		.onexit(function() {
+				jQuery('.introStep1').prop('disabled', false);
+			})
+			.start();
+    	
+    	$('.introjs-tooltipbuttons').after('<div style="text-align: center; font-size: 11px; color: #666; margin-top: 10px;"><input id="dontShowCheckbox" type="checkbox" style="vertical-align: middle;" {!IF(dontShowTour, 'checked="checked"', '')}/>Don\'t show this again</div>');
+		
+		$('#dontShowCheckbox').click(function() {
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignRecipientsController.setDontShowTour}', $(this).is(':checked'), function(result, event) {
+			});
+		});
+    }
+</script>
+
+</apex:page>

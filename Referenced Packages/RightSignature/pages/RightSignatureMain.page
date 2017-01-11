@@ -1,0 +1,5 @@
+<apex:page >
+  <apex:outputPanel layout="block" >
+      <apex:iframe height="540px" src="https://rightsignature.com/custom/salesforce?sid={!$Api.Session_ID}&api_server_url={! URLENCODE($Api.Partner_Server_URL_200)}&callback_url={! URLENCODE($CurrentPage.URL) }" scrolling="auto" id="theIframe"/>
+  </apex:outputPanel>
+</apex:page>

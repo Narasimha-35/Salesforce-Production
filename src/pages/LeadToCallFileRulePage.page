@@ -1,0 +1,13 @@
+<apex:page standardController="LeadToCallFileRule__c" extensions="ListAllRule">
+    <apex:pageblock >
+        <apex:repeat value="{!rulesList}" var="rule">
+            <apex:outputLink value="{! $Page.RuleSetDisplay & '?Id=' & rule.Id}"><apex:outputText value="{!rule.Rule_Name__c}"/></apex:outputLink>&nbsp;&nbsp;
+            <apex:outputText value="{!rule.Rule_Description__c}"/>&nbsp;&nbsp;
+            <apex:outputText value="{! IF(rule.Is_Active_Rule__c, 'Active Rule', 'Inactive Rule')}"/>&nbsp;&nbsp;<br/><br/>
+        </apex:repeat>
+        <br/><br/>
+        <apex:form >
+            <apex:commandButton action="{! addNewRule}" value="Add New Rule"/>
+        </apex:form>
+    </apex:pageblock>
+</apex:page>

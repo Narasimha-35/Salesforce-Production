@@ -1,0 +1,5 @@
+<apex:page sidebar="false" showHeader="false" standardController="MC4SF__MC_Campaign__c" extensions="MC4SF.CampaignContentPreviewController" action="{!initPage}">
+
+<apex:outputText value="{!content}" escape="false"/>
+
+</apex:page>

@@ -1,0 +1,21 @@
+<apex:page StandardController="vhc__Black_list_number__c">
+
+<apex:form id="myForm" >
+
+	 <apex:pageBlock title="Black list item" mode="edit">
+	    <apex:pageBlockButtons > 
+	        <apex:commandButton action="{!Save}" value="{!$Label.Save}"/>
+	        <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/> 	        
+	    </apex:pageBlockButtons>
+	    
+       <apex:pageBlockSection title="{!$Label.Informations}">
+       		<apex:inputField value="{!vhc__Black_list_number__c.vhc__Description__c}" />
+       		<apex:outputField value="{!vhc__Black_list_number__c.vhc__Outbound_Call__c}" />
+       		<apex:inputField value="{!vhc__Black_list_number__c.vhc__Phone_number__c}" />
+       </apex:pageBlockSection>
+
+	</apex:pageBlock> 
+	
+</apex:form>
+
+</apex:page>

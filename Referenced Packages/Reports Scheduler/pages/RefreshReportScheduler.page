@@ -1,0 +1,9 @@
+<apex:page controller="CRMG_RS.RefreshReportScheduler" showHeader="false" standardStyleSheets="true"  action="{!UpdateOldReports}">
+	 	<apex:outputPanel rendered="{!IF(ReportTabID != null && ReportTabID != '', true, false)}" >
+			&nbsp;<a href="/{!ReportTabID}" target="_parent">View Scheduled Reports</a>
+	  </apex:outputPanel>
+	 
+	  <!-- <apex:outputPanel rendered="{!IF(DashBoardTabID != null && DashBoardTabID != '', true, false)}" >
+			&nbsp;<a href="/{!DashBoardTabID}" target="_parent">View Scheduled Dashboards</a>
+	  </apex:outputPanel> -->
+</apex:page>

@@ -1,0 +1,119 @@
+<apex:page standardcontroller="vhc__Campaign__c" extensions="vhc.Ctrl06CallFileRecycle">
+
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.WS_Ressource, 'CSS/progress.css')}" />
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+
+	<apex:sectionHeader title="{!$ObjectType.vhc__Campaign__c.label}" subtitle="{!$Label.Call_File_Recycle}" />
+	<apex:pageMessages />
+
+	<br />&nbsp; 
+	<apex:form id="myForm" rendered="false">
+        &laquo; <apex:commandLink action="{!returnBack}">{!$Label.Back}</apex:commandLink>
+
+		<br />
+		<br />
+		<style>
+.ui-progressbar {
+	height: 1em;
+	width: 22%;
+}
+
+.ui-widget-header {
+	background: url(/img/alohaSkin/btn_sprite.png);
+	background-position-y: -183px;
+}
+
+#errCreate {
+	color: red;
+	font-style: italic;
+	font-size: 95%;
+	margin-top: 10px;
+}
+
+a {
+	color: #015BA7;
+	text-decoration: none;
+}
+</style>
+
+		<apex:pageBlock title="{!$Label.Call_File_Information}" mode="view">
+			<apex:pageBlockSection title="{!$Label.Informations}" columns="2">
+				<apex:outputField value="{!vhc__Campaign__c.name}" />
+				<apex:outputField value="{!vhc__Campaign__c.vhc__Outgoing_Campaign__c}" />
+				<apex:outputField value="{!vhc__Campaign__c.vhc__Total_Contacts__c}" />
+
+
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+
+		<apex:selectList value="{!selectedCallStatus}" multiselect="true">
+			<apex:selectOptions value="{!callStatusOptions}" />
+		</apex:selectList>
+		<apex:selectList value="{!selectedAgent}" multiselect="false" size="1">
+			<apex:selectOptions value="{!agentOptions}" />
+		</apex:selectList>
+
+		<div class="box">
+		<h6>{!$Label.Recycle}</h6>
+		<div class="sync_box">
+		<button class="create" onclick="recycle();">{!$Label.Recycle}</button>
+		<br />
+		<div class="bar" id="progressbar_create"></div>
+		<div id="status_create"></div>
+		<div class="val_rslt" style="display: none;">Total created: <span class="counter" id="recCounter_create">0</span> of .</div>
+		<div id="err_create"></div>
+		</div>
+		</div>
+
+		<script>
+	  		var taskId;
+	  		var campaignId="{!campaign.id}";
+	  		var outgoingCampaignId="{!JSENCODE(campaign.Outgoing_Campaign__r.Oid__c)}";
+	  		
+	  		function recycle(){
+	  			vhc.Ctrl06CallFileRecycle.Recycle(outgoingCampaignId,recycleCallback);
+	  		}
+	  		function recycleCallback(res){
+	  			log (res);
+	  			taskId = res;
+	  			checkTask(taskId);
+	  		}
+	  		function checkTask(task){
+	   			vhc.Ctrl06CallFileRecycle.checkTaskProgression(task,campaignId,checkTaskCallBack,log,{escape: true});
+	   		}
+	   		function checkTaskCallBack(res){
+	   			log(res);
+	   			res= JSON.parse($("<div/>").html(res).text());
+	   			if(res==null)return;
+	   		 	var task=res[1];
+	   			res= res[0];	
+	   			
+	   			log("Task: "+task+" Position: " + res.Position+" Total: " +res.Total)
+	   			if(res.Position==res.Total){
+	   				var ok = $("#recCounter_"+op);
+	   				ok.html(res.Position + parseInt(ok.html()));
+	   				setProgressbar(op,sync[op].index,sync[op].size);
+	   				sync[op].syncNext();
+	   			}else{
+	   			
+	   				if(sync[op].timer=10000){
+	   					$("#errCreate").append("<div id='task"+sync[op].tasks[task]+"'>error sync stage (task approval): "+sync[op].tasks[task]+", sync error timeout.</div>");
+	   					setProgressbar(op,sync[op].index,sync[op].size);
+	   					sync[op].syncNext();
+	   					return;
+	   				}
+	   			
+	   				sync[op].timer=sync[op].timer*10;	
+	   				$("#errCreate").append("<div id='task"+sync[op].tasks[task]+"'>error sync stage (task approval): "+sync[op].tasks[task]+", not total sync. Try again on "+sync[op].timer+" millisecond.</div>");
+	   				setTimeout(sync[op].checkTask(task),sync[op].timer);
+	   			}
+	   			
+	   		}
+	   		function log(res){
+	   			console.log(res);
+	   		}
+	  </script>
+	</apex:form>
+</apex:page>

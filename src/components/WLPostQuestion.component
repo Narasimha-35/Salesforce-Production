@@ -1,0 +1,63 @@
+<apex:component controller="WLPostquestionController" allowDML="true" id="pid">
+ <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+</head>
+
+<script>
+      $(document).ready(function ()
+      {
+          resetPopup();
+      }); 
+    
+    function PopupReset()
+    {
+        resetPopup();
+    }  
+</script>    
+      
+<style>
+    .displaynone
+    {
+        display:none;
+    }
+    .setup-box .h3{
+        display:block !important;
+    }
+</style>
+
+ <div class="modal" id="myModal9">
+            <div class="modal-dialog" id="usrfeedPopUp">
+              <div class="modal-content popup_modalcontent cstm_pop_cont" id="pdivfaded">
+                <div class="modal-header cstm_modal_header" id="idSetupBox">
+                  <button type="button" class="close pop_close gray_col" data-dismiss="modal" aria-hidden="true" onclick="PopupReset();">×</button>
+                  <h4 class="modal-title text-center" id="memLoginId">We would like to help you!</h4>
+                </div>
+                <div class="modal-body">
+                <apex:form styleclass="form-horizontal" id="frmId"> 
+                    <apex:actionFunction name="resetPopup" action="{!ResetPopup}" rerender="frmId"/> 
+                                
+                        <div id ="main_Section">
+                        <apex:outputPanel id="feedsuccessMsg" rendered="{!successMsg}" style="color:#419ECC;text-align:center;"><p style="margin-bottom:10px;">{!strfeedSuccessmsg}</p></apex:outputPanel>
+                        <apex:outputPanel id="feedmsg" rendered="{!showMessage}" style="color:red;text-align:center;"><p style="margin-bottom:10px;">{!strfeedmsg}</p></apex:outputPanel> 
+                           
+                          
+                            <div class="form-group cstm_form_grp">
+                                <div class="col-md-8 col-md-offset-2">
+                                    <apex:inputTextarea value="{!strPost}" styleClass="form-control cstm_input" id="feedTextId" html-placeholder="Please enter your query here!" rendered="{!NOT(successMsg)}" />
+                                </div>
+                             </div>
+                            <div class="form-group">        
+                            <div class="col-md-12">
+                                <apex:commandButton action="{!postQuery}"  styleClass="btn btn-default center-block cstm_btn_w180 cstm_btn_input" value="Submit" id="postBtnId" reRender="frmId" rendered="{!NOT(successMsg)}"/>                            
+                             </div>
+                             </div>
+                        </div>
+                      </apex:form>
+                 </div>
+                 
+              </div>
+            </div>
+         </div>
+</apex:component>

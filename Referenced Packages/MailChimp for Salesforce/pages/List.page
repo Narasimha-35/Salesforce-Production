@@ -1,0 +1,138 @@
+<apex:page standardController="MC4SF__MC_List__c" readOnly="true" extensions="MC4SF.ListOverrideController">
+<style>
+.fewerMore { display: none;}
+</style>
+<apex:form >
+<apex:detail subject="{!MC4SF__MC_List__c}" rendered="true" relatedList="true">
+	<apex:pageblock id="groupingList">
+ 		<apex:facet name="header">
+ 			<h2 style="font-size:11pt;font-weight:bold;">MC Interest Groupings</h2>
+ 		</apex:facet>
+ 		<apex:pageBlockTable value="{!groupings}" var="grouping" rendered="{!NOT(ISNULL(groupings))}" id="groupingTable">
+ 			<apex:column headervalue="MC Interest Grouping Name">
+	 			<apex:outputlink value="/{!grouping.Id}">{!grouping.Name}</apex:outputlink>
+ 			</apex:column>
+ 			<apex:column value="{!grouping.MC4SF__Form_Field__c}"/>
+ 		</apex:pageBlockTable>
+ 		<apex:commandLink value="Show more »" action="{!showMoreGrouping}" reRender="groupingList,groupingTable" rendered="{!moreGrouping==false && !ISNULL(groupings)}" />
+ 		<apex:commandLink value="Show less «" action="{!showLessGrouping}" reRender="groupingList,groupingTable" rendered="{!moreGrouping==true && !ISNULL(groupings)}"/>
+ 		<apex:outputLabel value="No records to display" rendered="{!(ISNULL(groupings))}" styleClass="noRowsHeader"></apex:outputLabel>
+ 	</apex:pageblock>
+ 	<apex:pageblock id="segmentList">
+ 		<apex:facet name="header">
+ 			<h2 style="font-size:11pt;font-weight:bold;">MC Static Segments</h2>
+ 		</apex:facet>
+ 		<apex:pageBlockTable value="{!segments}" var="segment" rendered="{!NOT(ISNULL(segments))}" id="segmentTable">
+ 			<apex:column headervalue="MC Static Segments Name">
+	 			<apex:outputlink value="/{!segment.Id}">{!segment.Name}</apex:outputlink>
+ 			</apex:column>
+ 			<apex:column value="{!segment.MC4SF__Member_Count__c}"/>
+	 		<apex:column value="{!segment.MC4SF__Last_Reset__c}"/>
+ 			<apex:column value="{!segment.MC4SF__Last_Update__c}"/>
+ 		</apex:pageBlockTable>
+ 		<apex:commandLink value="Show more »" action="{!showMoreSegment}" reRender="segmentList,segmentTable" rendered="{!moreSegment==false && !ISNULL(segments)}" />
+ 		<apex:commandLink value="Show less «" action="{!showLessSegment}" reRender="segmentList,segmentTable" rendered="{!moreSegment==true && !ISNULL(segments)}"/>
+ 		<apex:outputLabel value="No records to display" rendered="{!(ISNULL(segments))}" styleClass="noRowsHeader"></apex:outputLabel>
+ 	</apex:pageblock>
+  	<apex:pageblock id="mergeList">
+ 		<apex:facet name="header">
+ 			<h2 style="font-size:11pt;font-weight:bold;">MC Merge Variables</h2>
+ 		</apex:facet>
+ 		<apex:pageBlockTable value="{!merges}" var="merge" rendered="{!NOT(ISNULL(merges))}" id="mergeTable">
+ 			<apex:column headervalue="MC Merge Variables">
+	 			<apex:outputlink value="/{!merge.Id}">{!merge.Name}</apex:outputlink>
+ 			</apex:column>
+ 			<apex:column value="{!merge.MC4SF__Field_Type__c}"/>
+ 			<apex:column value="{!merge.MC4SF__Choices__c}"/>
+ 			<apex:column value="{!merge.MC4SF__Required__c}"/>
+ 			<apex:column value="{!merge.MC4SF__Order__c}"/>
+ 			<apex:column value="{!merge.MC4SF__MailChimp_ID__c}"/>
+ 			<apex:column value="{!merge.MC4SF__Contact_Field_Mapping__c}"/>
+ 			<apex:column value="{!merge.MC4SF__Lead_Field_Mapping__c}"/>
+ 			<apex:column value="{!merge.MC4SF__Size__c}"/>
+ 			<apex:column value="{!merge.MC4SF__Tag__c}"/>
+ 		</apex:pageBlockTable>
+ 		<apex:commandLink value="Show more »" action="{!showMoreMerge}" reRender="mergeList,mergeTable" rendered="{!moreMerge==false && !ISNULL(merges)}" />
+ 		<apex:commandLink value="Show less «" action="{!showLessMerge}" reRender="mergeList,mergeTable" rendered="{!moreMerge==true && !ISNULL(merges)}"/>
+ 		<apex:outputLabel value="No records to display" rendered="{!(ISNULL(merges))}" styleClass="noRowsHeader"></apex:outputLabel>
+ 	</apex:pageblock>
+ 	<apex:pageblock id="campaignList">
+ 		<apex:facet name="header">
+ 		    <!-- Mailchimp image goes here -->
+ 			<h2 style="font-size:11pt;font-weight:bold;">MC Campaigns</h2>
+ 		</apex:facet>
+ 		<apex:pageBlockTable value="{!campaigns}" var="campaign" rendered="{!NOT(ISNULL(campaigns))}" id="campaignTable">
+ 			<apex:column headervalue="MC Campaigns">
+	 			<apex:outputlink value="/{!campaign.Id}">{!campaign.Name}</apex:outputlink>
+ 			</apex:column>
+ 			<apex:column value="{!campaign.MC4SF__Status__c}"/>
+ 			<apex:column value="{!campaign.MC4SF__Subject__c}"/>
+ 			<apex:column value="{!campaign.MC4SF__Emails_Sent__c}"/>
+ 			<apex:column value="{!campaign.MC4SF__From_Email__c}"/>
+ 			<apex:column value="{!campaign.MC4SF__Report_URL__c}"/>
+ 		</apex:pageBlockTable>
+ 		<apex:commandLink value="Show more »" action="{!showMoreCampaign}" reRender="campaignList,campaignTable" rendered="{!moreCampaign==false && !ISNULL(campaigns)}" />
+ 		<apex:commandLink value="Show less «" action="{!showLessCampaign}" reRender="campaignList,campaignTable" rendered="{!moreCampaign==true && !ISNULL(campaigns)}"/>
+ 		<apex:outputLabel value="No records to display" rendered="{!(ISNULL(campaigns))}" styleClass="noRowsHeader"></apex:outputLabel>
+ 	</apex:pageblock>
+
+
+     
+
+ 	
+ 	<apex:pageblock id="subscriberList">
+ 		<apex:facet name="header">
+ 			<h2 style="font-size:11pt;font-weight:bold;">MC Subscribers</h2>
+ 		</apex:facet>
+ 		<apex:pageBlockTable value="{!subscribers}" var="subscriber" rendered="{!NOT(ISNULL(subscribers))}" id="subscriberTable">
+ 			<apex:column headervalue="MC Subscribers">
+	 			<apex:outputlink value="/{!subscriber.Id}">{!subscriber.Name}</apex:outputlink>
+ 			</apex:column>
+ 			<apex:column value="{!subscriber.MC4SF__Email2__c}"/>
+ 			<apex:column value="{!subscriber.MC4SF__Member_Status__c}"/>
+ 			<apex:column value="{!subscriber.MC4SF__Status_Timestamp__c}"/>
+ 			<apex:column value="{!subscriber.MC4SF__Last_Activity_Date__c}"/>
+ 			<apex:column value="{!subscriber.MC4SF__View_Subscriber_in_MC__c}"/>
+ 		</apex:pageBlockTable>
+ 		<apex:commandLink value="Show more »" action="{!showMoreSubscriber}" reRender="subscriberList,subscriberTable" rendered="{!moreSubscriber==false && !ISNULL(subscribers)}" />
+ 		<apex:commandLink value="Show less «" action="{!showLessSubscriber}" reRender="subscriberList,subscriberTable" rendered="{!moreSubscriber==true && !ISNULL(subscribers)}"/>
+ 		<apex:outputLabel value="No records to display" rendered="{!(ISNULL(subscribers))}" styleClass="noRowsHeader"></apex:outputLabel>
+ 	</apex:pageblock>
+	<apex:pageblock id="activityList">
+ 		<apex:facet name="header">
+ 			<h2 style="font-size:11pt;font-weight:bold;">MC Subscriber Activity</h2>
+ 		</apex:facet>
+ 		<apex:pageBlockTable value="{!activities}" var="activity" rendered="{!NOT(ISNULL(activities))}" id="activityTable">
+ 			<apex:column headervalue="MC Subscriber Activity">
+	 			<apex:outputlink value="/{!activity.Id}">{!activity.Name}</apex:outputlink>
+ 			</apex:column>
+ 			<apex:column value="{!activity.MC4SF__Timestamp__c}"/>
+	 		<apex:column value="{!activity.MC4SF__Action__c}"/>
+ 			<apex:column value="{!activity.MC4SF__Type__c}"/>
+	 		<apex:column value="{!activity.MC4SF__URL__c}"/>
+	 		<apex:column value="{!activity.MC4SF__MC_Subscriber__c}"/>
+	 		<apex:column value="{!activity.MC4SF__MC_Campaign__c}"/>
+ 		</apex:pageBlockTable>
+ 		<apex:commandLink value="Show more »" action="{!showMoreActivity}" reRender="activityList,activityTable" rendered="{!moreActivity==false && !ISNULL(activities)}" />
+ 		<apex:commandLink value="Show less «" action="{!showLessActivity}" reRender="activityList,activityTable" rendered="{!moreActivity==true && !ISNULL(activities)}"/>
+ 		<apex:outputLabel value="No records to display" rendered="{!(ISNULL(activities))}" styleClass="noRowsHeader"></apex:outputLabel>
+ 	</apex:pageblock>
+ 	<apex:pageblock id="queryList">
+ 		<apex:facet name="header">
+ 			<h2 style="font-size:11pt;font-weight:bold;">MC Queries</h2>
+ 		</apex:facet>
+ 		<apex:pageBlockTable value="{!queries}" var="query" rendered="{!NOT(ISNULL(queries))}" id="queryTable">
+ 			<apex:column headervalue="MC Queries">
+	 			<apex:outputlink value="/{!query.Id}">{!query.Name}</apex:outputlink>
+ 			</apex:column>
+ 			<apex:column value="{!query.MC4SF__Run_Daily_At__c}"/>
+ 			<apex:column value="{!query.MC4SF__Last_Run__c}"/>
+ 			<apex:column value="{!query.MC4SF__Status__c}"/>
+ 		</apex:pageBlockTable>
+ 		<apex:commandLink value="Show more »" action="{!showMoreQuery}" reRender="queryList,queryTable" rendered="{!moreQuery==false && !ISNULL(queries)}" />
+ 		<apex:commandLink value="Show less «" action="{!showLessQuery}" reRender="queryList,queryTable" rendered="{!moreQuery==true && !ISNULL(queries)}"/>
+ 		<apex:outputLabel value="No records to display" rendered="{!(ISNULL(queries))}" styleClass="noRowsHeader"></apex:outputLabel>
+ 	</apex:pageblock>
+</apex:detail>
+</apex:form>
+</apex:page>

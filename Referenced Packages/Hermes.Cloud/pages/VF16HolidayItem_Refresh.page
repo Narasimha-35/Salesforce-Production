@@ -1,0 +1,3 @@
+<apex:page StandardController="vhc__Holiday_Item__c" extensions="vhc.Ctrl16HolidayItem_Refresh" action="{!Redirect}">
+	<apex:detail subject="{!vhc__Holiday_Item__c.ID}" relatedList="true" title="true"/> 
+</apex:page>

@@ -1,0 +1,71 @@
+<apex:page standardController="smagicinteract__incoming_lookup_config__c"  extensions="smagicinteract.IncomingLookupController" >
+<script>
+	function closeHelpMessage(){
+		document.getElementById('stepDiv').style.display = "none";
+	}
+</script>
+<apex:form >
+<apex:pageMessages />
+<apex:pageBlock title=" New Incoming Lookup Configuration">
+	
+	<apex:pageBlockSection id="pageBlockSection"  title="Configuration to relate incoming sms with any object" collapsible="false" />
+ 
+	<div id="stepDiv" style="background-color:#ADD8E6; width: 60%; margin:10px auto;  display:block; line-height:200%; padding:5px;border:solid 1px #A9A9A9;">
+	<div id="clbtn" style="padding:0 2px 0 2px;line-height:11px;font-size:10px;color:black;cursor:pointer;float:right;margin-right:10px;border:solid 1px black;"  onClick="closeHelpMessage();" title="Hide Help">x</div>
+	<b>Quick Help!</b><br/><table border="0">
+	<tr> <td>Step 1 :</td> <td> Select the Object to which you want to relate or attach the new incoming SMS record.</td></tr> 
+	<tr> <td>Step 2 :</td> <td>Select the mobile field name of the object you selected in step 1.</td></tr>
+	<tr> <td>Step 3 :</td> <td>Select Reference field of Incoming SMS object refering to above selected object.<br/> Please create Look-up/Ref field on Incoming SMS Object refering to selected object,<br/> if it is not there. (Refer <a href="http://screen-magic.com/resources/configuration-guide/configuring-sms-magic/view-incoming-sms-as-a-related-list">Help</a> for detailed steps)
+	</td></tr>	    </table>
+			    
+	</div>
+	 
+	<table border="0" style="margin-top:10px;">
+	<tr style="height:40px;"> 	
+	    <td style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: right; font-size: 91%; font-weight: bold;">Object Name : </td>
+	    <td> 	
+	      <apex:selectList id="allObjectDropDown" value="{!selectedObjName}"  size="1">
+	       <apex:actionSupport event="onchange" rerender="mobileFieldDropDown" />
+				<apex:selectOption itemValue="" itemLabel="Choose Object"/>
+	            <apex:selectOptions value="{!lookupObjects}" />  
+	      </apex:selectList>
+	    </td>
+	</tr>
+      
+    <tr style="height:40px;"> 	
+	    <td style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: right; font-size: 91%; font-weight: bold;">Mobile Field Name : </td>
+	    <td>
+	      <apex:selectList id="mobileFieldDropDown" value="{!mobileFieldName}" size="1">
+				<apex:selectOption itemValue="" itemLabel="Choose Field"/>
+	            <apex:selectOptions value="{!mobileFieldsForSelectedObject}" />  
+	      </apex:selectList>
+      </td>
+    </tr>
+	 
+    <tr style="height:40px;">
+	    <td style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: right; font-size: 91%; font-weight: bold;">Reference Field Name : </td>
+	    <td>
+	      <apex:selectList id="referenceFieldDropDown" value="{!referenceFieldName}" size="1">
+				<apex:selectOption itemValue="" itemLabel="Choose Field"/>
+	            <apex:selectOptions value="{!referenceFieldsList}" />  
+	      </apex:selectList>
+      	</td>
+    </tr>
+    
+    <tr style="height:40px;">
+	    <td style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: right; font-size: 91%; font-weight: bold;">Notify Record Owner : </td>
+	    <td>
+	      <apex:inputCheckbox value="{!notifyRecordOwner}"/>
+      	</td>
+    </tr>
+    </table>
+      
+      <apex:pageBlockButtons location="bottom">
+	  	<apex:commandButton action="{!save}" value="Save" />
+		<apex:commandButton action="{!Cancel}" value="Cancel" />
+	  </apex:pageBlockButtons>
+	     
+	
+</apex:pageBlock>
+</apex:form>
+</apex:page>

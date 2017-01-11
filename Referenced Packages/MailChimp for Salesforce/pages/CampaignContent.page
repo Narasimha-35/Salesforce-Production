@@ -1,0 +1,450 @@
+<apex:page sidebar="false" standardController="MC4SF__MC_Campaign__c" extensions="MC4SF.CampaignContentController" action="{!initPage}">
+
+<link href="{!URLFOR($Resource.MC4SF__Assets, '/css/wizard.css')}" rel="stylesheet" type="text/css"/>
+<apex:stylesheet value="{!URLFOR($Resource.MC4SF__Assets, 'css/introjs.min.css')}"/>
+<style>
+.introjs-tooltip {
+	max-width: 425px;
+	width: 425px;
+}
+
+.introjs-tooltipbuttons {
+	text-align: center;
+}
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+    }
+* html .clearfix             { zoom: 1; } /* IE6 */
+*:first-child+html .clearfix { zoom: 1; } /* IE7 */
+
+.template {
+	float: left;
+	padding-right: 20px;
+	padding-bottom: 20px;
+}
+
+a.mcButton {
+	color: #737373;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 13px;
+	height: 36px;
+	line-height: 36px;
+	overflow: hidden;
+	padding: 0 18px;
+
+
+font-weight: 700;
+font-family: "Helvetica Neue",Arial,Helvetica,Verdana,sans-serif;
+text-align: center;
+vertical-align: middle;
+text-transform: capitalize;
+letter-spacing: .01em;
+margin-right: 18px;
+border: 0 none;
+border-radius: 3px;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+background-color: #e0e0e0;
+margin: 0;
+box-sizing: border-box;
+	text-decoration: none;
+	white-space: nowrap;
+	zoom: 1;
+}
+
+a:hover.mcButton {
+	background-color: #d3d3d3;
+	color: #737373;
+	text-decoration: none;
+}
+
+#changeTemplateDialog {
+	position: absolute;
+	top: -9999em;
+	left: -9999em;
+	background-color: #fff;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	width: 300px;
+	z-index: 99999;
+	width: 400px;
+}
+</style>
+
+<apex:sectionHeader title="MailChimp Campaign" subtitle="New MailChimp Campaign"/>
+
+<apex:form >
+<apex:actionfunction name="selectPlaintext" action="{!selectPlaintext}"/>
+<apex:actionfunction name="next" action="{!next}"/>
+
+<apex:pageBlock title="Step 3: Edit Content">
+	<div id="templates" style="position: relative; {!IF(mcCampaign.MailChimp_Template_ID__c != null, 'display: none;', '')}" class="clearfix">
+		<div class="template introStep1">
+			<span style="font-family: Arial; font-size: 14px; font-weight: bold; color:#333;">Text Only</span><br/>
+			<div style="width: 204px; height: 104px; border: 1px solid black; background-color: #fff; text-align: center; padding-top: 20px; margin-bottom: 5px;">
+				<span style="font-weight: bold;">Text Email Only!</span><br/>
+				No template required<br/>
+				<img src="{!URLFOR($Resource.Assets, '/img/campaign/no-images.png')}" border="0" width="64" height="36"/>
+			</div>
+			<input type="button" value="Select" onclick="selectPlaintext(); return false;"/>
+		</div>
+
+		<apex:repeat value="{!templates}" var="template">
+			<div class="template">
+				<span style="font-family: Arial; font-size: 14px; font-weight: bold; color:#333;">{!template.name}</span><br/>
+				<img src="{!template.preview_image}" style="padding-bottom: 5px; border: 0; width: 206px; height: 126px;"/><br/>
+				<input id="{!template.id}" type="button" value="Select" class="selectButton"/>
+			</div>
+		</apex:repeat>
+	</div>
+
+	<div id="editor" style="{!IF(mcCampaign.MailChimp_Template_ID__c == null, 'display: none;', '')}">
+		<table width="100%">
+			<tr valign="top">
+				<td width="50%" style="padding-right: 5px;"><iframe id="selectorFrame" src="{!IF(mcCampaign.MailChimp_Template_ID__c == null, '', $Page.CampaignContentSelector + '?id=' + mcCampaign.Id)}" width="100%" height="600" frameBorder="0" seamless="seamless"></iframe></td>
+				<td width="50%" style="padding-left: 5px;">
+					<table width="100%">
+						<tr>
+							<td>
+								Change Section:
+								<select id="sections" class="introStep2">
+									<apex:repeat value="{!templatesInfoResponse.sections}" var="section" rendered="{!mcCampaign.MC4SF__MailChimp_Template_ID__c != null}">
+										<option value="{!section}">{!section}</option>
+									</apex:repeat>
+								</select>
+							</td>
+							<td align="right">
+								<a id="changeTemplateLink" href="#">Change Template</a>&nbsp;&nbsp;
+								<a id="saveButton" href="#" class="mcButton introStep3">Save</a>
+								<a id="previewButton" href="#" class="mcButton introStep4">Preview</a>
+								<a id="sendTestDialogButton" href="#" class="mcButton introStep5">Send Test</a>
+							</td>
+						</tr>
+					</table>
+					<textarea id="content"></textarea>
+				</td>
+			</tr>
+		</table>
+	</div>
+</apex:pageBlock>
+
+</apex:form>
+
+<div id="footer">
+	<a class="back-button" href="{!$Page.CampaignSetup}?id={!mcCampaign.Id}"><span class="freddicon laquo"></span>Back</a>
+
+	<ul>
+		<li><a href="{!$Page.CampaignRecipients}?id={!mcCampaign.Id}">Recipients</a></li>
+		<li><a href="{!$Page.CampaignSetup}?id={!mcCampaign.Id}">Setup</a></li>
+		<li class="current"><a href="#" onclick="return false;">Content</a></li>
+		<li><a href="{!$Page.CampaignPlaintext}?id={!mcCampaign.Id}">Plain-Text</a></li>
+		<li><a href="{!$Page.CampaignConfirm}?id={!mcCampaign.Id}">Confirm</a></li>
+	</ul>
+
+	<a class="next-button" href="#" onclick="next(); return false;">Next<span class="freddicon raquo on-right"></span></a>
+</div>
+
+<div id="dialogModalOverlay" style="width:100%; height:100%; position: fixed; margin: 0; padding: 0; z-index: 99999; top: 0; left: 0; right: 0; bottom: 0; background-color: #666; opacity: 0.5; display: none;">
+</div>
+
+<div id="changeTemplateDialog">
+    <div style="background-color: #eee; font-size: 16px; font-weight: bold; padding: 10px;">Change Template</div>
+    <div style="padding: 10px;">
+    	<div style="background-color: #ffe8aa; color: #626262; border-radius: 6px; padding: 12px; text-align: center; font-size: 15px;">
+    		<b>Warning:</b> If you change the template you will lose all the content you've entered in this template. You will have to start over.
+    	</div>
+    </div>
+    <div style="border-top: 1px solid #efefef; padding: 10px; text-align: right; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; text-align: center">
+        <button id="changeTemplateButton" class="blueButton" style="width: 150px; height: 31px;" onclick="return false;">Change Template</button>
+        <button class="cancelButton greyButton" style="width: 75px; height: 31px;" onclick="return false;">Cancel</button>
+    </div>
+</div>
+
+<div id="sendTestDialog" style="display: none; cursor: default; text-align: left;">
+	Send a test to<br/>
+	<textarea id="emails" rows="3" style="width: 300px;"></textarea><br/>
+	<span style="font-weight: bold;">
+		Comma separate email addresses to send to multiple accounts at once.<br/>
+		<span style="font-style: italic;">20 emails at a time and a maximum of 70 test emails per campaign.</span>
+	</span><br/><br/>
+	
+	<input id="sendTestButton" type="button" value="Send Test"/>
+	<a id="sendTestCancelLink" href="#">Cancel</a>
+	
+	<div id="sendTestError" style="padding-top: 10px; color: red; display: none;"></div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="{!URLFOR($Resource.Assets, '/js/jQuery_blockUI_plugin.js')}"></script>
+<script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+<script src="{!URLFOR($Resource.Assets, '/js/intro.min.js')}"></script>
+<script>
+	var templateId;
+	var template;
+	var currentSection;
+
+	<apex:outputPanel layout="none" rendered="{!mcCampaign.MC4SF__MailChimp_Template_ID__c != null}">
+		templateId = '{!mcCampaign.MailChimp_Template_ID__c}';
+		template = {!templateInfoResponseJson};
+		currentSection = template.sections[0];
+		
+		for (var i in template.sections) {
+			var decodedContent = jQuery('<div/>').html(template.default_content[template.sections[i]]).text();
+			template.default_content[template.sections[i]] = decodedContent;
+		}
+	</apex:outputPanel>
+
+	tinymce.init({
+		plugins: "link",
+		menubar: false,
+		statusbar: false,
+		toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link unlink",
+		selector: '#content',
+		height: 400,
+		init_instance_callback: function(editor) {
+<apex:outputPanel layout="none" rendered="{!mcCampaign.MC4SF__MailChimp_Template_ID__c != null}">
+			tinymce.activeEditor.setContent(template.default_content[currentSection]);
+</apex:outputPanel>
+    	},
+    	setup: function(editor) {
+	        editor.on('keyup', function(e) {
+	            var html = tinyMCE.activeEditor.getContent();
+				document.getElementById('selectorFrame').contentWindow.updateContent(currentSection, html);
+	        });
+	        
+	        editor.on('change', function(e) {
+	            var html = tinyMCE.activeEditor.getContent();
+				document.getElementById('selectorFrame').contentWindow.updateContent(currentSection, html);
+	        });
+	    }
+	});
+
+	jQuery(function() {
+
+		jQuery('.selectButton').click(function() {
+			selectTemplate(jQuery(this).attr('id'));
+		});
+		
+		jQuery('#sections').change(function() {
+			selectSection(jQuery(this).val());
+		});
+		
+		jQuery('#changeTemplateLink').click(function() {
+			jQuery('#dialogModalOverlay').show();
+            
+        	var top = (jQuery(window).height() - jQuery('#changeTemplateDialog').outerHeight()) / 2 + jQuery(window).scrollTop();
+        	var left = (jQuery(window).width() - 300) / 2 + jQuery(window).scrollLeft();
+        	jQuery('#changeTemplateDialog').css({top: (top > 0 ? top : 0) + 'px', left: (left > 0 ? left : 0) + 'px'});
+			
+			return false;
+		});
+		
+		jQuery('#changeTemplateButton').click(function() {
+			jQuery('#dialogModalOverlay').hide();
+        	jQuery('#changeTemplateDialog').css({top: '-999em', left: '-999em'});
+			jQuery('#templates').show();
+			jQuery('#editor').hide();
+		});
+		
+		jQuery('.cancelButton').click(function() {
+			jQuery('#dialogModalOverlay').hide();
+        	jQuery('#changeTemplateDialog').css({top: '-999em', left: '-999em'});
+		});
+		
+		jQuery('#saveButton').click(function() {
+			var name = jQuery('#sections').val();
+			var html = tinyMCE.activeEditor.getContent();
+
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignContentController.saveTemplateSection}', '{!mcCampaign.Id}', name, html, function(result, event) {
+				if (event.status) {
+				} else {
+					alert('Error saving content.');
+				}
+			});
+			
+			return false;
+		});
+		
+		jQuery('#previewButton').click(function() {
+			var name = jQuery('#sections').val();
+			var html = tinyMCE.activeEditor.getContent();
+
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignContentController.saveTemplateSection}', '{!mcCampaign.Id}', name, html, function(result, event) {
+				if (event.status) {
+					window.open('{!$Page.CampaignContentPreview}?id={!mcCampaign.Id}', 'filter_lookup', 'width=700,height=710,resizable=yes,toolbar=no,status=no,scrollbars=yes,menubar=no,directories=no,location=no,dependant=no', false);
+				} else {
+					alert('Error saving content.');
+				}
+			});
+			
+			return false;
+		});
+
+		jQuery('#sendTestDialogButton').click(function() {
+			jQuery.blockUI({
+				message: jQuery('#sendTestDialog'),
+				css: {
+					'border-radius': '8px',
+					'padding': '10px'
+				}
+			});
+			
+			return false;
+		});
+
+		jQuery('#sendTestButton').click(function() {
+			jQuery('#sendTestError').hide();
+		
+			var emails = [];
+			
+			jQuery.each(jQuery('#emails').val().split(','), function(index, value) {
+				emails.push(jQuery.trim(value));
+			});
+
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignContentController.sendTest}', '{!mcCampaign.Id}', emails, function(result, event) {
+				if (event.status) {
+					jQuery.unblockUI();
+					jQuery('#emails').val('');
+				} else {
+					jQuery('#sendTestError').html('Error sending test.').show();
+				}
+			});
+		});
+		
+		jQuery('#sendTestCancelLink').click(function() {
+			jQuery.unblockUI();
+			jQuery('#sendTestError').hide();
+		});
+		
+        if ({!IF(dontShowTour, 'false', 'true')}) {
+        	showTour();
+        }
+
+	});
+	
+	function changeSection(section) {
+		jQuery('#sections').val(section);
+		selectSection(section);
+	}
+	
+	function selectSection(section) {
+		var html = tinyMCE.activeEditor.getContent();
+		template.default_content[currentSection] = html;
+
+		Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignContentController.saveTemplateSection}', '{!mcCampaign.Id}', currentSection, html, function(result, event) {
+			if (event.status) {
+			} else {
+				alert('Error saving content.');
+			}
+		});
+
+		currentSection = section;
+
+		tinymce.activeEditor.setContent(template.default_content[currentSection]);
+	}
+	
+	function selectTemplate(id) {
+		templateId = id;
+
+		Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignContentController.setTemplate}', '{!mcCampaign.Id}', templateId, function(result, event) {
+			if (event.status) {
+				jQuery('#selectorFrame').attr('src', '{!$Page.CampaignContentSelector}?id={!mcCampaign.Id}');
+			
+				template = event.result;
+
+				var sectionsSelect = jQuery('#sections');
+				sectionsSelect.find('option').remove();
+					
+				for (var i in template.sections) {
+					sectionsSelect.append(jQuery('<option/>').attr('value', template.sections[i]).text(template.sections[i]));
+					
+					var decodedContent = jQuery('<div/>').html(template.default_content[template.sections[i]]).text();
+					template.default_content[template.sections[i]] = decodedContent;
+				}
+
+				currentSection = template.sections[0];
+				tinymce.activeEditor.setContent(template.default_content[currentSection]);
+
+				jQuery('#templates').hide();
+				jQuery('#editor').show();
+			} else {
+				alert('Error loading template.');
+			}
+		});
+	}
+	
+	function showTour() {
+    	var steps = [];
+
+		if (jQuery('.introStep1').is(':visible')) {
+			steps.push(
+				{
+					element: jQuery('.introStep1')[0],
+					intro: '<b>CAMPAIGN FORMAT</b><br/><br/>Use the "Select" button to create a new plain text campaign or to select a saved HTML template from your MailChimp account.<br/><br/>It\'s important to note that only "Classic" and "Custom Coded" templates will be available. The "Drag & Drop" templates are not available.',
+					position: 'right'
+				}
+			);
+		}
+
+		if (jQuery('.introStep2').is(':visible')) {
+			steps.push(
+				{
+					element: jQuery('.introStep2')[0],
+					intro: '<b>CHANGE SECTION</b><br/><br/>The Change Section dropdown list appears when you\'ve selected an HTML version template. Once you\'ve selected the section you\'d like to add/change content within, that section will appear in the text box below; where your edits are to be made and saved.',
+					position: 'right'
+				}
+			);
+		}
+		
+		if (jQuery('.introStep3').is(':visible')) {
+			steps.push(
+				{
+					element: jQuery('.introStep3')[0],
+					intro: '<b>SAVE</b><br/><br/>Once you\'ve finished with your content changes or additions within a given section of your campaign email, clicking the save button here will save those changes so you can move on to the next section of the email template.',
+					position: 'left'
+				}
+			);
+		}
+		
+		if (jQuery('.introStep4').is(':visible')) {
+			steps.push(
+				{
+					element: jQuery('.introStep4')[0],
+					intro: '<b>PREVIEW</b><br/><br/>Once you\'ve finished your email template, give it a quick preview by clicking this here to make sure you\'ve included everything you need for your email.',
+					position: 'left'
+				}
+			);
+		}
+		
+		if (jQuery('.introStep5').is(':visible')) {
+			steps.push(
+				{
+					element: jQuery('.introStep5')[0],
+					intro: '<b>SEND TEST</b><br/><br/>If you\'re not sure if the format will come out as you\'re expecting, it couldn\'t hurt to send a quick test email. Click here to send out a test and make sure you like the template you\'ve just built. Don\'t worry if you forget to do this, as you\'ll get another chance at end to send out some test emails.',
+					position: 'left'
+				}
+			);
+		}
+
+    	introJs().setOption('steps', steps).start();
+    	
+    	jQuery('.introjs-tooltipbuttons').after('<div style="text-align: center; font-size: 11px; color: #666; margin-top: 10px;"><input id="dontShowCheckbox" type="checkbox" style="vertical-align: middle;" {!IF(dontShowTour, 'checked="checked"', '')}/>Don\'t show this again</div>');
+		
+		jQuery('#dontShowCheckbox').click(function() {
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignContentController.setDontShowTour}', jQuery(this).is(':checked'), function(result, event) {
+			});
+		});
+    }
+</script>
+
+</apex:page>

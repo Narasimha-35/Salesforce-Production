@@ -1,0 +1,152 @@
+<apex:component controller="acfTalkToHuman" allowDML="true" id="comId">
+<style>
+.plcholder_61 input {
+   padding-left: 40px!important;
+}
+.modal-content      
+      {
+        min-height: 300px;
+     //   padding-right: 20px;
+      } 
+      .modal-content.modal-content2{
+      padding-right:0px;
+      }
+      .talk_humn_img a {
+      margin-right:-30px;
+      }
+</style>
+<script>
+    function showThisSection(id)
+    {
+       $('#secTalkToHuman').css('display','none');
+       $('#'+id).css('display','block');
+       $('#dvsecRequestACallinner').show();
+       $('#submitbtn').show();
+       
+       document.getElementById('pid:j_id1:comId:frmRequestACall:txtReqEmail').value = '';
+       document.getElementById('pid:j_id1:comId:frmRequestACall:RCEmail').value = '';
+       document.getElementById('pid:j_id1:comId:frmRequestACall:RCPhone').value = '';
+       
+    }
+    function autoCosewindowTTH()
+    {
+        var success = document.getElementById('pid:j_id1:comId:frmRequestACall:success').value;
+        if(success == "true")
+        {
+           /* $('#dvsecRequestACallinner').hide();
+            $('#submitbtn').hide();*/
+            window.setTimeout(ClosepopUpTTH, 5000);
+        }
+            
+    }
+    function ClosepopUpTTH()
+    {
+        $('#customerSupportPopUp').addClass('csdisplaynone');
+        $('#secTalkToHuman').css('display','block');
+        $('#secRequestACall').css('display','none');
+        resetPopup();
+    }
+</script>
+<!--Popup start here-->
+<div class="modal" id="myModal3">
+    <div class="modal-dialog">
+      <div class="modal-content modal-content2 popup_modalcontent cstm_pop_cont">
+        <div class="modal-header cstm_modal_header">
+          <button type="button" class="close pop_close gray_col" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title text-center">Talk To <strong>Human</strong></h4>
+          <h5 class="h5">We are here to help</h5>
+        </div>
+        <div class="modal-body">
+        
+          <section class="col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" id="secTalkToHuman" style="display: block;">
+                 <article class="row talk_sapce">
+                     <div class="col-md-6 col-xs-6 talk_humn_list">Call Us</div>
+                        <div class="col-md-6 col-xs-6 talk_humn_img"><a href="#" style="text-decoration:none;">{!$Label.acfCustomer_Support_Contact_No}</a></div>
+                    </article>
+                 <article class="row talk_sapce">
+                     <div class="col-md-6 col-xs-6 talk_humn_list">Request a call</div>
+                        <div class="col-md-6 col-xs-6 talk_humn_img"><a class="talk_reqCall" href="#" onclick="showThisSection('secRequestACall');" style="text-decoration:none;">&nbsp;</a></div>
+                    </article>
+                    
+                 <article class="row talk_sapce">
+                     <div class="col-md-6 col-xs-6 talk_humn_list">Skype</div>
+                        <div class="col-md-6 col-xs-6 talk_humn_img"><a class="talk_skype" href="skype:austcreditandfinance" style="text-decoration:none;">&nbsp;</a></div>
+                    </article>                    
+                </section> 
+                                <!-- Request a call Start -->
+            <section id="secRequestACall" style="display:none;">
+               <apex:form id="frmRequestACall" styleclass="form-horizontal">
+                   <apex:actionFunction name="VerifyReqMail" action="{!VerifyEmail}" rerender="pnlReqEmailVerify,txtReqEmail" status="Loadstatus"/><!-- pnlReqEmailVerify -->
+                    <apex:actionFunction name="resetPopup" action="{!ResetPopup}" rerender="frmRequestACall"/>
+                        <div id="dvsecRequestACallinner">
+                          <apex:outputPanel id="pnlReqEmailVerify">
+                           <div class="form-group cstm_form_grp">
+                           <label class="control-label col-md-2 col-md-offset-1"></label>
+                          <div class="col-md-8 col-xs-12">
+                               <apex:outputPanel id="msgPanelId" rendered="{!if(strReqErrorMsg != null && strReqErrorMsg != '', true,false)}"><p style="{!if(success == 'true','color:#3F6ABA;','color:red;')}text-align:center;font-size:1.1em;">{!strReqErrorMsg}</p></apex:outputPanel>
+                           </div>
+                           </div>
+                           <div class="form-group cstm_form_grp">
+                                  <label class="control-label col-md-2 col-md-offset-1" for="Name">Name</label>
+                                  <div class="col-md-8 col-xs-12">
+                                    <apex:inputText value="{!strReqName}" styleClass="form-control cstm_input" id="txtReqEmail"/>   
+                                  </div>
+                                </div>
+                                
+                                <div class="form-group cstm_form_grp">
+                                  <label class="control-label col-md-2 col-md-offset-1" for="email">Email</label>
+                                  <div class="col-md-8 col-xs-12">                                
+                                   <apex:inputText id="RCEmail" value="{!strReqEmail}" styleClass="form-control cstm_input" onblur="VerifyReqMail();"/>
+                                   <span style="{!IF(isEmailVerified,'display:block;','display:none;')} left: 100%;">&nbsp;</span>  
+                                   <apex:actionstatus id="Loadstatus" starttext="verifying">
+                                    <apex:facet name="start">
+                                        <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                                    </apex:facet>
+                                   </apex:actionStatus>
+                                  </div>
+                                </div> 
+                               </apex:outputPanel> 
+                                <div class="form-group cstm_form_grp">
+                                  <label class="control-label col-md-2 col-md-offset-1" for="Phone">Phone</label>
+                                  <div class="col-md-8 col-xs-12 plcholder_61 clsOnlynumeric" >
+                                    <apex:inputText id="RCPhone" value="{!strReqPhone}" styleClass="form-control cstm_input"/>
+                                  </div>
+                                </div>                                
+                                 <script>
+                                    $('.clsOnlynumeric').keypress(function(e) {
+                                        var keyCode;
+                                        if (window.event) // IE
+                                        {
+                                            keyCode = e.keyCode;
+                                        }
+                                        else if (e.which) // Netscape/Firefox/Opera
+                                        {
+                                            keyCode = e.which;
+                                        }
+                                        //alert(keyCode == undefined);
+                                       // alert($(this).val());            
+                                        return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8));
+                                    });    
+                                </script>
+                                </div>
+                            
+                                <div class="form-group">        
+                                  <div class="col-md-offset-4 col-md-5 col-xs-12 col-xs-offset-0">
+                                     <apex:commandButton value="Request A Call" oncomplete="autoCosewindowTTH();" action="{!RequestACall}" reRender="frmRequestACall" styleclass="btn btn-default col-md-12 col-xs-12 cstm_btn_input" status="LoadstatusReq"/>
+                                        <apex:inputhidden id="success" value="{!success}"/>
+                                        <apex:actionstatus id="LoadstatusReq" starttext="verifying">
+                                            <apex:facet name="start">
+                                                <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                                            </apex:facet>
+                                        </apex:actionStatus>
+                                  </div>
+                                </div>   
+                                <p class="creat-acount">Don’t worry, it’s free and your details are safe with us</p>
+                             </apex:form>       
+                 </section>                                                                                                     
+        </div>
+      </div>
+    </div>
+</div>
+<!--Pop up close here-->
+</apex:component>

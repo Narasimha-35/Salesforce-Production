@@ -1,0 +1,6 @@
+<apex:page StandardController="vhc__Proxy__c" extensions="vhc.Ctrl02Proxy" action="{!init}">
+<apex:sectionHeader title="{!$Label.New_Proxy}" subtitle="{!$Label.Proxy_Edit}" rendered="{!obj.id==null}"/>
+<apex:outputText value="{!$Label.Proxy_Description}" rendered="{!ISValid}"/>
+<apex:pageMessages />
+<br/>&nbsp; 
+</apex:page>

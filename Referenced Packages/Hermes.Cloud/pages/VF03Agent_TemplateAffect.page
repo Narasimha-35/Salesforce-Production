@@ -1,0 +1,59 @@
+<apex:page tabStyle="vhc__Agent__c" controller="vhc.Ctrl03Agent_TemplateAffect" title="{!CompanyName}">
+	<apex:sectionHeader title="{!$Label.Site_Edit}" subtitle="{!CompanyName}" />
+	<apex:outputText escape="false" value="{!$Label.Assign_Agents_To_Campaign} " rendered="{!mode=='INBOUND'}" /><apex:outputText style="font-weight:bold;" value="'{!inCampaign.Name}'" rendered="{!mode=='INBOUND'}"/>
+	<apex:outputText escape="false" value="{!$Label.Assign_Agents_To_Campaign} " rendered="{!mode=='OUTBOUND'}" /><apex:outputText style="font-weight:bold;" value="'{!outCampaign.Name}'" rendered="{!mode=='OUTBOUND'}"/>
+	<br/><br/>
+	
+	<apex:pageMessages />
+	
+	<!-- INBOUND MODE And there is a queue on inbound campaign-->
+	
+	<apex:form rendered="{!mode=='INBOUND' && inCampaign.vhc__Queue__c != null}" >
+		<apex:pageBlock >
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton action="{!save}" value="{!$Label.Save}" />
+				<apex:commandButton action="{!cancel}" value="{!$Label.Cancel}" rendered="{!NOT(inCreation)}"/>
+			</apex:pageBlockButtons>
+			<apex:pageBlockTable value="{!extendedAgents}" var="ea">
+				<apex:column headerValue="{!$Label.Assigned}" style="text-align:center;width:50px;">
+					<apex:inputcheckbox value="{!ea.assigned}" />
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.vhc__Agent__c.fields.Name.label}" style="width:100px;">
+					<apex:outputLink value="/{!ea.agent.Id}">{!ea.agent.Name}</apex:outputLink>
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.vhc__Agent__c.fields.vhc__User__c.label}">
+					<apex:outputField value="{!ea.agent.vhc__User__c}" />
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.vhc__Agent__c.fields.vhc__Extension__c.label}">
+					<apex:outputField value="{!ea.agent.vhc__Extension__c}" />
+				</apex:column>
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+	</apex:form>
+	
+	<!-- OUTBOUND MODE -->
+	
+	<apex:form rendered="{!mode=='OUTBOUND'}" >
+		<apex:pageBlock >
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton action="{!save}" value="{!$Label.Save}" />
+				<apex:commandButton action="{!cancel}" value="{!$Label.Cancel}" rendered="{!NOT(inCreation)}"/>
+			</apex:pageBlockButtons>
+			<apex:pageBlockTable value="{!extendedAgents}" var="ea">
+				<apex:column headerValue="{!$Label.Assigned}" style="text-align:center;width:50px;">
+					<apex:inputcheckbox value="{!ea.assigned}" />
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.vhc__Agent__c.fields.Name.label}" style="width:100px;">
+					<apex:outputLink value="/{!ea.agent.Id}">{!ea.agent.Name}</apex:outputLink>
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.vhc__Agent__c.fields.vhc__User__c.label}">
+					<apex:outputField value="{!ea.agent.vhc__User__c}" />
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.vhc__Agent__c.fields.vhc__Extension__c.label}">
+					<apex:outputField value="{!ea.agent.vhc__Extension__c}" />
+				</apex:column>
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+	</apex:form>
+
+</apex:page>

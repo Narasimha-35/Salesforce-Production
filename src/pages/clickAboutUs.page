@@ -1,0 +1,103 @@
+<apex:page docType="html-5.0" cache="false" standardStylesheets="false" showHeader="false" controller="WLAboutus">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<c:ClickMetaHeader ></c:ClickMetaHeader>
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<title>About Us | Click Loans</title>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+<script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/js.js')}"></script>
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/> 
+
+<c:ClickWebsiteOptimizer ></c:ClickWebsiteOptimizer> 
+<style>
+/**************for pop up close button style here*********/
+a.pop-close{
+display:none;
+}
+.plcholder_61:before {
+          left:28px;
+          top: 14px;
+          color: #999;
+    }
+@media (max-width: 800px){
+a.pop-close{
+background-color: #39B1EB;
+color: #fff;
+padding: 5px 10px;
+position: absolute;
+left:40%;
+top: 0px;
+box-shadow: #39B1EB -1px -1px 2px;
+display:block;
+}
+a.pop-close:hover{
+background-color:#47CFEB;
+box-shadow: #47CFEB -1px -1px 2px;
+}
+a.pop-close span{padding-left:10px;}
+}
+body{background-color:#fff;}
+/**************for pop up close button style here close*********/
+
+ .header{box-shadow:none;}
+</style>
+</head>
+<body>
+<c:ClickMobileHeaderMenu ></c:ClickMobileHeaderMenu>
+<main class="container-fluid">
+<header class="row">
+<div class="header">
+  <c:ClickHeader ></c:ClickHeader>
+</div>
+</header><!--row fluid close-->
+
+<section class="row aprl_heading">
+    <div class="container container_cstm">
+        <header class="apel_text_head">{!strPagetitle}</header>
+    </div>
+</section><!--secton how work close-->
+
+<section class="row">
+    <div class="container container_cstm">
+        <article class="col-md-12 april_article">
+            <p>{!strDescription}</p>
+        </article>
+        
+        <section class="col-md-12">
+           <div class="row">
+            <h3 class="april_heading_text">Our Team</h3>
+            <apex:variable value="{!0}" var="i"/>
+            <apex:repeat value="{!lstAboutUs}" var="objAboutUs">
+                <article class="col-md-6 col-xs-12 article_sec">
+                    <figure class="row">
+                        <div class="col-md-3 col-xs-12"><div class="row"><apex:image value="{!$Label.acfSite_Url}{!objAboutUs.acfDescriptionImageURL__c}" alt="About Us" title="About Us" styleClass="april_art_img"/></div></div>
+                        <figacaption class="col-md-9 col-xs-12 apr_prgph_art_section">
+                            <h4 class="row">{!objAboutUs.acfHeading__c}</h4>
+                            <p class="row"><apex:outputtext value="{!objAboutUs.acfDescription__c}" escape="false"/></p>
+                        </figacaption>
+                    </figure><!--row fluid close-->
+                </article><!--article close first here-->
+                <apex:outputPanel rendered="{!if(MOD(i,2) == 1,true,false)}">
+                    <div class="clearfix"></div>
+                </apex:outputPanel>
+                <apex:variable value="{!i+1}" var="i"/>
+            </apex:repeat>   
+          </div>     
+        </section>
+  </div><!--container close-->
+</section><!--row fluid close-->
+<!---Footer start here--------------->
+<footer class="footer april_footer row">
+   <c:acfFooter ></c:acfFooter>
+</footer><!--footer close--><!--footer close-->
+
+</main><!--main div close-->
+</body>
+</apex:page>

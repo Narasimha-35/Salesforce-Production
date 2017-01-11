@@ -1,0 +1,5 @@
+<apex:page standardcontroller="Zendesk__Zendesk_Ticket__c" showHeader="false" sidebar="false" >
+    <script language="javascript">
+        window.top.location.href="/apex/ZendeskTicketEdit"
+    </script>
+</apex:page>

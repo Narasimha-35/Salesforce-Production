@@ -1,0 +1,74 @@
+<apex:page standardController="smagicinteract__SMS_Template_Type__c" extensions="smagicinteract.TemplateTypeConfigurationController" tabStyle="SMS_Magic_Settings__tab">
+<script>
+	function addTitle(obj){ 
+		obj.title = obj.value;
+	}
+</script>
+<apex:form >
+<apex:pageMessages />
+
+<apex:pageBlock id="mainBlock" title="Configure New SMS Template Type">
+	<table>
+		<tr>
+			<td><apex:outputLabel styleClass="labelCol" value="Object API Name" for="objectList"/></td>
+			<td><apex:outputLabel styleClass="labelCol" value=" :" /></td>
+			<td>
+				<apex:selectList size="1" id="objectList" value="{!selectedObject}" style="width:170px;">
+					<apex:actionSupport event="onchange" rerender="relatedObjectList" />
+					<apex:selectOption itemValue="" itemLabel="Choose Object" />
+				    <apex:selectOptions value="{!objectList}"/>
+			    </apex:selectList>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<apex:inputCheckbox value="{!checkBoxVal}" >
+					<apex:actionSupport event="onchange" action="{!renderUI}" />
+				</apex:inputCheckbox>
+				<apex:outputLabel styleClass="labelCol" value="Select related objects"/>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><apex:outputLabel styleClass="labelCol" value="Related Object API Name" for="relatedObjectList" rendered="{!showSelectedRelatedObjects}"/></td>
+			<td><apex:outputLabel styleClass="labelCol" value=" :" rendered="{!showSelectedRelatedObjects}"/></td>
+			<td>
+				<apex:selectList size="1" id="relatedObjectList" value="{!selectedRelatedObjectToAdd}" style="width:170px;" rendered="{!showSelectedRelatedObjects}">
+				    <apex:selectOption itemValue="" itemLabel="Choose Related Object" />
+				    <apex:selectOptions value="{!relatedObjectList}"/>
+			    </apex:selectList>
+			</td>
+			<td>&nbsp;</td>
+			<td>
+				<apex:commandButton action="{!addToList}" value="   Add    " title="Add Related Object" style="left-padding:10px;" rendered="{!showSelectedRelatedObjects}"/>
+			</td>
+		</tr>
+		<tr>
+			<td><apex:outputLabel styleClass="labelCol" value="Selected Related Objects" for="objectList" rendered="{!showSelectedRelatedObjects}" /></td>
+			<td><apex:outputLabel styleClass="labelCol" value=":" rendered="{!showSelectedRelatedObjects}" /></td>
+			<td>
+			<!--	<apex:inputTextarea id="selectedRelatedObjects" value="{!selectedRelatedObjectStr}" readonly="true" style="height:50px; width:200px;" rendered="{!showSelectedRelatedObjects}"/>
+				-->
+			<apex:selectList multiselect="true" size="5" id="selectedObjectDisplayList" value="{!selectedRelatedObject}" style="width:170px;" onClick="addTitle(this)" rendered="{!showSelectedRelatedObjects}">
+				    
+				    
+				    <apex:selectOptions value="{!selectedObjectDisplayList}"/>
+			    </apex:selectList>
+			</td>
+			<td>&nbsp;</td>
+			<td>
+				<apex:commandButton action="{!removeFromList}" value="Remove" title="Remove Related Object" style="left-padding:10px;" rendered="{!showSelectedRelatedObjects}" rerender="selectedObjectDisplayList"/>
+			</td>
+		</tr>
+	</table>
+
+	<apex:pageBlockButtons location="bottom">
+	  	<apex:commandButton action="{!save}" value="Save" title="Save" rendered="{!IF(showEditButton == false, true,false)}"/>
+	  	<apex:commandButton action="{!edit}" value="Save" title="Save" rendered="{!showEditButton}"/>
+		<apex:commandButton action="{!cancel}" value="Cancel" title="Cancel"/>
+	</apex:pageBlockButtons>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

@@ -1,0 +1,38 @@
+<apex:page controller="Zendesk.ZendeskSettingsDetails" tabStyle="Zendesk__tab" > 
+    <apex:sectionHeader title="Zendesk" subtitle="Settings Details" />
+    <apex:form >
+        <apex:outputPanel id="wrapper">
+            
+            <apex:pageBlock rendered="{!NOT(ShowSettings)}" id="pw" mode="maindetail">
+                <apex:inputSecret value="{!pw}" title="Password" />
+                <apex:commandButton value="Show" rerender="wrapper" />
+            </apex:pageBlock>
+            
+            <apex:pageBlock rendered="{!ShowSettings}" id="settings" mode="maindetail">
+                <apex:pageBlockButtons location="top">
+                    <apex:commandButton rerender="wrapper" value="Refresh"/>
+                    <!--<apex:commandButton action="{!exportSettings}" rerender="wrapper" value="Export"/>-->
+                </apex:pageBlockButtons>
+                <apex:pageBlockSection title="Org Settings">
+                    <apex:pageBlockTable value="{!OrgMappings}" var="mapping">
+                        <apex:column headerValue="Name" value="{!mapping.Name}" />
+                        <apex:column headerValue="Value" value="{!mapping.Zendesk__organization_Field__c}" />
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="Contact Settings">
+                    <apex:pageBlockTable value="{!ContactMappings}" var="mapping">
+                        <apex:column headerValue="Name" value="{!mapping.Name}" />
+                        <apex:column headerValue="Value" value="{!mapping.Zendesk__contactField__c}" />
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="Lead Settings">
+                    <apex:pageBlockTable value="{!LeadMappings}" var="mapping">
+                        <apex:column headerValue="Name" value="{!mapping.Name}" />
+                        <apex:column headerValue="Value" value="{!mapping.Zendesk__Zendesk_Lead_Field__c}" />
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

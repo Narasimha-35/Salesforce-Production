@@ -1,0 +1,58 @@
+<apex:page standardController="smagicinteract__Optout_Settings__c" extensions="smagicinteract.OptoutSettingsExtension">
+<apex:form >
+<apex:pageMessages id="pagemsg"/>
+<apex:pageBlock title=" Opt out field Configuration">
+    <table border="0" style="margin-top:10px;">
+    <tr style="height:40px;">   
+        <td style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: right; font-size: 91%; font-weight: bold;">Object Name : </td>
+        <td>    
+         
+          <apex:selectList id="allObjectDropDown" value="{!smagicinteract__Optout_Settings__c.smagicinteract__Object_Name__c}"  size="1" style="margin-left:15px;width:150px;">
+           <apex:actionSupport event="onchange" rerender="optoutFieldDropDown" />
+                <apex:selectOption itemValue="" itemLabel="Choose Object"/>
+                <apex:selectOptions value="{!lookupObjects}" />  
+          </apex:selectList>
+        </td>
+    </tr>
+
+    <tr style="height:40px;">   
+        <td style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: right; font-size: 91%; font-weight: bold;">Optout Field Name : </td>
+        <td>
+          
+          <apex:selectList id="optoutFieldDropDown" value="{!smagicinteract__Optout_Settings__c.smagicinteract__Optout_Field__c}" size="1" style="margin-left:15px;width:150px;">
+                <apex:selectOption itemValue="" itemLabel="Choose Field"/>
+                <apex:selectOptions value="{!optOutFieldsForSelectedObject}" />  
+          </apex:selectList>
+      </td>
+    </tr>
+     
+   <tr style="height:40px;">
+        <td style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: right; font-size: 91%; font-weight: bold;">Keyword : </td>
+        <td>
+            <apex:inputField value="{!smagicinteract__Optout_Settings__c.smagicinteract__Keyword__c}" style="margin-left:15px;" />
+        </td>
+    </tr>
+    <!--
+    <tr style="height:40px;">
+        <td style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: right; font-size: 91%; font-weight: bold;">Keyword 2 : </td>
+        <td>
+           <apex:inputField value="{!Optout_Settings__c.Keyword_2__c}" style="margin-left:15px;" />
+        </td>
+    </tr>
+    
+    <tr style="height:40px;">
+        <td style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: right; font-size: 91%; font-weight: bold;">Keyword 3 : </td>
+        <td>
+           <apex:inputField value="{!Optout_Settings__c.Keyword_3__c}" style="margin-left:15px;" />
+        </td>
+    </tr>
+     -->
+    </table>
+          
+    <apex:pageBlockButtons location="bottom">
+        <apex:commandButton action="{!save}" value="Save" title="Save Optout Settings" />
+        <apex:commandButton action="{!Cancel}" value="Cancel" title="Cancel"/>
+    </apex:pageBlockButtons>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

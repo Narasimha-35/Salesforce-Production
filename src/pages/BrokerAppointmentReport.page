@@ -1,0 +1,170 @@
+<apex:page controller="BrokerAppointmentReportBrokerController" sidebar="false" docType="html-5.0">
+    <head>
+        <style>
+            .ph-button {
+                border-style: solid;
+                border-width: 0px 0px 3px;
+                box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.1) inset;
+                color: #FFFFFF;    
+                border-radius: 6px;
+                cursor: pointer;
+                display: inline-block;
+                font-style: normal;
+                overflow: hidden;
+                text-align: center;
+                text-decoration: none;
+                text-overflow: ellipsis;
+                transition: all 200ms ease-in-out 0s;
+                white-space: nowrap;    
+                font-family: "Gotham Rounded A","Gotham Rounded B",Helvetica,Arial,sans-serif;
+                font-weight: 700;   
+                padding: 10px 19px;
+                font-size: 18px;
+                
+            }
+            .ph-btn-blue {
+                border-color: #326E99;
+                background-color: #3F8ABF;
+            }
+            
+            .ph-btn-blue:hover, .ph-btn-blue:focus, .ph-btn-blue:active {
+                background-color: #397CAC;
+                border-color: #326E99;   
+            }
+        </style>
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+        <script>
+            function completeFancySlide() {
+                var formId = $('#uniqueAppId').val();
+                $('#appointmentPanel' + formId).toggle("slide", { direction: "right" }, 1000);
+            }
+            
+            function toggleForm(formId) {
+                $('#appointmentReportForm' + formId).toggle("slide", { direction: "up" }, 1000);
+            }
+            function toggleText(formId) {
+                $('#action' + formId).toggle("slide", { direction: "up" }, 500);
+            }
+            function toogleOppoStage(formId) {
+                $('#oppStage' + formId).toggle("slide", { direction: "up" }, 500);
+            }
+            function oppoStatusOnChange(sel, formId) {
+                 if (sel.value == 'Work In Progress') {
+                    $('#cl' + formId).hide();
+                    $('#fo' + formId).hide();
+                    $('#sad' + formId).hide();
+                 } else if (sel.value == '2nd Appt Booked') {
+                    $('#cl' + formId).hide();
+                    $('#fo' + formId).hide();
+                    $('#sad' + formId).show();
+                 } else if (sel.value == 'Future Opportunity') {
+                    $('#cl' + formId).hide();
+                    $('#fo' + formId).show();
+                    $('#sad' + formId).hide();
+                 } else if (sel.value == 'Closed Won - Signed') {
+                    $('#cl' + formId).hide();
+                    $('#fo' + formId).hide();
+                    $('#sad' + formId).hide();
+                 } else if (sel.value == 'Closed Lost') {
+                    $('#cl' + formId).show();
+                    $('#fo' + formId).hide();
+                    $('#sad' + formId).hide();
+                 }
+            }
+            function saveCurrentAppointment(formId) {
+                $('#uniqueAppId').val(formId);
+                completeFancySlide();
+                saveProcess(formId, $('.presalesActionCK'+formId).is(":checked"), $('.actionContenctInput'+formId).val(), $('.needhelp'+formId).is(":checked"));
+            }
+        </script>
+    </head>
+<!-- Begin Default Content REMOVE THIS -->
+    <!-- List all the appointments that belong to this broker -->
+    <apex:pageblock >
+        <apex:message ></apex:message>
+        <apex:form >
+            <input type="hidden" value="" id="uniqueAppId" />
+            <h1>My Unreported Appointments</h1><br/><br/>
+            <apex:outputPanel id="OuterADPanel">
+            <apex:outputPanel id="ADPanel">   
+            <apex:repeat value="{! appointments}" var="appointment">
+                <div id="appointmentPanel{!appointment.Id}" style="width:100%; margin-bottom : 20px;">
+                    <span><b>{! appointment.Name}</b></span><br/><br/>
+                    <span>Appointment Status And Type : </span><span>{! appointment.Appointment_Status__c} - {! appointment.Appointment_Type__c}</span><br/>
+                    <span>Appointment Date And Time : </span> <apex:outputField value="{! appointment.Appointment_Date_and_Time__c}" /><br/>
+                    <span>Customer Name : </span><apex:outputText value="{! appointment.Account_Name_Text__c}"></apex:outputText><br/>
+                    <span>Customer Email : </span><span>{! appointment.Account_Email__c}</span><br/>
+                    <span>Customer Phone Number : </span><span>{! appointment.Phone__c}</span><br/>
+                    <span>Customer Mobile Number : </span><span>{! appointment.Mobile__c}</span><br/>
+                    <span>Customer Address : </span><span>{! appointment.Street_Address__c}&nbsp;{! appointment.City__c}&nbsp;{! appointment.State__c}&nbsp;{! appointment.Postal_Code__c}</span><br/>
+                    <span>Presales : </span><span>{! appointment.Pre_Sales_User__c}</span><br/><br/>
+                    <input type="button" value="Report" id="openForm" onclick="toggleForm('{!appointment.Id}')" class='ph-button ph-btn-blue'/>
+                    <br/>
+                    <div id="appointmentReportForm{!appointment.Id}" style="display: none; border:1px solid #C7EDCC; background-color:#C7EDCC">
+                        <div>
+                            <span>Appointment Status : </span>
+                            <apex:selectList value="{! appointment.Appointment_Status__c}" onchange="toogleOppoStage('{!appointment.Id}')" size="1">
+                                <apex:selectOptions value="{!appStatusItems}"/>
+                            </apex:selectList>
+                        </div>
+                        <br/>
+                        <div>
+                            <span>Potential Deal : </span>
+                            <apex:inputCheckbox value="{!appointment.Potential_Deal__c}"></apex:inputCheckbox>
+                        </div>
+                        <br/>
+                        <div>
+                            <span>STP Forecast Date : </span>
+                            <apex:inputField value="{!appointment.STP_Forecast_Date__c}"></apex:inputField>
+                        </div>
+                        <br/>
+                        <div id="oppStage{!appointment.Id}">
+                            <span>Opportunity Stage : </span>
+                            <apex:selectList value="{! appointment.Opportunity__r.StageName}" size="1" onchange="oppoStatusOnChange(this, '{!appointment.Id}')">
+                                <apex:selectOptions value="{!OppoStatusItems}"/>
+                            </apex:selectList>
+                            <br/> <br/>
+                            <div id="cl{!appointment.Id}" style="display:none">
+                                <apex:selectList value="{! appointment.Opportunity__r.Closed_Lost_Reason__c}" multiselect="true">
+                                    <apex:selectOptions value="{!closedLostReasons}"/>
+                                </apex:selectList>
+                            </div>
+                            <div id="fo{!appointment.Id}" style="display:none">
+                                Future Followed Date&nbsp;&nbsp;:&nbsp;&nbsp;<apex:inputField html-class="foclass{!appointment.Id}" value="{! appointment.Opportunity__r.Future_Followed_Date__c}" />
+                            </div>
+                            <div id="sad{!appointment.Id}" style="display:none">
+                                Second Appointment Date&nbsp;&nbsp;:&nbsp;&nbsp;<apex:inputField html-class="sadclass{!appointment.Id}" value="{! appointment.Opportunity__r.Second_Appointment_Date__c}"/>
+                            </div>
+                            
+                        </div>
+                        <div>
+                            <p>Opportunity Comments</p>
+                            <apex:inputTextarea id="newDesc" cols="100" rows="5" value="{! appointment.Opportunity__r.Description}"/>
+                        </div>
+                        <div>
+                            <apex:inputCheckbox html-class="presalesActionCK{!appointment.Id}" onclick="toggleText('{!appointment.Id}')"/> Pre-sales Action Required <br/>
+                            <div id="action{!appointment.Id}" style="display:none">
+                                <apex:inputTextarea html-class="actionContenctInput{!appointment.Id}" id="newActionContent" cols="100" rows="5"/>
+                            </div>
+                        </div>
+                        <div>
+                            <apex:inputCheckbox html-class="needhelp{!appointment.Id}" /> Scenario Help Required <br/>
+                        </div>
+                        <br/>
+                        <input type="button" onclick="saveCurrentAppointment('{!appointment.Id}');return false;" value="Submit" id="saveButton" class='ph-button ph-btn-blue'/>
+                    </div>
+                </div>
+            </apex:repeat>
+            </apex:outputPanel>
+            </apex:outputPanel>
+            <apex:actionFunction action="{! saveAndProcess}" name="saveProcess" reRender="">
+              <apex:param name="appointmentId" value="" assignTo="{! currentAppointmentId}"/>
+              <apex:param name="actionRequired" value="" assignTo="{! presalesAction}"/>
+              <apex:param name="content" value="" assignTo="{! actionContent}"/>
+              <apex:param name="needHelpLink" value="" assignTo="{! needHelp}"/>
+            </apex:actionFunction>
+        </apex:form>    
+    </apex:pageblock>
+<!-- End Default Content REMOVE THIS -->
+</apex:page>

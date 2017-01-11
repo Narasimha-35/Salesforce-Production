@@ -1,0 +1,96 @@
+<apex:page StandardController="vhc__Extension__c" extensions="vhc.Ctrl04ExtensionCJ" action="{!init}">
+<apex:includeScript value="{!$Resource.vhc__JQuery}"/>
+<script>
+$(function($) { 
+    CheckStationType();
+    
+    $('.default_trunk_type input').click(function() {
+        var IsCheked = this.checked;
+        if(IsCheked)
+        {
+            $('.trunk_type input').val('0');
+            $('.trunk_type input').attr('readonly', true);
+            $('.trunk_type input').addClass('disable_input');
+        }
+        else
+        {
+            $('.trunk_type input').attr('readonly', false);
+            $('.trunk_type input').removeClass('disable_input');
+        }
+        
+    });
+    
+    $(".save_button").click(function() {
+            var myVal = $(".ACD_station").val(); 
+            var res = '';
+            
+            for (var i = 0; i < myVal.length; i++) {
+              if((!isNaN(myVal[i]) && myVal[i] != ' ') || (i==0 && myVal[i] == '+'))
+                res += myVal[i];
+            }
+            
+            $(".ACD_station").val(res);
+        });
+    $(".type_data").change( function() {
+        CheckStationType();
+    });
+});
+
+    function CheckStationType()
+    {
+        $('.free_data').hide();
+        $('.sip_data').hide();
+        if(document.querySelector('.type_data').value == 'Free number'){
+        	$('.free_data').show();
+        } else if(document.querySelector('.type_data').value == 'Station SIP'){
+        	$('.sip_data').show();
+        } else {}
+        /*var selectedIndex = $('option:selected', '.type_data').index();
+        if(selectedIndex == 1)
+        {
+            $('.sip_data').show();
+        }
+        if(selectedIndex == 0)
+        {
+            $('.free_data').show();
+        }*/
+    }
+</script>
+<style>
+
+.disable_input
+            {
+                background-color:#D2D2D2;
+            }
+</style>
+
+<apex:sectionHeader title="{!$Label.New_Extension}" subtitle="{!$Label.Extension_Edit}" rendered="{!obj.id==null}"/>
+<apex:sectionHeader title="{!$Label.Extension_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+<apex:outputText value="{!$Label.Extension_Description}" rendered="{!ISValid}"/>
+<apex:pageMessages /> 
+<br/>&nbsp;
+    <apex:form id="myForm" rendered="{!ISValid}">
+        <apex:pageBlock title="{!$Label.Extension_Edit}" mode="edit">
+            <apex:pageBlockButtons > 
+                <apex:commandButton action="{!Save}" value="{!$Label.Save}" styleclass="save_button"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/> 
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.Informations}">
+                <apex:inputField value="{!obj.vhc__Extension_ID__c}" rendered="{!obj.Id == null}" required="true"/> 
+                <apex:outputField value="{!obj.vhc__Extension_ID__c}" rendered="{!obj.Id != null}"/>
+                <apex:inputField value="{!obj.Name}" required="true"/>
+                <apex:inputField value="{!obj.vhc__Type__c}" styleClass="type_data" required="true"/>
+             </apex:pageBlockSection>
+             <apex:outputpanel styleclass="free_data">
+                 <apex:pageBlockSection title="{!$Label.Free_number_information}">    
+                    <apex:inputField value="{!obj.vhc__ACDStation__c}" styleClass="ACD_station"/> 
+                </apex:pageBlockSection> 
+            </apex:outputpanel>
+            <apex:outputpanel styleclass="sip_data">
+                 <apex:pageBlockSection title="{!$Label.SIP_Information}">    
+                    <apex:inputField value="{!obj.vhc__SIPEmbed__c}"/> 
+                </apex:pageBlockSection> 
+            </apex:outputpanel>
+        </apex:pageBlock>
+    </apex:form>
+ </apex:page>

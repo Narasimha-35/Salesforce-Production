@@ -1,0 +1,85 @@
+<apex:page controller="vhc.Utils_SelectPickListValue" showheader="false"
+	tabStyle="Task">
+	<apex:includeScript value="{!$Resource.vhc__JQuery}" />
+	<script type="text/javascript">
+       function setSender(objType, objName){
+       		var value='';
+       		var cbs = $("#tbl input");
+       		cbs.each(function(index) {
+			    if(this.checked &&this.id!='aplvHeader'){
+			    	value+=this.id+",";
+			    }
+			  });
+			if(value!='')value=value.slice(0,-1);
+			var sender = escape (getURLParameter("s").toString());
+            window.opener.setSenderValue(sender,value);     
+            window.close();
+       }
+      
+       function selecetAll(o){
+       		var cbs = $("#tbl input");
+       		if (o.checked==true)
+			cbs.each(function(index) {
+			    $(this).attr('checked', true);
+			  });
+			  else
+  			cbs.each(function(index) {
+			    $(this).attr('checked', flase);
+			  });
+       }
+       function getURLParameter(name) {
+		    return unescape(
+		        (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
+		    );
+	}	
+</script>
+	<style type="text/css">
+.pad {
+	margin: 12px 9px;
+}
+
+a {
+	text-decoration: none;
+}
+
+.secondaryPalette.bPageBlock {
+	background-color: red;
+}
+</style>
+	<div class="pad">
+		<apex:pageblock title="{!obj}" mode="edit">
+			<div id="tbl">
+				<div class="pad">
+					<input type="button" onclick="setSender()" value="Submit"
+						class="btn" />
+				</div>
+				<apex:pageblocktable value="{!picklist}" var="v">
+					<apex:column width="10px">
+						<apex:facet name="header">
+							<apex:outputpanel rendered="{!!isBoolean}" layout="none">
+								<input type="checkbox" id="aplvHeader"
+									onclick="selecetAll(this);" />
+							</apex:outputpanel>
+						</apex:facet>
+						<apex:outputpanel rendered="{!!isBoolean}" layout="none">
+							<input type="checkbox" id="{!v}" />
+						</apex:outputpanel>
+						<apex:outputpanel rendered="{!isBoolean}" layout="none">
+							<input type="radio" id="{!v}" name="rob" />
+						</apex:outputpanel>
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">
+							Name
+							</apex:facet>
+						<a href="javascript:void(0)" onclick="">{!v}</a>
+					</apex:column>
+				</apex:pageblocktable>
+			</div>
+			<div class="pad">
+				<input type="button" onclick="setSender()" value="Submit"
+					class="btn" />
+			</div>
+		</apex:pageblock>
+	</div>
+</apex:page>

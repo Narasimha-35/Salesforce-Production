@@ -1,0 +1,320 @@
+<apex:page StandardController="vhc__IncomingCampaign__c" extensions="vhc.Ctrl20IncomingCampaign"  action="{!init}">
+
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/jquery-1.7.2.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/jquery-ui-1.8.21.custom.min.js')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.vhc__Selectize, '/selectize.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.vhc__Selectize, '/selectize.css')}" />
+
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.WS_Ressource, 'CSS/slide_competence.css')}" /> 
+
+<!--  <apex:includeScript value="{!$Resource.JQuery}"/> -->
+
+<Style>
+.vf20IncomingCampaign .maxChannels_slider 
+    {
+        top: 5px;
+        margin: 0 0 10px;
+    }
+</Style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    CheckPhoneDisplay();
+    CheckOverflow();
+    CheckNationalFormat();
+    
+    $($.grep($('.Country_number_format option'),function(item){return $(item).val()=='{!obj.Country_number_format__c }';})).prop('selected', true);
+});
+    
+$(function($) { 
+    $('.phone_display').change(function() {
+        CheckPhoneDisplay();
+    });
+    
+    $('.overflow_move').change(function() {
+        CheckOverflow();
+    });
+    
+    $(".save_button").click(function() {
+            var myVal = $(".phone_specific input").val(); 
+            var res = '';
+            
+            for (var i = 0; i < myVal.length; i++) {
+              if((!isNaN(myVal[i]) && myVal[i] != ' ') || (i==0 && myVal[i] == '+'))
+                res += myVal[i];
+            }
+            
+            $(".phone_specific input").val(res);
+        });
+    });
+
+function CheckPhoneDisplay()
+{
+    var selectedIndex = $('option:selected', '.phone_display').index();
+    var selectedValue = $('option:selected', '.phone_display').val();
+    
+    if(selectedValue == "A Specific Phone Number")
+        {
+            $('.phone_specific').show();
+        }
+        else
+        {
+            $('.phone_specific').val('');
+            $('.phone_specific').hide();
+        }
+}
+
+function CheckNationalFormat()
+{
+    if($('.NNF_CBX').is(':checked')){
+        $('.Country_number_format').show();
+    } else {
+        $('.Country_number_format').hide();
+    }
+    
+}
+
+function CheckOverflow()
+{
+
+    var selectedIndex = $('option:selected', '.overflow_move').index();
+    var selectedValue = $('option:selected', '.overflow_move').val();
+
+    if(selectedValue == "2 - External Routing")
+        {
+            $('.route_dest').show();
+        }
+        else
+        {
+            $('.route_dest').val('');
+            $('.route_dest').hide();
+        }
+}
+
+
+function strStartsWith(str, prefix) {
+    return str.indexOf(prefix) == 0;
+}
+</script>
+
+<style>
+select
+        {
+            min-width:157px;
+        }
+        
+.label_style
+    {
+        vertical-align: inherit !important;
+    }
+
+</style>
+
+<apex:sectionHeader title="{!$Label.New_Incoming_Campaign}" subtitle="{!$Label.Incoming_Campaign_Edit}" rendered="{!obj.id==null}"/>
+<apex:sectionHeader title="{!$Label.Incoming_Campaign_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+<apex:outputText value="{!$Label.Incoming_Campaign_Description}" rendered="{!ISValid}"/>
+<apex:pageMessages />
+<br/>&nbsp;
+   
+   <apex:form id="myForm" rendered="{!AND(ISValid ,IsValidStatusGroup ,IsValidDid)}" styleClass="vf20IncomingCampaign"> 
+        
+        <apex:pageBlock title="{!$Label.Incoming_Campaign_Edit}" mode="edit" id="editblock">
+            
+            <!-- Button block -->
+            
+            <apex:pageBlockButtons > 
+                <apex:commandButton action="{!Save}" value="{!$Label.Save}" styleclass="save_button"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/> 
+            </apex:pageBlockButtons>
+            
+            <!-- Information block section -->
+            
+            <apex:pageBlockSection title="{!$Label.Informations}" id="information">
+                <apex:inputField value="{!obj.Name}" required="true"/>
+                <apex:outputField value="{!obj.vhc__Customer__c}"/>
+                <apex:inputField value="{!obj.vhc__Language__c}" required="true"/>
+                
+                <apex:pageBlockSectionItem >
+                    {!$ObjectType.vhc__IncomingCampaign__c.fields.vhc__Queue__c.label}
+                    <apex:selectList value="{!obj.vhc__Queue__c}" size="1" styleClass="option_list">
+                        <apex:selectOptions value="{!AvailableQueues}"/>
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!obj.vhc__Priority__c}" required="true"/>
+                
+                <!-- Max channels -->
+                
+<!--                <apex:pageBlockSectionItem >  -->
+<!--                <apex:pageBlockSectionItem labelstyleclass="label_style">-->
+<!--                    <apex:outputLabel value="{!$ObjectType.IncomingCampaign__c.fields.Voice_Script_Name__c.label}"/>-->
+<!--                    <apex:inputText value="{!obj.Voice_Script_Name__c}" disabled="true"/>-->
+<!--                </apex:pageBlockSectionItem> -->
+<!--                <apex:pageBlockSectionItem labelstyleclass="label_style">-->
+<!--                        {!$ObjectType.IncomingCampaign__c.fields.Max_Channels__c.label}-->
+<!--                       <c:Slide_Bar result="{!obj.vhc__Max_Channels__c}" min="0" max="9999" objID="maxChannels"/> -->
+                <apex:inputField value="{!obj.vhc__Max_Channels__c}" required="true"/>
+<!--                </apex:pageBlockSectionItem>-->
+                <apex:inputField value="{!obj.vhc__Acd_Fax__c}" />
+                
+                
+                <apex:inputField value="{!obj.vhc__Phone_Display__c}" required="true" StyleClass="phone_display"/>
+                <apex:pageBlockSectionItem labelStyleClass="phone_specific" dataStyleClass="phone_specific phone_specific_data">
+                    {!$ObjectType.vhc__IncomingCampaign__c.fields.vhc__Phone_Display_Specific__c.label}
+                    <apex:inputText value="{!obj.vhc__Phone_Display_Specific__c}" />
+                </apex:pageBlockSectionItem>
+                
+                <!-- IVR selectize input -->
+                
+                <!-- 
+                
+                <div style="margin-left:30%;">
+                    <b>IVR</b> &nbsp;
+                    
+                    <select onchange="refreshIvr();" id="ivrselect" class="vhc" style="width:150px;">
+                    </select>
+                    
+                    <apex:inputText value="{!IvrPath}" id="IvrPath" style="width:500px;display:none;"/>
+                    <apex:inputText value="{!IvrName}" id="IvrName" style="width:500px;display:none;"/>
+                </div>
+                
+                 -->
+                <apex:inputField value="{!obj.vhc__National_Number_Format__c}"  styleClass="NNF_CBX" onchange="$('.Country_number_format').toggle()"/>
+                <apex:pageBlockSectionItem labelStyleClass="Country_number_format" dataStyleClass="Country_number_format" helpText="{!$ObjectType.vhc__IncomingCampaign__c.fields.vhc__Country_Number_Format__c.InlineHelpText}">
+                    <!-- TODO TRANSLATE -->
+                    <apex:outputText value="{!$ObjectType.vhc__IncomingCampaign__c.fields.vhc__Country_Number_Format__c.label}"/>
+                    <apex:selectList value="{!selectedCountry}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!countriesOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection> 
+            
+            <!-- Customer management block section -->
+            
+            <apex:actionFunction name="refreshUI" action="{!refreshUI}" rerender="myForm"/> 
+            
+            <apex:pageBlockSection title="{!$Label.Customer_Management}">
+                
+                <!-- Select a call status group or none -->
+                
+                <apex:pageBlockSectionItem >
+                    {!$ObjectType.vhc__IncomingCampaign__c.fields.vhc__Call_Status_Group__c.label}
+                    <apex:selectList onchange="refreshUI();" value="{!obj.vhc__Call_Status_Group__c}" size="1" styleClass="option_list">
+                        <apex:selectOptions value="{!AvailableCallStatusGroup}"/>
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <!-- Select call status items to record -->
+                
+                <apex:pageBlockSectionItem >
+                    Record for call status
+                    <apex:selectList id="recordTheseStatus" value="{!SelectedAutoRecords}" multiselect="true">
+                      <apex:selectOptions value="{!AvailableCallStatusItemForAutoRecord}"/>
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+             </apex:pageBlockSection>
+             
+             <!-- Message block section -->
+             
+             <apex:pageBlockSection title="{!$Label.Message}" columns="1">
+                <apex:pageBlockSection title="{!$Label.Interactive}">
+<!--                    <apex:inputField value="{!obj.vhc__Wait_Msg_Duration__c}" />-->
+                    <apex:pageBlockSectionItem labelstyleclass="label_style">
+                        {!$ObjectType.vhc__IncomingCampaign__c.fields.vhc__Wait_Msg_Duration__c.label}
+                         <c:Slide_Bar result="{!obj.vhc__Wait_Msg_Duration__c}" min="10" max="999" objID="waitmsgduration"/>
+                    </apex:pageBlockSectionItem> 
+                </apex:pageBlockSection>
+             </apex:pageBlockSection>
+             
+             <!-- Opening block section -->
+             
+             <apex:pageBlockSection title="{!$Label.Opening}" columns="1">
+                <apex:pageBlockSection title="{!$Label.Agenda}">
+                    <apex:pageBlockSectionItem >
+                        {!$ObjectType.vhc__IncomingCampaign__c.fields.vhc__Opening_Id__c.label}
+                        <apex:selectList value="{!obj.vhc__Opening_Id__c}" size="1" styleClass="option_list">
+                            <apex:selectOptions value="{!AvailableServiecHourGroup}"/>
+                        </apex:selectList> 
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        {!$ObjectType.vhc__IncomingCampaign__c.fields.vhc__Holiday_Id__c.label}
+                        <apex:selectList value="{!obj.vhc__Holiday_Id__c}" size="1" styleClass="option_list">
+                            <apex:selectOptions value="{!AvailableHoliays}"/>
+                        </apex:selectList> 
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+             </apex:pageBlockSection>
+             
+             <!-- Overflow block section -->
+             
+             <apex:pageBlockSection title="{!$Label.Overflow}" columns="1">
+                <apex:pageBlockSection title="{!$Label.Conditions}">
+                    <apex:inputField value="{!obj.vhc__Overflow_Wait_Time__c}" required="true"/>
+                    <apex:inputField value="{!obj.vhc__Overflow_Wait_Loop__c}" required="true"/>
+                    <apex:inputField value="{!obj.vhc__Overflow_Channels__c}" required="true"/>
+                    <apex:inputField value="{!obj.vhc__Overflow_Mode__c}" styleClass="overflow_move" required="true"/>
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem labelStyleClass="route_dest" dataStyleClass="route_dest">
+                        {!$ObjectType.vhc__IncomingCampaign__c.fields.vhc__Route_Dest__c.label}
+                        <apex:inputText value="{!obj.vhc__Route_Dest__c}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+           </apex:pageBlockSection> 
+           
+        </apex:pageBlock>
+    </apex:form>
+    
+    
+    <script>
+    
+    /*
+    
+    $.noConflict();
+    
+    mySelectize = $('#ivrselect').selectize(
+        {
+            preload: true,
+            valueField: 'path',
+            labelField: 'name',
+            searchField: 'name',
+            create: false,
+            options: [ 
+                {path:'none', name:'-- None --'},
+                {path:'{!voice_Script_Path_Json}', name:'{!obj.vhc__Voice_Script_Name__c}'}
+            ],
+            sortField: 'name',
+            load: function(query, callback) {
+                vhc.Ctrl20IncomingCampaign.getIvrList( function(result, event ) {
+                        if(event.status) {
+                            callback( result );
+                        }
+                    }
+                );
+            }
+        }
+    );
+    
+    mySelectize[0].selectize.setValue('{!voice_Script_Path_Json}');
+
+    function getIvrPath() {
+        return document.getElementById('{!$Component.myForm.editblock.information.IvrPath}');
+    }
+    
+    function getIvrName() {
+        return document.getElementById('{!$Component.myForm.editblock.information.IvrName}');
+    }
+
+    function refreshIvr() {
+        var path = mySelectize[0].selectize.getValue(); 
+        getIvrPath().value = path;
+        getIvrName().value = (mySelectize[0].selectize.getItem( JSON.stringify(path) )).prevObject[0].innerText;
+    }
+    
+    */
+
+    </script>
+    
+</apex:page>

@@ -1,0 +1,48 @@
+<apex:page >
+
+<style type="text/css">
+    .training h4.call { background:url({!URLFOR($Resource.img, 'call.png')}) scroll no-repeat 0 0}
+    .training h4.doc {background: url({!URLFOR($Resource.img, 'doc.png')}) scroll no-repeat 0 0}
+    .training h4.train {background: url({!URLFOR($Resource.img, 'training.png ')}) scroll no-repeat 0 0; }
+    
+    .training { margin: 50px auto 0;}
+    .training div {float: left;position: relative;width: 275px; margin: 0 20px;}
+    .training h4 { display: block;
+        font-size: 16px;
+        height: 32px;
+        line-height: 32px;
+        margin-bottom: 20px;
+        padding-left: 40px;}
+    .training ul { list-style: none outside none;
+        padding: 0 0 0 25px;}
+    .training ul li { line-height: 26px}
+    .training ul li a { cursor: pointer; text-decoration: underline;}
+    .training ul li a:hover  { text-decoration: none;}
+    .clearer { clear: both;}
+</style>
+
+<div class="training">
+    <div>
+        <h4 class="train">Online Training</h4>
+        <ul>
+            <li><a href="https://hermes-cloud.com/docs/HTML/Getting%20Started%20With%20Hermes%20Cloud/Getting%20Started%20With%20Hermes%20Cloud.htm">Getting Started with Hermes Cloud</a></li>
+            <li><a href="https://hermes-cloud.com/docs/HTML/Managing%20Your%20Company/Managing%20Your%20Company.htm">Managing your company</a></li>
+            <li><a href="https://hermes-cloud.com/docs/HTML/Managing%20your%20Agents/Managing%20your%20Agents.htm">Managing your agents</a></li>
+            <li><a href="https://hermes-cloud.com/docs/HTML/Managing%20Incoming%20Campaigns/Managing%20Incoming%20Campaigns.htm">Creating an inbound calls campaign</a></li>
+            <li><a href="https://hermes-cloud.com/docs/HTML/Managing%20Outbound%20Campaigns/Managing%20Outbound%20Campaigns.htm">Creating an outbound call campaign</a></li>
+        </ul>
+    </div>
+    
+    <div>
+    <h4 class="doc">Documentation</h4>
+        <ul>
+            <li><a href="https://hermes-cloud.com/docs/pdf/Hermes%20Cloud%20Agent%20&%20Supervision%20Guide%201.0.pdf">User Manual</a></li>
+            <li><a href="https://hermes-cloud.com/docs/pdf/Hermes%20Cloud%20Administration%20Guide%201.0.pdf">Administration Manual</a></li>
+            <li><a href="https://hermes-cloud.com/docs/pdf/Hermes%20Cloud%20Supervision%20Guide.pdf">Supervision Manual</a></li>
+        </ul>
+    </div>
+    
+    <div class="clearer"></div>
+</div>
+
+</apex:page>

@@ -1,0 +1,401 @@
+<apex:page standardController="CRMG_RS__Scheduled_Dashboard__c" extensions="CRMG_RS.DashBoardscheduler"  id="pg" sidebar="false">
+	<apex:sectionHeader title="Dashboard" subtitle="Scheduler" />
+	
+	<apex:includeScript value="{!URLFOR($Resource.CRMG_RS__ReportsScheduler, 'jQuery.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.CRMG_RS__ReportsScheduler, 'TreeView.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.CRMG_RS__ReportsScheduler, 'TreeViewSearch.js')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.CRMG_RS__ReportsScheduler, 'treeViewImage/jquery.treeview.css')}"/>
+	<apex:stylesheet value="{!URLFOR($Resource.CRMG_RS__autosuggest1,'autoSuggest.css')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.CRMG_RS__jqueryautosuggest,'jquery.autoSuggest.js')}"/>
+	 
+	  <script type="text/javascript"> 
+	    $(document).ready(function(){
+	        $("#browser").treeview({
+	            toggle: function() {
+	               //  console.log("%s was toggled.", $(this).find(">span").text());
+	            $(this).find(">span").text();
+	             }
+	        });
+	    });
+	    
+	    function putUrl(rName,rURL){
+	      document.getElementById('pg:frm:pb:pbs:pbsiRU:reportURL').value = rURL ;
+	      document.getElementById('pg:frm:pb:pbs:reportName').value = rName ;
+	 
+	      document.getElementById('pg:frm:pb:pbsEmail:txtSubject').value = 'Scheduled Dashboard - ' + rName ;
+	      
+	    }
+	    
+	    $(document).ready(function() {
+	    	if('{!allowAutoSuggest}' == 'true'){
+		    	var iCount = 0;
+		    	var cListArray = new Array;
+		    	$('ul.as-selections').each(function (){
+		    		cListArray.push($(this));
+		    	});
+		    	
+	    		$('input.as-values').each(function (){
+	    			var trgElement;
+		    		if(iCount == 0){
+		    			trgElement = '{!JSENCODE(CurrentSR.Email_To__c)}';
+		    		}else if(iCount == 1){
+		    			trgElement = '{!JSENCODE(CurrentSR.Email_CC__c)}';
+		    		}else if(iCount == 2){
+		    			trgElement = '{!JSENCODE(CurrentSR.Email_BCC__c)}';
+		    		}
+		    		
+		    		if(trgElement != '' && trgElement.length > 0 && trgElement.substring(trgElement.length-1, trgElement.length) == ';'){
+		   		 		trgElement = trgElement.substring(0, trgElement.length-1);
+		   		 	}
+	    		 
+		        var sname = trgElement;
+		        //alert('sname '+sname);
+		        var stringToArray = new Array;
+		        stringToArray = sname.split(";");
+		        //stringToArray.pop();
+		        
+		        var ss1 =[trgElement];
+		        var ss =[trgElement];
+		        var cList = cListArray[iCount];
+		        
+		        if(ss!=''){
+			        document.getElementsByClassName('as-input')[iCount].value='';
+			        $.each(stringToArray , function(i)
+			        {
+			       
+				        var li = $('<li/>')
+				        .addClass('as-selection-item blur')
+				        .attr('id','as-selection-11')
+				        .text(stringToArray[i])
+				        .appendTo(cList.closest('ul').children(':first'));
+				        var aaa = $('<a/>')
+				        .addClass('as-close').addClass('as-closeE')
+				        .text('×')
+				        .appendTo(li); 
+							});        
+			      
+							var dd= ''+trgElement;
+			           
+				      if((ss1!='') && (ss1!=null) &&(dd.charAt(dd.length-1)!= ';') )
+				      	var hidden = $(this).val(ss1+';');
+				      else
+				        var hidden = $(this).val(ss1);
+		    		}
+		    		iCount++;
+		    	});
+		    }
+			});
+			
+			$('.as-closeE').live('click', function() {
+	    	var parentLi = $(this).parents('.as-selection-item');
+	    	var emailIdText = parentLi.text().substring(0,parentLi.text().length-1)+';';
+	    	var hiddenValue = $(this).parents('.as-original').find('.as-values');
+	    	hiddenValue.val(hiddenValue.val().replace(emailIdText,''));
+	    	parentLi.html("");
+	    	parentLi.removeClass('as-selection-item');
+	    	$(this).removeClass('as-close').removeClass('as-closeE');
+	    });
+	    </script>
+	    
+	    
+	<apex:form id="frm">
+	
+	 <apex:actionFunction action="{!refreshFrequency}" name="RerenderPage" rerender="ff" immediate="true">
+        <apex:param name="firstParam" assignTo="{!selectedFrequency}" value="" />
+    </apex:actionFunction>
+	<apex:pageMessages />
+	
+	<apex:pageBlock id="pb" rendered="{!isDashboardAllowed}">
+	
+	<table width="100%" >
+	        <tr>
+	         <td width="30%" valign="top">
+	         <label style="font-size:11pt;color:red;">Step-1: Select Dashboard</label><br/><br/>
+	         <input class="quickfindInput ghostText" id="setupSearch" maxlength="80" name="setupSearch" size="20" 
+         	title="Quick Find" type="text" onKeyUp="searchReport(this.value);" onBlur="searchReport(this.value);" tabindex="-1"/><br/><br/>
+	         <b>Available Reports</b><br/>
+	         
+	          <div id="main" style="padding-left:1cm;">
+	            <ul id="browser" class="filetree treeview-famfamfam">
+	            
+	               <apex:repeat value="{!folderReportNameList}" var="ls">
+	                <li class="closed"><span class="folder">{!ls.FolderName}</span>
+	                    <ul class="file-ul">
+	                        <apex:repeat value="{!ls.listReports}" var="lr">
+	                             <li class="file-li">
+	                             	<a href="#" onclick='putUrl("{!JSENCODE(lr.DashboardName)}","{!JSENCODE(lr.DashboardURL)}");'>
+	                             		<span class="file">{!lr.DashboardName}1</span>
+	                             	</a>&nbsp;&nbsp;
+	                             	<a href="#" onclick="javascript:window.open('{!JSENCODE(lr.DashboardURL)}')">
+                             			<apex:image url="{!URLFOR($Resource.CRMG_RS__ReportsScheduler, 'treeViewImage/preview2.jpg')}" width="14" height="14" alt="Preview" title="Preview"/>
+                             		</a>
+	                             </li>
+	                        </apex:repeat>
+	                       
+	                    </ul>
+	                </li> 
+	                 </apex:repeat>
+	                 
+	                  <apex:repeat value="{!folderReportNameList1}" var="ls">
+	                <li class="closed"><span class="folder">{!ls.FolderName}</span>
+	                    <ul class="file-ul">
+	                        <apex:repeat value="{!ls.listReports}" var="lr">
+	                             <li class="file-li">
+	                             	<a href="#" onclick='putUrl("{!JSENCODE(lr.DashboardName)}","{!JSENCODE(lr.DashboardURL)}");'>
+	                             		<span class="file">{!lr.DashboardName}</span>
+	                             	</a>&nbsp;&nbsp;
+	                             	<a href="#" onclick="javascript:window.open('{!JSENCODE(lr.DashboardURL)}')">
+                             			<apex:image url="{!URLFOR($Resource.CRMG_RS__ReportsScheduler, 'treeViewImage/preview2.jpg')}" width="14" height="14" alt="Preview" title="Preview"/>
+                             		</a>
+	                             </li>
+	                        </apex:repeat>
+	                       
+	                    </ul>
+	                </li> 
+	                 </apex:repeat>
+	                 
+	                 <apex:repeat value="{!folderReportNameList2}" var="ls">
+	                <li class="closed"><span class="folder">{!ls.FolderName}</span>
+	                    <ul class="file-ul">
+	                        <apex:repeat value="{!ls.listReports}" var="lr">
+	                             <li class="file-li">
+	                             	<a href="#" onclick='putUrl("{!JSENCODE(lr.DashboardName)}","{!JSENCODE(lr.DashboardURL)}");'>
+	                             		<span class="file">{!lr.DashboardName}</span>
+	                             	</a>&nbsp;&nbsp;
+																<a href="#" onclick="javascript:window.open('{!JSENCODE(lr.DashboardURL)}')">
+                             			<apex:image url="{!URLFOR($Resource.CRMG_RS__ReportsScheduler, 'treeViewImage/preview2.jpg')}" width="14" height="14" alt="Preview" title="Preview"/>
+                             		</a>
+	                             </li>
+	                        </apex:repeat>
+	                       
+	                    </ul>
+	                </li>
+	                 </apex:repeat>
+	                 
+	                 <apex:repeat value="{!folderReportNameList3}" var="ls">
+	                <li class="closed"><span class="folder">{!ls.FolderName}</span>
+	                    <ul class="file-ul">
+	                        <apex:repeat value="{!ls.listReports}" var="lr">
+	                             <li class="file-li">
+	                             	<a href="#" onclick='putUrl("{!JSENCODE(lr.DashboardName)}","{!JSENCODE(lr.DashboardURL)}");'>
+	                             		<span class="file">{!lr.DashboardName}</span>
+	                             	</a>&nbsp;&nbsp;
+	                             	<a href="#" onclick="javascript:window.open('{!JSENCODE(lr.DashboardURL)}')">
+                             			<apex:image url="{!URLFOR($Resource.CRMG_RS__ReportsScheduler, 'treeViewImage/preview2.jpg')}" width="14" height="14" alt="Preview" title="Preview"/>
+                             		</a>
+	                             </li>
+	                        </apex:repeat>
+	                       
+	                    </ul>
+	                </li>
+	                 </apex:repeat>
+	                 
+	              </ul>
+	            </div>
+	            </td>
+	         <td valign="top">
+	            <label style="font-size:11pt;color:red;">Step-2: Schedule Dashboard</label><br/><br/>
+	            
+	            <apex:pageBlockSection columns="1" id="pbs" title="Report">
+	 
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Report_Name__c}" id="reportName" required="true" style="width:450px;"/>
+	              
+	              <apex:pageBlockSectionItem id="pbsiRU" helpText="This field will auto-populate once you've selected a Report Name from the Report Tree">
+	              <apex:outputLabel value="Report URL" />
+	              <apex:inputText value="{!CurrentSR.CRMG_RS__Report_URL_New__c}" id="reportURL" required="true" style="width:450px; "/>
+	              </apex:pageBlockSectionItem>
+	              
+	          <!--    <apex:pageBlockSectionItem helpText="Query String Parameter for Report">
+	              <apex:outputLabel value="Parameters" />
+	              
+	              <apex:outputPanel >
+	              PV0&nbsp;<apex:inputText value="{!CurrentSR.PV0__c}" style="width:60px" />&nbsp;
+	              PV1&nbsp;<apex:inputText value="{!CurrentSR.PV1__c}" style="width:60px" />&nbsp;
+	              PV2&nbsp;<apex:inputText value="{!CurrentSR.PV2__c}" style="width:60px" />&nbsp;
+	              PV3&nbsp;<apex:inputText value="{!CurrentSR.PV3__c}" style="width:60px" />&nbsp;
+	              PV4&nbsp;<apex:inputText value="{!CurrentSR.PV4__c}" style="width:60px" /> 
+	              </apex:outputPanel>
+	              </apex:pageBlockSectionItem>-->  
+	              
+	        <!--     <apex:inputField value="{!CurrentSR.Report_Format__c}" required="true" /> -->  
+	              
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Is_Active__c}" onchange="rerenderComponent()" />
+	               
+	            </apex:pageBlockSection>  
+	             <apex:outputPanel id="ff">
+	             <apex:pageBlockSection columns="1" title="Frequency" id="Frequency">
+	             
+	               
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Frequency__c}" required="true" onChange="RerenderPage(this.value)"/>
+	              
+	              <apex:pageBlockSectionItem id="weeklyPBS" rendered="{!isWeekly}">
+	              <apex:outputLabel value="Weekly" />
+	              <apex:outputPanel >
+	              Recurs every week on<br/>
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Recurs_every_week_on__c}"  />
+	              </apex:outputPanel>
+	              </apex:pageBlockSectionItem> 
+	              
+	              <apex:pageBlockSectionItem rendered="{!isMonthly}">
+	              <apex:outputLabel value="Monthly" />
+	              <apex:outputPanel >
+	               On day&nbsp;<apex:inputField value="{!CurrentSR.CRMG_RS__On_day_of_every_month__c}"  />&nbsp;of every month 
+	               <br/>
+	               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>OR</b>
+	               <br/>
+	               On&nbsp;<apex:inputField value="{!CurrentSR.CRMG_RS__On_week_of_every_month__c}"  />&nbsp;<apex:inputField value="{!CurrentSR.CRMG_RS__On_weekday_of_every_month__c}"  />&nbsp;of every month
+	              </apex:outputPanel>
+	              </apex:pageBlockSectionItem>
+	              
+	              
+	              <apex:pageBlockSectionItem rendered="{!isQuarterly}">
+	              <apex:outputLabel value="Quarterly" />
+	              <apex:outputPanel >
+	               Quarter Start Date&nbsp;<apex:inputField value="{!CurrentSR.CRMG_RS__Quarter_Start_Date__c}"  />
+	               <!-- <br/>
+	               On day&nbsp;<apex:inputField value="{!CurrentSR.Day_of_Quarter__c}" style="width:40px;" />&nbsp;of&nbsp;Quarter&nbsp;<apex:inputField value="{!CurrentSR.Quarter__c}"  />
+	                -->
+	                </apex:outputPanel>
+	              </apex:pageBlockSectionItem>
+	              
+	              <apex:pageBlockSectionItem rendered="{!isRandom}">
+	              <apex:outputLabel value="Random Date(s)" />
+	              <apex:outputPanel >
+	               <apex:inputField value="{!CurrentSR.CRMG_RS__Schedule_Date__c}"  />&nbsp;
+	               <apex:inputField value="{!CurrentSR.CRMG_RS__Schedule_Date2__c}"  />&nbsp;
+	               <apex:inputField value="{!CurrentSR.CRMG_RS__Schedule_Date3__c}"  /> 
+	              </apex:outputPanel>
+	              </apex:pageBlockSectionItem>
+	              
+	              </apex:pageBlockSection>
+	              </apex:outputPanel>
+	              <apex:pageBlockSection columns="1" title="Schedule">
+	                
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Scheduler_Start_Date__c}"  required="true" />
+	              
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Scheduler_End_Date__c}"  required="true" />
+	              
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Time__c}" required="true"  />
+	              
+	              </apex:pageBlockSection>
+	              
+	              <apex:pageBlockSection columns="1" title="Email" id="pbsEmail">
+	              
+	              
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Email_To__c}" id="emailTO" required="true" style="width:450px" rendered="{!!allowAutoSuggest}"/>
+	              <apex:inputText value="{!CurrentSR.CRMG_RS__Email_To__c}" id="emailTO_" styleClass="emailTO_autoSuggest" rendered="{!allowAutoSuggest}"/>
+              	<apex:inputHidden value="{!CurrentSR.CRMG_RS__Email_To__c}" id="emailTO_actual" rendered="{!allowAutoSuggest}"/>
+	              
+	              <apex:pageBlockSectionItem rendered="{!!allowAutoSuggest}">
+	                <apex:outputLabel value="" />
+	                <apex:outputLink onclick="openLookupAddress('pg:frm:pb:pbsEmail:emailTO'); return false;">Select "To" - External Recipient / Contact / User</apex:outputLink>
+	              </apex:pageBlockSectionItem>
+	              
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Email_CC__c}" id="emailCC"  style="width:450px" rendered="{!!allowAutoSuggest}"/>
+              	<apex:inputText value="{!CurrentSR.CRMG_RS__Email_CC__c}" id="emailCC_" styleClass="emailCC_autoSuggest" rendered="{!allowAutoSuggest}"/>
+              	<apex:inputHidden value="{!CurrentSR.CRMG_RS__Email_CC__c}" id="emailCC_actual" rendered="{!allowAutoSuggest}"/>
+	              
+	              <apex:pageBlockSectionItem rendered="{!!allowAutoSuggest}">
+	                <apex:outputLabel value="" />
+	                <apex:outputLink onclick="openLookupAddress('pg:frm:pb:pbsEmail:emailCC'); return false;">Select "CC" - External Recipient / Contact / User</apex:outputLink>
+	              </apex:pageBlockSectionItem>
+	              
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Email_BCC__c}" id="emailBCC"  style="width:450px" rendered="{!!allowAutoSuggest}"/>
+              	<apex:inputText value="{!CurrentSR.CRMG_RS__Email_BCC__c}" id="emailBCC_" styleClass="emailBCC_autoSuggest" rendered="{!allowAutoSuggest}"/>
+              	<apex:inputHidden value="{!CurrentSR.CRMG_RS__Email_BCC__c}" id="emailBCC_actual" rendered="{!allowAutoSuggest}"/>
+	              
+	              <apex:pageBlockSectionItem rendered="{!!allowAutoSuggest}">
+	                <apex:outputLabel value="" />
+	                <apex:outputLink onclick="openLookupAddress('pg:frm:pb:pbsEmail:emailBCC'); return false;">Select "BCC" - External Recipient / Contact / User</apex:outputLink>
+	              </apex:pageBlockSectionItem>
+	              
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Reply_To_Address__c}"  />
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Sender_Display_Name__c}"  />
+	              <apex:selectList value="{!CurrentSR.CRMG_RS__OrgWideEmailAddress__c}" size="1" multiselect="false">
+				            <apex:selectOptions value="{!orgWideEmailAdd}"/>
+				        </apex:selectList>
+<!--	              <apex:inputField value="{!CurrentSR.Insert_HTML_Report__c}"  />-->
+	              
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Email_Subject__c}" id="txtSubject" required="true"  style="width:450px"/>
+	              
+	              <apex:inputField value="{!CurrentSR.CRMG_RS__Email_Body__c}" required="true"  />
+	              
+	              <apex:pageBlockSectionItem >
+	              <apex:outputLabel value="" />
+	              <apex:outputPanel >
+	               <apex:commandButton value="Schedule" action="{!DoSave}" onclick="loadValues();"/>
+	               <apex:commandButton value="Send Now and Schedule" action="{!DoSendNow}" onclick="loadValues();"/>
+	                <apex:commandButton value="Cancel" action="{!DoCancel}" immediate="true" />
+	                
+	              </apex:outputPanel>
+	              </apex:pageBlockSectionItem>
+	 
+	
+	            </apex:pageBlockSection>
+	            
+	         </td>
+	        </tr>
+	     </table>
+	 
+	    
+	   </apex:pageBlock>
+	 
+	   <script>
+	  
+	  function openLookupAddress(fieldName){
+	      var keyword = '';
+	      if(document.getElementById(fieldName) != null ){
+	        keyword = document.getElementById(fieldName).value;
+	      }
+	      newWindow=window.open('/apex/RecipientLookup?fieldName=' + fieldName  + '&keyword=' + keyword , '_newaddress', 'resizable=yes,scrollbars=yes,status=yes,toolbar=false,left=20,top=10,height=600,width=800');
+	      newWindow.creator=self;
+	      newWindow.focus();
+	    }
+	    
+	    if('{!allowAutoSuggest}' == 'true'){
+		    var element = $('.emailTO_autoSuggest')[0];
+		    $(element).autoSuggest('/apex/AjaxResponder', {selectedItemProp: "name", searchObjProps: "name,email",formatList: function(data,elem){ return elem.html(data.name +"&nbsp;&#60;"+ data.email +"&#62;&nbsp;" + "&nbsp;" + data.type); }});
+		    element = $('.emailCC_autoSuggest')[0];
+				$(element).autoSuggest('/apex/AjaxResponder', {selectedItemProp: "name", searchObjProps: "name,email",formatList: function(data,elem){ return elem.html(data.name +"&nbsp;&#60;"+ data.email +"&#62;&nbsp;" + "&nbsp;" + data.type); }});
+		    element = $('.emailBCC_autoSuggest')[0];
+				$(element).autoSuggest('/apex/AjaxResponder', {selectedItemProp: "name", searchObjProps: "name,email",formatList: function(data,elem){ return elem.html(data.name +"&nbsp;&#60;"+ data.email +"&#62;&nbsp;" + "&nbsp;" + data.type); }});
+    	}
+    	
+    function loadValues(){
+    	if('{!allowAutoSuggest}' == 'true'){
+	    	var iCount = 0;
+	    	$('.as-values').each(function (){
+	    		var trgElement;
+	    		if(iCount == 0){
+	    			trgElement = $("#pg\\:frm\\:pb\\:pbsEmail\\:emailTO_actual");
+	    		}else if(iCount == 1){
+	    			trgElement = $("#pg\\:frm\\:pb\\:pbsEmail\\:emailCC_actual");
+	    		}else if(iCount == 2){
+	    			trgElement = $("#pg\\:frm\\:pb\\:pbsEmail\\:emailBCC_actual");
+	    		}
+	    		var valOld = $(trgElement).val();
+	    		if(valOld == null || valOld == 'undefined' || valOld.trim() == ''){
+	    			valOld = '';
+	    		}else{
+	    			valOld = valOld + ';';
+	    		}
+	    		
+	    		//$(trgElement).val(valOld+$(this).val());
+	    		$(trgElement).val($(this).val());
+	    		iCount++;
+	    	});
+	    }
+    }
+	  </script>
+	  
+	  <style>
+	 		.searchMatched {
+	 			background: rgb(182, 216, 182);
+	 		}
+	 		.filetree span.folder, .filetree span.file {
+				display: inherit;
+			}
+ 		</style>
+	  
+	</apex:form>
+</apex:page>

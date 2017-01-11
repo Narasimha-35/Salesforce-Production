@@ -1,0 +1,21 @@
+<apex:page StandardController="vhc__Call_Status_Group__c" extensions="vhc.Ctrl13CallStatusGroup" action="{!init}">
+<apex:sectionHeader title="{!$Label.New_Status_Group}" subtitle="{!$Label.Status_Group_Edit}" rendered="{!obj.id==null}"/>
+<apex:sectionHeader title="{!$Label.Status_Group_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+<apex:outputText value="{!$Label.Status_Group_Description}" rendered="{!ISValid}"/>
+<apex:pageMessages />
+<br/>&nbsp;
+    <apex:form id="myForm" rendered="{!ISValid}">
+        <apex:pageBlock title="{!$Label.Status_Group_Edit}" mode="edit">
+            <apex:pageBlockButtons > 
+                <apex:commandButton action="{!Save}" value="{!$Label.Save}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/> 
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.Informations}">
+            	<apex:inputField value="{!obj.Name}" required="true"/>
+            	<apex:outputField value="{!obj.vhc__Customer__c}"/>
+            	<apex:inputField value="{!obj.vhc__Currency__c}"/>
+            </apex:pageBlockSection> 
+        </apex:pageBlock>
+    </apex:form>
+ 
+</apex:page>

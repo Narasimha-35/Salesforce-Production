@@ -1,0 +1,19 @@
+<apex:page standardController="vhc__Customer__c" extensions="vhc.Ctrl12CallCenterAdapter" 
+	showHeader="false" contentType="application/octet-stream" >
+<?xml version="1.0" encoding="UTF-8"?> 
+<callCenter> 
+  <section sortOrder="0" name="reqGeneralInfo" label="General Information">
+    <item sortOrder="0" name="reqInternalName" label="InternalName">VocalcomAdapter</item>
+    <item sortOrder="1" name="reqDisplayName" label="Display Name">Vocalcom Call Center Adapter</item>
+    <item sortOrder="2" name="reqAdapterUrl" label="CTI Adapter URL">https://{!Host}/apex/VF01CTIPopup3</item>
+    <item sortOrder="3" name="reqUseApi" label="Use CTI API">true</item>
+    <item sortOrder="4" name="reqSoftphoneHeight" label="Softphone Height">650</item>
+    <item sortOrder="5" name="reqSoftphoneWidth" label="Softphone Width">300</item>
+  </section>
+  <section sortOrder="1" name="reqDialingOptions" label="Dialing Options">
+    <item sortOrder="0" name="reqOutsidePrefix" label="Outside Prefix">00</item>
+    <item sortOrder="1" name="reqLongDistPrefix" label="Long Distance Prefix">000</item>
+    <item sortOrder="2" name="reqInternationalPrefix" label="International Prefix">000</item>
+  </section>
+</callCenter>
+</apex:page>

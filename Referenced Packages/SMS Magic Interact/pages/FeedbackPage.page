@@ -1,0 +1,41 @@
+<apex:page Controller="smagicinteract.FeedbackController" title="SMS Magic-Feedback" tabStyle="SM_Home__tab">
+<apex:pageMessages /><br/>
+<apex:form id="confForm">
+<apex:pageBlock title="SMS Magic Feedback" id="mainBlock">
+
+<apex:pageBlockSection title="Choose Category">
+	<apex:selectList size="1" value="{!selectedCategory}" style="margin-left:110px;">
+	    <apex:selectOptions value="{!category}"/>
+	</apex:selectList>
+</apex:pageBlockSection>
+
+<apex:pageBlockSection id="feedbackDetails" columns="10" title="Enter your Feedback" >
+<table cellspacing="10px" style="margin-left:-20px;" >
+    <tr><td class="labelCol" style="text-align:left;">Subject:</td>
+    <td>
+    	<apex:outputPanel styleClass="requiredInput" layout="block">
+    	<apex:outputPanel styleClass="requiredBlock" layout="block"/>
+	    <apex:inputText style="width:410px;text-align:left margin-left:200px;" value="{!subject}" maxlength="200"/>
+	    </apex:outputPanel>
+    </td>
+       
+    </tr>
+    <tr> <td class="labelCol" style="text-align:left;">Description: </td>   
+    <td><apex:inputTextArea id="feedbackText"  style="width:410px;height:60px;text-align:left;" value="{!feedbackText}"></apex:inputTextArea> </td>
+    </tr>
+     
+    <tr><td class="labelCol" style="text-align:left;">Attachment:</td>
+    <td><apex:inputFile value="{!attachment.body}" filename="{!attachment.name}"/></td>
+    </tr>
+    
+</table>
+</apex:pageBlockSection>
+
+<apex:pageBlockButtons location="bottom">
+    <apex:commandButton action="{!submit}" value="Submit"/>
+    <apex:commandButton action="{!cancel}" value="Cancel"/>
+</apex:pageBlockButtons>
+
+</apex:pageBlock>
+</apex:form>
+</apex:page>

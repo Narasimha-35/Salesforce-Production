@@ -1,0 +1,54 @@
+<apex:page sidebar="false" standardController="MC4SF__MC_Campaign__c" extensions="MC4SF.CampaignPlaintextController" action="{!initPage}">
+
+<link href="{!URLFOR($Resource.MC4SF__Assets, '/css/wizard.css')}" rel="stylesheet" type="text/css"/>
+
+<apex:sectionHeader title="MailChimp Campaign" subtitle="New MailChimp Campaign"/>
+
+<apex:form >
+<apex:inputHidden id="newText" value="{!newText}"/>
+<apex:actionfunction name="recipients" action="{!recipients}"/>
+<apex:actionfunction name="setup" action="{!setup}"/>
+<apex:actionfunction name="content" action="{!content}"/>
+<apex:actionfunction name="confirm" action="{!confirm}"/>
+
+<apex:pageBlock title="Step 4: Edit Plain Text">
+
+<textarea id="text" style="width: 100%; height: 300px;"><apex:outputText value="{!text}" escape="false"/></textarea>
+
+</apex:pageBlock>
+
+</apex:form>
+
+<div id="footer">
+	<table width="100%" height="100%">
+		<td width="150" align="center"><a href="{!$Page.CampaignContent}?id={!mcCampaign.Id}"><img src="{!URLFOR($Resource.Assets, '/img/campaign/back.png')}" border="0" width="93" height="36"/></a></td>
+		<td align="center"><img src="{!URLFOR($Resource.Assets, '/img/campaign/step-plaintext.png')}" width="543" height="42"/></td>
+		<td width="150" align="center"><img src="{!URLFOR($Resource.Assets, '/img/campaign/next.png')}" style="width: 96px; height: 36px; cursor: pointer;" onclick="saveNewText();"/></td>
+	</table>
+</div>
+
+<div id="footer">
+	<a class="back-button" href="#" onclick="save(); content(); return false;"><span class="freddicon laquo"></span>Back</a>
+
+	<ul>
+		<ul>
+			<li><a onclick="save(); recipients(); return false;">Recipients</a></li>
+			<li><a onclick="save(); setup(); return false;">Setup</a></li>
+			<li><a onclick="save(); content(); return false;">Content</a></li>
+			<li class="current"><a href="#" onclick="return false;">Plain-Text</a></li>
+			<li><a onclick="save(); confirm(); return false;">Confirm</a></li>
+		</ul>
+	</ul>
+
+	<a class="next-button" href="#" onclick="save(); confirm(); return false;">Next<span class="freddicon raquo on-right"></span></a>
+</div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>
+	function save() {
+		jQuery('input[id$="newText"]').val(jQuery('#text').val());
+	}
+</script>
+
+</apex:page>

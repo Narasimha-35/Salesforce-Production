@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>settings for Hermes Cloud package</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>CallFileGeneratorImpl__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Optional custom implementation of APEX class name implementing GenerateCallFileRecordsInterface</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Optional custom implementation of APEX class name implementing GenerateCallFileRecordsInterface</inlineHelpText>
+        <label>CallFileGeneratorImpl</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SupervisionFull__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>SupervisionFull</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Trigger_Account_After_Update_Enabled__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If unchecked the trigger managing update of call file member when a phone field is changed on account will do nothing.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Keep enabled except if you want to customize your trigger for managing updates states of call file members.</inlineHelpText>
+        <label>Trigger Account After Update Enabled</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Trigger_Contact_After_Update_Enabled__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If unchecked the trigger managing update of call file member when a phone field is changed on contact will do nothing.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Keep enabled except if you want to customize your trigger for managing updates states of call file members.</inlineHelpText>
+        <label>Trigger Contact After Update Enabled</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Trigger_Lead_After_Update_Enabled__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If unchecked the trigger managing update of call file member when a phone field is changed on lead will do nothing.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Keep enabled except if you want to customize your trigger for managing updates states of call file members.</inlineHelpText>
+        <label>Trigger Lead After Update Enabled</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>HermesCloudSettings</label>
+</CustomObject>

@@ -1,0 +1,353 @@
+<apex:page StandardController="vhc__Service_Hours_Group__c"  extensions="vhc.Ctrl17ServiceHourGroup" action="{!init}">
+    
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/jquery-1.9.0.min.js')}" ></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/ui-1.10.0/jquery.ui.core.min.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/ui-1.10.0/jquery.ui.widget.min.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/ui-1.10.0/jquery.ui.tabs.min.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/ui-1.10.0/jquery.ui.position.min.js')}"></script> 
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'jquery.ui.timepicker.js')}" ></script>
+
+    <link rel="stylesheet" href="{!URLFOR($Resource.JQueryTimePicker, 'include/ui-1.10.0/ui-lightness/jquery-ui-1.10.0.custom.min.css')}" /> 
+    <link rel="stylesheet" href="{!URLFOR($Resource.JQueryTimePicker, 'jquery.ui.timepicker.css')}" />  
+    
+    <style>
+    #ui-timepicker-div { 
+        padding: 0.2em; 
+        background-color: #fff; 
+        font-size:11px;
+        
+    }
+    
+    #ui-widget-header{ {
+        background-image:none;
+    }
+    
+    </style>
+
+<script>
+$(document).ready(function() {
+    if('{!IsMondaySelected}' == 'false')  $('.monday_hour').hide();
+    if('{!IsTuesdaySelected}' == 'false')  $('.tuesday_hour').hide();
+    if('{!IsWednesdaySelected}' == 'false')  $('.wednesday_hour').hide();
+    if('{!IsThursdaySelected}' == 'false')  $('.thursday_hour').hide();
+    if('{!IsFridaySelected}' == 'false')  $('.friday_hour').hide();
+    if('{!IsSaturdaySelected}' == 'false')  $('.Saturday_hour').hide();
+    if('{!IsSundaySelected}' == 'false')  $('.Sunday_hour').hide();
+    
+    $('.day_select').click(function() {
+        var className = $(this).attr('class').replace('day_select select_', '');
+        className = className + '_hour';
+        
+        if (this.checked)
+            $('.' + className).show();
+        else
+            $('.' + className).hide();
+    });
+    
+     $('.timepicker').timepicker(
+            { 
+                hours: {
+                starts: 0,               
+                ends: 23
+            },
+            minutes: {
+                starts: 0,           
+                ends: 59,
+                interval: 1
+            }    
+         }
+     ).keypress(function(event){
+        event.preventDefault();
+        return false;
+        
+    });
+    
+	$($.grep($('.timeZone option'),function(item){return $(item).val()=='{!obj.TimeZone__c }';})).prop('selected', true);
+
+
+});
+
+
+</script>
+ 
+<!--  <input type="text" style="width: 70px;" class="timepicker" value="" />-->
+     
+<apex:sectionHeader title="{!$Label.New_Service_Hours_Group}" subtitle="{!$Label.Service_Hours_Group_Edit}" rendered="{!obj.id==null}"/>
+<apex:sectionHeader title="{!$Label.Service_Hours_Group_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+<apex:outputText value="{!$Label.Service_Hours_Group_Description}" rendered="{!ISValid}"/>
+<apex:pageMessages />
+<br/>&nbsp; 
+
+    <apex:form id="myForm" rendered="{!ISValid}">
+        <apex:pageBlock title="{!$Label.Service_Hours_Group_Edit}" mode="edit">
+            <apex:pageBlockButtons > 
+                <apex:commandButton action="{!Save}" value="{!$Label.Save}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.Informations}">
+                <apex:inputField value="{!obj.Name}" required="true"/>
+                <apex:outputField value="{!obj.vhc__Customer__c}"/>
+                <apex:pageBlockSectionItem labelStyleClass="timeZone" dataStyleClass="timeZone" helpText="{!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__TimeZone__c.InlineHelpText}">
+                    <!-- TODO TRANSLATE -->
+                    <apex:outputText value="{!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__TimeZone__c.label}"/>
+                    <apex:selectList value="{!selectedTimeZone}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!timeZonesOptions}"/>
+                    </apex:selectList>
+            	</apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            
+            
+            <apex:pageBlockSection title="{!$Label.Opening_Hours}" Columns="2">
+                
+                <apex:outputpanel >
+                    <apex:inputCheckbox value="{!IsMondaySelected}" styleClass="day_select select_monday"/>
+                    <span class="Monday_div">{!$Label.Monday}</span>
+                </apex:outputpanel> 
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour monday_hour" labelStyleClass="opening_hour monday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Monday_Begin__c.label}
+                    <apex:inputField value="{!obj.vhc__Monday_Begin__c}" styleclass="timepicker"/>
+<!--                     <apex:selectList id="chooseColor" value="{!obj.vhc__Monday_Begin__c}" size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour monday_hour" labelStyleClass="opening_hour monday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Monday_Begin1__c.label}
+                    <apex:inputField value="{!obj.vhc__Monday_Begin1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Monday_Begin1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour monday_hour" labelStyleClass="opening_hour monday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Monday_End__c.label}
+                    <apex:inputField value="{!obj.vhc__Monday_End__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Monday_End__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour monday_hour" labelStyleClass="opening_hour monday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Monday_End1__c.label}
+                    <apex:inputField value="{!obj.vhc__Monday_End1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Monday_End1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                    
+                    
+                <apex:outputpanel >
+                    <apex:inputCheckbox value="{!IsTuesdaySelected}" styleClass="day_select select_tuesday"/>
+                    <span class="tuesday_div">{!$Label.Tuesday}</span>
+                </apex:outputpanel> 
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour tuesday_hour" labelStyleClass="opening_hour tuesday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Tuesday_Begin__c.label}
+                    <apex:inputField value="{!obj.vhc__Tuesday_Begin__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor" value="{!obj.vhc__Tuesday_Begin__c}" size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour tuesday_hour" labelStyleClass="opening_hour tuesday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Tuesday_Begin1__c.label}
+                    <apex:inputField value="{!obj.vhc__Tuesday_Begin1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Tuesday_Begin1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour tuesday_hour" labelStyleClass="opening_hour tuesday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Tuesday_End__c.label}
+                    <apex:inputField value="{!obj.vhc__Tuesday_End__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Tuesday_End__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour tuesday_hour" labelStyleClass="opening_hour tuesday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Tuesday_End1__c.label}
+                    <apex:inputField value="{!obj.vhc__Tuesday_End1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Tuesday_End1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                    
+                    
+                <apex:outputpanel >
+                    <apex:inputCheckbox value="{!IsWednesdaySelected}" styleClass="day_select select_wednesday"/>
+                    <span class="Wednesday_div">{!$Label.Wednesday}</span>
+                </apex:outputpanel> 
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour wednesday_hour" labelStyleClass="opening_hour wednesday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Wednesday_Begin__c.label}
+                    <apex:inputField value="{!obj.vhc__Wednesday_Begin__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor" value="{!obj.vhc__Wednesday_Begin__c}" size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour wednesday_hour" labelStyleClass="opening_hour wednesday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Wednesday_Begin1__c.label}
+                    <apex:inputField value="{!obj.vhc__Wednesday_Begin1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Wednesday_Begin1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour wednesday_hour" labelStyleClass="opening_hour wednesday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Wednesday_End__c.label}
+                    <apex:inputField value="{!obj.vhc__Wednesday_End__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Wednesday_End__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour wednesday_hour" labelStyleClass="opening_hour wednesday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Wednesday_End1__c.label}
+                    <apex:inputField value="{!obj.vhc__Wednesday_End1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Wednesday_End1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                    
+                    
+                <apex:outputpanel >
+                    <apex:inputCheckbox value="{!IsThursdaySelected}" styleClass="day_select select_thursday"/>
+                    <span class="Thursday_div">{!$Label.Thursday}</span>
+                </apex:outputpanel> 
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour thursday_hour" labelStyleClass="opening_hour thursday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Thursday_Begin__c.label}
+                    <apex:inputField value="{!obj.vhc__Thursday_Begin__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor" value="{!obj.vhc__Thursday_Begin__c}" size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour thursday_hour" labelStyleClass="opening_hour thursday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Thursday_Begin1__c.label}
+                    <apex:inputField value="{!obj.vhc__Thursday_Begin1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Thursday_Begin1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour thursday_hour" labelStyleClass="opening_hour thursday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Thursday_End__c.label}
+                    <apex:inputField value="{!obj.vhc__Thursday_End__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Thursday_End__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour thursday_hour" labelStyleClass="opening_hour thursday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Thursday_End1__c.label}
+                    <apex:inputField value="{!obj.vhc__Thursday_End1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Thursday_End1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                    
+                    
+                <apex:outputpanel >
+                    <apex:inputCheckbox value="{!IsFridaySelected}" styleClass="day_select select_friday"/>
+                    <span class="Friday_div">{!$Label.Friday}</span>
+                </apex:outputpanel> 
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour friday_hour" labelStyleClass="opening_hour friday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Friday_Begin__c.label}
+                    <apex:inputField value="{!obj.vhc__Friday_Begin__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor" value="{!obj.vhc__Friday_Begin__c}" size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour friday_hour" labelStyleClass="opening_hour friday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Friday_Begin1__c.label}
+                    <apex:inputField value="{!obj.vhc__Friday_Begin1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Friday_Begin1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour friday_hour" labelStyleClass="opening_hour friday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Friday_End__c.label}
+                    <apex:inputField value="{!obj.vhc__Friday_End__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Friday_End__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour friday_hour" labelStyleClass="opening_hour friday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Friday_End1__c.label}
+                    <apex:inputField value="{!obj.vhc__Friday_End1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Friday_End1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                
+            
+                
+                <apex:outputpanel >
+                    <apex:inputCheckbox value="{!IsSaturdaySelected}" styleClass="day_select select_Saturday"/>
+                    <span class="Saturday_div">{!$Label.Saturday}</span>
+                </apex:outputpanel> 
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour Saturday_hour" labelStyleClass="opening_hour Saturday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Saturday_Begin__c.label}
+                    <apex:inputField value="{!obj.vhc__Saturday_Begin__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor" value="{!obj.vhc__Saturday_Begin__c}" size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour Saturday_hour" labelStyleClass="opening_hour Saturday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Saturday_Begin1__c.label}
+                    <apex:inputField value="{!obj.vhc__Saturday_Begin1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Saturday_Begin1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour Saturday_hour" labelStyleClass="opening_hour Saturday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Saturday_End__c.label}
+                    <apex:inputField value="{!obj.vhc__Saturday_End__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Saturday_End__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour Saturday_hour" labelStyleClass="opening_hour Saturday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Saturday_End1__c.label}
+                    <apex:inputField value="{!obj.vhc__Saturday_End1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Saturday_End1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                
+                
+                <apex:outputpanel >
+                    <apex:inputCheckbox value="{!IsSundaySelected}" styleClass="day_select select_Sunday"/>
+                    <span class="Sunday_div">{!$Label.Sunday}</span>
+                </apex:outputpanel> 
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour Sunday_hour" labelStyleClass="opening_hour Sunday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Sunday_Begin__c.label}
+                    <apex:inputField value="{!obj.vhc__Sunday_Begin__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor" value="{!obj.vhc__Sunday_Begin__c}" size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour Sunday_hour" labelStyleClass="opening_hour Sunday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Sunday_Begin1__c.label}
+                    <apex:inputField value="{!obj.vhc__Sunday_Begin1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Sunday_Begin1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour Sunday_hour" labelStyleClass="opening_hour Sunday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Sunday_End__c.label}
+                    <apex:inputField value="{!obj.vhc__Sunday_End__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Sunday_End__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="opening_hour Sunday_hour" labelStyleClass="opening_hour Sunday_hour">
+                    {!$ObjectType.vhc__Service_Hours_Group__c.fields.vhc__Sunday_End1__c.label}
+                    <apex:inputField value="{!obj.vhc__Sunday_End1__c}" styleclass="timepicker"/>
+<!--                    <apex:selectList id="chooseColor"  value="{!obj.vhc__Sunday_End1__c}"  size="1">-->
+<!--                        <apex:selectOptions value="{!OptionListHours}"/>-->
+<!--                    </apex:selectList> -->
+                </apex:pageBlockSectionItem>
+                
+                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+ 
+</apex:page>

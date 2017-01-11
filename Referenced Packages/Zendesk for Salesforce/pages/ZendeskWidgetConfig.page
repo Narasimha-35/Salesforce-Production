@@ -1,0 +1,73 @@
+<apex:page standardController="Zendesk__Zendesk_Widget_Entity__c" extensions="Zendesk.ZendeskWidgetConfigController">
+
+  <apex:sectionHeader title="Zendesk for Salesforce" subtitle="New record type" />
+  <apex:pageMessages />
+  
+  <apex:form >
+  <apex:pageBlock title="Configure record type" mode="edit">
+    <apex:pageBlockButtons location="top">
+      <apex:commandButton action="{!saveObject}" value="Save"/>
+      <a href="{!URLFOR($Page.Zendesk__ZendeskOrgTab)}" style="text-decoration:none"><apex:commandButton action="{!cancelObject}" value="Cancel"/></a>
+    </apex:pageBlockButtons>
+    <apex:pageBlockSection columns="1" title="Edit record type settings">
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Record type" />
+        <apex:outputPanel styleClass="requiredInput" layout="block">  
+          <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+          <apex:selectList styleClass="requiredInput" required="true" value="{!record.Zendesk__Entity_Name__c}" size="1">
+            <apex:selectOptions value="{!entityOptions}"/>
+            <apex:actionSupport event="onchange" action="{!updateFields}" rerender="entityFields,userEmailField,NameField" />
+          </apex:selectList>
+        </apex:outputPanel>
+      </apex:pageBlockSectionItem>
+
+      <!-- Not needed in this version
+      <apex:pageBlockSectionItem helpText="To have this object appear in Organization widgets, select which field to match to the organization's name">
+        <apex:outputLabel value="Organization Name Field" />
+        <apex:outputPanel >
+          <apex:selectList value="{!record.Organization_Name_Field__c}" size="1" id="orgNameField">
+            <apex:selectOptions value="{!fieldOptions}"/>
+          </apex:selectList>
+        </apex:outputPanel>
+      </apex:pageBlockSectionItem>
+      -->
+
+      <apex:pageBlockSectionItem helpText="Please indicate which of these field contains the email address, which will be used by Zendesk to find the correct record. Leave blank for Account object.">
+        <apex:outputLabel value="Lookup field" />
+        <apex:outputPanel >
+          <apex:selectList value="{!record.Zendesk__User_Email_Field__c}" size="1" id="userEmailField">
+            <apex:selectOptions value="{!fieldOptions}"/>
+          </apex:selectList>
+        </apex:outputPanel>
+      </apex:pageBlockSectionItem>
+
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Name field" />
+        <apex:outputPanel >
+          <apex:selectList value="{!record.Zendesk__Name_Field__c}" size="1" id="NameField">
+            <apex:selectOptions value="{!fieldOptions}"/>
+          </apex:selectList>
+        </apex:outputPanel>
+      </apex:pageBlockSectionItem>
+      
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Fields" />
+        <apex:outputPanel id="entityFields">
+          <c:ZendeskWidgetFieldEdit widgetEntityname="{!widgetEntity}" />
+        </apex:outputPanel>
+      </apex:pageBlockSectionItem>
+
+    </apex:pageBlockSection>
+
+  </apex:pageBlock>
+  </apex:form>
+  
+  <!-- these declarations are here to ensure the entity fields are loaded by the standard controller -->
+  <apex:outputText value="{!Zendesk__Zendesk_Widget_Entity__c.Name}" rendered="false" />
+  <apex:outputText value="{!Zendesk__Zendesk_Widget_Entity__c.Zendesk__Entity_Fields__c}" rendered="false" />
+  <apex:outputText value="{!Zendesk__Zendesk_Widget_Entity__c.Zendesk__Entity_Name__c}" rendered="false" />
+  <apex:outputText value="{!Zendesk__Zendesk_Widget_Entity__c.Zendesk__Organization_Name_Field__c}" rendered="false" />
+  <apex:outputText value="{!Zendesk__Zendesk_Widget_Entity__c.Zendesk__User_Email_Field__c}" rendered="false" />
+  <apex:outputText value="{!Zendesk__Zendesk_Widget_Entity__c.Zendesk__Name_Field__c}" rendered="false" />
+  
+</apex:page>

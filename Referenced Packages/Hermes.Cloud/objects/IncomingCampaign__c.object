@@ -1,0 +1,890 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <content>VF20IncomingCampaign</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <content>VF20IncomingCampaign</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>VF20IncomingCampaign</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>VF20IncomingCampaign</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>VF20IncomingCampaign_Refresh</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>VF14Training</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Inbound Call Campaign</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Acd_Fax__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>A fax received on this DID will be sent to the specified email address.</inlineHelpText>
+        <label>Email to send fax received</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Agent_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played by the ACD to annonce that an agent is now free and is going to take the call.Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Agent Availability</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Call_Status_Group__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Call Status Group assigned if previously created.</inlineHelpText>
+        <label>Call Status Group</label>
+        <referenceTo>Call_Status_Group__c</referenceTo>
+        <relationshipLabel>Inbound Calls</relationshipLabel>
+        <relationshipName>Incoming_Campaigns</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Closing_Msg1__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played in case of closing days. Can be provided by Vocalcom.</inlineHelpText>
+        <label>Monday</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Closing_Msg2__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played in case of closing days. Can be provided by Vocalcom.</inlineHelpText>
+        <label>Tuesday</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Closing_Msg3__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played in case of closing days. Can be provided by Vocalcom.</inlineHelpText>
+        <label>Wednesday</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Closing_Msg4__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played in case of closing days. Can be provided by Vocalcom.</inlineHelpText>
+        <label>Thursday</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Closing_Msg5__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played in case of closing days. Can be provided by Vocalcom.</inlineHelpText>
+        <label>Friday</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Closing_Msg6__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played in case of closing days. Can be provided by Vocalcom.</inlineHelpText>
+        <label>Saturday</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Closing_Msg7__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played in case of closing days. Can be provided by Vocalcom.</inlineHelpText>
+        <label>Sunday</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Complete_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number used by your clients to call . Can be defined with your  telephony provider.</inlineHelpText>
+        <label>Complete Number</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Country_Number_Format__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>For which country do you want to use national number format ?</inlineHelpText>
+        <label>Country Number Format</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Company</label>
+        <referenceTo>Customer__c</referenceTo>
+        <relationshipLabel>Inbound Calls</relationshipLabel>
+        <relationshipName>Incoming_Campaigns</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Hold_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played by the ACD when the agent puts the customer on hold. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>On Hold Music</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Holiday_Id__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Define the schedule in case of closing days.</inlineHelpText>
+        <label>Holidays</label>
+        <referenceTo>Holidays__c</referenceTo>
+        <relationshipLabel>Inbound Calls</relationshipLabel>
+        <relationshipName>Incoming_Campaigns</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Incoming_Campaign_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Incoming Campaign Id</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Language__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Default language for audio messages.</inlineHelpText>
+        <label>Messages language</label>
+        <picklist>
+            <picklistValues>
+                <fullName>fr</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>de</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>en</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>es</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>it</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>nl</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>pt</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>tr</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Max_Channels__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Maximum number of lines that can be used simultaneously. Default: 9 999 : all available lines of the company. This value can never be greater than the value defined at a company level.</inlineHelpText>
+        <label>Maximum inbound lines</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Menu_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>When an IVR is executed. Specify menu details on this campaign. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Menu</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>National_Number_Format__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Do you want to use the national number format for this campaign ?</inlineHelpText>
+        <label>National Number Format</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>No_Agent_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played when no agent is connected and the campaign is open. Refer to the View as Not Connected parameter. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Abnormal Closing</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oid__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Oid</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opening_Id__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Opening times that apply to a specific campaign.</inlineHelpText>
+        <label>Service Hours Group</label>
+        <referenceTo>Service_Hours_Group__c</referenceTo>
+        <relationshipLabel>Inbound Calls</relationshipLabel>
+        <relationshipName>Incoming_Campaigns</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Overflow_Channels__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Maximum number of calls that can be handled simultaneously for that
+specific campaign. All calls exceeding that value are redirected to the overflow procedure. Vocalcom recommends to keep the default value.</inlineHelpText>
+        <label>Channel</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Overflow_Mode__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>1-Message/Script:Playing an audio file or executing an IVR script in overflow context.
+2-External Routing:Redirect the call to an external destination.
+3-Call Back:Enable automatic callback.
+4-Voice Mail:Enable the customer to leave a voice mail.</inlineHelpText>
+        <label>Mode</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1 - Message/Script</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2 - External Routing</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3 - Callback</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4 - Voice Mail</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Overflow_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played in overflow context. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Overflow Messages/Script</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Overflow_Wait_Loop__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of waiting loop: one loop is when all wav files are played one time. The call is sent in overflow when the maximum number of waiting time loops is played.</inlineHelpText>
+        <label>Wait loops</label>
+        <length>3</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Overflow_Wait_Time__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of seconds. The call will go in overflow, immediately after entering the queue if the expected waiting time of that particular queue exceeds this value.</inlineHelpText>
+        <label>Wait Time</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phone_Display_Specific__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Phone Number To Display</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phone_Display__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Call-back options:
+The Real Phone Number:Default system outgoing phone number.
+A Specific Phone Number:The phone number specified by the customer.
+Display Called  Phone Number (His Own Phone Number):Agent&apos;s phone number is displayed to the customer.</inlineHelpText>
+        <label>Display To Prospect</label>
+        <picklist>
+            <picklistValues>
+                <fullName>The Real Phone Number</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>A Specific Phone Number</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>A Hidden Phone Number</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Display Called Phone Number (Agent&apos;s Phone Number)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Priority__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Priority of the calls currently in queue for this campaign. Only useful if more than one campaign use the same queue.</inlineHelpText>
+        <label>Priority in queue</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Queue__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Queue linked to the campaign.</inlineHelpText>
+        <label>Queue</label>
+        <referenceTo>Queue__c</referenceTo>
+        <relationshipLabel>Inbound Calls</relationshipLabel>
+        <relationshipName>Incoming_Campaigns</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Route_Dest__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Phone number to which the call should be forwarded. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Destination Number For External Routing</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Route_Failed_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played if external routing fails. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>External Routing Failed Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Route_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played to the client during routing. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>External Routing Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TelBye_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played confirming that the number has been successfully registered for callback. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Phone Bye Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TelCheck_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played to repeat the customer’s number for verification. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Phone Check Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TelConfirm_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played to explain which buttons to use to go back to the previous step and enter the number again (in case of error) or to continue. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Phone Confirm Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TelError_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played when the number entered by the customer
+is not correct. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Phone Error Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TelInput_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played when asking the customer to enter a phone number. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Phone Input Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>VoiceBye_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played confirming the customer that his voice mail was successfully registered and will soon be treated. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Voice Mail Bye Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>VoiceCheckMsg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played to repeat the customer’s voice mail for validation. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Voice Mail Check Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>VoiceConfirm_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played to explain to the customer which key to use to go back to the previous step to enter the voice mail (in case of error). Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Voice Mail Confirm Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>VoiceInput_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played asking the customer to leave a message. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Voice Mail Input Message</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Voice_Script_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Contact  Vocalcom to activate the IVR feature.</inlineHelpText>
+        <label>IVR Script</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Voice_Script__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Voice Script</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wait_Msg_Duration__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of seconds between each waiting time anouncement. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Interval Between Expected Wait Announce</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wait_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played by the ACD when the customer waits for an agent. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Wait</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wait_Time_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played by the ACD to annonce the expected Waiting Time to the customer. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Expected Waiting Time</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Welcome_Msg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Audio file or executed IVR script played by the ACD to welcome the customer call. Can be customized by calling Vocalcom.</inlineHelpText>
+        <label>Welcome</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ivr_enabled__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>NOT(ISBLANK(Voice_Script__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Interactive voice response activation state</inlineHelpText>
+        <label>IVR enabled</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Inbound Call</label>
+    <nameField>
+        <label>Campaign Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Inbound Calls</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>OverflowMode1_Validation</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISPICKVAL(Overflow_Mode__c, &apos;Message de dissuasion / SVI&apos;) 
+     &amp;&amp;  Overflow_Msg__c == &apos;&apos;</errorConditionFormula>
+        <errorMessage>Overflow Msg: You must enter a value</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>OverflowMode2_Validation</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISPICKVAL(Overflow_Mode__c, &apos;Reroutage&apos;) 
+     &amp;&amp; 
+(Route_Dest__c == &apos;&apos; || Route_Failed_Msg__c == &apos;&apos; || Route_Msg__c == &apos;&apos;)</errorConditionFormula>
+        <errorMessage>Route Fields: You must enter a value</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>OverflowMode3_Validation</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISPICKVAL(Overflow_Mode__c, &apos;Saisie de numéro de téléphone (rappel)&apos;) 
+     &amp;&amp; 
+(TelBye_Msg__c == &apos;&apos; || TelCheck_Msg__c == &apos;&apos; || TelConfirm_Msg__c == &apos;&apos;
+|| TelError_Msg__c == &apos;&apos; || TelInput_Msg__c == &apos;&apos;)</errorConditionFormula>
+        <errorMessage>Tel Fields: You must enter a value</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>OverflowMode4_Validation</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISPICKVAL(Overflow_Mode__c, &apos;Boîte vocale&apos;) 
+     &amp;&amp; 
+(VoiceInput_Msg__c == &apos;&apos; || VoiceCheckMsg__c == &apos;&apos; || VoiceConfirm_Msg__c == &apos;&apos;
+|| VoiceBye_Msg__c == &apos;&apos;)</errorConditionFormula>
+        <errorMessage>Voice Fields: You must enter a value</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Activate_Deactivate_IVR</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Activate/Deactivate IVR</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>toggleIvr();</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Clear_IVR</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Clear IVR</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/apex.js&quot;)}
+
+var result=  sforce.apex.execute(&quot;vhc/Ctrl20IncomingCampaign_Refresh&quot;,&quot;removeExistingIvrForCampaign&quot;, {oidCampaignInbound:&quot;{!IncomingCampaign__c.Oid__c}&quot;});
+
+alert(result);</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Manage_IVR</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Launch IVR editor</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/apex.js&quot;)}
+
+// Get ivr editor URL for popup
+
+var url=  sforce.apex.execute(&quot;vhc/Ctrl20IncomingCampaign_Refresh&quot;,&quot;checkIvrExistingAndReturnUrl&quot;, {oidCampaignInbound:&quot;{!IncomingCampaign__c.Oid__c}&quot;});
+
+
+if (url[0].search(&apos;new&apos;) &gt; -1) {
+  var answer = confirm(&quot;Create a new IVR?&quot;);
+  if (answer) {
+    
+    /*
+
+    if ( !isIE8OrIE9) {
+        document.getElementById(&quot;ivrIframe&quot;).src = url;
+        document.getElementById(&quot;ivrIframe&quot;).style.display = &quot;block&quot;;
+    } else {
+        window.open(url);
+    }
+
+    */
+
+    window.open(url);
+
+  }
+} else { 
+    var answer = confirm(&quot;Edit the IVR for this campaign ?&quot;);
+    if (answer) {
+         
+        var popUp = window.open(url);
+        if (popUp == null || typeof(popUp)==&apos;undefined&apos;) { 
+    	  alert(&apos;Please disable your pop-up blocker and click the &quot;Launch IVR editor&quot; button again.&apos;);   
+        } else {
+          popUp.focus(); 
+        }
+
+        /*
+
+        if ( !isIE8OrIE9) {
+            document.getElementById(&quot;ivrIframe&quot;).src = url;
+            document.getElementById(&quot;ivrIframe&quot;).style.display = &quot;block&quot;;
+        } else {
+           var popUp = window.open(url);
+           if (popUp == null || typeof(popUp)==&apos;undefined&apos;) { 
+    	         alert(&apos;Please disable your pop-up blocker and click the &quot;Launch IVR editor&quot; button again.&apos;);   
+           } else {
+                 popUp.focus(); 
+           }
+        }
+
+        */
+
+    }
+}</url>
+    </webLinks>
+</CustomObject>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>SMSOptOut__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>SMS Opt Out</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <webLinks>
+        <fullName>Send_Bulk_SMS</fullName>
+        <availability>online</availability>
+        <description>Send bulk sms to number of leads</description>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Send Bulk SMS</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/14.0/apex.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/resource/1355393414000/smagicinteract__jquery&quot;)}
+{!REQUIRESCRIPT(&quot;/resource/1355395084000/smagicinteract__jqueryUI&quot;)}
+{!REQUIRESCRIPT(&quot;/resource/1355395025000/smagicinteract__jqueryuicss&quot;)}
+{!REQUIRESCRIPT(&quot;/resource/1361524259000/smagicinteract__sendSMSJS&quot;)}
+
+
+
+var records = {!GETRECORDIDS($ObjectType.Lead)}; 
+if (records[0] == null) { 
+   alert(&quot;Please select at least one lead&quot;);
+} 
+else{ 
+
+var packagePrefix = &quot;smagicinteract__&quot;;
+var recordType = &quot;Lead&quot;; 
+var recordIds = &quot;&quot;; 
+var nameField = &apos;Name&apos;;
+var mobileField = &apos;MobilePhone&apos;; 
+var optOutField = &apos;smagicinteract__SMSOptOut__c&apos;;
+var smsType = &apos;&apos;;
+var userId = &apos;{!$User.Id}&apos;; 
+var elementIdVar = &apos;&apos;;
+var showUserDropDown = false;
+var dialogTitle = &apos;&apos;;
+
+for (var n in records) { 
+   if(n == &apos;remove&apos; || n == &apos;indexOf&apos;) continue; 
+   recordIds = recordIds + records[n]; 
+   if (n != records.length-1) { 
+          recordIds = recordIds + &quot;,&quot;; 
+   } 
+} 
+
+
+sendSMS(recordType, recordIds, userId, nameField, mobileField, optOutField, smsType, elementIdVar, packagePrefix, showUserDropDown, dialogTitle);
+
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Send_SMS</fullName>
+        <availability>online</availability>
+        <description>Send sms to individual lead</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Send SMS</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/14.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/14.0/apex.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/resource/1355393414000/smagicinteract__jquery&quot;)}
+{!REQUIRESCRIPT(&quot;/resource/1355395084000/smagicinteract__jqueryUI&quot;)}
+{!REQUIRESCRIPT(&quot;/resource/1355395025000/smagicinteract__jqueryuicss&quot;)}
+{!REQUIRESCRIPT(&quot;/resource/1361524259000/smagicinteract__sendSMSJS&quot;)}
+
+
+var packagePrefix = &quot;smagicinteract__&quot;;
+var recordType = &apos;Lead&apos;; 
+var idToUpdate = &apos;{!Lead.Id}&apos; 
+var nameField = &apos;Name&apos;;
+var mobileField = &apos;MobilePhone&apos;; 
+var optOutField = &apos;smagicinteract__SMSOptOut__c&apos;;
+var smsType = &apos;&apos;;
+var userId = &apos;{!$User.Id}&apos;; 
+var elementIdVar = &apos;&apos;;
+var showUserDropDown = false;
+var dialogTitle = &apos;&apos;;
+
+sendSMS(recordType, idToUpdate, userId, nameField, mobileField, optOutField, smsType, elementIdVar, packagePrefix, showUserDropDown, dialogTitle);</url>
+    </webLinks>
+</CustomObject>

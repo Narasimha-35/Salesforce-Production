@@ -1,0 +1,148 @@
+<apex:page controller="CRMG_RS.SchedulerSettings" id="pg" sidebar="false">
+    <apex:sectionHeader title="Scheduler" subtitle="Settings" />
+    <apex:includeScript value="{!URLFOR($Resource.CRMG_RS__ReportsScheduler, 'jQuery.js')}" />
+    <apex:form id="frm">
+    <apex:pageMessages />
+        <apex:pageBlock id="pb">
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Save Settings" action="{!DoSave}" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2" id="pbs">
+                <apex:inputField value="{!Setting.CRMG_RS__Default_Org_Email_Domain__c}" required="true"/>
+                <apex:inputField value="{!Setting.CRMG_RS__Allow_All_External_Domains__c}" />
+                <apex:inputField value="{!Setting.CRMG_RS__Allow_Empty_Reports__c}" />
+                <apex:inputField value="{!Setting.CRMG_RS__Auto_Suggest_Email_Address__c}" />
+                 
+                
+                 
+                <apex:inputField value="{!Setting.CRMG_RS__Approved_Domains__c}" style="width:320px"/>
+                <apex:inputField value="{!Setting.CRMG_RS__Approved_Email_Addresses__c}" style="width:320px"/>
+                <apex:inputField value="{!Setting.CRMG_RS__Blocked_Domains__c}" style="width:320px"/>
+                <apex:inputField value="{!Setting.CRMG_RS__Blocked_Email_Addresses__c}" style="width:320px"/>
+                
+                <apex:pageBlockSectionItem >
+	                <apex:outputLabel value="Use for" />
+	                <apex:selectList value="{!SelectedUseFor}" multiselect="false" size="1" onChange="checkUseFor();">
+					<apex:selectOptions value="{!UseForItems}"/>
+					</apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:selectList value="{!Setting.CRMG_RS__Dashboard_Image_Folder__c}" multiselect="false" size="1" id="dashImgFldr">
+                    <apex:selectOptions value="{!allPublicDocFolders}"/>
+                </apex:selectList>
+                
+               </apex:pageBlockSection> 
+            
+               
+            <apex:pageBlockSection columns="2" title="Master Credentials to Refresh Reports" collapsible="false">
+                 <apex:inputField value="{!rsSett.CRMG_RS__Username__c}" required="true"/> 
+                 
+                 <apex:inputField value="{!Setting.CRMG_RS__Salesforce_Environment__c}" required="true"/> 
+                 
+	    		 <apex:pageBlockSectionItem >
+	                <apex:outputLabel value="Password" /> 
+	                <apex:outputPanel >
+	                <div class="requiredInput">
+	                <div class="requiredBlock"></div>  
+	                <apex:inputSecret value="{!rsSett.CRMG_RS__Password__c}" redisplay="true" required="true"/>
+	                </div>
+	                </apex:outputPanel>
+                </apex:pageBlockSectionItem> 
+	    	 
+	    		<apex:pageBlockSectionItem >
+	                <apex:outputLabel value="Security Token" /> 
+	                <apex:outputPanel >
+	                <div class="requiredInput">
+	                <div class="requiredBlock"></div>  
+	                <apex:inputSecret value="{!rsSett.CRMG_RS__Security_Token__c}" redisplay="true" required="true"/>&nbsp;
+	                <br/>To Reset your Security Token <a href="/_ui/system/security/ResetApiTokenEdit" target="_new">Click Here</a> 
+	                </div>
+	                </apex:outputPanel>
+                </apex:pageBlockSectionItem> 
+                
+                <apex:inputField value="{!Setting.CRMG_RS__Custom_Domain_Enabled__c}" /> 
+                
+                <apex:inputField value="{!Setting.CRMG_RS__Custom_Domain__c}" /> 
+                
+            </apex:pageBlockSection>
+            
+                <apex:pageBlockSection columns="2" title="PDF Reports" collapsible="false">
+                 <apex:pageBlockSectionItem >
+	                <apex:outputLabel value="Upload/Change Header Logo" /> 
+	                <apex:inputFile filename="{!PDFLogo.Name}" value="{!PDFLogo.Body}" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!Setting.CRMG_RS__Logo_Alignment__c}" />
+                
+                <apex:pageBlockSectionItem rendered="{!IF(PDFLogoURL != null, true, false)}">
+	                <apex:outputLabel value="Logo" />
+	                <apex:outputPanel >
+						<img src="{!PDFLogoURL}" /><br/>
+						<apex:commandLink value="DELETE" action="{!DoDeletelogo}" />  
+			     </apex:outputPanel> 
+                </apex:pageBlockSectionItem> 
+                
+                <apex:inputField value="{!Setting.CRMG_RS__Footer_Text__c}" style="width:320px;"/>
+                 
+            </apex:pageBlockSection>
+             
+             
+              <apex:pageBlockSection columns="2" rendered="{!IF(Setting.LastModifiedbyId != null, true, false) }">
+                 <apex:pageBlockSectionItem >
+	                 <apex:outputLabel value="Last Saved By"/>
+	              	 <apex:outputField value="{!Setting.LastModifiedById}" />
+              	 </apex:pageBlockSectionItem>
+              	 <apex:pageBlockSectionItem >
+	                 <apex:outputLabel value="Last Saved On"/>
+	              	 <apex:outputField value="{!Setting.LastModifiedDate}" />
+              	 </apex:pageBlockSectionItem>
+              </apex:pageBlockSection>
+              
+             <apex:pageBlockSection columns="1" title="Notes" collapsible="false">
+             <apex:outputPanel >
+             <ul>
+             <li><apex:outputText value="Logo will appear on PDF Reports. Please create Scheduled Report with Report Format as 'PDF' and click preview icon." /></li>
+             <li><apex:outputText value="You can remove the footer text that is auto inserted into each report. To do this, the Admin will Go to Setup | Customize | Reports & Dashboards | User Interface, selecting Export Reports without Footers, and clicking Save. " /></li>
+             
+             <apex:outputPanel rendered="{!IF(ScheduledBatchContextUser != null && ScheduledBatchContextUser != '', true, false)}">
+             <li>
+             All scheduled batch process are running with a context user and the user who saved the Scheduler Settings first time is the context user. Current context user is <b><a href="/{!ScheduledBatchContextUserId}" target="_new">{!ScheduledBatchContextUser}</a></b> and scheduled on {!ScheduledBatchDate}
+             </li>
+             <li>
+             If you want to change this context user, click <b><a href="/08e?setupid=ScheduledJobs" target="_new">here</a></b> and delete Scheduled Jobs- "DashBoardSchedulerHourly", "ReportSchedulerHourly" &amp; "RefreshSchedulerHourly" and then click on Save Settings button on this page. 
+             </li>
+             </apex:outputPanel>
+              
+  			 <apex:outputPanel rendered="{!IF(HerokuDebugURL != null && HerokuDebugURL != '', true, false)}">
+  			 <li>
+  			 Click <b><a href="{!HerokuDebugURL}" target="_new">here</a></b> to verify Refresh Reports login
+  			 </li>
+  			 </apex:outputPanel>
+  			  </ul> 
+             </apex:outputPanel>
+             </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <script type="text/javascript">
+        
+        var isFirstLoad = true;
+        
+        $(document).ready(function() {
+            checkUseFor();
+        });
+        
+        function checkUseFor(){
+            var useFor = $("#pg\\:frm\\:pb\\:pbs\\:useFor");
+            /*if(useFor.val() == '' && isFirstLoad){
+                useFor.val('Both Scheduled Reports and Dashboards');
+                isFirstLoad = false;
+            }*/
+            
+            if(useFor.val() == 'Scheduled Reports'){
+                $("#pg\\:frm\\:pb\\:pbs\\:dashImgFldr").parents("tr").first().css("display", "none");
+            }else{
+                $("#pg\\:frm\\:pb\\:pbs\\:dashImgFldr").parents("tr").first().css("display", "table-row");
+            } 
+        }
+    </script>
+</apex:page>

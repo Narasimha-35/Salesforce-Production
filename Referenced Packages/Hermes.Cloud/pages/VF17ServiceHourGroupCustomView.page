@@ -1,0 +1,15 @@
+<apex:page StandardController="vhc__Service_Hours_Group__c" extensions="vhc.Ctrl17ServiceHourGroupCustomView">
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/jquery-1.7.2.min.js')}"/>
+
+<script>
+	var timeZones = {!JSONTimeZonesOptions};
+
+	$(function(){
+		var cnfDiv = $('.detailList .labelCol:contains("TimeZone")').next();
+		cnfDiv.text( timeZones[cnfDiv.text()]);
+		
+	});
+</script>
+ 
+<apex:detail subject="{!vhc__Service_Hours_Group__c.ID}" relatedList="true" title="true"/> 
+</apex:page>

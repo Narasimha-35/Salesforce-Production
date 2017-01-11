@@ -1,0 +1,34 @@
+<apex:page StandardController="vhc__Agent_Group__c" extensions="vhc.Ctrl07Group" action="{!init}">
+
+<apex:sectionHeader title="{!$Label.New_Agent_Group}" subtitle="{!$Label.Agent_Group_Edit}" rendered="{!obj.id==null}"/>
+<apex:sectionHeader title="{!$Label.Agent_Group_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+<apex:outputText value="{!$Label.Agent_Group_Description}" rendered="{!ISValid}"/>
+<apex:pageMessages />
+<br/>&nbsp;
+
+    <apex:form id="myForm" rendered="{!ISValid}">
+        <apex:pageBlock title="{!$Label.Agent_Group_Edit}" mode="edit">
+            <apex:pageBlockButtons > 
+                <apex:commandButton action="{!Save}" value="{!$Label.Save}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/>
+            </apex:pageBlockButtons>
+           <apex:pageBlockSection title="{!$Label.Personal_Data}">
+            	<apex:inputField value="{!obj.Name}" required="true"/>
+            	<apex:outputField value="{!obj.vhc__Customer__c}"/>
+            </apex:pageBlockSection> 
+            <apex:pageBlockSection title="{!$Label.Telephony_Options}">
+            	<apex:inputField value="{!obj.vhc__AutoHangup__c}"/>
+            	<apex:inputField value="{!obj.vhc__AutoReady__c}"/>
+             </apex:pageBlockSection> 
+             <apex:pageBlockSection title="{!$Label.Allowed_Programs}">
+            	<apex:outputField value="{!obj.vhc__AgentControlRight__c}"/>
+            	<apex:inputField value="{!obj.vhc__ManagerRight__c}"/>
+            </apex:pageBlockSection> 
+            <apex:pageBlockSection title="{!$Label.Phone_Rights}">
+            	<apex:inputField value="{!obj.vhc__HangupRight__c}"/>
+            	<apex:inputField value="{!obj.vhc__ManualCallRight__c}"/>
+            	<apex:inputField value="{!obj.vhc__BlindTransferRight__c}"/>
+            </apex:pageBlockSection> 
+        </apex:pageBlock>
+    </apex:form>
+ </apex:page>

@@ -1,0 +1,67 @@
+<apex:page StandardController="vhc__Campaign__c" extensions="vhc.Ctrl06CallFileEditCJ" action="{!CheckToBeDelete}">
+
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/jquery-1.7.2.min.js')}"/>
+<apex:outputField value="Campaign__c.Country_number_format__c" rendered="false"/>
+<script>
+$(document).ready(function() {
+    CheckNationalFormat();
+    $($.grep($('.Country_number_format option'),function(item){return $(item).val()=='{!Campaign__c.Country_number_format__c }';})).attr('selected', 'selected');
+});
+
+function CheckNationalFormat()
+{
+    if($('.NNF_CBX').is(':checked')){
+        $('.Country_number_format').show();
+    } else {
+        $('.Country_number_format').hide();
+    }
+}
+</script>
+	<apex:sectionHeader title="{!$Label.New_CallFile}" subtitle="{!$Label.CallFile_Edit}" rendered="{!vhc__Campaign__c.ID == null}"/>
+	<apex:sectionHeader title="{!$Label.CallFile_Edit}" subtitle="{!vhc__Campaign__c.Name}" rendered="{!vhc__Campaign__c.ID != null}"/>
+	<apex:outputText value="{!$Label.CallFile_Description}"/>
+	<apex:pageMessages />
+	<br/>&nbsp; 
+	<apex:form id="myForm"  rendered="{!IsValid}">
+		<apex:pageBlock title="{!$Label.Site_Edit}" mode="edit">
+            <apex:pageBlockButtons > 
+                <apex:commandButton action="{!saveCustom}" 	value="{!$Label.Save}"/> 
+                <apex:commandButton action="{!Cancel}" 	value="{!$Label.Cancel}"/> 
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.Informations}">
+            	{!IsNew}
+            	<apex:inputField value="{!vhc__Campaign__c.name}" id="campaignName" required="true"/>
+            	
+            	<apex:outputField value="{!vhc__Campaign__c.vhc__Outgoing_Campaign__c}" id="outgoingCampaign" rendered="{!vhc__Campaign__c.vhc__Outgoing_Campaign__c != null}"/>
+            	
+            	<apex:pageBlockSectionItem rendered="{!Campaign__c.Outgoing_Campaign__c == null }">
+		           	{!$ObjectType.vhc__Campaign__c.fields.vhc__Outgoing_Campaign__c.label}
+		           	<apex:outputPanel styleClass="requiredInput" layout="block" >
+			        <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+			        <apex:selectList value="{!vhc__Campaign__c.vhc__Outgoing_Campaign__c}" id="outgoingCampaignSelect" size="1" required="true">
+					  	<apex:selectOptions value="{!OutCampaigns}"/>
+					</apex:selectList> 
+					</apex:outputPanel>
+					
+				</apex:pageBlockSectionItem> 
+				<script> 
+					document.getElementById('{!$Component.campaignName}').disabled={!IsUpdate};
+					document.getElementById('{!$Component.outgoingCampaign}').disabled={!IsUpdate};
+					document.getElementById('{!$Component.outgoingCampaignSelect}').disabled={!IsUpdate};
+				</script>
+				
+				<apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+				<apex:inputField value="{!vhc__Campaign__c.vhc__National_Number_Format__c}"  styleClass="NNF_CBX" onchange="$('.Country_number_format').toggle()"/>
+				
+				<apex:pageBlockSectionItem labelStyleClass="Country_number_format" dataStyleClass="Country_number_format" helpText="{!$ObjectType.vhc__Campaign__c.fields.vhc__Country_Number_Format__c.InlineHelpText}">
+                    <!-- TODO TRANSLATE -->
+                    <apex:outputText value="{!$ObjectType.vhc__Campaign__c.fields.vhc__Country_Number_Format__c.label}"/>
+                    <apex:selectList value="{!selectedCountry}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!countriesOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+	</apex:form>
+</apex:page>

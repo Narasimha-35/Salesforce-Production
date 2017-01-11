@@ -1,0 +1,134 @@
+<apex:page controller="vhc.Ctrl21Supervision" showHeader="true" action="{!init}">
+
+<apex:includeScript value="{!$Resource.vhc__JQuery}"/>
+
+<apex:sectionHeader title="Supervision" help="https://hermes-cloud.com/docs/pdf/Hermes%20Cloud%20Supervision%20Guide.pdf"/>
+
+<!-- if everything is ok on server side from controller, display form to login -->
+
+<apex:outputPanel rendered="{!IsValid}">
+    <div id="stationDiv">
+        {!$Label.Station} : 
+        <input style="width:68px" id="station" type="text" name="Station" value="{!Station}"/>
+        <input type="button" value="Login" onclick="submitForm()"/>
+    </div>
+</apex:outputPanel>
+
+<!-- display error message if not agent or not supervisor -->
+
+<apex:outputPanel rendered="{! Not(IsValid)}"> 
+    <apex:pageMessage summary="{!$Label.Supervision_Error}" severity="info" strength="3"></apex:pageMessage>
+</apex:outputPanel>
+
+<!-- display info message when supervision has been launched in a new window  -->
+
+<div id="supervision_opened" style="display:none">
+	<apex:outputPanel > 
+	    <apex:pageMessage summary="{!$Label.Supervision_Launched}" severity="info" strength="3"></apex:pageMessage>
+	</apex:outputPanel>
+</div>
+
+<!-- empty frame hidden by default -->
+
+<div>
+
+	<div id="SupervisionVersion" style="">
+		Switch to Supervision : 
+		<label for="SupervisionVersionFull" >Full </label> <input type="radio" name="SupervisionVersion" value="Full" id="SupervisionVersionFull"  />
+		<label for="SupervisionVersionLight" >Light </label><input type="radio" name="SupervisionVersion" value="Light" id="SupervisionVersionLight" />
+	</div>
+	<iframe id="supervisionIframe" style="width:95%;height:650px;display:none"/>
+</div>
+
+<script>
+
+var currentVersion;
+document.addEventListener('DOMContentLoaded', function(){
+
+	var full = {!superVisionFull};
+	
+	document.querySelector('#SupervisionVersionFull').checked=true;
+	document.querySelector('#SupervisionVersionLight').checked=!full;
+	
+
+	currentVersion = document.querySelector('#SupervisionVersionLight').checked?'light':'full';
+		
+	document.querySelector('#SupervisionVersionLight').addEventListener('click',function(){
+		if(this.value != currentVersion)
+		{
+			currentVersion=this.value;
+			
+			//save in user settings
+			Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.Ctrl21Supervision.saveSuperVisionVersion2}',
+	            this.value, 
+	            function(){try{
+	            	submitForm(arguments[0]);
+	            	console.log(arguments);
+	            }catch(e){}}
+	        );
+		}
+	});
+	document.querySelector('#SupervisionVersionFull').addEventListener('click',function(){
+		if(this.value != currentVersion)
+		{
+			currentVersion=this.value;
+			
+			//save in user settings
+			Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.Ctrl21Supervision.saveSuperVisionVersion2}',
+	            this.value, 
+	            function(){try{
+	            	submitForm(arguments[0]);
+	            	console.log(arguments);
+	            }catch(e){}}
+	        );
+	        
+		}
+	});
+});
+
+	
+	
+
+function  submitForm(sessionId){
+	//document.querySelector('#SupervisionVersion').style.display='';
+	var light = document.querySelector('#SupervisionVersionLight').checked;//true;//
+	
+	// Get variable from APEX Ctrl to check if IE8 or IE9
+	
+	var isIE8OrIE9 = {!isIE8OrIE9};
+
+	// Open as popup if browser used is IE8 or IE9 
+
+	if (isIE8OrIE9 ) {
+	    if( $('#station').val() != '') {
+	        var url = '{!JSENCODE(JsEncode(url))}' + '&Station=' + $('#station').val() + (light?'&skin=SalesForce':'') ;
+	        if(sessionId){
+	        	url=url.replace(/SessionUID=.*?&/g,'SessionUID='+sessionId);
+	        }
+	        window.open(url, 'Supervision');
+	        $('#supervision_opened').show();
+	        $('#stationDiv').hide();
+	    } 
+	} 
+	
+	// otherwise open in iframe and show iframe (chrome, firefox, ie10 or ie11 for examples)
+	
+	else {
+		if( $('#station').val() != '') {
+	        var url = '{!JSENCODE(JsEncode(url))}' + '&Station=' + $('#station').val() + (light?'&skin=SalesForce':'') ;
+	        if(sessionId){
+	        	url=url.replace(/SessionUID=.*?&/g,'SessionUID='+sessionId+'&');
+	        }
+	        $('#stationDiv').hide();
+	        $('#supervisionIframe').show();
+	        var iframe = document.getElementById('supervisionIframe');
+	        iframe.setAttribute('src',url);
+	    }
+	}
+	
+}
+</script>
+
+</apex:page>

@@ -1,0 +1,33 @@
+<apex:page standardController="MC4SF__MC_Query__c" extensions="MC4SF.QueryController">
+
+<apex:sectionHeader title="MC Query" subtitle="{!MC4SF__MC_Query__c.Name}"/>
+
+<apex:form >
+
+<apex:pageBlock >
+	<apex:pageBlockButtons location="top">
+		<apex:commandButton value="Go Back" onclick="history.go(-1); return false;"/>
+		<apex:commandButton value="Edit" onclick="top.location.href='{!$Page.MC4SF__QueryFilter}?id={!MC4SF__MC_Query__c.Id}'; return false;" rendered="{!isMailChimpAdmin || MC4SF__MC_Query__c.MC4SF__Last_Run_As__c == $User.Id}"/>
+	</apex:pageBlockButtons>
+
+	<apex:pageBlockSection >
+		<apex:repeat value="{!$ObjectType.MC4SF__MC_Query__c.FieldSets.MC4SF__QueryDetailOverride}" var="field"> 
+	        <apex:outputField value="{!MC4SF__MC_Query__c[field]}"/>
+	    </apex:repeat>
+	</apex:pageBlockSection>
+</apex:pageBlock>
+
+<apex:pageBlock title="MC Query Filters">
+	<apex:pageBlockTable value="{!filters}" var="filter">
+		<apex:column value="{!filter.MC4SF__Object_Name__c}"/>
+		<apex:column value="{!filter.MC4SF__Field_Name__c}"/>
+		<apex:column value="{!filter.MC4SF__Operator__c}"/>
+		<apex:column value="{!filter.MC4SF__Value__c}"/>
+		<apex:column value="{!filter.MC4SF__Error_Message__c}"/>
+	</apex:pageBlockTable>
+
+</apex:pageBlock>
+
+</apex:form>
+
+</apex:page>

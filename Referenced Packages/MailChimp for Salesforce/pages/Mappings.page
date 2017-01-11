@@ -1,0 +1,20 @@
+<apex:page standardController="MC4SF__MC_List__c" extensions="MC4SF.MappingsController" action="{!initPage}">
+
+<apex:sectionHeader title="MailChimp List" subtitle="{!MC4SF__MC_List__c.name}"/>
+
+<apex:form id="form">
+
+<apex:pageMessages />
+
+<apex:pageBlock title="Field Mappings" mode="edit" rendered="{!isMailChimpAdmin}">
+	<apex:pageBlockButtons >
+		<apex:commandButton value="Save" action="{!save}"/>
+		<apex:commandButton value="Cancel" action="{!cancel}"/>
+	</apex:pageBlockButtons>
+
+	<c:Mappings listId="{!MC4SF__MC_List__c.Id}" baseController="{!mappingsBaseController}"/>	
+</apex:pageBlock>
+
+</apex:form>
+
+</apex:page>

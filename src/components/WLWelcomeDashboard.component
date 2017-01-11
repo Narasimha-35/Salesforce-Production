@@ -1,0 +1,79 @@
+<apex:component controller="WLWelcomeDashboard">
+    <apex:attribute assignTo="{!MyOpportunityIds}" name="oppId" type="String" description="Opportunity ID"/>
+     <section class="row">
+                <div class="blog_box">
+                    <hgroup class="blog_grp">
+                        <h3 class="col-md-12">{!strHeaderName}</h3>
+                        <h4 class="col-md-12">{!strDescriptionName} </h4>
+                    </hgroup>
+                    
+                    <apex:outputPanel rendered="{!isshow}">
+                        <ul class="dash_step_list">
+                            <li class="col-md-3 col-xs-3 col-sm-3">
+                                <div class="row">
+                                    <a>
+                                        <div class="dash_border">&nbsp;</div>
+                                        <apex:outputPanel rendered="{!If(isApplication == true || isApproval == true || isLoanDocs == true || isSettlement== true,true,false)}">
+                                            <img  src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/rater_finder_orange.png')}" class="dash_icon" alt="img"  />
+                                            <span class="dash_text active">Application</span>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!If(isApplication == true || isApproval == true || isLoanDocs == true || isSettlement== true,false,true)}">
+                                            <img  src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/dash_application.png')}" class="dash_icon" alt="img"  />
+                                            <span class="dash_text">Application</span>
+                                        </apex:outputPanel>
+                                    </a>
+                                </div>
+                            </li>
+                            
+                            <li class="col-md-3 col-xs-3 col-sm-3">
+                                <div class="row">
+                                    <a>
+                                     <div class="dash_border">&nbsp;</div>
+                                       <apex:outputPanel rendered="{!If(isApproval == true || isLoanDocs == true || isSettlement== true,true,false)}">
+                                            <img  src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/online_app_orange.png')}"  class="dash_icon" alt="img" />
+                                            <span class="dash_text active">Approval</span>
+                                       </apex:outputPanel>
+                                       <apex:outputPanel rendered="{!If(isApproval == true || isLoanDocs == true || isSettlement== true,false,true)}">
+                                           <img  src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/dash_approval.png')}"  class="dash_icon" alt="img" />
+                                           <span class="dash_text">Approval</span>
+                                       </apex:outputPanel>
+                                    </a>
+                                </div>
+                            </li>
+                            
+                            <li class="col-md-3 col-xs-3 col-sm-3">
+                                <div class="row">
+                                <div class="dash_border">&nbsp;</div>
+                                    <a>
+                                        <apex:outputPanel rendered="{!If(isLoanDocs == true || isSettlement== true,true,false)}">
+                                            <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/supporting_docs_orange.png')}"  class="dash_icon" alt="img" />
+                                            <span class="dash_text active">Loan Documents</span>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!If(isLoanDocs == true || isSettlement== true,false,true)}">
+                                            <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/dash_loan_doc.png')}"  class="dash_icon" alt="img" />
+                                            <span class="dash_text">Loan Documents</span>
+                                        </apex:outputPanel>
+                                    </a>
+                                </div>
+                            </li>
+                            
+                            <li class="col-md-3 col-xs-3 col-sm-3">
+                                <div class="row">
+                                    <a>
+                                    <apex:outputPanel rendered="{!If(isSettlement== true,true,false)}">
+                                        <img  src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/loan_stlmnt_orange.png')}" class="dash_icon" alt="img" />
+                                        <span class="dash_text active">Settlement</span>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!If(isSettlement== true,false,true)}">   
+                                        <img  src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/dash_sattlement.png')}" class="dash_icon" alt="img" />
+                                        <span class="dash_text">Settlement</span>
+                                    </apex:outputPanel>    
+                                    </a>
+                                </div>
+                            </li>
+                          </ul>
+                        </apex:outputPanel>    
+                           
+                </div><!--blog box close-->       
+            </section>
+</apex:component>

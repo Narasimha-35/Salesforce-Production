@@ -1,0 +1,63 @@
+<apex:page sidebar="false" cache="false" showHeader="false" standardStylesheets="false">  
+    <html>
+        <head>
+            <style>
+                .pop-up-form-error
+                {
+                    margin-top:70px!important;
+                }
+                @media all and (min-width:320px) and (max-width:800px){
+                .pop-up-form-error
+                {
+                    margin-top:120px!important;
+                }
+                }
+                .setup-box-pass
+                {
+                    position:relative!important;
+                    top:0px!important;
+                    margin: 0 auto!important;
+                    left: 0px !important;
+                    box-shadow:none!important;
+                    min-height:inherit!important;
+                }
+                .h3-pass
+                {
+                    padding-top:0px!important;
+                }
+            </style>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+            <link href="{!URLFOR($Resource.acfResources, 'acfResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+            <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/js.js')}"></script>
+            <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/nav.js')}"></script>
+            <script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/html5.js')}"></script>
+            <title>Reset Password</title>    
+        </head>
+        <body>
+         
+                <main class="container-fluid">                
+                    <header class="row-fluid">
+                        <c:acfHeader />        
+                    </header><!--row fluid close-->
+                    <div class="container">
+                        <div class="row-fluid">
+                            <div id="MemberLoginPopUp123" Class="pop-up-form pop-up-form-error">
+                                <section class="setup-box setup-box-pass" style="z-index: 200">
+                                    <hgroup><h3 class="h3 h3-pass">Oops ! something went wrong.</h3></hgroup> 
+                                    <div class="hr-color">&nbsp;</div>
+                                    <div class="clearfix"></div>                                                       
+                                </section>
+                            </div>   
+                        </div>
+                    </div><!--container close-->         
+                    <!---Footer start here--------------->
+                    <footer class="inner-footer row-fluid">    
+                        <c:acfFooter ></c:acfFooter>    
+                    </footer><!--footer close-->
+                </main><!--main div close-->
+           
+        </body>
+    </html>
+</apex:page>

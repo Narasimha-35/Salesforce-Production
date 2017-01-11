@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Zendesk_oauth</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <modules>
+        <module>
+            <label>Zendesk_oauth</label>
+            <moduleType>connected</moduleType>
+            <name>Zendesk_oauth</name>
+            <types>
+                <members>Zendesk_oauth_devConfig</members>
+                <name>ConnectivityDevConfigMetadata</name>
+            </types>
+            <types>
+                <members>Zendesk__Zendesk_oauth</members>
+                <name>Module</name>
+            </types>
+            <version>178.0</version>
+        </module>
+    </modules>
+    <namespacePrefix>Zendesk</namespacePrefix>
+    <version>30.0</version>
+</Package>

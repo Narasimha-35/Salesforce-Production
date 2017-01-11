@@ -1,0 +1,33 @@
+<apex:page standardController="Account" extensions="MC4SF.MembershipController">
+
+<apex:outputPanel layout="none" rendered="{!subscriberId == null}">
+	<apex:pageBlock >
+		<apex:facet name="header">
+			<apex:outputPanel >
+				<table border="0" cellpadding="0" cellspacing="0">
+					<tbody>
+						<tr>
+							<td class="pbTitle" style="padding: 0 5px;">
+								<img src="/s.gif" width="12" height="1" class="minWidth" style="margin-right: 0.25em;"/>
+								<img src="{!URLFOR($Resource.Assets, '/img/freddie.png')}" class="relatedListIcon" style="width: 24px; height: 24px; position: relative; margin-left: -1px; display: inline; top: 3px;"/>
+								<h3 style="margin: 3px 0 0 27px;">MailChimp Membership</h3>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</apex:outputPanel>
+		</apex:facet>
+	
+		<apex:pageBlockSection columns="1">
+			<apex:outputPanel >
+				<span style="color: red;">This information is only applicable to Person Accounts.</span>
+			</apex:outputPanel>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:outputPanel>
+
+<apex:outputPanel layout="none" rendered="{!subscriberId != null}">
+	<c:Membership subscriber="{!subscriberId}"/>
+</apex:outputPanel>
+
+</apex:page>

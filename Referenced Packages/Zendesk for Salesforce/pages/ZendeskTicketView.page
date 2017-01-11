@@ -1,0 +1,199 @@
+<apex:page controller="Zendesk.ZendeskTicketController">
+<apex:form id="all" >
+
+    <apex:actionFunction name="callout" action="{!Initialize}" rerender="all"/>
+    <apex:outputpanel rendered="{!NOT Initialized}">
+        <script>
+            function addOnLoad(func) 
+            { 
+                var prev = window.onload; 
+                if (typeof window.onload != 'function') 
+                { 
+                    window.onload = func; 
+                } 
+                else
+                { 
+                    window.onload = function()  
+                    { 
+                        if (prev) 
+                        { 
+                            prev(); 
+                        } 
+                        func(); 
+                    } 
+                } 
+            }
+
+            addOnLoad(function()  
+            { 
+                callout();
+            });
+        </script>
+        <div align="center">
+            <br/><br/><br/><br/><br/><br/>
+        	<apex:image url="{!URLFOR($Resource.Zendesk__ZendeskStaticResource,'images/dotted_bar.gif')}" />
+        </div>
+    </apex:outputpanel>
+
+    <apex:outputpanel rendered="{!Initialized && (error || credentialError)}">  
+        <apex:sectionHeader title="Zendesk Ticket" />
+
+        <apex:pageBlock rendered="{!NOT(credentialError)}" >
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Go Back" action="{!GoBack}" />
+            </apex:pageBlockButtons>
+        
+            <apex:pageMessages />
+        </apex:pageBlock>
+        <apex:pageBlock rendered="{!credentialError}">
+        	<apex:outputText rendered="{!!ownCredentials}">
+				<p>In order to edit or create new Zendesk Tickets, you need to have your own Zendesk account.</p>
+			    <p>Please&nbsp;<apex:outputLink value="{!URLFOR($Page.Zendesk__ZendeskSettings)}?retURL={!URLENCODE('/apex/ZendeskTicketEdit')}">configure your own credentials</apex:outputLink>.</p>
+			</apex:outputText>
+        </apex:pageBlock>
+    </apex:outputpanel>
+    
+    <apex:outputpanel rendered="{!Initialized && !error && !credentialError}">  
+    
+        <apex:sectionHeader title="Zendesk Ticket" subtitle="#{!ticket.internalId} '{!ticket.subject}'" />
+        <apex:pageMessages />
+        
+        <apex:pageBlock title="View Zendesk Ticket">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton rendered="{!editAllowed}" value="Edit" action="{!URLFOR($Page.ZendeskTicketEdit)}?referrer={!$CurrentPage.parameters.referrer}&ticketid={!$CurrentPage.parameters.ticketid}&entity={!$CurrentPage.parameters.entity}&fromticket={!$CurrentPage.parameters.fromTicket}&domainId={!$CurrentPage.parameters.domainId}"/>
+                <apex:commandButton rendered="{!newAllowed}" value="New" action="{!URLFOR($Page.ZendeskTicketEdit)}?referrer={!$CurrentPage.parameters.referrer}&entity={!$CurrentPage.parameters.entity}&fromticket={!$CurrentPage.parameters.fromTicket}&domainId={!$CurrentPage.parameters.domainId}"/>
+                <apex:commandButton value="Go Back" action="{!GoBack}" />
+            </apex:pageBlockButtons>
+        
+            <apex:pageBlockSection columns="2">
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Requester" />
+                <apex:outputText >{!ticket.requester.name} 
+                  <apex:image value="{!ticket.requester.photoUrl}" style="height:14px;vertical-align:text-top" rendered="{!NOT(ISBLANK(ticket.requester.photoUrl))}"/>
+
+                </apex:outputText>
+              </apex:pageBlockSectionItem>
+        
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Created at" />
+                <apex:outputText value="{!ticket.created}" />
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="CC" />
+                <apex:outputText value="{!ticket.collaborators}" />
+              </apex:pageBlockSectionItem>
+               
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Updated at" />
+                <apex:outputText value="{!ticket.updated}" />
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Status" />
+                <apex:outputText value="{!ticket.status}" />
+              </apex:pageBlockSectionItem>
+
+			  	<apex:pageBlockSectionItem rendered="{!Brands.size > 0}">
+	              	<apex:outputLabel value="Brand" />
+                  	<apex:selectList value="{!ticket.brand_id}" size="1" disabled="true">
+    	            	<apex:selectOptions value="{!Brands}" />
+                	</apex:selectList>	
+				</apex:pageBlockSectionItem>
+              	<apex:pageBlockSectionItem rendered="{!Brands.size == 0}">
+
+				</apex:pageBlockSectionItem>
+                
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Solved at" />
+                <apex:outputText value="{!ticket.solved}" />
+              </apex:pageBlockSectionItem>
+              
+               <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Assigned at" />
+                <apex:outputText value="{!ticket.assigned}" />
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Type" />
+                <apex:outputText value="{!ticket.ticketType}" />
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Priority" />
+                <apex:outputText value="{!ticket.priority}" />
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Assignee" />
+                <apex:outputText >{!ticket.assignee.name} 
+
+
+                  <apex:image value="{!ticket.assignee.photoUrl}" style="height:14px;vertical-align:text-top" rendered="{!NOT(ISBLANK(ticket.assignee.photoUrl))}"/>
+                  
+
+                </apex:outputText>
+              </apex:pageBlockSectionItem>
+        
+              <apex:pageBlockSectionItem >  
+                <apex:outputLabel value="Tags" />
+                <apex:outputText value="{!ticket.tags}" />
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Due date" />
+                <apex:outputText value="{!ticket.dueDate}" />
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Group" />
+                <apex:outputText value="{!ticket.supportGroup.name}" />
+              </apex:pageBlockSectionItem>
+        
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Organization" />
+                <apex:outputText value="{!ticket.organization}" />
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Score" />
+                <apex:outputText value="{!ticket.score}" />
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Via" />
+                <apex:outputText value="{!ticket.via}" />
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem />
+
+              <apex:pageBlockSectionItem rendered="{!ticket.ticket_form_name != null}" >
+                <apex:outputLabel value="Form Name" />
+                <apex:outputText value="{!ticket.ticket_form_name}" />
+              </apex:pageBlockSectionItem>
+              
+            </apex:pageBlockSection>
+                
+            <div class="pbSubsection">
+              <apex:dataTable value="{!ticket.customFields}" var="field" styleClass="detailList" columnClasses="labelCol, dataCol">
+                <apex:column >{!field.title}</apex:column>
+                <apex:column >{!field.valueForDisplay}</apex:column>
+                <apex:column />
+                <apex:column />
+              </apex:dataTable>
+            </div>
+        
+            <apex:pageBlockSection columns="1">
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Description" />
+                <apex:outputText escape="false" value="{!ticket.formatteddescription}" />
+              </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+    
+      </apex:pageBlock>
+      
+      <c:ZendeskTicketComments ticket="{!ticket}"/>
+      
+    </apex:outputpanel>
+</apex:form>
+</apex:page>

@@ -1,0 +1,24 @@
+<apex:page standardController="Opportunity" extensions="clsSendEmailNotification" showHeader="false" sidebar="false">
+ <apex:form >
+      <apex:pagemessages />
+     <apex:pageBlock >
+          <apex:outputPanel rendered="{!If(strValidationError != null && strValidationError != '',true,false)}" 
+                  style="{!if(mailSent,'','color:red;')} font-weight:bold; margin-left:30%;">{!strValidationError}</apex:outputPanel>
+          <p> Please select the documents: </p>
+          <apex:pageBlockButtons >
+               <apex:commandButton value="Send Email" action="{!sendDocs}"  />
+          </apex:pageBlockButtons>
+          <apex:pageBlockTable value="{!lstwrapSelectpdfComp}" var="objWrap">
+              <apex:column >
+                <apex:inputCheckbox value="{!objWrap.IsDocSelected}"/>
+              </apex:column>
+              <apex:column >   
+                  <apex:outputText value="{!objWrap.strDocName}"></apex:outputText>  <br/>
+              </apex:column>
+          </apex:pageBlockTable>
+      </apex:pageBlock>
+      
+  </apex:form>
+  
+  
+</apex:page>

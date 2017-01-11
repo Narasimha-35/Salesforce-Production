@@ -1,0 +1,5 @@
+<apex:page standardController="Account">
+
+  <c:ZendeskList for="account" />
+  
+</apex:page>

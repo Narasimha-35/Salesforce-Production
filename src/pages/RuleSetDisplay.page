@@ -1,0 +1,97 @@
+<apex:page controller="ListAllRuleSet" docType="html-5.0" standardStylesheets="false">
+<html>
+	<head>
+		<link href="//cdn.muicss.com/mui-0.1.21/css/mui.min.css" rel="stylesheet" type="text/css" />
+		<script src="//cdn.muicss.com/mui-0.1.21/js/mui.min.js"></script>
+	</head>
+	<body>
+  		<div class="mui-container">
+  		  <apex:outputPanel id="rulePanel2" layout="block">
+  	  	  	<apex:outputPanel rendered="{!renderErrorMessage}" ><span style="color:red">{! errorMessage}</span></apex:outputPanel><br/>
+	      </apex:outputPanel>
+	      <apex:form >
+	      	  <div class="mui-checkbox">
+			  	<label>
+			      <apex:inputCheckbox value="{! rule.Is_Active_Rule__c}"/>
+			      Active Rule
+			    </label>
+			  </div>
+	      	  <legend>Rule Information</legend>
+	      	  <div class="mui-form-group">
+			    <apex:inputField type="text" html-class="mui-form-control" value="{! rule.Rule_Name__c}"></apex:inputField>
+			  	<label class="mui-form-floating-label">Rule Name</label>
+			  </div>
+			  <div class="mui-form-group">
+			    <apex:inputField type="text" html-class="mui-form-control" value="{! rule.Rule_Description__c}"></apex:inputField>
+			  	<label class="mui-form-floating-label">Rule Description</label>
+			  </div>
+			  <legend>Object that rule works on</legend>
+			  <div class="mui-select" style="Width:20%">
+                <apex:selectList value="{! rule.Rule_Object__c}" size="1" onchange="changeRuleObject(this.value)">
+                    <apex:selectOptions value="{! ruleObjectOptions}"/>
+                </apex:selectList>
+                <apex:actionFunction action="{!changeRuleObject}" name="changeRuleObject" reRender="rulePanel" >
+	              <apex:param name="objectType" value="" assignTo="{! selectedRuleObject}"/>
+	          </apex:actionFunction>
+              </div>
+              <br/>
+              <legend>Delay Days To Call File</legend>
+              <div class="mui-form-group" style="Width:20%">
+			    <apex:inputField type="number" html-class="mui-form-control" value="{! rule.Delay_To_Call_File_Days__c}"></apex:inputField>
+			  	<label class="mui-form-floating-label">Delay Days</label>
+			  </div>
+			  <legend>Filters</legend>
+	          <span class="mui-pull-left">* If the field is Date Or Datetime type, please use this format yyyy-mm-dd</span><br/><br/>
+	          
+	          <div>
+	              <apex:outputPanel id="rulePanel" layout="block">
+	
+	                  <apex:repeat value="{! ruleSets}" var="ruleSet">
+	                  	<div class="mui-select" style="width:40%; float:left; margin-right:10px;">	
+	                      <apex:selectList value="{! ruleSet.Field_Name_Dyna__c}" html-class="fieldName{! ruleSet.Id} " size="1">
+	                          <apex:selectOptions value="{! fieldOptions}"/>
+	                      </apex:selectList>
+	                    </div>
+	                    <div class="mui-select" style="width:20%; float:left; margin-right:10px;">
+	                      <apex:selectList value="{! ruleSet.Operator__c}" size="1">
+	                          <apex:selectOptions value="{! operators}"/>
+	                      </apex:selectList>
+	                    </div>
+	                    <div class="mui-select" style="width:20%; float:left; margin-right:10px;">
+	                      <apex:inputField type="text" html-class="mui-form-control" value="{! ruleSet.Field_Value__c}"></apex:inputField>
+	                    </div>
+	                    <div class="mui-select" style="float:left; margin-right:10px;">
+	                    	<button onclick="javascript:if (window.confirm('Are you sure?')) deleteRule('{! ruleSet.Id}'); return false;" class="mui-btn mui-btn-danger mui-btn-flat">Del</button>
+	                    </div>
+	                    <br/>
+	                  </apex:repeat>
+	             </apex:outputPanel>
+	          </div>
+	          <br/>
+	          <apex:actionFunction action="{!deleteRule}" name="deleteRule" reRender="rulePanel" >
+	              <apex:param name="ruleSetId" value="" assignTo="{! selectedRuleSetId}"/>
+	          </apex:actionFunction>
+	          <button class="mui-btn mui-btn-primary mui-btn-raised" onclick="moreRule();return false;">Add New Filter</button><br/>
+	          <apex:actionFunction action="{!moreRule}" name="moreRule" reRender="rulePanel" >
+	          </apex:actionFunction>
+	          <br/>
+	          <legend>Standard Exclusions</legend>
+	          <apex:inputCheckbox value="{! rule.Exclude_Do_Not_Call__c}"/> Exclude Do Not Call <br/>
+	          <apex:inputCheckbox value="{! rule.Exclude_Do_Not_Email__c}"/> Exclude Do Not Email <br/>
+	          <apex:inputCheckbox value="{! rule.Exclude_Converted_Lead__c}"/> Exclude Converted Lead <br/>
+	          <apex:inputCheckbox value="{! rule.Exclude_Closed_And_Lost__c}"/> Exclude Closed And Lost Lead <br/><br/><br/>
+	          <legend>Call File</legend>
+	          <div class="mui-select" style="width:20%; float:left; margin-right:10px;">
+	          <apex:selectList value="{! rule.Call_File__c}" size="1">
+	              <apex:selectOptions value="{! callFilesOptions}"/>
+	          </apex:selectList>
+	          </div>
+	          <br/><br/>
+	          <button onclick="save(); return false; " class="mui-btn mui-btn-primary mui-btn-raised" id="saveButton">Save</button>
+	          <apex:actionFunction action="{! save}" name="save" reRender="rulePanel2" >
+	          </apex:actionFunction>
+	      </apex:form>
+  	</div>
+  </body>
+ </html>
+</apex:page>

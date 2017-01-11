@@ -1,0 +1,124 @@
+<apex:page tabStyle="Workflow_Settings__tab">
+<apex:includeScript value="{!URLFOR($Resource.smagicworkflow__WorkflowJS)}"/>
+<script>
+function redirectUser(){
+        var url = "/apex/WorkflowXMLConfigurationPage?retURL=/apex/WorkflowAndTaskConfigurationPage";
+        parent.window.location = url;
+}
+    
+</script>
+
+
+<style type="text/css">
+.classname {
+    
+    text-decoration:"none";
+    margin-left: 95%;
+    -moz-box-shadow:inset 0px 1px 0px 0px #cae3fc;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #cae3fc;
+    box-shadow:inset 0px 1px 0px 0px #cae3fc;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #4197ee) );
+    background:-moz-linear-gradient( center top, #79bbff 5%, #4197ee 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#4197ee');
+    background-color:#79bbff;
+    -webkit-border-top-left-radius:20px;
+    -moz-border-radius-topleft:20px;
+    border-top-left-radius:20px;
+    -webkit-border-top-right-radius:20px;
+    -moz-border-radius-topright:20px;
+    border-top-right-radius:20px;
+    -webkit-border-bottom-right-radius:20px;
+    -moz-border-radius-bottomright:20px;
+    border-bottom-right-radius:20px;
+    -webkit-border-bottom-left-radius:20px;
+    -moz-border-radius-bottomleft:20px;
+    border-bottom-left-radius:20px;
+    text-indent:0;
+    border:1px solid #469df5;
+    display:inline-block;
+    color:#ffffff;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    font-style:normal;
+    height:65px;
+    line-height:65px;
+    width:200px;
+    text-decoration:none;
+    text-align:center;
+}
+.classname:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #4197ee), color-stop(1, #79bbff) );
+    background:-moz-linear-gradient( center top, #4197ee 5%, #79bbff 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#4197ee', endColorstr='#79bbff');
+    background-color:#4197ee;
+}.classname:active {
+    position:relative;
+    top:1px;
+}</style>
+
+
+
+
+
+
+<apex:pageBlock >
+<apex:pageBlockSection title="Quick Start">
+<div id="helpText" style="display:block;">
+<a href="/apex/WorkflowXMLConfigurationPage?retURL=/apex/WorkflowAndTaskConfigurationPage" class="classname"  onClick="redirectUser();" style="text-decoration:none;">   New  SMS   Workflow   </a>
+</div>
+</apex:pageBlockSection> 
+<apex:pageBlockSection title="Understanding SMS Automation using workflow" onclick="collapseSection('secondSection');" />
+<div id="secondSection" style="display:block;">
+<b>It automates SMS Actions using workflow rules based on your organization's processes.</b><br/><br/>
+<ol type="1">
+<li>SMS Alerts - Send an SMS to one or more recipients you specify.</li><br/>
+<li>SMS Campaigns - Trigger Mass SMSes to particular Campaign's members.</li><br/>
+<li>Auto SMS Replies - Send SMS for to reply on email/sms queries.</li>
+</ol> 
+</div>
+<apex:pageBlockSection title="Dependencies">
+<b>This package has below dependencies : </b><br/><br/>
+<ol type="1">
+<li>Salesforce Enterprise or Unlimited editions</li><br/>
+<li>SMS Magic Interact version 1.30 and above</li><br/>
+<li>SMS Credits (To buy credits <a href="http://screen-magic.com/salesforce/shoppingCart.html">click here</a>)</li>
+</ol>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="Examples" onclick="collapseSection('examplesSection');" />
+<div id="examplesSection" style="display:block;">
+<b>How to configuration Action for Contact</b><br/><br/>
+Follow steps below to configure Action :
+<ol type="1">
+<li>Create Workflow Rule for Contact.</li><br/>
+<li>Create XML Configuration for Contact.</li><br/>
+<li>Copy XML Configuration Id.</li><br/>
+<li>In workflow Action, choose the option to Create Task.</li> <br/>
+<li>Enter any name as the subject.</li><br/>
+<li>Paste Configuration id,copied in step 3 in comments under Workflow Task Description section.</li><br/>
+<li>Activate Workflow Rule.</li><br/>
+</ol>
+
+<b>How to configuration Action for Campaign:</b><br/><br/>
+<ol type="1">
+<li>Create Workflow Rule for Campaign.</li><br/>
+<li>Create XML Configuration for Campaign.</li><br/>
+<li>Copy XML Configuration Id.</li><br/>
+<li>In workflow Action, choose the option to Create Task.</li><br/>
+<li>Enter any name as the subject.</li><br/>
+<li>Paste Configuration id,copied in step 3 in comments under Workflow Task Description section.</li><br/>
+<li>Activate Workflow Rule.</li><br/>
+</ol>
+</div>
+
+
+<apex:pageBlockSection title="Limitations" onclick="collapseSection('limitationsBlock');" />
+<div id="limitationsBlock" style="display:block;">
+<ul type="disc">
+<li>Any Object not relatable to tasks is not supported i.e. Campaign member object is not supported.</li><br/>
+<li>Event object is partially supported.</li><br/>
+<li>SMS to object record's owner is not supported.</li>
+</ul>
+</div>
+</apex:pageBlock>
+</apex:page>

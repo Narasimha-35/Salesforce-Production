@@ -1,0 +1,94 @@
+<apex:page controller="vhc.Ctrl25OutboundTemplate" tabStyle="vhc__Outgoing_Campaign__c" title="{!$Label.Outbound_Template_Page_Title}">
+    <!-- <apex:includeScript value="{!URLFOR($Resource.CTI, '/js/cti/jquery-1.7.2.min.js')}" /> -->
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.WS_Ressource, 'CSS/slide_competence.css')}" /> 
+    <apex:includeScript value="{!$Resource.vhc__JQuery}"/>
+    <script type="text/javascript"> 
+        $(document).ready(function() {
+            CheckPhoneDisplay();
+        
+        });
+            
+        $(function($) { 
+            $('.phone_display').change(function() {
+                CheckPhoneDisplay();
+            });
+        });
+        
+        function CheckPhoneDisplay()
+        {
+            var selectedIndex = $('option:selected', '.phone_display').index();
+            if(selectedIndex == 1)
+                {
+                    $('.phone_specific').show();
+                }
+                else
+                {
+                    $('.phone_specific').val('');
+                    $('.phone_specific').hide();
+                }
+        }
+    </script>
+
+    <apex:sectionHeader title="{!$Label.Outbound_Template_Title}" subtitle="{!$Label.Outbound_Template_Subtitle}" rendered="true" />
+    <apex:outputText value="{!$Label.Outbound_Template_Description}" rendered="true" />
+    <apex:pagemessages />
+    <br />&nbsp;
+
+    <apex:form rendered="{!isError==false}">
+        <apex:pageBlock title="{!$Label.outboundTemplateCreation}">
+            <apex:pageBlockSection title="{!$Label.parameters}" id="outboundtemplateparams">
+                
+                <apex:pageBlockSectionItem id="CampaignName">
+                    <apex:outputLabel value="{!$ObjectType.vhc__Outgoing_Campaign__c.fields.Name.label}" />
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <div class="requiredBlock"></div>
+                        <apex:inputText required="true" value="{!campaignName}" label="{!$ObjectType.vhc__Outgoing_Campaign__c.fields.Name.label}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    {!$ObjectType.vhc__Outgoing_Campaign__c.fields.vhc__Language__c.label}
+                    <apex:selectList required="true" value="{!LanguageValue}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!LanguageOptions}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    {!$ObjectType.vhc__Outgoing_Campaign__c.fields.vhc__outMode__c.label}
+                    <apex:selectList required="true" value="{!CallTypeValue}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!CallTypeOptions}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    {!$ObjectType.vhc__Outgoing_Campaign__c.fields.vhc__PhoneDisplay__c.label}
+                    <apex:selectList required="true" value="{!DisplayPhoneValue}" multiselect="false" size="1" StyleClass="phone_display">
+                        <apex:selectOptions value="{!DisplayPhoneOptions}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    {!$Label.Auto_Affect_Agents}
+                    <apex:inputCheckBox value="{!autoAffectAgents}" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    {!$Label.Automatic_assignment_for_user_profile}
+                    <apex:selectList value="{!selectedProfileId}" multiselect="false" size="6">
+                            <apex:selectOptions value="{!listProfiles}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem labelStyleClass="phone_specific" dataStyleClass="phone_specific phone_specific_data">
+                    {!$ObjectType.vhc__Outgoing_Campaign__c.fields.vhc__PhoneDisplaySpecific__c.label}
+                    <apex:inputText value="{!phoneDisplaySpecific}" />
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!save}" value="{!$Label.Save}"  />
+                <!-- onclick="return confirm('{!$Label.Confirm_Outbound_Template}');" -->
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

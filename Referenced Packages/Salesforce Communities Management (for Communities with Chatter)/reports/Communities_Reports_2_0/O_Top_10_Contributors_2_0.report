@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>RowCount + CollaborationGroupFeed.CommentCount:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <downGroupingContext>Network.NetworkCollaborationGroups.FeedItems$CreatedBy</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel># Contributions</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <columns>
+        <field>Network$Name</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkCollaborationGroups.FeedItems$CreatedBy.UserType</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkCollaborationGroups.FeedItems$Id</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkCollaborationGroups$Name</field>
+    </columns>
+    <description>The top 10 Chatter contributors in groups by number of posts and comments.</description>
+    <filter>
+        <criteriaItems>
+            <column>Network.NetworkCollaborationGroups$IsArchived</column>
+            <operator>equals</operator>
+            <value>0</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Network.NetworkCollaborationGroups.FeedItems$CreatedBy</field>
+        <sortByName>FORMULA1</sortByName>
+        <sortOrder>Desc</sortOrder>
+        <sortType>CustomSummaryFormula</sortType>
+    </groupingsDown>
+    <name>O - Top 10 Group Contributors</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Network_Group_Activity_2_0__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Network.NetworkCollaborationGroups.FeedItems$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

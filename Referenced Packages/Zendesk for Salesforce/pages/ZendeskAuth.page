@@ -1,0 +1,28 @@
+<apex:page controller="Zendesk.ZendeskSettings" title="Edit Zendesk credentials">
+
+<apex:form >
+<apex:pageBlock title="Zendesk settings" mode="edit">
+  <apex:pageBlockButtons location="top">
+    <apex:commandButton action="{!saveSettings}" value="Save"/>
+  </apex:pageBlockButtons>
+  <apex:pageBlockSection title="Credentials" columns="2">
+    <apex:panelGrid columns="3">
+    <apex:outputLabel value="Helpdesk URL" styleClass="labelCol" />
+    <apex:inputfield value="{!settings.Zendesk__url__c}"/>
+    <apex:outputLabel value="eg: http://your-org.zendesk.com" />
+
+    <apex:outputLabel value="Login" styleClass="labelCol" />
+    <apex:inputfield value="{!settings.Zendesk__username__c}"/>
+    <apex:outputLabel value="must be an agent in your helpdesk" />
+
+    <apex:outputLabel value="Password" styleClass="labelCol" />
+    <apex:inputSecret value="{!settings.Zendesk__password__c}" />
+    </apex:panelGrid>
+    <apex:outputText >
+      <p>Leave these fields blank to use the&nbsp;<apex:outputLink value="/apex/ZendeskOrgAuth?referrer={!URLENCODE($CurrentPage.parameters.referrer)}" target="_top">Organization-wide credentials</apex:outputLink><br/>(if set by your Salesforce administrator)</p>
+    </apex:outputText>
+  </apex:pageBlockSection>
+</apex:pageBlock>
+</apex:form>
+
+</apex:page>

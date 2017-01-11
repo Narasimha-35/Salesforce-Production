@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>SM_Home</defaultLandingTab>
+    <description>This is a generic template for Custom Application.  With this template, you may adjust the default elements and values and add new elements and values.</description>
+    <label>SMS Magic Interact</label>
+    <tab>standard-Contact</tab>
+    <tab>SM_Home</tab>
+    <tab>SMS_Magic_Settings</tab>
+    <tab>SMS_Magic_Help</tab>
+    <tab>smsMagic__c</tab>
+    <tab>SMS_Template__c</tab>
+    <tab>Incoming_SMS__c</tab>
+    <tab>Appointment__c</tab>
+    <tab>Broker__c</tab>
+    <tab>Market__c</tab>
+    <tab>Lead_Trigger_Rule</tab>
+    <tab>DNCR_Rule_Set_Up</tab>
+    <tab>My_Un_report_Appointment</tab>
+    <tab>NO_Gross_Rate_Loading__c</tab>
+    <tab>NO_Occupation_Loading_Factor__c</tab>
+    <tab>NO_Stamp_Duty_Rate__c</tab>
+    <tab>vhc__Campaign_Member__c</tab>
+    <tab>Google_Recurring_Events__c</tab>
+    <tab>Click_Loan</tab>
+    <tab>Click_Community_Setup__c</tab>
+    <tab>Prioritise_Campaign_Member</tab>
+    <tab>Product_Document__c</tab>
+    <tab>click_Bank_Statements_Account__c</tab>
+    <tab>Mercury_Opportunity__c</tab>
+    <tab>Asset_And_Liability__c</tab>
+    <tab>LVR_Rate__c</tab>
+    <tab>click_Bank_Statements_Transactions__c</tab>
+    <tab>Avm_Property__c</tab>
+    <tab>Income_And_Expense__c</tab>
+    <tab>Funding_Position__c</tab>
+    <tab>Funding_Position_Detail__c</tab>
+    <tab>taxTable__c</tab>
+    <tab>LivingExpenses__c</tab>
+    <tab>SecurityLocationGuide__c</tab>
+    <tab>Income_And_Expense_Type__c</tab>
+    <tab>Global_DealIQ_Condition__c</tab>
+    <tab>Global_DealIQ_Rule_Page</tab>
+    <tab>acfDealIQ_Condition__c</tab>
+    <tab>E_Consent__c</tab>
+    <tab>Veda_Summary__c</tab>
+    <tab>acf_Bank_Template__c</tab>
+    <tab>acfPropertydetails__c</tab>
+    <tab>acfVedaApplicantLink__c</tab>
+    <tab>ObjectRelationships__c</tab>
+    <tab>acfStamp_Duty_Table__c</tab>
+    <tab>Click_Uploaded_Documents__c</tab>
+    <tab>First_Home_Owner_Grant__c</tab>
+    <tab>Postcode__c</tab>
+    <tab>Document_Schema__c</tab>
+</CustomApplication>

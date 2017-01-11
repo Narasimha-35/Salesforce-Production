@@ -1,0 +1,5 @@
+<apex:page standardcontroller="vhc__Campaign_Member__c" extensions="vhc.Ctrl10CallFileMemberOverride">
+<script>
+	window.location='/apex/VF10CallFileMemberUpdate?scontrolCaching=1&id={!UrlEncode(JsEncode(CampaignId))}';
+</script>
+</apex:page>

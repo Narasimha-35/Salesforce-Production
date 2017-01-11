@@ -1,0 +1,3 @@
+<apex:page StandardController="vhc__Outgoing_Campaign__c" extensions="vhc.Ctrl22OutgoingCampaign_Refresh">
+	 <apex:outputText style="font-style:italic" value="Auto record for call status : {!autoRecord}"  />
+</apex:page>

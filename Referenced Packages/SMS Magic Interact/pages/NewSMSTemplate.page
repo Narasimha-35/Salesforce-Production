@@ -1,0 +1,93 @@
+<apex:page standardController="smagicinteract__SMS_Template__c" extensions="smagicinteract.smsTemplateExtension" tabStyle="smagicinteract__SMS_Template__c">
+<apex:includeScript value="/soap/ajax/15.0/connection.js"/>
+<apex:includeScript value="/soap/ajax/15.0/apex.js"/>
+<apex:includeScript value="{!$Resource.smagicinteract__BulkSMSJS}"/>
+<script type="text/javascript">
+function charaterCounter(){
+        var maxLimit = 700;
+        var txtField = document.getElementById("{!$Component.formId.main.templateParams.templateTextSectionItem.templateText}");
+        var currentCount =  txtField.value.length;
+        var remainingCharMsgDiv = document.getElementById("{!$Component.formId.main.templateParams.numberOfChars}");
+        var noOfCharMsg = remainingCharMsgDiv.innerHTML;
+        var remaingChars = 700;
+        var msg = "";
+        if(currentCount > maxLimit){
+            txtField.value = txtField.value.substring(0, maxLimit);
+            //document.getElementById("remainingChar").innerHTML = 0;
+            remaingChars = 0; 
+        }
+        else{
+            //document.getElementById("remainingChar").innerHTML = maxLimit - currentCount;
+            remaingChars = maxLimit - currentCount;
+        }
+        msg = "You can type maximum "+remaingChars+" characters.";
+        if(remaingChars == 0)
+            msg = "You have reached to the maximum charater limit of 700.";
+        remainingCharMsgDiv.innerHTML = msg;
+    }
+</script>
+<apex:sectionHeader title="SMS Magic - {!$User.FirstName} {!$User.LastName}" subtitle="New SMS Template"/>
+<apex:form id="formId">
+
+<apex:pageBlock id="main" title="Create New template" helpTitle="Help For this Page?" helpUrl="/apex/SMSMagicHelp?from=NewSMSTemplate">
+<apex:pageMessages /><br/>
+<apex:pageBlockButtons location="top">
+    <apex:commandButton value="Dashboard" title="Dashboard" onclick="redirectTo('/apex/SMHome','');return false;"/>
+    <apex:commandButton value="New SMS" title="New SMS" onclick="redirectTo('/apex/NewSMS','/apex/SMHome');return false;"/>
+    <!-- <apex:outputLink style="float:right;margin-right:10px;" value="{!returnURL}" >back</apex:outputLink> -->
+    <apex:commandLink value="Back" id="theCommandLink" title="Back" onclick="redirectTo('{!returnURL}','');return false;" />
+</apex:pageBlockButtons>
+
+<apex:pageBlockSection title="Name" >
+<apex:pageBlockSectionItem labelStyle="text-align:left;" >
+    <apex:inputField value="{!smagicinteract__SMS_Template__c.smagicinteract__Name__c}" style="margin-left:15px;" required="true"/>
+    </apex:pageBlockSectionItem>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="ObjectType" title="Select template type" columns="4" >
+    <apex:selectList value="{!templateType}" size="1" style="margin-left:15px;">
+        <apex:actionSupport event="onchange"  rerender="templateParams" status="objectStatus" />
+        <apex:selectOptions value="{!mainTemplateObjects}"/>
+    </apex:selectList>
+    <apex:actionStatus startText="loading objects list.." stopText="" id="objectStatus" />
+</apex:pageBlockSection>
+<apex:pageBlockSection title="Template Text" id="templateParams" columns="10" >
+    <table>
+    <tr>
+        <td>
+            <apex:outputText style="color:green;font-size:14px;" id="numberOfChars" value="You can type maximum 700 characters."></apex:outputText>
+        </td>
+    </tr>
+    <tr><td>
+        <apex:pageBlockSectionItem id="templateParamsSectionItem">
+            <apex:selectList value="{!objectType}" size="1" style="width:140px;" id="objectSelectList" >
+                <apex:actionSupport event="onchange"  rerender="fieldSelectList" status="fieldStatus" />
+                <apex:selectOptions value="{!templateObjects}"/>
+            </apex:selectList>
+            <apex:selectList value="{!fieldName}" size="1" style="width:140px;" id="fieldSelectList" >
+                <apex:selectOptions id="fieldSelectOptionList" value="{!fieldItems}"/>
+            </apex:selectList>
+        </apex:pageBlockSectionItem>
+    </td>
+    <td>&nbsp;</td>
+    <td>
+        <apex:commandButton action="{!dummyAction}" onclick="changeTemplateText(this,'{!$Component.templateTextSectionItem.templateText}', '{!$Component.templateParams.templateParamsSectionItem.objectSelectList}', '{!$Component.templateParams.templateParamsSectionItem.fieldSelectList}');charaterCounter();return false; " value="Insert" style="margin-left:-140px;margin-top:2px;"  />
+    </td><td>
+        <apex:actionStatus startText="loading fields ..." stopText="" id="fieldStatus"/>
+    </td></tr>
+    <tr><td>
+        <apex:pageBlockSectionItem labelStyle="text-align:left;"  id="templateTextSectionItem">
+            <apex:inputField value="{!smagicinteract__SMS_Template__c.smagicinteract__Text__c}" id="templateText" style="width:400px; height:80px; text-align:left;" onkeyup="charaterCounter();" />
+        </apex:pageBlockSectionItem>
+    </td></tr>
+    </table>
+</apex:pageBlockSection>
+
+<apex:pageBlockButtons location="bottom" >
+    <apex:commandButton action="{!saveOver}" value="save" title="Save" onclick="document.getElementById('{!$Component.templateParams.templateParamsSectionItem.fieldSelectList}').value='None';"/>
+    <apex:commandButton action="{!cancel}" value="cancel" title="Cancel" />
+    <apex:commandButton action="{!deleteOver}" title="Delete" rendered="{!IF((smsTemplate.id == null), false, true)}" value="delete" />
+</apex:pageBlockButtons>
+</apex:pageBlock>
+
+</apex:form>
+</apex:page>

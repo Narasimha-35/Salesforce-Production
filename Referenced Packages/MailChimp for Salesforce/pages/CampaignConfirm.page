@@ -1,0 +1,594 @@
+<apex:page sidebar="false" standardController="MC4SF__MC_Campaign__c" extensions="MC4SF.CampaignConfirmController" action="{!initPage}">
+
+<link href="{!URLFOR($Resource.MC4SF__Assets, '/css/wizard.css')}" rel="stylesheet" type="text/css"/>
+<apex:stylesheet value="{!URLFOR($Resource.MC4SF__Assets, 'css/introjs.min.css')}"/>
+<style>
+.introjs-tooltip {
+	max-width: 425px;
+	width: 425px;
+}
+
+.introjs-tooltipbuttons {
+	text-align: center;
+}
+
+a.mcButton {
+	color: #737373;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 13px;
+	height: 36px;
+	line-height: 36px;
+	overflow: hidden;
+	padding: 0 18px;
+
+
+font-weight: 700;
+font-family: "Helvetica Neue",Arial,Helvetica,Verdana,sans-serif;
+text-align: center;
+vertical-align: middle;
+text-transform: capitalize;
+letter-spacing: .01em;
+margin-right: 18px;
+border: 0 none;
+border-radius: 3px;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+background-color: #e0e0e0;
+margin: 0;
+box-sizing: border-box;
+	text-decoration: none;
+	white-space: nowrap;
+	zoom: 1;
+}
+
+a:hover.mcButton {
+	background-color: #d3d3d3;
+	color: #737373;
+	text-decoration: none;
+}
+
+    #scheduleDialog {
+        position: absolute;
+        top: -9999em;
+        left: -9999em;
+        background-color: #fff;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        width: 300px;
+        z-index: 100000;
+        width: 400px;
+    }
+    
+    #confirmDialog {
+        position: absolute;
+        top: -9999em;
+        left: -9999em;
+        background-color: #fff;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        width: 300px;
+        z-index: 100000;
+        width: 400px;
+    }
+    
+    #sendDialog {
+        position: absolute;
+        top: -9999em;
+        left: -9999em;
+        background-color: #fff;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        width: 300px;
+        z-index: 100000;
+    }
+    
+    .datePicker {
+    	z-index: 100000;
+    }
+
+.success-fill {
+	font-size: 42px;
+	padding-left: 2px;
+	color: #95d1c4;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1.15;
+	-webkit-font-smoothing: antialiased;
+	vertical-align: middle;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	text-transform: none !important;
+}
+
+.success-fill:before {
+	content: '\e017';
+}
+</style>
+
+<apex:sectionHeader title="MailChimp Campaign" subtitle="New MailChimp Campaign"/>
+
+<apex:pageMessages />
+
+<apex:form >
+<apex:actionfunction name="send" action="{!send}"/>
+
+<apex:pageBlock title="Step 5: Review & Send">
+	<table width="100%">
+		<tr>
+			<td colspan="2">
+				You're all set to send! Review the feedback below before sending your campaign.
+			</td>
+			<td align="right">
+				<a id="previewButton" href="#" class="mcButton introStep1">Preview</a>
+				<a id="sendTestDialogButton" href="#" class="mcButton introStep2">Send Test</a>
+			</td>
+		</tr>
+		<tr>
+			<td><div><div class="freddicon success-fill introStep3"></div></div></td>
+			<td>
+				<span style="font-family: Arial; font-size: 20px; color:#333;">List</span><br/>
+				MailChimp will deliver this to the {!recipients}. ({!recipientsCount} recipient{!IF(recipientsCount == 1, '', 's')})
+			</td>
+			<td align="right"><a href="#" class="mcButton introStep4" onclick="top.location.href='{!$Page.CampaignRecipients}?id={!mcCampaign.Id}'; return false;">Edit</a></td>
+		</tr>
+		<tr>
+			<td><div><div class="freddicon success-fill"></div></div></td>
+			<td>
+				<span style="font-family: Arial; font-size: 20px; color:#333;">Subject Line</span><br/>
+				"{!mcCampaign.Subject__c}"
+			</td>
+			<td align="right"><a href="#" class="mcButton" onclick="top.location.href='{!$Page.CampaignSetup}?id={!mcCampaign.Id}'; return false;">Edit</a></td>
+		</tr>
+		<tr>
+			<td><div><div class="freddicon success-fill"></div></div></td>
+			<td>
+				<span style="font-family: Arial; font-size: 20px; color:#333;">Replies</span><br/>
+				All replies will go to {!mcCampaign.From_Name__c} &lt;{!mcCampaign.From_Email__c}&gt;.
+			</td>
+			<td align="right"><a href="#" class="mcButton" onclick="top.location.href='{!$Page.CampaignSetup}?id={!mcCampaign.Id}'; return false;">Edit</a></td>
+		</tr>
+		<tr>
+			<td><div><div class="freddicon success-fill"></div></div></td>
+			<td>
+				<span style="font-family: Arial; font-size: 20px; color:#333;">Tracking</span><br/>
+				<apex:outputPanel rendered="{!mcCampaign.MC4SF__HTML_Clicks_Tracked__c && mcCampaign.MC4SF__Opens_Tracked__c && mcCampaign.MC4SF__Text_Clicks_Tracked__c}">
+					You chose to track clicks and opens in the HTML email and clicks in the plain-text email.
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!mcCampaign.MC4SF__HTML_Clicks_Tracked__c && NOT(mcCampaign.MC4SF__Opens_Tracked__c) && mcCampaign.MC4SF__Text_Clicks_Tracked__c}">
+					You chose to track clicks in the HTML email and clicks in the plain-text email.
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!NOT(mcCampaign.MC4SF__HTML_Clicks_Tracked__c) && mcCampaign.MC4SF__Opens_Tracked__c && mcCampaign.MC4SF__Text_Clicks_Tracked__c}">
+					You chose to track opens in the HTML email and clicks in the plain-text email.
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!mcCampaign.MC4SF__HTML_Clicks_Tracked__c && NOT(mcCampaign.MC4SF__Opens_Tracked__c) && NOT(mcCampaign.MC4SF__Text_Clicks_Tracked__c)}">
+					You chose to track clicks in the HTML email.
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!NOT(mcCampaign.MC4SF__HTML_Clicks_Tracked__c) && mcCampaign.MC4SF__Opens_Tracked__c && NOT(mcCampaign.MC4SF__Text_Clicks_Tracked__c)}">
+					You chose to track opens in the HTML email.
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!NOT(mcCampaign.MC4SF__HTML_Clicks_Tracked__c) && NOT(mcCampaign.MC4SF__Opens_Tracked__c) && mcCampaign.MC4SF__Text_Clicks_Tracked__c}">
+					You chose to track clicks in the plain-text email.
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!NOT(mcCampaign.MC4SF__HTML_Clicks_Tracked__c) && NOT(mcCampaign.MC4SF__Opens_Tracked__c) && NOT(mcCampaign.MC4SF__Text_Clicks_Tracked__c)}">
+					You chose not to track clicks or opens.
+				</apex:outputPanel>
+			</td>
+			<td align="right"><a href="#" class="mcButton introStep5" onclick="top.location.href='{!$Page.CampaignSetup}?id={!mcCampaign.Id}'; return false;">Edit</a></td>
+		</tr>
+		<tr>
+			<td><div><div class="freddicon success-fill"></div></div></td>
+			<td>
+				<span style="font-family: Arial; font-size: 20px; color:#333;">HTML Email</span><br/>
+				<apex:outputPanel rendered="{!mcCampaign.MC4SF__MailChimp_Template_ID__c != null}">
+					You're sending an HTML email using the {!templateName} template.
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!mcCampaign.MC4SF__MailChimp_Template_ID__c == null}">
+					You chose not to include an HTML version. This email will be sent as text-only.
+				</apex:outputPanel>
+			</td>
+			<td align="right"><a href="#" class="mcButton" onclick="top.location.href='{!$Page.CampaignContent}?id={!mcCampaign.Id}'; return false;">Edit</a></td>
+		</tr>
+		<tr>
+			<td><div><div class="freddicon success-fill"></div></div></td>
+			<td>
+				<span style="font-family: Arial; font-size: 20px; color:#333;">Plain-Text Email</span><br/>
+				You included a plain-text version.
+			</td>
+			<td align="right"><a href="#" class="mcButton" onclick="top.location.href='{!$Page.CampaignPlaintext}?id={!mcCampaign.Id}'; return false;">Edit</a></td>
+		</tr>
+	</table>
+</apex:pageBlock>
+
+<div id="scheduleDialog">
+    <div style="background-color: #eee; font-size: 16px; font-weight: bold; padding: 10px;">Set up your schedule</div>
+    <div style="padding: 10px;">
+    	<span style="font-weight: bold;">Delivery date</span><br/>
+    	<apex:inputField id="deliveryDate" value="{!event.ActivityDate}"/><br/><br/>
+	
+		<span style="font-weight: bold;">Delivery time</span><br/>
+		<select id="deliveryTimeHour">
+    		<option>1</option>
+    		<option>2</option>
+    		<option>3</option>
+    		<option>4</option>
+    		<option>5</option>
+    		<option>6</option>
+    		<option>7</option>
+    		<option>8</option>
+    		<option>9</option>
+    		<option>10</option>
+    		<option>11</option>
+    		<option>12</option>
+    	</select>
+    	:
+    	<select id="deliveryTimeMinute">
+    		<option>00</option>
+    		<option>15</option>
+    		<option>30</option>
+    		<option>45</option>
+    	</select>
+    	<select id="deliveryTimeAmPm">
+    		<option>AM</option>
+    		<option>PM</option>
+    	</select>
+    	<br/><br/>
+    	
+    	<span style="font-weight: bold;">Batch delivery</span><br/>
+    	<input id="batchDeliveryCheckbox" type="checkbox"/>Send in
+    	<select id="numBatchesSelect">
+    		<option>2</option>
+    		<option>3</option>
+    		<option>4</option>
+    		<option>5</option>
+    		<option>6</option>
+    		<option>7</option>
+    		<option>8</option>
+    		<option>9</option>
+    		<option>10</option>
+    		<option>11</option>
+    		<option>12</option>
+    		<option>13</option>
+    		<option>14</option>
+    		<option>15</option>
+    		<option>16</option>
+    		<option>17</option>
+    		<option>18</option>
+    		<option>19</option>
+    		<option>20</option>
+    		<option>21</option>
+    		<option>22</option>
+    		<option>23</option>
+    		<option>24</option>
+    		<option>25</option>
+    		<option>26</option>
+    	</select>
+    	batches of subscribers
+    	<select id="staggerMinsSelect">
+    		<option value="5">5 minutes</option>
+    		<option value="10">10 minutes</option>
+    		<option value="15">15 minutes</option>
+    		<option value="20">20 minutes</option>
+    		<option value="25">25 minutes</option>
+    		<option value="30">30 minutes</option>
+    		<option value="60">60 minutes</option>
+    	</select>
+    	apart
+    </div>
+    <div style="border-top: 1px solid #efefef; padding: 10px; text-align: right; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; text-align: center">
+        <button id="scheduleCampaignButton" class="blueButton" style="width: 150px; height: 31px;" onclick="return false;">Schedule Campaign</button>
+        <button class="cancelButton greyButton" style="width: 75px; height: 31px;" onclick="return false;">Cancel</button>
+    </div>
+</div>
+
+<div id="confirmDialog">
+    <div style="background-color: #eee; font-size: 16px; font-weight: bold; padding: 10px;">Done!</div>
+    <div style="padding: 10px; text-align: center; color: #595959;">
+    	<img src="{!URLFOR($Resource.Assets, '/img/campaign/high-five-freddie.png')}" width="256" height="256"/><br/><br/>
+    	<span style="font-size: 28px; font-weight: bold;">Rock on!</span><br/><br/>
+    	<span style="font-size: 20px; font-weight: bold;">Your email has been scheduled.</span><br/><br/>
+    	Your campaign will be sent on <span id="scheduledTime"></span>.
+    </div>
+    <div style="border-top: 1px solid #efefef; padding: 10px; text-align: right; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; text-align: center">
+        <button id="editScheduleButton" class="blueButton" style="width: 150px; height: 31px;" onclick="return false;">Edit Schedule</button>
+        <button class="greyButton" style="width: 75px; height: 31px;" onclick="top.location.href='/{!$ObjectType.MC_Campaign__c.keyPrefix}/o'; return false;">Close</button>
+    </div>
+</div>
+
+</apex:form>
+
+<style>
+.delivery-options-buttons {
+	padding-top: 12px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin-right: 15px;
+}
+
+.delivery-button, .delivery-button:hover {
+	color: #fff;
+	padding: 0 18px;
+	cursor: pointer;
+	overflow: hidden;
+	font-weight: 700;
+	text-align: center;
+	vertical-align: middle;
+	text-transform: capitalize;
+	letter-spacing: .01em;
+	border-radius: 3px;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	text-decoration: none;
+	display: inline-block;
+	white-space: nowrap;
+	height: 36px;
+	line-height: 36px;
+}
+
+#scheduleButton {
+	background-color: #737373;
+	margin-left: 0;
+	margin-right: 0;
+	border: none;
+	float: left;
+}
+
+#scheduleButton:hover {
+	background-color: #616161;
+}
+
+#sendButton {
+	background-color: #52bad5;
+	margin-left: 15px;
+}
+
+#sendButton:hover {
+	background-color: #35afce;
+}
+</style>
+
+<div id="footer">
+	<a class="back-button" href="{!$Page.CampaignPlaintext}?id={!mcCampaign.Id}"><span class="freddicon laquo"></span>Back</a>
+
+	<ul>
+		<li><a href="{!$Page.CampaignRecipients}?id={!mcCampaign.Id}">Recipients</a></li>
+		<li><a href="{!$Page.CampaignSetup}?id={!mcCampaign.Id}">Setup</a></li>
+		<li><a href="{!$Page.CampaignContent}?id={!mcCampaign.Id}">Content</a></li>
+		<li><a href="{!$Page.CampaignPlaintext}?id={!mcCampaign.Id}">Plain-Text</a></li>
+		<li class="current"><a href="#" onclick="return false;">Confirm</a></li>
+	</ul>
+
+	<div class="delivery-options-buttons">
+		<a id="scheduleButton" href="javascript:;" class="delivery-button" onclick="return false;">Schedule</a>
+		<a id="sendButton" href="javascript:;" class="delivery-button send-button" onclick="return false;">Send</a>
+	</div>
+</div>
+
+<div id="dialogModalOverlay" style="width:100%; height:100%; position: fixed; margin: 0; padding: 0; z-index: 99999; top: 0; left: 0; right: 0; bottom: 0; background-color: #666; opacity: 0.5; display: none;">
+</div>
+
+<div id="sendDialog">
+    <div style="background-color: #eee; font-size: 16px; font-weight: bold; padding: 10px; text-align: center">Prepare for launch!</div>
+    <div style="padding: 10px; text-align: center">
+    	<img src="{!URLFOR($Resource.Assets, '/img/campaign/launch.png')}"/><br/>
+        You're about to send a campaign to the<br/>
+        {!recipients}<br/>
+        {!recipientsCount} recipient{!IF(recipientsCount == 1, '', 's')}
+    </div>
+    <div style="border-top: 1px solid #efefef; padding: 10px; text-align: right; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; text-align: center">
+        <button id="sendCampaignButton" class="blueButton" style="width: 150px; height: 31px;" onclick="return false;">Send Campaign</button>
+        <button class="cancelButton greyButton" style="width: 75px; height: 31px;" onclick="return false;">Cancel</button>
+    </div>
+</div>
+
+<div id="sendTestDialog" style="display: none; cursor: default; text-align: left;">
+	Send a test to<br/>
+	<textarea id="emails" rows="3" style="width: 300px;"></textarea><br/>
+	<span style="font-weight: bold;">
+		Comma separate email addresses to send to multiple accounts at once.<br/>
+		<span style="font-style: italic;">20 emails at a time and a maximum of 70 test emails per campaign.</span>
+	</span><br/><br/>
+	
+	<input id="sendTestButton" type="button" value="Send Test"/>
+	<a id="sendTestCancelLink" href="#">Cancel</a>
+	
+	<div id="sendTestError" style="padding-top: 10px; color: red; display: none;"></div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="{!URLFOR($Resource.Assets, '/js/jQuery_blockUI_plugin.js')}"></script>
+<script src="{!URLFOR($Resource.Assets, '/js/intro.min.js')}"></script>
+<script>
+	jQuery(function() {
+	
+		jQuery('#previewButton').click(function() {
+			window.open('{!$Page.CampaignContentPreview}?id={!mcCampaign.Id}', 'filter_lookup', 'width=700,height=710,resizable=yes,toolbar=no,status=no,scrollbars=yes,menubar=no,directories=no,location=no,dependant=no', false);
+			return false;
+		});
+	
+		jQuery('#sendTestDialogButton').click(function() {
+			jQuery.blockUI({
+				message: jQuery('#sendTestDialog'),
+				css: {
+					'border-radius': '8px',
+					'padding': '10px'
+				}
+			});
+			
+			return false;
+		});
+		
+		jQuery('#sendTestButton').click(function() {
+			jQuery('#sendTestError').hide();
+		
+			var emails = [];
+			
+			jQuery.each(jQuery('#emails').val().split(','), function(index, value) {
+				emails.push(jQuery.trim(value));
+			});
+
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignConfirmController.sendTest}', '{!mcCampaign.Id}', emails, function(result, event) {
+				if (event.status) {
+					jQuery.unblockUI();
+					jQuery('#emails').val('');
+				} else {
+					jQuery('#sendTestError').html('Error sending test.').show();
+				}
+			});
+		});
+		
+		jQuery('#sendTestCancelLink').click(function() {
+			jQuery.unblockUI();
+			jQuery('#sendTestError').hide();
+		});
+		
+		jQuery('#scheduleButton').click(function() {
+			jQuery('#dialogModalOverlay').show();
+            
+        	var top = (jQuery(window).height() - jQuery('#scheduleDialog').outerHeight()) / 2 + jQuery(window).scrollTop();
+        	var left = (jQuery(window).width() - 300) / 2 + jQuery(window).scrollLeft();
+        	jQuery('#scheduleDialog').css({top: (top > 0 ? top : 0) + 'px', left: (left > 0 ? left : 0) + 'px'});
+        	
+        	return false;
+		});
+
+		jQuery('#scheduleCampaignButton').click(function() {
+			var dateParts = jQuery('input[name$="deliveryDate"]').val().split('/');
+
+			var hours = parseInt(jQuery('#deliveryTimeHour').val());
+			if (hours < 12 && jQuery('#deliveryTimeAmPm').val() == 'PM') {
+				hours += 12;
+			} else if (hours == 12 && jQuery('#deliveryTimeAmPm').val() == 'AM') {
+				hours -= 12;
+			}
+
+			var minutes = jQuery('#deliveryTimeMinute').val();
+
+			var startDate = new Date(parseInt(dateParts[2]), parseInt(dateParts[0]) - 1, parseInt(dateParts[1]), hours, minutes, 0, 0);
+			var numBatches = 0;
+			var staggerMins = 0;
+
+			if (jQuery('#batchDeliveryCheckbox').is(':checked')) {
+				numBatches = jQuery('#numBatchesSelect').val();
+				staggerMins = jQuery('#staggerMinsSelect').val();
+			}
+
+			jQuery('#scheduledTime').html(jQuery('input[name$="deliveryDate"]').val() + ' ' +  jQuery('#deliveryTimeHour').val() + ':' + jQuery('#deliveryTimeMinute').val() + jQuery('#deliveryTimeAmPm').val());
+
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignConfirmController.scheduleCampaign}', '{!mcCampaign.Id}', startDate.getTime(), numBatches, staggerMins, function(result, event) {
+				if (event.status) {
+					if (result != 'Success') {
+						alert(result);//.split('&amp;').join('"'));
+						return;
+					}
+				
+					jQuery('#scheduleDialog').css({top: '-999em', left: '-999em'});
+		
+		        	var top = (jQuery(window).height() - jQuery('#confirmDialog').outerHeight()) / 2 + jQuery(window).scrollTop();
+		        	var left = (jQuery(window).width() - 300) / 2 + jQuery(window).scrollLeft();
+		        	jQuery('#confirmDialog').css({top: (top > 0 ? top : 0) + 'px', left: (left > 0 ? left : 0) + 'px'});
+				} else {
+					alert('Error scheduling campaign.');
+				}
+			}, {escape: false});
+		});
+		
+		jQuery('#editScheduleButton').click(function() {
+			jQuery('#confirmDialog').css({top: '-999em', left: '-999em'});
+            
+        	var top = (jQuery(window).height() - jQuery('#scheduleDialog').outerHeight()) / 2 + jQuery(window).scrollTop();
+        	var left = (jQuery(window).width() - 300) / 2 + jQuery(window).scrollLeft();
+        	jQuery('#scheduleDialog').css({top: (top > 0 ? top : 0) + 'px', left: (left > 0 ? left : 0) + 'px'});
+		});
+		
+		jQuery('#sendButton').click(function() {
+			jQuery('#dialogModalOverlay').show();
+            
+        	var top = (jQuery(window).height() - jQuery('#sendDialog').outerHeight()) / 2 + jQuery(window).scrollTop();
+        	var left = (jQuery(window).width() - 300) / 2 + jQuery(window).scrollLeft();
+        	jQuery('#sendDialog').css({top: (top > 0 ? top : 0) + 'px', left: (left > 0 ? left : 0) + 'px'});
+		});
+		
+		jQuery('#sendCampaignButton').click(function() {
+			send();
+		});
+		
+		jQuery('.cancelButton').click(function() {
+			jQuery('#dialogModalOverlay').hide();
+        	jQuery('#scheduleDialog').css({top: '-999em', left: '-999em'});
+        	jQuery('#sendDialog').css({top: '-999em', left: '-999em'});
+		});
+	
+		if ({!IF(dontShowTour, 'false', 'true')}) {
+        	showTour();
+        }
+
+	});
+	
+	function showTour() {
+    	var steps = [];
+
+		steps.push(
+			{
+				element: jQuery('.introStep1')[0],
+				intro: '<b>PREVIEW</b><br/><br/>The "Preview" button opens a popup window that displays an approximation of what the campaign will look like in an email client.',
+				position: 'left'
+			}
+		);
+
+		steps.push(
+			{
+				element: jQuery('.introStep2')[0],
+				intro: '<b>SEND TEST</b><br/><br/>The "Send Test" button will open a popup window where you can send test emails to the specified email addresses. Test emails are highly recommended, and can be used in order to test the campaign across various email clients and devices.',
+				position: 'left'
+			}
+		);
+		
+		steps.push(
+			{
+				element: jQuery('.introStep3')[0],
+				intro: '<b>REVIEW</b><br/><br/>Use the checklist in order to review the components of the campaign. In order to make changes to a particular section or component of the campaign, click the "Edit" button.',
+				position: 'right'
+			}
+		);
+		
+		steps.push(
+			{
+				element: jQuery('.introStep4')[0],
+				intro: '<b>EDIT</b><br/><br/>The "Edit" buttons navigate to the Recipients, Setup, Content, and Plain Text steps of the campaign builder.',
+				position: 'left'
+			}
+		);
+
+		steps.push(
+			{
+				intro: '<b>SCHEDULE</b><br/><br/>The "Schedule" button will display a popup window, which allows you to schedule the campaign for a future send time and/or date.'
+			}
+		);
+		
+		steps.push(
+			{
+				intro: '<b>SEND</b><br/><br/>The "Send" button will display a popup window, which contains the "Send Campaign" and "Cancel" buttons.<br/><br/>After clicking the "Send Campaign" button in the popup window, it will be sent to the recipients and it will not be possible to make any further changes to the campaign.'
+			}
+		);
+    
+    	introJs().setOption('steps', steps).start();
+    	
+		jQuery('.introjs-tooltipbuttons').after('<div style="text-align: center; font-size: 11px; color: #666; margin-top: 10px;"><input id="dontShowCheckbox" type="checkbox" style="vertical-align: middle;" {!IF(dontShowTour, 'checked="checked"', '')}/>Don\'t show this again</div>');
+		
+		jQuery('#dontShowCheckbox').click(function() {
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignConfirmController.setDontShowTour}', jQuery(this).is(':checked'), function(result, event) {
+			});
+		});
+    }
+</script>
+
+</apex:page>

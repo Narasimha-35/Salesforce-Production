@@ -1,0 +1,4 @@
+<apex:page controller="WLViewPdf" showHeader="false" standardStylesheets="false">
+<title>Privacy Policy | Click Loans</title>
+<apex:iframe src="{!URLFOR($Action.Document.Download, strDocumentId)}"/>
+</apex:page>

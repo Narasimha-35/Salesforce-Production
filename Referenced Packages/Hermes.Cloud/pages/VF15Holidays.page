@@ -1,0 +1,35 @@
+<apex:page StandardController="vhc__Holidays__c"  extensions="vhc.Ctrl15Holidays" action="{!init}">
+<script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/jquery-1.9.0.min.js')}" ></script>
+<script>
+	$(document).ready(function() {
+		$($.grep($('.timeZone option'),function(item){return $(item).val()=='{!obj.TimeZone__c }';})).prop('selected', true);
+	});
+</script>
+<apex:sectionHeader title="{!$Label.New_Holiday}" subtitle="{!$Label.Holiday_Edit}" rendered="{!obj.id==null}"/>
+<apex:sectionHeader title="{!$Label.Holiday_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+<apex:outputText value="{!$Label.Holiday_Description}" rendered="{!ISValid}"/>
+<apex:pageMessages />
+<br/>&nbsp;
+
+    <apex:form id="myForm" rendered="{!ISValid}">
+        <apex:pageBlock title="{!$Label.Holiday_Edit}" mode="edit">
+            <apex:pageBlockButtons > 
+                <apex:commandButton action="{!Save}" value="{!$Label.Save}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.Informations}">
+                <apex:inputField value="{!obj.name}" required="true"/>
+                <apex:outputField value="{!obj.vhc__Customer__c}"/>
+                
+                <apex:pageBlockSectionItem labelStyleClass="timeZone" dataStyleClass="timeZone">
+                    <!-- TODO TRANSLATE -->
+                    TimeZone
+                    <apex:selectList value="{!selectedTimeZone}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!timeZonesOptions}"/>
+                    </apex:selectList>
+            	</apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+ 
+</apex:page>

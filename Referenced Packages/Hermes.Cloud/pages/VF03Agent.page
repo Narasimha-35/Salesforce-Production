@@ -1,0 +1,70 @@
+<apex:page StandardController="vhc__Agent__c" extensions="vhc.Ctrl03Agent" action="{!init}">
+	<apex:sectionHeader title="{!$Label.New_Agent}" subtitle="{!$Label.Agent_Edit}" rendered="{!obj.id==null}" />
+	<apex:sectionHeader title="{!$Label.Agent_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}" />
+	<apex:outputText value="{!$Label.Agent_Description}" rendered="{!ISValid}" />
+	<apex:pageMessages />
+	<br />&nbsp;
+    <apex:form id="myForm" rendered="{!ISValid}">
+		<apex:pageBlock title="{!$Label.Agent_Edit}" mode="edit">
+
+			<!-- Save/Cancel buttons page block -->
+
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!Save}" value="{!$Label.Save}" />
+				<apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}" />
+			</apex:pageBlockButtons>
+
+			<!-- Personal Data page block section-->
+
+			<apex:pageBlockSection title="{!$Label.Personal_Data}">
+				<apex:outputField value="{!obj.Name}" rendered="{!obj.id!=null}" />
+				<apex:inputField value="{!obj.vhc__Customer__c}" />
+				<apex:inputField value="{!obj.vhc__User__c}" required="true" />
+				<apex:inputField value="{!obj.vhc__Extension__c}" />
+
+				<apex:pageBlockSectionItem >
+                    {!$ObjectType.vhc__Agent__c.fields.vhc__Agent_Group__c.label}
+                    <apex:selectList value="{!obj.vhc__Agent_Group__c}" size="1" style="width:100px;">
+						<apex:selectOptions value="{!AgentGroupList}" />
+					</apex:selectList>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+
+			<!-- Telephony Options -->
+
+			<apex:pageBlockSection title="{!$Label.Telephony_Options}">
+				<apex:inputField value="{!obj.vhc__AutoHangup__c}" />
+				<apex:inputField value="{!obj.vhc__AutoReady__c}" />
+			</apex:pageBlockSection>
+
+			<!-- Allowed Programs -->
+
+			<apex:pageBlockSection title="{!$Label.Allowed_Programs}">
+				<apex:outputField value="{!obj.vhc__AgentControlRight__c}" />
+				<apex:inputField onchange="refreshUI();" value="{!obj.vhc__ManagerRight__c}" />
+			</apex:pageBlockSection>
+
+			<!-- Phone Rights Page Block Section -->
+
+			<apex:pageBlockSection title="{!$Label.Phone_Rights}">
+				<apex:inputField value="{!obj.vhc__HangupRight__c}" />
+				<apex:inputField value="{!obj.vhc__ManualCallRight__c}" />
+				<apex:inputField value="{!obj.vhc__BlindTransferRight__c}" />
+				<apex:inputField value="{!obj.vhc__RecordRight__c}" />
+			</apex:pageBlockSection>
+
+			<!-- Supervision Right Block Section                              -->
+			<!-- This block section is hidden when Is Supervisor is unchecked -->
+
+			<apex:actionFunction name="refreshUI" action="{!refreshUI}" />
+
+			<apex:pageBlockSection id="supervision_rights" title="Supervision Rights" rendered="{! (obj.ManagerRight__c == true) }">
+				<apex:inputField value="{!obj.vhc__PlayRecordedFilesRight__c}" onchange="refreshUI();" />
+				<apex:inputField value="{!obj.vhc__DownloadRecordedFilesRight__c}" rendered="{! (obj.PlayRecordedFilesRight__c == true) }" />
+				<apex:inputField value="{!obj.vhc__DeleteRecordedFilesRight__c}" rendered="{! (obj.PlayRecordedFilesRight__c == true) }" />
+			</apex:pageBlockSection>
+
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

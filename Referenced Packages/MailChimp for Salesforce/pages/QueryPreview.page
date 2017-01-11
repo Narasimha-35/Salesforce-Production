@@ -1,0 +1,231 @@
+<apex:page standardController="MC4SF__MC_Query__c" extensions="MC4SF.QueryPreviewController" action="{!initPage}">
+
+<apex:sectionHeader title="MC Query" subtitle="{!MC4SF__MC_Query__c.Name}"/>
+
+<apex:pageMessages />
+
+<apex:form >
+
+<apex:pageBlock title="Step 3: Preview Results">
+	<apex:pageBlockButtons location="both" rendered="{!MC4SF__MC_Query__c.Id != null}">
+		<apex:commandButton value="Cancel" action="{!cancel}"/>
+		<apex:commandButton value="Previous Step" action="{!previousStep}"/>
+		<apex:commandButton value="Next Step" action="{!nextStep}"/>
+	</apex:pageBlockButtons>
+
+	Use this page to preview your results.<br/><br/>
+	
+	<apex:pageBlockSection title="Query Results" collapsible="false" columns="1" rendered="{!MC4SF__MC_Query__c.Id != null}">
+		<apex:outputPanel rendered="{!pageResults == null || pageResults.size == 0}">
+			<span style="color: red;">No records match this query at this time.</span>
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{!pageResults != null && pageResults.size > 0}">
+			<apex:pageBlockTable id="results" value="{!pageResults}" var="result">
+				<apex:column >
+					<apex:facet name="header">
+						<apex:outputPanel layout="none">
+							<apex:outputPanel rendered="{!sortColumn != 'firstName'}">
+								<apex:commandLink value="First Name" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="firstName"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'firstName' && sortDir != 'desc'}">
+		                    	<apex:commandLink value="First Name" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="firstName"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="desc"/>
+								</apex:commandLink>
+								<span style="font-size: 12px">&uarr;</span>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'firstName' && sortDir == 'desc'}">
+		                    	<apex:commandLink value="First Name" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="firstName"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    	<span style="font-size: 12px">&darr;</span>
+		                    </apex:outputPanel>
+						</apex:outputPanel>
+					</apex:facet>
+					<apex:outputText value="{!result.firstName}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header">
+						<apex:outputPanel layout="none">
+							<apex:outputPanel rendered="{!sortColumn != 'lastName'}">
+								<apex:commandLink value="Last Name" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="lastName"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'lastName' && sortDir != 'desc'}">
+		                    	<apex:commandLink value="Last Name" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="lastName"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="desc"/>
+								</apex:commandLink>
+								<span style="font-size: 12px">&uarr;</span>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'lastName' && sortDir == 'desc'}">
+		                    	<apex:commandLink value="Last Name" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="lastName"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    	<span style="font-size: 12px">&darr;</span>
+		                    </apex:outputPanel>
+						</apex:outputPanel>
+					</apex:facet>
+					<apex:outputText value="{!result.lastName}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header">
+						<apex:outputPanel layout="none">
+							<apex:outputPanel rendered="{!sortColumn != 'company'}">
+								<apex:commandLink value="Company" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="company"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'company' && sortDir != 'desc'}">
+		                    	<apex:commandLink value="Company" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="company"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="desc"/>
+								</apex:commandLink>
+								<span style="font-size: 12px">&uarr;</span>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'company' && sortDir == 'desc'}">
+		                    	<apex:commandLink value="Company" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="company"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    	<span style="font-size: 12px">&darr;</span>
+		                    </apex:outputPanel>
+						</apex:outputPanel>
+					</apex:facet>
+					<apex:outputText value="{!result.company}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header">
+						<apex:outputPanel layout="none">
+							<apex:outputPanel rendered="{!sortColumn != 'email'}">
+								<apex:commandLink value="Email Address" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="email"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'email' && sortDir != 'desc'}">
+		                    	<apex:commandLink value="Email Address" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="email"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="desc"/>
+								</apex:commandLink>
+								<span style="font-size: 12px">&uarr;</span>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'email' && sortDir == 'desc'}">
+		                    	<apex:commandLink value="Email Address" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="email"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    	<span style="font-size: 12px">&darr;</span>
+		                    </apex:outputPanel>
+						</apex:outputPanel>
+					</apex:facet>
+					<apex:outputText value="{!result.email}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header">
+						<apex:outputPanel layout="none">
+							<apex:outputPanel rendered="{!sortColumn != 'type'}">
+								<apex:commandLink value="Type" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="type"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'type' && sortDir != 'desc'}">
+		                    	<apex:commandLink value="Type" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="type"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="desc"/>
+								</apex:commandLink>
+								<span style="font-size: 12px">&uarr;</span>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'type' && sortDir == 'desc'}">
+		                    	<apex:commandLink value="Type" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="type"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    	<span style="font-size: 12px">&darr;</span>
+		                    </apex:outputPanel>
+						</apex:outputPanel>
+					</apex:facet>
+					<apex:outputText value="{!result.type}"/>
+				</apex:column>
+				<apex:column rendered="{!haveCampaignMemberResults}">
+					<apex:facet name="header">
+						<apex:outputPanel layout="none">
+							<apex:outputPanel rendered="{!sortColumn != 'campaignMemberStatus'}">
+								<apex:commandLink value="Campaign Member Status" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="campaignMemberStatus"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'campaignMemberStatus' && sortDir != 'desc'}">
+		                    	<apex:commandLink value="Campaign Member Status" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="campaignMemberStatus"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="desc"/>
+								</apex:commandLink>
+								<span style="font-size: 12px">&uarr;</span>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'campaignMemberStatus' && sortDir == 'desc'}">
+		                    	<apex:commandLink value="Campaign Member Status" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="campaignMemberStatus"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    	<span style="font-size: 12px">&darr;</span>
+		                    </apex:outputPanel>
+						</apex:outputPanel>
+					</apex:facet>
+					<apex:outputText value="{!result.campaignMemberStatus}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header">
+						<apex:outputPanel layout="none">
+							<apex:outputPanel rendered="{!sortColumn != 'subscriberStatus'}">
+								<apex:commandLink value="Subscriber Status" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="subscriberStatus"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'subscriberStatus' && sortDir != 'desc'}">
+		                    	<apex:commandLink value="Subscriber Status" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="subscriberStatus"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="desc"/>
+								</apex:commandLink>
+								<span style="font-size: 12px">&uarr;</span>
+		                    </apex:outputPanel>
+		                    <apex:outputPanel rendered="{!sortColumn == 'subscriberStatus' && sortDir == 'desc'}">
+		                    	<apex:commandLink value="Subscriber Status" action="{!sort}" rerender="results" style="text-decoration: underline;">
+									<apex:param name="sortColumn" assignTo="{!sortColumn}" value="subscriberStatus"/>
+									<apex:param name="sortDir" assignTo="{!sortDir}" value="asc"/>
+								</apex:commandLink>
+		                    	<span style="font-size: 12px">&darr;</span>
+		                    </apex:outputPanel>
+						</apex:outputPanel>
+					</apex:facet>
+					<apex:outputText value="{!result.subscriberStatus}"/>
+				</apex:column>
+			</apex:pageBlockTable>
+			
+			<br/>
+		    Page {!pageNumber} of {!pageCount}&nbsp;
+		    
+		    <apex:outputPanel layout="none" rendered="{!pageNumber > 1}">
+		    	&nbsp;<apex:commandLink action="{!previous}">&laquo; Previous</apex:commandLink>
+		    </apex:outputPanel>
+		    
+		    <apex:outputPanel layout="none" rendered="{!pageNumber < pageCount}">
+			    &nbsp;<apex:commandLink action="{!next}">Next &raquo;</apex:commandLink>
+			</apex:outputPanel>
+		</apex:outputPanel>
+	</apex:pageBlockSection>
+</apex:pageBlock>
+
+</apex:form>
+
+</apex:page>

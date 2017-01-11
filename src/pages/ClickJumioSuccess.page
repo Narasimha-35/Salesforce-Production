@@ -1,0 +1,9 @@
+<apex:page controller="acfJumioSuccess" sidebar="false" showHeader="false" action="{!UpdateSuccessOnLead}" id="pid">
+<script>
+ var pgname = '{!retUrlPage}';
+ setTimeout(function(){top.location.href="{!$Label.acfSite_Url}/{!retUrlPage}",2000})
+</script>  
+<apex:form id="frmId">
+    <apex:inputHidden value="{!retUrlPage}" id="textId"/>
+</apex:form>
+</apex:page>

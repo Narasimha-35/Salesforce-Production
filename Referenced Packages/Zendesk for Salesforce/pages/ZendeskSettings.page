@@ -1,0 +1,84 @@
+<apex:page controller="Zendesk.ZendeskSettings" title="Edit Zendesk settings">
+<apex:sectionHeader title="Zendesk for Salesforce" subtitle="Personal Settings" />
+<apex:form >
+      <apex:pageMessages />
+      
+      <apex:pageBlock title="Ticket view defaults" mode="edit">
+      
+        <apex:pageBlockButtons location="top">
+          <apex:commandButton action="{!saveSettings}" value="Save & Return"/>
+          <apex:commandButton action="{!goBack}" value="Go Back"/>
+        </apex:pageBlockButtons>
+        
+        <apex:pageBlockSection title="Filtering" columns="1">
+        
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Status Filter" />
+            <apex:selectList value="{!statusFilter}" size="1">
+             <apex:selectOptions value="{!statusFilterOptions}"/>
+            </apex:selectList>
+          </apex:pageBlockSectionItem>
+    
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Priority Filter" />
+            <apex:selectList value="{!priorityFilter}" size="1">
+              <apex:selectOptions value="{!priorityFilterOptions}"/>
+            </apex:selectList>
+          </apex:pageBlockSectionItem>
+    
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Type Filter" />
+            <apex:selectList value="{!typeFilter}" size="1">
+              <apex:selectOptions value="{!typeFilterOptions}"/>
+            </apex:selectList>
+          </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection title="Sorting" columns="1">
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Sort field" />
+            <apex:selectList value="{!sortField}" size="1">
+              <apex:selectOptions value="{!sortColumns}"/>
+            </apex:selectList>
+          </apex:pageBlockSectionItem>
+    
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Sort descending" />
+            <apex:inputCheckbox value="{!sortDesc}"/>
+          </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+      </apex:pageBlock>
+      
+     <!--  <apex:pageBlock title="Authentication" mode="edit">
+        <apex:pageBlockButtons location="top">
+          <apex:commandButton action="{!saveCredentials}" value="Save & Test"/>
+          <apex:commandButton action="{!removeCredentials}" value="Remove Credentials" rendered="{!OwnCredentials}"/>
+        </apex:pageBlockButtons>
+        
+          
+          <apex:pageBlockSection title="Zendesk credentials" columns="1">
+          <apex:pageBlockSectionItem helpText="eg: http://your-org.zendesk.com - NB: this URL must also be added to Remote Site Settings">
+            <apex:outputLabel value="Zendesk URL" />
+            <apex:inputText value="{!zendeskUrl}" size="40" />
+          </apex:pageBlockSectionItem>
+    
+          <apex:pageBlockSectionItem helpText="Requirements: must be the login of an Agent license in your Zendesk helpdesk, also must be unique within your Salesforce organization">
+            <apex:outputLabel value="Login" />
+            <apex:inputText value="{!zendeskUser}" size="40" />
+          </apex:pageBlockSectionItem>
+    
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Password" />
+            <apex:inputSecret value="{!zendeskPass}" size="40" />
+          </apex:pageBlockSectionItem>
+    
+          <apex:outputText >
+            <p>Leave these fields blank to use the Organization-wide settings set by your administrator.</p>
+            <p><strong>You must enter your own credentials to create and update tickets</strong>.</p>
+          </apex:outputText>
+        </apex:pageBlockSection>
+      </apex:pageBlock> -->
+
+      <c:ZendeskAuthentication settingsMode="Personal" ParentPgAPIName="ZendeskSettings" />
+</apex:form>
+</apex:page>

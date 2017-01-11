@@ -1,0 +1,97 @@
+<apex:page standardController="Campaign" extensions="vhc.Ctrl28ImportStandardSFCampaign">
+	
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>  
+
+	<apex:pageBlock title="Export campaign members to Call File">
+	
+		<div style="padding:5px;">
+			<apex:pageMessages id="msg"/> 
+		</div>
+		
+		<div style="margin-top: 12px; margin-bottom: 12px">
+       		Batch Status: <span id="batchStatus">Ready</span> 
+       		<img id="preload" style="padding-left:5px; display:none" src="{!URLFOR($Resource.img, 'preload.gif')}" />
+       		<img id="greentick" style="padding-left:5px; display:none" src="{!URLFOR($Resource.img, 'green_tick.png')}" />
+       	</div>
+	
+		<apex:form >
+		
+			<script>
+			
+			function log(res){
+				if(typeof(console) !== 'undefined' && console != null) {
+					console.log(res);
+				}
+			}
+			
+			function checkBatchStatus(){
+				log("checkBatchStatus");
+				var batchId =  $("#batchInput input").val();
+				if(batchId == "") {
+			   		return;
+			   	} else {
+					vhc.Ctrl28ImportStandardSFCampaign.getApexJobById(batchId,setBatchStatus,log);		
+				}
+			}
+			
+			function setBatchStatus(res){
+				res= JSON.parse($("<div/>").html(res).text());				
+				$("#batchStatus").html(res.Status);
+				
+				log("status from batch : " + res.Status);
+				
+				if (res.TotalJobItems==res.JobItemsProcessed ) {
+					$("#preload").hide();
+					$("#greentick").show();
+					$("#batchStatus").html("Completed");
+					$("#batchInput input").val("");
+					log("All batch items finished.");
+					return;
+				} else {		
+					if ( res.Status == "Failed") {
+						$("#preload").hide();
+						$("#greentick").hide();
+					} else {
+						$("#preload").show();
+						$("#greentick").hide();
+						setTimeout(checkBatchStatus,600);
+					}
+				}
+			}
+			
+			/*
+			$("#preload").show();
+			$("#preload").hide();
+			*/
+			
+			</script>
+		
+			 <apex:pageBlockSection title="Target call file">
+				 	<apex:selectList value="{!targetCallFileId}" multiselect="false">
+			            <apex:selectOptions value="{!items}"/>
+			        </apex:selectList>
+			        
+			        <apex:pageBlockSectionItem >
+				        <apex:outputText value="{!$ObjectType['vhc__Campaign_Member__c'].fields['vhc__Priority__c'].Label} : "/>
+				        <apex:selectList value="{!priority}" multiselect="false" size="1">
+				            <apex:selectOption itemValue="HIGH" itemLabel="HIGH"/>
+			                <apex:selectOption itemValue="MEDIUM" itemLabel="MEDIUM"/>
+			                <apex:selectOption itemValue="LOW" itemLabel="LOW"/>
+				        </apex:selectList>
+			        </apex:pageBlockSectionItem>
+	        </apex:pageBlockSection>
+	        <br/>        
+	        
+	        
+	        <apex:commandButton action="{!BackToCampaign}" value="Back to campaign" id="backToCampaignButton"/>
+	        <apex:commandbutton action="{!RunAll}" value="Add All" rerender="batch , msg" oncomplete="checkBatchStatus()" onclick="$('#greentick').hide();$('#batchStatus').html('Starting')"/><br/>
+	
+			<apex:outputpanel id="batch" style="display:none;">
+				<span id="batchInput"><apex:inputText value="{!batchId}" /></span>
+			</apex:outputpanel>
+	        
+		</apex:form>
+		
+	</apex:pageBlock>
+</apex:page>

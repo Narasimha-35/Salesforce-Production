@@ -1,0 +1,142 @@
+<apex:page showHeader="false" controller="vhc.Ctrl01CTI">
+    
+	<apex:includeScript value="/support/api/29.0/interaction.js" />
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/jquery-1.7.2.min.js')}"/>
+    
+	<script src="/soap/ajax/15.0/connection.js" type="text/javascript"></script>
+	<script src="/soap/ajax/15.0/apex.js" 		type="text/javascript"></script>    
+	
+	<script>sforce.connection.sessionId = "{!$Api.Session_ID}";</script> 
+	<script>var AdminURL = "{!IF((AdminURL == null), '', AdminURL)}";</script>
+	<!-- Embedded Softphone JS management  -->
+
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/CTI_ActiveX.js')}"  />   
+
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/flashProxy_Constants.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/tools.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/CTI_UI_Labels.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/CTI_UI.js')}"/> 
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/CTI_UI_States.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/CTI_BL.js')}" /> 
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/CTI_BL_Buttons.js')}"/>  
+   
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/flashProxy.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/SF_Proxy.js')}"   />
+
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/flash/swfobject.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/Toolbar.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/AgentLink.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/AgentButton.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/CallStatus.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/CallStatusGroup.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/PauseCode.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/CallInformation.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/Accessories.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/Status.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/SearchModeInformation.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/hermes/ProxySupport.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/libphonenumber.js')}"/>
+	<script>
+	var campaigns = {!CampaignWithNumberFormats};
+	
+	
+	</script>
+<body>
+
+<script type="text/javascript">
+	var loaded = false;
+	document.addEventListener('DOMContentLoaded',function(){loaded=true});
+    var agentPermissions = window.agentPermissions || {};
+    agentPermissions.manualCall = {!ManualCall};
+</script>
+
+<script type="text/javascript"> var activexSupported = false; </script>
+    <script type="text/javascript"> var activexSupported = isActiveXSupportedOnCurrentBrowser() ; </script>
+<!-- IE conditional comment. Render following ONLY in IE (any version). start -->
+
+   <!-- <apex:outputText value="<" escape="false" />!--[if IE]<apex:outputText value=">" escape="false" />
+   -->
+        <script type="text/javascript" src="{!URLFOR($Resource.CTI, '/js/cti/IE_Related.js')}"></script> 
+        <script type="text/javascript"> //var activexSupported = true; </script>
+    <!-- <apex:outputText value="<" escape="false" />![endif]--<apex:outputText value=">" escape="false" />
+    -->
+    
+<!-- IE conditional comment. end -->
+
+<div id="Log" style="display: none; width:100%; height:300px; overflow:scroll"></div>
+<div id="Flash" style="position: absolute; overflow:hidden; left: -200000px;"></div>
+
+<script>
+
+    window.onbeforeunload = function () {
+        if ((CTI_BL && CTI_BL.status && CTI_BL.status.callStatus !== CTI_BL.CALL_STATUS.NO)
+            || CTI_BL.flash.GetAgentState () === CTI_BL.flash.AgentStates.WRAPUP
+        )
+            return 'Are you sure you want to leave?';
+    }
+
+    var objTypes = {
+        '{! JsEncode($ObjectType.Lead.keyPrefix)    }' : '{! JsEncode($ObjectType.Lead.Label)    }',
+        '{! JsEncode($ObjectType.Contact.keyPrefix) }' : '{! JsEncode($ObjectType.Contact.Label) }'
+    };
+
+    var ctiFrame;
+    
+    var agentlink_toolbar;
+    
+    ctrlProxy = {
+        createnewcallWithStatId : '{!JsEncode($RemoteAction.Ctrl01CTI.createnewcallWithStatId)}', 
+        updateCallfinish     : '{!JsEncode($RemoteAction.Ctrl01CTI.updateCallfinish)}',
+        searchForCaller      : '{!JsEncode($RemoteAction.Ctrl01CTI.searchForCaller)}', 
+        updateQualification  : '{!JsEncode($RemoteAction.Ctrl01CTI.updateQualification)}',
+        getAgentList         : '{!JsEncode($RemoteAction.Ctrl01CTI.getAgentList)}',
+        getAgentByCode       : '{!JsEncode($RemoteAction.Ctrl01CTI.getAgentByCode)}',
+        getSIPinfo           : '{!JsEncode($RemoteAction.Ctrl01CTI.getSIPinfo)}',
+        isManualCallAllowedByBlacklistForNumber : '{!JsEncode($RemoteAction.Ctrl01CTI.isManualCallAllowedByBlacklistForNumber)}',
+        keepAlive 			 : '{!JsEncode($RemoteAction.Ctrl01CTI.getLastRecentCalls)}',
+        getDateTimeGMT		 :	'{!JsEncode($RemoteAction.Ctrl01CTI.getDateTimeGMT)}'
+    };
+
+    var oldWinowOnLoadEvent = window.onload;
+    window.onload = function () {
+        var so = new SWFObject("{!URLFOR($Resource.CTI, '/flash/AgentLink.swf')}", "AgentLink", "100", "30", "9", "");
+        so.write(document.getElementById("Flash"));
+        flashProxy.CreateFlash (so);
+        agentlink_toolbar = flashProxy.agentlink_toolbar;
+        
+        CTI_BL.flash = flashProxy;
+        CTI_BL.sf = SF_Proxy;
+        CTI_BL.sp = CTI_SP;
+        CTI_BL.sf.bl = CTI_BL.flash.bl = CTI_BL;
+
+        CTI_BL.flash.timerA = new Timer('timerA');
+        CTI_BL.flash.timerB = new Timer('timerB');
+        
+        
+
+        if (oldWinowOnLoadEvent) oldWinowOnLoadEvent ();
+    }
+    
+    var registerAll = function (cti_fr, sforceInteraction) {
+    
+        ctiFrame = cti_fr;
+        
+        CTI_BL.ui = ctiFrame.CTI_UI;
+        CTI_BL.ui.bl = CTI_BL;
+
+        CTI_BL.sf.interaction = sforceInteraction;
+
+        CTI_BL.flash.timerA.writeTimerFunction = CTI_BL.ui.wirteTimerA;
+        CTI_BL.flash.timerB.writeTimerFunction = CTI_BL.ui.wirteTimerB;
+
+        CTI_BL.connect ('{!JsEncode(ProxyAddress)}');
+    }
+    
+    
+    
+    
+</script>
+
+</body>
+
+</apex:page>

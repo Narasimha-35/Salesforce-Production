@@ -1,0 +1,5 @@
+<apex:page standardController="Lead" extensions="MC4SF.SubscriptionsController">
+
+<c:Subscriptions subscriberIds="{!subscriberIds}" returnUrl="{!returnUrl}" returnText="{!returnText}"/>
+
+</apex:page>

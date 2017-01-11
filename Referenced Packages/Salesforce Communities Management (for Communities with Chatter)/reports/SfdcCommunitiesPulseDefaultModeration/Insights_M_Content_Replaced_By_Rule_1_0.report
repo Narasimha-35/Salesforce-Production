@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_5655213</developerName>
+        <masterLabel>Moderation Action</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Network.NetworkActivityAudits$Action</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>ModerationRuleReplace</sourceValue>
+            </sourceValues>
+            <value>Auto replaced</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Network.NetworkActivityAudits$EntityCreatedBy</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$EntityCreatedBy.CreatedDate</field>
+    </columns>
+    <columns>
+        <field>BucketField_5655213</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$ParentEntity</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$EntityType</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$CreatedBy</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$CreatedDate</field>
+    </columns>
+    <description>Posts and comments replaced by a moderation rule in the last 7 days, sorted by the most recent flag. This report also includes moderated flagged discussions, such as items with removed flags or that were deleted.</description>
+    <filter>
+        <criteriaItems>
+            <column>Network.NetworkActivityAudits$Action</column>
+            <operator>equals</operator>
+            <value>e</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Network.NetworkActivityAudits$EntityType</column>
+            <operator>equals</operator>
+            <value>0D5,0D7</value>
+        </criteriaItems>
+    </filter>
+    <format>Tabular</format>
+    <name>Content Replaced By Rule</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Network_Activity_Audit_1_0__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Network.NetworkActivityAudits$CreatedDate</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Network.NetworkActivityAudits$CreatedDate</dateColumn>
+        <interval>INTERVAL_LAST7</interval>
+    </timeFrameFilter>
+</Report>

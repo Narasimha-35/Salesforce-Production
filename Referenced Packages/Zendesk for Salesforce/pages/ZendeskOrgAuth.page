@@ -1,0 +1,32 @@
+<apex:page controller="Zendesk.ZendeskSetting" title="Edit Zendesk credentials">
+
+<apex:form >
+<apex:pageBlock title="Zendesk organization-wide credentials" mode="edit">
+  <!-- 	
+  <apex:pageBlockButtons location="top">
+    <apex:commandButton action="{!saveAuth}" value="Save"/>
+  </apex:pageBlockButtons>
+   
+  <apex:pageBlockSection title="Credentials" columns="2">
+    <apex:panelGrid columns="3">
+    <apex:outputLabel value="Helpdesk URL" styleClass="labelCol" />
+    <apex:inputText value="{!zendeskUrl}"/>
+    <apex:outputLabel value="eg: http://your-org.zendesk.com" />
+
+    <apex:outputLabel value="Login" styleClass="labelCol" />
+    <apex:inputText value="{!zendeskUser}"/>
+    <apex:outputLabel value="must be an agent in your helpdesk" />
+
+    <apex:outputLabel value="Password" styleClass="labelCol" />
+    <apex:inputSecret value="{!zendeskPass}" />
+    </apex:panelGrid>
+    <apex:outputText >
+      <p>You are editing the organization-wide Zendesk credentials. All users will be able to access tickets with these credentials and do not have to enter a password themselves.</p>
+      <p>Leave these fields blank to force users to enter their own credentials.</p>
+   </apex:outputText>
+  </apex:pageBlockSection>
+-->
+</apex:pageBlock>
+</apex:form>
+
+</apex:page>

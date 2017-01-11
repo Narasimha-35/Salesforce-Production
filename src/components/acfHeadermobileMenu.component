@@ -1,0 +1,19 @@
+<apex:component controller="acfHeader">
+    <script>
+        $('.memberlogin_mobile').click(function () 
+         {
+           $(".sb-slidebar").removeClass("add-sb-sdbar");
+           $(".container-fluid").removeClass("add-body-sdbar");
+          });
+    </script>
+    
+    <section class="sb-slidebar">
+    <a href="#" class="pop-close cls-text">Close<span class="fa fa-close">&nbsp;</span></a>
+     <ul class="sub_menu-response">
+       <li><a href="#" class="mobsupport">TALK TO A HUMAN</a></li>
+       <apex:outputpanel rendered="{!If(pge_name=="acfbankinformationdetails" || pge_name=="acfeditprofile" || pge_name=="acfjumiointegration" || pge_name=="acfid_verification" || pge_name=="acfpreloginquestions" || pge_name=="acfpostloginquestions" || pge_name=="acffeatures" || pge_name=="acfhowitworks" || pge_name=="acflogin" || pge_name == "acf_topproducts",false,true)}"> <li> <a href="/acfeditprofile" class="member-login" target="_blank">EDIT PROFILE</a> </li> </apex:outputpanel>                  
+       <apex:outputpanel rendered="{!If(pge_name=="acfpreloginquestions" || pge_name=="acffeatures" || pge_name=="acfhowitworks" || pge_name=="acflogin" || pge_name == "acf_topproducts",false,true)}"><li><a href="/secur/logout.jsp" class="member-login">SIGN OUT</a></li></apex:outputpanel>
+       <apex:outputpanel rendered="{!If(pge_name=="acffeatures" || pge_name=="acflogin",true,false)}"><li><a href="/acfhowitworks" target="_blank">HOW IT WORKS</a></li> </apex:outputpanel>                                 
+     </ul>
+    </section>
+</apex:component>

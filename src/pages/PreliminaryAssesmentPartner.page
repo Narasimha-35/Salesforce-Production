@@ -1,0 +1,813 @@
+<apex:page showHeader="false" sidebar="false" controller="CreditProposalDisclosureController" renderAs="pdf"   docType="html-5.0">
+   <head>
+      <!-- Stylesheets -->
+      <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+      <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+   </head>
+   <body>
+      <!-- First Page Header -->
+      <apex:stylesheet value="{!$Resource.pdfstylesheet}" />
+      <c:PDFHeaderFooter type="header" position="center"><img style="margin:0px auto; display:inline-block; float:right;" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_headerlogo.png')}" alt="click Refi"/></c:PDFHeaderFooter>
+      <div class="pageAfter page-break">
+         <table border="0" cellspacing="0" cellpadding="0" align="left" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif; margin-bottom:40px;width:100%; ">
+            <tbody>
+               <!--<tr>
+                  <td align="left"  valign="top">
+                     <h1 style="font-size:20px;">Preliminary Credit Assessment Notice</h1><hr></hr>
+                  </td>
+               </tr>-->
+               <tr>
+                  <td align="left"  valign="top">
+                     <h1 style="font-size:20px;margin-top:2px;s">Preliminary Assessment</h1>
+                  </td>
+               </tr>
+               <tr>
+                  <td height="210px" />
+               </tr>
+               <tr>
+                  <td align="left"  valign="top" >
+                     <h5 style="font-size:18px; font-weight:600;margin: 0px 0px 10px;">Prepared in relation to:</h5>
+                     <br/>
+                     <p style="margin: 0px;font-size: 14px;font-weight: bold;line-height: 18px; margin-bottom:25px;">
+                        {!strApplicantName}<br/> <br/>
+                        {!strAccountAddress}
+                     </p>
+                  </td>
+               </tr>
+               <div style="page-break-after:always;">
+               </div>
+               <tr>
+                  <td>
+                    <h5 style="font-size:20px; font-weight:600;margin: 0px 0px 10px;">Preliminary Credit Assessment Notice</h5><hr></hr>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">This information is provided in response to your request for information concerning the preliminary credit assessment we made when we decided whether to assist you in obtaining the following loan or lease:</p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <table width="99%" border="1" cellspacing="0" cellpadding="5" align="center" style="font-family:sans-serif;border-collapse: initial; box-shadow:0px; margin:10px 0px;font-size:12px; text-align:left;">
+                        <tbody>
+                           <tr>
+                              <td width="40%">Mortgage Broker: </td>
+                              <td width="59%">{!strBrokerFullName}</td>
+                           </tr>
+                           <tr>
+                              <td width="40%">Licensee name</td>
+                              <td width="59%">{!strAclHolder}</td>
+                           </tr>
+                           <tr>
+                              <td width="40%">Australian Credit Licence:</td>
+                              <td width="59%">{!strAclLicenceNo}</td>
+                           </tr>
+                           <apex:variable value="{!1}" var="Count"/>
+                           <apex:repeat value="{!lstApplicant}" var="objApp">
+                              <tr>
+                                 <td width="40%">Customer’s name {!Count}: </td>
+                                 <td width="59%">{!objApp.acf_Applicant_Name__c  }</td>
+                              </tr>
+                              <tr>
+                                 <td width="40%">Customer’s age {!Count}:</td>
+                                 <td width="59%">{!mapAppIDToApplicantAge[objApp.Id]}</td>
+                              </tr>
+                              <apex:variable value="{!Count+1}" var="Count"/>
+                           </apex:repeat>
+                           <tr>
+                              <td width="40%">Customer’s address:</td>
+                              <td width="59%">{!strAccountAddress}</td>
+                           </tr>
+                           <tr>
+                              <td width="40%">Lender:</td>
+                              <td width="59%">{!strCurrentLender}</td>
+                           </tr>
+                           <apex:variable value="{!1}" var="ProductCount"/>
+                           <apex:repeat value="{!lstOLI}" var="objLineItem">
+                              <tr>
+                                 <td width="40%">Product {!ProductCount}:</td>
+                                 <td width="59%">
+                                     <apex:outputPanel rendered="{!if(objLineItem.PricebookEntry.Product2.Name != null,true,false)}">
+                                         {!objLineItem.PricebookEntry.Product2.Name}
+                                     </apex:outputPanel>
+                                     <apex:outputPanel rendered="{!if(objLineItem.click_Loan_Amount__c != null,true,false)}">
+                                         ,&nbsp;<apex:outputText value="${0,number,###,###,###,##0.00}">
+                                              <apex:param value="{!objLineItem.click_Loan_Amount__c}" />
+                                           </apex:outputText>
+                                     </apex:outputPanel>
+                                     <apex:outputPanel rendered="{!if(objLineItem.Click_Tenure__c != null,true,false)}">
+                                         , {!(objLineItem.Click_Tenure__c)} years
+                                     </apex:outputPanel>
+                                     <apex:outputPanel rendered="{!if(objLineItem.acfRate__c != null,true,false)}">
+                                         , {!objLineItem.acfRate__c}%
+                                     </apex:outputPanel>
+                                 </td>
+                              </tr>
+                              <apex:variable value="{!ProductCount+1}" var="ProductCount"/>
+                           </apex:repeat>
+                           <tr>
+                              <td width="40%">Loan Commitments:</td>
+                              <td width="59%">
+                                 <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!EstMonthlyPAY}" />
+                                 </apex:outputText>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">Living Expenses:</td>
+                              <td width="59%">
+                                 <apex:outputText value="${0,Number,###,###,###,##0.00}">
+                                    <apex:param value="{!SumofAppMonthlyExp}" />
+                                 </apex:outputText>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">Date the assessment was made: </td>
+                              <td width="59%"> {!AssesmentDate}</td>
+                           </tr>
+                           <tr>
+                              <td width="40%">Period covered by assessment </td>
+                              <td width="59%"> {!formulaCurrentDate}</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </td>
+               </tr>
+               <div style="clear:both;"></div>
+               <tr>
+                  <td>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; text-decoration:underline;">
+                        <br/><br/><br/><br/><br/><br/>
+                        <h4><b>Unsuitability Assessment</b></h4> <br/>
+                        <strong>Funding Position</strong><br/> 
+               <tr>
+                   <td>
+                      <!--<h1 style="font-size:20px;"> Funding Position Summary</h1> -->
+                      <table width="99%" border="1" cellspacing="0" cellpadding="5" align="center" style="font-family:sans-serif;border-collapse: initial; box-shadow:0px; margin:10px 0px;font-size:12px; text-align:left;">
+                         <tbody>
+                            <apex:repeat value="{!lstWrapFPDetails}" var="objWrap">
+                               <tr>
+                                  <td width="40%">
+                                     <apex:outputText value="{!objWrap.strFPLabel}"/>
+                                  </td>
+                                  <td width="59%">
+                                     <apex:outputText value="{!objWrap.strFPValue}"/>
+                                  </td>
+                               </tr>
+                            </apex:repeat>
+                         </tbody>
+                      </table>
+                      <h1 style="font-size:15px;"> Funding Position Details</h1>
+                      <table width="99%" border="1" cellspacing="0" cellpadding="5" align="center" style="font-family:sans-serif;border-collapse: initial; box-shadow:0px; margin:10px 0px;font-size:12px; text-align:left;">
+                         <thead>
+                            <tr>
+                               <apex:repeat value="{!listFieldName}" var="objFPDetail">
+                                  <th style="font-weight:bold; font-size:14px; ">
+                                     <apex:outputText value="{!objFPDetail}"/>
+                                  </th>
+                               </apex:repeat>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            <apex:repeat value="{!mapFundingPosDetail}" var="objFPDetail">
+                               <apex:variable value="{!0}" var="abc"/>
+                               <tr>
+                                  <apex:repeat value="{!mapFundingPosDetail[objFPDetail]}" var="values">
+                                     <td width="5%">
+                                         <apex:outputPanel rendered="{!if(values != null,true,false)}">
+                                            <apex:outputPanel rendered="{!if(abc != 1,true,false)}">                                
+                                                <apex:outputText value="{!values}"/>
+                                             </apex:outputPanel> 
+                                             <apex:outputPanel rendered="{!if(abc == 1,true,false)}">  
+                                                 <apex:outputPanel rendered="{!if(ISBLANK(TRIM(values)),false,true)}">    
+                                                    <apex:outputText value="${0,Number,###,###,###,##0.00}">
+                                                        <apex:param value="{!VALUE(values)}"/>  
+                                                    </apex:outputText>
+                                                 </apex:outputPanel>                             
+                                             </apex:outputPanel>
+                                          </apex:outputPanel>    
+                                     </td>
+                                     <apex:variable value="{!abc+1}" var="abc"/>
+                                  </apex:repeat>
+                               </tr>
+                            </apex:repeat>
+                         </tbody>
+                      </table>
+                   </td>
+                </tr>
+                <br/><br/><br/><br/><br/><br/>
+                
+               <h1 style="font-size:15px;"> Income And Expenses</h1>
+               <table width="99%" border="1" cellspacing="0" cellpadding="5" align="center" style="font-family:sans-serif;border-collapse: initial; box-shadow:0px; margin:10px 0px;font-size:12px; text-align:left;">
+                  <thead>
+                     <tr>
+                        <apex:repeat value="{!listIncomeExpensesFieldName}" var="objIncomeExp">
+                           <th style="font-weight:bold; font-size:14px; ">
+                              <apex:outputText value="{!objIncomeExp}"/>
+                           </th>
+                        </apex:repeat>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <apex:repeat value="{!mapIncomeExpense}" var="objMapIE">
+                        <apex:variable value="{!0}" var="countIncome"/>
+                        <tr>
+                           <apex:repeat value="{!mapIncomeExpense[objMapIE]}" var="values">
+                              <td width="5%">
+                                  <apex:outputPanel rendered="{!if(values != null,true,false)}">
+                                     <apex:outputPanel rendered="{!if(countIncome != 2,true,false)}">                                
+                                        <apex:outputText value="{!values}"/>
+                                     </apex:outputPanel> 
+                                     <apex:outputPanel rendered="{!if(countIncome == 2,true,false)}"> 
+                                         <apex:outputPanel rendered="{!if(ISBLANK(TRIM(values)),false,true)}">    
+                                            <apex:outputText value="${0,Number,###,###,###,##0.00}">
+                                                <apex:param value="{!VALUE(values)}"/>  
+                                            </apex:outputText> 
+                                         </apex:outputPanel>                            
+                                     </apex:outputPanel>
+                                  </apex:outputPanel>   
+                              </td>
+                              <apex:variable value="{!countIncome+1}" var="countIncome"/>
+                           </apex:repeat>
+                        </tr>
+                     </apex:repeat>
+                  </tbody>
+               </table>
+               <br/>
+               <br/>
+               <div style="page-break-after:always;">
+               </div>
+               <tr>
+                  <td>
+                     <h1 style="font-size:20px;"> Assets and Liabilities Summary</h1>
+                     <table width="99%" border="1" cellspacing="0" cellpadding="3" align="center" style="font-family:sans-serif;border-collapse: initial; box-shadow:0px; margin:10px 0px;font-size:12px; text-align:left;">
+                        <thead>
+                           <tr>
+                              <apex:repeat value="{!listAssetLiabFieldName}" var="objWrapAL">
+                                 <th style="font-weight:bold; font-size:14px; ">
+                                    <apex:outputText value="{!objWrapAL}"/>
+                                 </th>
+                              </apex:repeat>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <apex:repeat value="{!mapAssetLiab}" var="objALDetail">
+                              <apex:variable value="{!0}" var="countAsset"/>
+                              <tr>
+                                 <apex:repeat value="{!mapAssetLiab[objALDetail]}" var="values">
+                                    <td width="5%">  
+                                        <apex:outputPanel rendered="{!if(values != null,true,false)}">                                     
+                                           <apex:outputPanel rendered="{!if(countAsset != 1 && countAsset != 2 && countAsset != 3 && countAsset != 4,true,false)}">                                
+                                               <apex:outputText value="{!If(values != null, values, 'N/A')}"/>
+                                           </apex:outputPanel> 
+                                           <apex:outputPanel rendered="{!if(countAsset == 1 || countAsset == 2 || countAsset == 3 || countAsset == 4,true,false)}">    
+                                              <apex:outputPanel rendered="{!if(ISBLANK(TRIM(values)),false,true)}">  
+                                                  <apex:outputText value="${0,Number,###,###,###,##0.00}">
+                                                      <apex:param value="{!VALUE(values)}"/>  
+                                                  </apex:outputText> 
+                                              </apex:outputPanel>                             
+                                           </apex:outputPanel>
+                                       </apex:outputPanel>
+                                    </td>
+                                    <apex:variable value="{!countAsset+1}" var="countAsset"/>
+                                 </apex:repeat>
+                              </tr>
+                           </apex:repeat>
+                        </tbody>
+                     </table>
+                  </td>
+               </tr>
+               <br/>
+               <br/>
+               <!--        Questionnaire<br/>   -->
+               </p>
+               <!--       <span style="font-size: 14px;font-weight: normal;line-height: 18px;">«Insert table of Questions and Responses from Questionaire Section on Opportunity»</span>   -->
+               </td>
+               </tr>
+               <h1 style="font-size:15px;"> Questionnaire </h1>
+               <tr>
+                  <td>
+                     <table width="99%"  cellspacing="0" cellpadding="5" align="center" style="font-family:sans-serif; box-shadow:0px; margin:10px 0px;font-size:12px; text-align:left;">
+                        <thead>
+                           <tr>
+                              <td width="40%">
+                                 <apex:outputLabel value="{!$ObjectType.Opportunity.fields.Name.Label}" />
+                              </td>
+                              <td width="59%">
+                                  <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Name != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Name}"/>
+                                  </apex:outputPanel>   
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Why are you refinancing  </td>
+                              <td width="59%">
+                                  <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].acfWhy_are_you_refinancing__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].acfWhy_are_you_refinancing__c}" />
+                                  </apex:outputPanel>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Credit Contract duration expectation? </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].How_long_do_you_expect_to_remain_in_the__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].How_long_do_you_expect_to_remain_in_the__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Loan Repayment Type being Considered? </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Loan_Repayment_Type_being_Considered__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Loan_Repayment_Type_being_Considered__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Primary purpose for seeking credit?  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Primary_purpose_for_seeking_credit__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Primary_purpose_for_seeking_credit__c}" />
+                                 </apex:outputPanel>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Past legal issues re credit contracts?  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Past_legal_issues_re_credit_contracts__c != null,true,false)}"> 
+                                     <apex:outputText value="{!lstOpp[0].Past_legal_issues_re_credit_contracts__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Past legal issues details  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Past_legal_issues_details__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Past_legal_issues_details__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Current credit commitments up to date?  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Current_credit_commitments_up_to_date__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Current_credit_commitments_up_to_date__c}" />
+                                 </apex:outputPanel>     
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Current credit commitments plan  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Current_credit_commitments_plan__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Current_credit_commitments_plan__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Concerned about rising interest rates?  </td>
+                              <td width="59%">
+                                  <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Concerned_about_rising_interest_rates__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Concerned_about_rising_interest_rates__c}" />
+                                  </apex:outputPanel>   
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Consider taking a fixed rate loan?  </td>
+                              <td width="59%">
+                                  <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Would_you_consider_taking_a_fixed_rate_l__c != null,true,false)}">
+                                      <apex:outputText value="{!lstOpp[0].Would_you_consider_taking_a_fixed_rate_l__c}" />
+                                  </apex:outputPanel>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Rate your current job security  </td>
+                              <td width="59%">
+                                  <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Rate_your_current_job_security__c != null,true,false)}">
+                                      <apex:outputText value="{!lstOpp[0].Rate_your_current_job_security__c}" />
+                                  </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Adequate insurance?  </td>
+                              <td width="59%">
+                                  <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Adequate_insurance__c != null,true,false)}">
+                                      <apex:outputText value="{!lstOpp[0].Adequate_insurance__c}" />
+                                  </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Insurance Referral?  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Insurance_Referral__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Insurance_Referral__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Extra Repayments  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Extra_Repayments__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Extra_Repayments__c}" />
+                                 </apex:outputPanel>     
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Loan Redraw </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Loan_Redraw__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Loan_Redraw__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Offset Account  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Offset_Account__c != null,true,false)}"> 
+                                     <apex:outputText value="{!lstOpp[0].Offset_Account__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Portability  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Portability__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Portability__c}" />
+                                 </apex:outputPanel>     
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Multiple Account Splits  </td>
+                              <td width="59%">
+                                  <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Multiple_Account_Splits__c != null,true,false)}">
+                                      <apex:outputText value="{!lstOpp[0].Multiple_Account_Splits__c}" />
+                                  </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Line of Credit Option  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Line_of_Credit_Option__c != null,true,false)}"> 
+                                     <apex:outputText value="{!lstOpp[0].Line_of_Credit_Option__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Fixed Rate Option  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Fixed_Rate_Option__c != null,true,false)}"> 
+                                     <apex:outputText value="{!lstOpp[0].Fixed_Rate_Option__c}" />
+                                 </apex:outputPanel>   
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Loan Variations  </td>
+                              <td width="59%">
+                                  <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Loan_Variations__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Loan_Variations__c}" />
+                                  </apex:outputPanel>   
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Access to Lender Branch  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Access_to_Lender_Branch__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Access_to_Lender_Branch__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Access to Fee Free ATM transactions  </td>
+                              <td width="59%">
+                                  <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Access_to_Fee_Free_ATM_transactions__c != null,true,false)}">
+                                      <apex:outputText value="{!lstOpp[0].Access_to_Fee_Free_ATM_transactions__c}" />
+                                  </apex:outputPanel>     
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Cheque Book linked to loan/offset acct?  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Cheque_Book_linked_to_loan_or_offset_acc__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Cheque_Book_linked_to_loan_or_offset_acc__c}" />
+                                 </apex:outputPanel>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Internet Banking Access  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Internet_Banking_Access__c != null,true,false)}"> 
+                                     <apex:outputText value="{!lstOpp[0].Internet_Banking_Access__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Foreseeable changes in Income 6-12m?  </td>
+                              <td width="59%">
+                                 <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Foreseeable_changes_in_Expenses__c != null,true,false)}">
+                                     <apex:outputText value="{!lstOpp[0].Foreseeable_changes_in_Expenses__c}" />
+                                 </apex:outputPanel>    
+                              </td>
+                           </tr>
+                           <tr>
+                              <td width="40%">  Other Factors affecting Income/Expenses?  </td>
+                              <td width="59%">
+                                  <apex:outputPanel rendered="{!if(lstOpp != null && lstOpp.size > 0 && lstOpp[0].Other_Factors_affecting_Income_Expenses__c != null,true,false)}">
+                                      <apex:outputText value="{!lstOpp[0].Other_Factors_affecting_Income_Expenses__c}" />
+                                  </apex:outputPanel>    
+                              </td>
+                           </tr>
+                        </thead>
+                     </table>
+                     <h5 style="font-size:18px; font-weight:600;margin: 0px 0px 10px;">Product Recommendation to Customer</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:15px;">
+                        The Product Recommendation is prepared solely for the use of the people identified below and is provided after conducting our preliminary assessment: 
+                     </p>
+                     <h6 style="font-size:14px; font-weight:600;margin: 10px 0px 0px;">We have relied on the information you have provided to us</h6>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:15px;">
+                        In preparing this Product Recommendation we have relied on information that you have given to us. We take no responsibility for this recommendation if the information provided in incorrect or inaccurate.<br/> 
+                        If you believe that any aspect of your situation has been overlooked or is not correctly represented, it is your responsibility to bring it to our attention before acting on our recommendations.<br/> 
+                        This recommendation may only be considered to be current as at the time of production. The nature of the recommendation can be altered should interest rates and fees change at any point after the production of this document.<br/>
+                        Once you have selected an appropriate product and an application has been submitted to a lending institution, the lending institution will provide you a loan agreement or contract, which will detail all the terms and conditions associated with the product that you have selected. <br/> 
+                        We do not accept liability whatsoever for any third party relying on any information contained within the document.
+                     </p>
+                     <h6 style="font-size:14px; font-weight:600;margin: 10px 0px 0px;">Reasoning behind the Recommendation</h6>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        This recommendation has been developed taking into account: <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;   Your Personal &amp; Financial Profile and verification with supporting documentation<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;   Your Requirements and Objectives <br/><br/> 
+                     </p>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        We have also provided below further information: <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;   A general description of the characteristics of each of the types of loan product available; and <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;   Explanation why these products may be appropriate;<br/> 
+                     </p>
+                     <h6 style="font-size:14px; font-weight:600;margin: 10px 0px 0px;">Product Recommendation</h6>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        Based on the information you have provided to us in our Fact Find questionnaire, we have selected the following list of products as being not unsuitable for your requirements.
+                     </p>
+                  </td>
+               </tr>
+               <br/>
+               <div style="page-break-after:always;">
+               </div>
+               <tr>
+                  <td>
+                     <table border="1" cellspacing="0" cellpadding="10" align="left" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif;margin:15px 0px 15px;font-size: 12px;font-weight: normal; ">
+                        <thead>
+                           <tr>
+                              <th>Product Provider</th>
+                              <th>Product Name</th>
+                              <th>Interest Rate</th>
+                              <th>Total Setup Costs</th>
+                              <th>Ongoing Fees</th>
+                              <th>Total Cost of Loan</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <apex:repeat value="{!lstoli}" var="OppProd">
+                              <tr>
+                                 <td>{!OppProd.lender__c}</td>
+                                 <td>{!OppProd.Product2.Name}</td>
+                                 <td>
+                                     <apex:outputPanel rendered="{!if(OppProd.acfRate__c != null,true,false)}">
+                                         <apex:outputLabel value="{!OppProd.acfRate__c}%" />
+                                     </apex:outputPanel>    
+                                 </td>
+                                 <td>
+                                    <p>Application Fee: 
+                                    <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                       <apex:param value="{!mapProd2IDToApplFee[OppProd.Id]}" />
+                                    </apex:outputText><br/>
+                                    Legal Fee: 
+                                    <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                       <apex:param value="{!mapProd2IdToLegalFee[OppProd.Id]}" />
+                                    </apex:outputText></p>
+                                 </td>
+                                 <td>
+                                    <p>Annual Fee: 
+                                    <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                       <apex:param value="{!mapProd2IdToAnnualFee[OppProd.Id]}" />
+                                    </apex:outputText><br/>
+                                    Monthly Fee: 
+                                    <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                       <apex:param value="{!mapProd2IdToMonthlyFee[OppProd.Id]}" />
+                                    </apex:outputText></p>
+                                 </td>
+                                 <td>
+                                    <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                       <apex:param value="{!mapOliIDToTotalCostLoan[OppProd.id]}"/>
+                                    </apex:outputText>
+                                 </td>
+                              </tr>
+                           </apex:repeat>
+                        </tbody>
+                     </table>
+                     <br/>
+                     <br/>
+                  </td>
+               </tr>
+               <tr>
+                  <td valign="top">
+                     <p style="font-size: 16px;font-weight: normal; font-family:sans-serif; margin:0px 0px 0px; ">IMPORTANT: Please note that the lender may change its fees and interest rates at any time without notice.</p>
+                  </td>
+               </tr>
+               <tr>
+                  <td valign="top" align="left">
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px;">Not taxation advice or information</h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:10px; ">
+                        This product recommendation does not constitute or contain taxation advice.<br/>
+                        Whilst every effort has been made to include relevant taxation considerations, the adviser with whom you have dealt is not a licensed taxation agent.<br/>
+                        Any taxation considerations contained in this document are intended as a guide only. If you require taxation advice we strongly recommend that you seek independent taxation advice from a licensed taxation agent. 
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h5 style="font-size:18px; font-weight:600;margin: 10px 0px 0px;">Product Description Summary</h5>
+                     <h6  style="font-size:14px; font-weight:600;margin:10px 0px; font-style:italic;">Loan Types</h6>
+                     <h6  style="font-size:14px; font-weight:600;margin:10px 0px 0px;">Variable Rate Loans (Basic &amp; Standard)</h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        These two loan types are effectively the same in the way they work. The only differences are in the interest rate charged, and the features available. A standard variable loan will usually have a full range of features, whilst a basic variable loan will have a more restricted range.
+                        <br/>A summary of the usual differences is set out below. Please note that this is a general guide, and that differences between lenders may arise with specific products.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <table border="1" cellspacing="0" width="99%" cellpadding="10" align="left" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif;margin:15px 0px 20px;font-size: 12px;font-weight: normal; ">
+                        <thead>
+                           <tr>
+                              <th style="font-weight:600;">Feature</th>
+                              <th style="font-weight:600;">Standard Variable</th>
+                              <th style="font-weight:600;">Basic Variable</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                              <td style="font-weight:600;">Redraw</td>
+                              <td>Yes</td>
+                              <td>Yes</td>
+                           </tr>
+                           <tr>
+                              <td style="font-weight:600;">Extra Repayments</td>
+                              <td>Yes</td>
+                              <td>Yes</td>
+                           </tr>
+                           <tr>
+                              <td style="font-weight:600;">Discounts available for higher loan amounts</td>
+                              <td>Yes</td>
+                              <td>No</td>
+                           </tr>
+                           <tr>
+                              <td style="font-weight:600;">Mortgage Offset Account</td>
+                              <td>Yes</td>
+                              <td>No</td>
+                           </tr>
+                           <tr>
+                              <td style="font-weight:600;">Line of Credit option</td>
+                              <td>Yes</td>
+                              <td>No</td>
+                           </tr>
+                           <tr>
+                              <td style="font-weight:600;">Ability to change to fixed rate</td>
+                              <td>Yes</td>
+                              <td>No</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px;">Discount Variable Rate loans or introductory offers</h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        Many Lenders have developed a variant of their Standard Variable loan product, by offering new customers a reduced or discounted rate of interest for a set time.<br/>
+                        These discount periods can range from 6 months to 24 months, after which the interest rate reverts to the Standard Variable Rate.  In order for the Lender to ensure that they recoup the cost of the discount and to discourage borrowers from continually changing from introductory products of various lenders, most have introduced penalties should the borrower repay the facility within a specific time
+                     </p>
+                     <br/>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px; ">Fixed Rate Loans</h6>
+                     <p style="margin:0px 0px 10px;font-size: 14px;font-weight: normal;line-height:18px; ">
+                        A Fixed Rate Loan is a loan where the interest rate is guaranteed to remain the same during an initial term, regardless of what may occur in the market with variable rate loans.<br/>
+                        Traditionally lenders have offered terms of between 1 – 5 years for fixed rates, however some Lenders may offered terms of up to 10 years.<br/>
+                        Fixed Rate term loans normally require the loan to be renegotiated at the conclusion of the fixed term, thus a 5 year fixed term loan would normally be required to be repaid in full at the end of year 5. However most Lenders have the ability to arrange for the facility to revert to the Standard Variable Rate after the Fixed Rate term has expired. Thus a loan facility can be established for a 25 or 30 year loan term with the first 5 years, fixed at a specific interest rate.<br/>
+                        Fixed rate loans are popular with borrowers that want to take a conservative approach to borrowing, as they guarantee that the loan repayment will be the same for the Fixed Rate period. Many property investors have also found the Fixed Rate loans attractive products due to the product offering the comfort of guaranteed repayments.<br/>
+                        Borrowers who take fixed rate loans need to understand that they are committing to a contract with the lending institution for the fixed rate term, and that should the contract be broken or the term changed, the Lender may charge the borrower substantial fees to cover the costs of breaking the contract.<br/>
+                        These ‘break costs’ can be very expensive. The break costs are determined by many factors, such as the term remaining, the current interest rate environment and the amount of the outstanding balance. They cannot be estimated when the contract is taken out.<br/>
+                        In addition to the potentially prohibitive break costs, many Lenders also restrict the amount of extra repayments that can be made on the loan during the fixed rate period.<br/>
+                        The restrictions vary from lender to lender, and if you are thinking of taking a fixed rate loan, these restrictions may be a very important factor to consider.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px;">Line of Credit/Home Equity Loans</h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        Also known as Come and Go facilities, Equity Loans or Revolving Lines of credit, these loans offer similar benefits and operating features as the common bank overdraft.<br/>
+                        A line of credit loan allows the borrower to establish a credit or facility limit, and then draw from and pay down the loan without restriction. The borrower has the ability to use the entire limit at any time and does not have to comply with an amortised repayment schedule.<br/>
+                        Most Lenders who offer these loans require that the monthly interest charge be the minimum payment required to maintain the account. That means that the borrower can determine, how much if any, principal repayment they wish to make.<br/>
+                        The credit or facility limit is normally determined by two factors:
+                     <ul style="padding:0px; margin:0px 0px 15px;list-style:none; font-size: 14px;font-weight: normal;line-height: 18px;">
+                        <li style="margin-botom:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;   borrowers ability to repay, and</li>
+                        <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;   level of equity in the property being offered as security.</li>
+                     </ul>
+                     </p>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px; margin:0px 0px;">
+                        These facilities have the benefits of allowing the borrower to utilise as much or as little of the credit facility for whatever time frame they require, while still only being charged interest for the outstanding balance.<br/>
+                        The facilities even allow for the balance to move from a credit balance to a debit balance. Most Lenders will also allow for the borrower to operate their loan account as their transaction accounts, as an ‘all in one’ account.<br/>
+                     </p>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:0px;"><span style="font-weight:600;">Important Note:</span> Line of credit loans are not suitable for all people, as the facility allows for the original limit to be reused. Without proper discipline, it is possible to never pay down the loan at all with this kind of loan.</p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px;">Reverse Mortgages</h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        Recent changes in the demographic of the population in Australia have seen an increase in Asset Rich and Cash Poor elderly Australians. It is expected that this segment of the market will continue to increase as the ‘Baby Boomers’ start reaching retirement age. <br/>
+                        A reverse mortgage allows the borrower to borrow funds for any purpose or for day to day living expenses, secured against the equity in their property.<br/>
+                        The main difference to this product to standard home loans is that the lender does not require the borrower to make any principal or interest repayments during the loan term. The debt instead capitalises. The debt is traditionally repaid once the property securing the loan is sold. <br/>
+                        Due to the nature of the facility, with interest capitalised until the full payment of the debt, lenders restrict the amount that they will advance against the value of the property. Usually lenders will only lend up to 20% of the value of the property, depending upon the age of the borrower. <br/>
+                        The borrower has the option of repaying the facility through normal means, however its not a requirement of a loan, allowing the consumer to maintain their current standard of living.<br/> 
+                        An additional requirement of these facilities is that the consumer will be required to obtain independent legal and financial advice, as the nature of the facility diminishes the borrower’s equity in the property. 
+                     </p>
+                     <br/>
+                     <br/>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h5 style="font-size:18px; font-weight:600;margin:10px 0px 0px;">Loan Features &amp; Other Terms</h5>
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px;">Interest Only Payments </h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:25px;">
+                        Most Lenders will offer borrowers the ability to make interest only payments on their loan for a set period. That means that the monthly repayment has no principal reduction component, and the outstanding loan balance will remain unchanged during the term of the interest only period.<br/>
+                        Generally the terms offered by the Lenders are between 1 –5 years but some lenders may offer up to 10 years. After the initial interest only period, the loan will revert to the normal amortised repayments over the remaining term of the loan. <br/>
+                        For example, and loan with a 30 year term may have a 5 year interest only term, followed by a 25 year principal and interest term.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px;">Loan Portability  </h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:25px;">
+                        Loan portability allows the borrower the option of using their existing loan arrangements, but changing the property that secures it. For example, a borrower may sell their current home, and purchase a new home, and simply transfer the existing loan to the new home.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px;">Offset Account </h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:15px;">
+                        A Mortgage Offset account allows the borrower to have any savings or credit balances in their transaction account to be offset against their loan facility when interest is calculated. Offset accounts are offered by most Lenders which offer normal transaction type accounts.<br/>
+                        Most Lenders will offer ‘100%’ offset, which means that any credit balance in the account will offset the outstanding balance of the loan facility. The mortgage offset account itself does not earn any interest. However, benefit in that the interest on the loan charged is calculated on the net outstanding balance, after reducing the outstanding balance by the amount deposited in the offset account.<br/>
+                        For example, if a borrower had a loan with a balance of $100,000, and an offset account with a balance of $10,000, then interest is calculated on the net balance of $90,000.<br/>
+                        As mortgage offset accounts are regulated by the Financial Services Reform Act, providing advice on these accounts to consumers may only be done by via the holder of an Australian Financial Services License (AFSL).<br/>
+                        If a consumer requires a mortgage offset account, the lender who offers the product will provide the consumer with a Product Disclosure Statement which contains all relevant information.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px;">Redraw </h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:15px;">
+                        Loan redraw feature allows a borrower to withdraw any additional funds that they have paid of their loan facility over and above the normal minimum repayment.<br/>
+                        For example, if a borrower has been paying an additional $500 per month of their loan, after 12 months, the borrower would be able to redraw $6,000. <br/>
+                        The redrawn funds can be used for any purpose. Lenders may charge a fee to redraw extra payments, with costs typically varying from nil to $50 per redraw.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px;">Split Accounts or Combination Loans </h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px; margin-bottom:45px;">
+                        Most lenders allow borrowers to split their loan into a number of different products. For example, a borrower may elect to take a combination of a Fixed and Variable Rate loans in order to minimise the potential effect of an interest rate rise, while still maintaining the flexibility of a Variable Rate loan. 
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h6 style="font-size:14px; font-weight:600;margin:10px 0px 0px; padding:0px;">Lenders Mortgage Insurance (LMI) </h6>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        Lender’s Mortgage Insurance is an insurance policy obtained by the lender, but paid for by the borrower. It is for the protection of the lender, and not the borrower.
+                        The LMI policy protects the lender against any losses where:
+                     <ul style="padding:0px;list-style:none; font-size: 14px;font-weight: normal;">
+                        <li style="margin-botom:15px;">•&nbsp;&nbsp;&nbsp;&nbsp;   the borrower default on their loan;</li>
+                        <li style="margin-botom:15px;">•&nbsp;&nbsp;&nbsp;&nbsp;   the lender sells the security property; and </li>
+                        <li>•&nbsp;&nbsp;&nbsp;&nbsp;   There are not adequate funds to cover the outstanding loan and any fees and charges that may have accrued</li>
+                     </ul>
+                     </p>
+                     <p style="margin:0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        LMI is usually taken by the lender when the value of the loan requested exceeds 80% of the value of the security property.<br/>
+                        The LMI premium is based upon a sliding scale depending upon the loan to value ratio (“LVR”) - the higher the LVR, the higher the premium. LMI premiums can be substantial, and must be factored into the overall cost of borrowing to ensure that there is not a shortfall of funds when it comes to settle a loan transaction.
+                        <br/>
+                        <br/>
+                        LMI will normally not cover penalty interest, early repayment penalties, LMI premium, physical damage to property and fees and charges not directly related to costs incurred by the lender in order to recover the debt. <br/>
+                        LMI companies may refund a portion of the LMI premium if the facility insured has been fully repaid within 12 months of advancement of funds.<br/>
+                        LMI is available for both owner occupied &amp; investment loans. In addition to the borrower needing to satisfy a lender’s criteria, they must usually also meet the requirements of the mortgage insurer.<br/>
+                        In many cases an application may meet the lending guidelines of the lender, but fail to meet the mortgage insurer’s guidelines, in which case the lender will decline the loan.<br/>
+                        Some Lenders may allow borrowers to add the LMI premium to the loan amount, which in effect allows the applicant to borrow in excess of the stated LVR.    
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </body>
+</apex:page>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <webLinks>
+        <fullName>Run_SMS_Campaign</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Run SMS Campaign</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/14.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/14.0/apex.js&quot;)}
+
+var packagePrefix = &quot;smagicinteract__&quot;;
+var recordType = &quot;campaignmember&quot;;
+var idToUpdate = &quot;{! Campaign.Id }&quot;;
+var leadPhoneField = &quot;MobilePhone&quot;;
+var contactPhoneField = &quot;MobilePhone&quot;;
+
+var queryString = parent.window.location.pathname;
+if (parent.window.location.search){
+queryString = queryString + parent.window.location.search
+}
+var url = &quot;/apex/&quot;+packagePrefix+&quot;CampaignSMSSendPage?retURL=&quot;+queryString + &quot;&amp;objectType=&quot;+recordType+&quot;&amp;recordIds=&quot;+ idToUpdate+&quot;&amp;leadPhoneField=&quot;+leadPhoneField+&quot;&amp;contactPhoneField=&quot;+contactPhoneField;
+
+parent.window.location = url;</url>
+    </webLinks>
+</CustomObject>

@@ -1,0 +1,376 @@
+<apex:page showHeader="false" docType="html-5.0" cache="false" controller="WLEditprofileController" standardStylesheets="false" applyHtmlTag="false" id="pgId" action="{!redirect}">
+<html>
+<head> 
+ <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+
+<title>Edit Profile</title>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+<script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/js.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
+
+<style type="text/css"> 
+    .plcholder_61:before {
+          left:28px;
+          top: 14px;
+          color: #999;
+    }
+    @font-face {
+        font-family: 'open_sanslight';
+        src: url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.eot')}");
+        src: url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.eot?#iefix')}") format('embedded-opentype'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.woff2')}") format('woff2'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.woff')}") format('woff'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.ttf')}") format('truetype'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.svg#open_sanslight')}") format('svg');
+        font-weight: normal;
+        font-style: normal;    
+    }
+    
+    .sprite{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .input-box + ul.bank-list li:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    a.mcafee:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}"); 
+    }
+    .button{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 28px no-repeat;
+    }
+    .button.getstarted{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 20px no-repeat;
+    }
+    .work-list .cate-box span.quote:before,
+    .work-list .cate-box span.application:before,
+    .work-list .cate-box span.disclousure:before,
+    .work-list .cate-box span.docs:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}"); 
+    }
+    a.viewmore:after,
+    a.viewmore-feature:after{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .footer-social a.f-icon,
+    .footer-social a.link-icon,
+    .footer-social a.t-icon,
+    .footer-social a.u-icon{
+        background:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    a.responsive-menu{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .button.getstarted{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
+    }
+    .button.question{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
+    }
+    .baner-colum span.anzbank:before,
+    .baner-colum span.westpack:before,
+    .baner-colum span.nab:before,
+    .baner-colum span.cwb:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .set-up-row  .set-up-box + span{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    p.creat-acount:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .porf-row {
+     margin-top: 25px;
+    }
+    .displaynone
+    {
+        display:none;
+    }
+    .fileDragupload
+    {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        height: 100%;
+    }
+    .linkClass{
+     font-family: 'open_sanslight';
+     font-size: 0.95em;
+    
+     text-decoration: none;
+     color: #fbc97f;
+     padding: 0px 10px;
+     font-weight: bold;
+     margin-left: 0px;
+     padding-left: 0px;
+    }
+    
+    /******************replace in stylesheet following code*************/
+.prf-submit-btn{margin-left:0px!important; margin-right:10px;}
+@media all and (min-width: 320px) and (max-width: 800px){
+.porf-row .prf-lble{display:block; width:auto;}
+.porf-row .prf-submit-btn{width:100%;}
+}
+
+/************here is changes for upload image page***************/
+     #selectFileMobID{display:none;}
+     @media all and (min-width:320px) and (max-width: 800px){
+    #browsecompId,#drageImgId{display:none;}
+    #selectFileMobID{display:block;}
+    .email-upload p{display:none;}
+     }
+     
+     .cst_btn_save_2{  padding: 5px 10px; background-color:#f98b02; width: auto;}
+     .cst_btn_save_2:hover{background-color:#f98b02;}
+     .cst_btn_save_2:focus{border: 2px solid #f98b02;}
+     .cst_btn_save_2:active{background-color:#f98b02; border: 2px solid #f98b02;}
+</style>
+
+<script>
+ $(document).ready(function ()
+ {
+     $('#changepass').click(function () 
+        {
+          $('#changepwdPopUp').removeClass('displaynone');          
+          $('.messageCell').css('display','none');
+          $('[id$=member_login_strmsg]').remove();
+          $('[id$=current_lender_strmsg]').remove();
+          SetPopupLocation();
+        });
+        $('#divfaded12').click(function () 
+        {
+          $('#changepwdPopUp').addClass('displaynone');
+        });
+        
+        $(window).resize(function(){
+                SetPopupLocation();
+        });
+        
+  $('#DivFaded').click(function () 
+        {
+          $('#divUploadDocument').addClass('displaynone');
+        });
+  if(('{!IsError}')=='true')
+        {
+          $('#divUploadDocument').removeClass('displaynone');
+        }
+ $('.btnOnline').click(function () 
+        { 
+          $('#divUploadDocument').removeClass('displaynone');
+        }); 
+  $('.pop-close').click(function () 
+    { 
+            $('#changepwdPopUp').addClass('displaynone');
+             $('#divUploadDocument').addClass('displaynone'); 
+   });       
+     
+  });
+  
+  function SetPopupLocation()
+    {
+        var ww =  ($('.header').width() / 2) - ($('.setup-box').width() / 2);
+        $('.setup-box').css('left', ww + 'px');
+    }
+    
+  function UploadDraggableDocument(){
+      $('#uploadDocumentLoader').removeClass('displaynone');
+      UploadDraggableFile();
+  }
+  function UploadDocument()
+  {  
+       $('#uploadDocumentLoader').removeClass('displaynone');
+       UploadDocuments();
+  }
+  function deleteImg(){
+   deleteImage1();
+  }
+  
+</script>
+</head>
+<c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
+<body>
+
+<div class="modal" id="myModal7">
+    <apex:form id="frmDocument" styleClass="form-horizontal">
+           <apex:actionFunction action="{!UploadDragableFile}" name="UploadDraggableFile" status="ProcessStatus"/>
+           <apex:actionFunction action="{!uploadDoc}" name="UploadDocuments" status="ProcessStatus"/>
+           
+    <div class="modal-dialog">
+      <div class="modal-content popup_modalcontent cstm_pop_cont">
+        <div class="modal-header cstm_modal_header">
+          <button type="button" class="close pop_close gray_col" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title text-center">Upload Profile Image</h4>
+        </div>
+        <div class="modal-body">
+     <!--  <form class="form-horizontal" role="form"> -->
+      
+        <article class="col-md-12 email-upload">
+          <p>Drag your Image into the box below, or click Browse on My Computer to open a browse dialogue</p>
+        </article>
+        <div class="clearfix"></div>
+        
+       <article class="col-md-6 col-md-offset-3 col-sm-12 col-sm-offset-0">
+           <div id="drageImgId">
+                   <apex:inputFile value="{!docattach.body}" fileName="{!docattach.name}" contentType="{!docattach.contentType}" styleclass="fileDragupload"  onchange="UploadDraggableDocument();"></apex:inputFile>
+                   <div class="drag-sec" id="holder">Drag Image Here</div>
+           </div> 
+       </article>
+        <div class="clearfix"></div>
+     <!-- <div class="col-md-8 col-md-offset-3 col-xs-12">
+       <input type="file" class="custom-file-input col-md-12 col-xs-12" />
+      </div> -->
+       <div class="set-up-row auto fileupload btn col-md-offset-4" id="browsecompId">
+            <apex:inputFile value="{!attach.body}" fileName="{!attach.name}" contentType="{!attach.contentType}" styleclass="custom-file-input col-md-12 col-xs-12" id="inptFileUpload" onchange="UploadDocument();"></apex:inputFile>
+        </div>
+        <div class="set-up-row auto fileupload btn col-md-offset-4" id="selectFileMobID">
+            <apex:inputFile value="{!attach.body}" fileName="{!attach.name}" contentType="{!attach.contentType}" styleclass="custom-file-input col-md-12 col-xs-12" id="inptFileUpload-mob" onchange="UploadDocument();"></apex:inputFile>
+        </div>
+        <div class="clearfix"></div><br/><br/>
+        <div id="uploadDocumentLoader" class="displaynone col-md-offset-4"><apex:image url="{!$Resource.LoadingImg}" height="35" width="35"/>Uploading...</div><!-- Processing Image -->
+   
+        </div>
+      </div>
+    </div>  
+   </apex:form> 
+</div>
+<!--Pop up close here-->
+<main class="container-fluid">
+<div class="header row">
+<c:WLHeader ></c:WLHeader>
+</div>
+<div class="clearfix"></div>
+<section class="row">
+    <div class="container container_cstm">          
+        <section class="edit_profile">
+          <div class="col-md-12">
+               <c:ClickWelcomeDashboard />
+           </div>
+           <div class="dash-seprator edit-prof-dash">&nbsp;</div>  
+            <div class="clearfix"></div>
+           <section class="tabing-content">  
+           <article class="col-md-12 col-sm-12">
+             <div class="row"> 
+             <hgroup class="book-appoint">
+                    <h3 style="color:#fbc97f;"><B>Edit your Profile</B></h3>
+             </hgroup><Br/>
+             </div>
+             </article>
+             </section>    
+                               
+            <article class="col-md-6">
+              <div class="row">
+                 <apex:form styleClass="form-horizontal custom_form_edit">
+             <!--    <form class="form-horizontal custom_form_edit" role="form">  -->
+                  
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-xs-12" for="Name">First Name</label>
+                      <div class="col-md-8 col-xs-12">
+                        <apex:inputField value="{!usrObj.FirstName}" styleclass="form-control cstm_form_control" required="false" />
+                        
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-xs-12" for="last name">Last Name</label>
+                      <div class="col-md-8 col-xs-12">
+                        <apex:inputField value="{!usrObj.lastname}" styleclass="form-control cstm_form_control" required="false"/>
+                      </div>
+                    </div>                     
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-xs-12" for="email">Email</label>
+                      <div class="col-md-8 col-xs-12"> 
+                        <apex:Inputfield value="{!usrobj.Email}" styleClass="form-control cstm_form_control" required="false"/>         
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-xs-12" for="timezone">Timezone</label>
+                      <div class="col-md-8 col-xs-12">          
+                       <apex:Inputfield value="{!usrObj.TimeZoneSidKey}" styleClass="form-control cstm_form_control" required="false"/>
+                     </div>
+                    </div>                    
+                    
+                    
+                    <div class="form-group">        
+                      <div class="col-md-offset-3 col-md-9">
+                      <div>
+                        <apex:commandButton value="Cancel" styleClass="btn btn-default col-md-4 cst_btn_save cst_btn_save_2" action="{!Cancel}"/>
+                        <apex:commandButton value="Save Changes" styleClass="btn btn-default col-md-5 col-md-offset-1 cst_btn_save cst_btn_save_2" action="{!saveMethod}"/>
+                        
+                      </div>
+                      <div style="margin-top:10px;clear:both; padding-top:15px;">
+                      <div class="modal" id="myModal8">
+                         <div class="modal-dialog">
+                              <div class="modal-content popup_modalcontent">
+                                      <c:ClickChangePassword ></c:ClickChangePassword>
+                               </div>
+                             </div>
+                          </div>
+                          <a href="#myModal8" data-toggle="modal" >Change Password</a>
+                      </div>
+                    </div>
+                    </div>
+                                           
+                    </apex:form> 
+                   <div class="clearfix"></div>  
+              </div>                  
+      </article>
+      <apex:form >
+          <aside class="col-md-6 col-xs-12">
+              <div class="row">
+                <div class="col-md-6 col-xs-4 main-prof-img"> 
+                    <div class="row">
+                        <apex:outputPanel id="imgId">  
+                             <img src="{!usrObj.fullphotourl}" alt="img"/>
+                        </apex:outputPanel> 
+                    </div>                  
+                </div>
+                <div class="col-md-6 col-xs-8">
+                        <h3 class="h3_edit_hdng">Select options</h3>
+                        <a class="btnOnline linkClass" href="#myModal7" data-toggle="modal" >Edit photo</a>
+                        <apex:commandLink action="{!deleteImage}" value="Delete Photo" styleclass="linkClass" reRender=""/>     
+                </div>
+                </div>
+          </aside><!--asidle left close-->
+      </apex:form>
+         <div class="clearfix"></div>
+     <c:ClickPostQuestion ></c:ClickPostQuestion>
+     <div class="col-md-12 colo-xs-12">
+      <div class="row">
+          <div class="col-md-8 col-xs-12">
+             <p class="ask_ques_cstm ask_pgph">Not ready to proceed but have some questions you would like to discuss</p> 
+          </div>
+        <div class="col-md-2 col-xs-12 ask_ques_cstm">
+            <a href="#myModal9" data-toggle="modal" id="usrfeed" class="btn btn-default center-block" onclick="PopupReset();">Ask a Question</a>
+        </div>          
+      </div>
+    </div>
+        </section>     
+  </div><!--container close-->
+</section><!--row fluid close-->
+<!---Footer start here--------------->
+<footer class="footer april_footer row">
+    <c:WLFooter ></c:WLFooter>
+</footer>
+<!--footer close--><!--footer close-->
+</main><!--main div close-->
+</body>
+</html>
+</apex:page>
