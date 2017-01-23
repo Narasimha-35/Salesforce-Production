@@ -1,4 +1,5 @@
-global class MercuryService {
+global class MercuryService
+ {
     public static MercuryModel.LoanResponse getLoansFromMercury(String sfObjectName, String branchId, String searchType, MercuryModel.Params params) {
         MercuryModel.URLParams p = new MercuryModel.URLParams();
         p.currentPartnerId = branchId;
