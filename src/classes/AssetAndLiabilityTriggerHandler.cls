@@ -1,30 +1,46 @@
-/*
-    Handler class for acfTriggerOnAssets trigger
-    =============================================================================
-    Name                             Date                                version
-    =============================================================================
-    Prateek Kumar gupta                                            1.0
-    =============================================================================
-*/ 
 public class AssetAndLiabilityTriggerHandler extends TriggerHandler
 {
    Public List<Funding_Position_Detail__c> fundPosdList; 
    Public List<Funding_Position_Detail__c> fundPosdUpdate;
-
+   List<Funding_Position__c> fPosExistingNew = new List<Funding_Position__c>(); 
+   Map<String,Opportunity> oppRecTypeMap = new Map<string,Opportunity>();
+   Map<String,Account> accRecTypeMap = new Map<string,Account>();
+   Public List<Funding_Position_Detail__c> fundPosdListToBeDeleted;
+   
+   List<Funding_Position_Detail__c> fpdInsert = new List<Funding_Position_Detail__c>();
+   List<Funding_Position_Detail__c> fpdUpdate = new List<Funding_Position_Detail__c>();
+   List<Funding_Position_Detail__c> fpdDelete = new List<Funding_Position_Detail__c>();
    public override void afterInsert() 
     {
-      
+       System.debug('@@@ afterInsert sf ' );
        insertFSRecords(trigger.new);
       
        createFundingPosition('Insert');
+       calcLoanValueMaxAsset('Insert',new Set<Id>());
+       
+       //createFPD(trigger.new);
+       //updateInsertData();
     }
+    public override void afterDelete() 
+    {
+       calcLoanValueMaxAsset('Delete',new Set<Id>());
+    }
+    
+    
+    
+    
     public override void afterUpdate() 
     {
+        System.debug('@@@ afterUpdate sf ' );
         UpdateFSRecords();
+        updateIERecords(trigger.new);
         string CLEARINGLOAN = 'Clearing_From_This_Loan__c';
         string TOBEPURCHASED = 'To_Be_Purchased__c';
         string USED_AS_SECURITY = 'Used_as_Security__c';
+        string VALUE = 'Value__c';
         set<id> setOfAssetId = new set<id>();
+        Set<id> setOfOppId = new Set<id>();
+        Set<id> setOfAccId = new Set<id>();
         Map<Id,List<Funding_Position_Detail__c>> mapIdToFundingPositionDetail = new Map<Id,List<Funding_Position_Detail__c>>();
         List<Funding_Position_Detail__c> lstDelFundingPositiondetail = new List<Funding_Position_Detail__c>();
         List<Asset_And_Liability__c> LstAssetandLiability = new List<Asset_And_Liability__c>();
@@ -34,7 +50,26 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                 (assLiab.Used_as_Security__c != trigger.oldMap.get(assLiab.id).get(USED_AS_SECURITY)))
             {
                 setOfAssetId.add(assLiab.id);
+               
+            }       
+            if(assLiab.Opportunity__c !=null){
+                setOfOppId.add(assLiab.Opportunity__c);
+            }
+            if(assLiab.Account__c!=null){
+                setOfAccId.add(assLiab.Account__c);
+            }
+            if(assLiab.Opportunity__c !=null && assLiab.Used_as_Security__c != trigger.oldMap.get(assLiab.id).get(USED_AS_SECURITY) || assLiab.Value__c  != trigger.oldMap.get(assLiab.id).get(VALUE)){
+                calcLoanValueMaxAsset('Update',new Set<Id>()); 
             } 
+        }
+        
+       
+        
+        if(setOfOppId!=null && setOfOppId.size() > 0){
+            oppRecTypeMap = new Map<String,Opportunity>([Select id,Recordtype.Name From Opportunity where id=:setOfOppId]);
+        }
+        if(setOfAccId!=null && setOfAccId.size() > 0){
+            accRecTypeMap = new Map<String,Account>([Select id,Recordtype.Name From Account where id=:setOfAccId]);
         }
         if(setOfAssetId != null && setOfAssetId.size() > 0)
         {
@@ -60,19 +95,27 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             }
         }
         
+        System.debug('@@@ saasfocus sf '+lstDelFundingPositiondetail );
         if(lstDelFundingPositiondetail != null && lstDelFundingPositiondetail.size() > 0)
         {
+            System.debug('Insert ' );
             delete lstDelFundingPositiondetail;
             createFundingPosition('Insert');
         }
         else
         {
+            System.debug('Update' );
             createFundingPosition('Update');
         }
         
-    }
+        //updateFPD(trigger.new);
+        //updateInsertData();
         
-     public override void beforeInsert() 
+    }
+    
+    
+        
+    public override void beforeInsert() 
     {
         checkClearingLoan();
         tagOpportunityafterConversion();
@@ -80,6 +123,196 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         //createFundingPosition();
         
     }
+    
+    
+    public override void beforeDelete(){
+       deleteFPD(trigger.old);
+    }
+    
+    public void deleteFPD(List<Asset_And_Liability__c> asetLiabObjList){
+    
+        Set<Id> fpIDSet = new Set<Id>();             
+        for(Asset_And_Liability__c assetlibObj :asetLiabObjList){           
+            fpIDSet.add(assetlibObj.ID);        
+        }
+        System.debug('@@saasfocus sf 1 '+fpIDSet);
+        
+        if(fpIDSet <> null){
+           List<Funding_Position_Detail__c>  fpdObjList  = [Select Id,Asset_And_Liability__c,Amount__c,Category__c,Detail_Type__c,
+            Funding_Position__c from Funding_Position_Detail__c where Asset_And_Liability__c IN : fpIDSet AND Category__c = 'Borrower Contribution' AND Detail_Type__c = 'Deposit'] ;
+           
+           System.debug('@@saasfocus sf 2 '+fpdObjList);
+                
+           if(fpdObjList  <> null && fpdObjList.size() > 0){
+             
+              Delete fpdObjList ;
+           }    
+                
+          
+         }   
+        
+    }
+    
+    /*
+    public void createFPD(List<Asset_And_Liability__c> asetLiabObj){
+        System.debug('@@@ saasfocus createFPD ');
+        
+        
+        Set<Id> accountID = new Set<Id>();
+        for(Asset_And_Liability__c assetlibObj :asetLiabObj){
+            if(assetlibObj.Account__c <> null){
+                accountID .add(assetlibObj.Account__c);
+            }
+        }
+        System.debug('@@saas sf 6 '+accountID);
+        if(accountID <> null){
+            
+            Map<Id,List<Id>> accountIdToFPIdMap = new Map<Id,List<Id>> ();
+            for(Funding_Position__c fpObj : [Select id,Account__c from Funding_Position__c where Account__c In : accountID]){
+                
+                if(accountIdToFPIdMap.get(fpObj.Account__c) != null && accountIdToFPIdMap.get(fpObj.Account__c).size() > 0){
+                    
+                    List<Id> fpIdSet = accountIdToFPIdMap.get(fpObj.Account__c);
+                    fpIdSet.add(fpObj.id);
+                    accountIdToFPIdMap.put(fpObj.Account__c , fpIdSet);
+                    
+                }else{
+                    List<Id> fpIdSet = new List<Id>();
+                    fpIdSet.add(fpObj.id);
+                    accountIdToFPIdMap.put(fpObj.Account__c , fpIdSet);
+                }
+            }
+            System.debug('@@saas sf 7 '+accountIdToFPIdMap);
+            
+            for(Asset_And_Liability__c assetlibObj :asetLiabObj){
+                System.debug('@@saas sf 8 '+assetlibObj);
+                
+                if(assetlibObj.Use_As_Borrower_Contributions_To_Loan__c <> null && assetlibObj.Use_As_Borrower_Contributions_To_Loan__c == true && accountIdToFPIdMap <> null && accountIdToFPIdMap.get(assetlibObj.Account__c) <> null && accountIdToFPIdMap.get(assetlibObj.Account__c).get(0) <> null){
+                
+                    Funding_Position_Detail__c fpdObj = new Funding_Position_Detail__c();
+                                     
+                    fpdObj.Category__c = 'Borrower Contribution';
+                    fpdObj.Detail_Type__c     = 'Deposit';
+                    fpdObj.Amount__c     = assetlibObj .Value__c ;
+                    fpdObj.Funding_Position__c = accountIdToFPIdMap.get(assetlibObj.Account__c).get(0);
+                    fpdObj.Asset_And_Liability__c = assetlibObj .id ;  
+                    fpdObj.name =   assetlibObj.name+'-'+'Borrower Contribution';               
+                    
+                    System.debug('@@saasfocus 9 '+fpdObj);
+                    fpdInsert.add(fpdObj);
+                }   
+            }
+        }
+             
+    }
+    */
+    
+     public void createFPD(Asset_And_Liability__c asetLiabObj , Map<Id,Funding_Position__c > accIdToFPMap){
+        System.debug('@@@ saasfocus 1 ');
+            
+        //if((accIdToFPMap <> null && accIdToFPMap.get(asetLiabObj .Account__c) <> null && accIdToFPMap.get(asetLiabObj .Account__c).id <> null && )){//
+            if(OppFPtMap.get(asetLiabObj.Opportunity__c) != null){
+                Funding_Position_Detail__c fpdObj = new Funding_Position_Detail__c();
+                                 
+                fpdObj.Category__c = 'Borrower Contribution';
+                fpdObj.Detail_Type__c     = 'Deposit';
+                fpdObj.Amount__c     = asetLiabObj .Value__c ;
+                
+                fpdObj.Funding_Position__c = OppFPtMap.get(asetLiabObj .Opportunity__c).id;
+                fpdObj.Asset_And_Liability__c = asetLiabObj .id ;  
+                fpdObj.name =   asetLiabObj.name+'-'+'Borrower Contribution';               
+                
+                System.debug('@@saasfocus 1 '+fundPosdList);
+                fundPosdList.add(fpdObj);
+            }
+        //}  
+    }
+    
+    /*
+    public void updateFPD(List<Asset_And_Liability__c> asetLiabObjList){
+        System.debug('@@@ saasfocus updateFPD ');
+        
+        
+        
+        Set<Id> fpIDSet = new Set<Id>();
+        Map<Id,List<Funding_Position_Detail__c>> assLibIdToFPMap = new Map<Id,List<Funding_Position_Detail__c>>();
+        
+        for(Asset_And_Liability__c assetlibObj :asetLiabObjList){           
+            fpIDSet.add(assetlibObj.ID);        
+        }
+        System.debug('@@saasfocus sf 1 '+fpIDSet);
+        
+        if(fpIDSet <> null){
+            for(Funding_Position_Detail__c  fpdObj : [Select Id,Asset_And_Liability__c,Amount__c,Category__c,Detail_Type__c,Funding_Position__c from Funding_Position_Detail__c where Asset_And_Liability__c IN : fpIDSet]){
+                
+                if(assLibIdToFPMap.get(fpdObj.Asset_And_Liability__c) != null && assLibIdToFPMap.get(fpdObj.Asset_And_Liability__c).size() > 0){
+                    List<Funding_Position_Detail__c> fpdSet = assLibIdToFPMap.get(fpdObj.Asset_And_Liability__c) ;
+                    fpdSet.add(fpdObj);
+                    assLibIdToFPMap.put(fpdObj.Asset_And_Liability__c , fpdSet);
+                }else{
+                    
+                    List<Funding_Position_Detail__c> fpdSet = new List<Funding_Position_Detail__c> () ;
+                    fpdSet.add(fpdObj);
+                    assLibIdToFPMap.put(fpdObj.Asset_And_Liability__c , fpdSet);
+                }
+                
+            }
+            System.debug('@@saasfocus sf 2 '+assLibIdToFPMap);
+            List<Asset_And_Liability__c> assLibObjListToCreate = new List<Asset_And_Liability__c>();
+            
+            for(Asset_And_Liability__c assLibObj :asetLiabObjList){
+                
+                
+                List<Funding_Position_Detail__c> listFPDetails = assLibIdToFPMap.get(assLibObj.ID);
+                System.debug('@@saasfocus sf 3 '+listFPDetails);
+                if(assLibObj.Use_As_Borrower_Contributions_To_Loan__c == true){
+                    if(listFPDetails <> null && listFPDetails.size() > 0){
+                        for(Funding_Position_Detail__c fpdObj : listFPDetails){
+                            
+                            fpdObj.Category__c = 'Borrower Contribution';
+                            fpdObj.Detail_Type__c     = 'Deposit';
+                            fpdObj.Amount__c     = assLibObj .Value__c ;
+                            //fpdObj.Funding_Position__c = fpdObj.Funding_Position__c;
+                            fpdObj.Asset_And_Liability__c = assLibObj .id ;  
+                            fpdObj.name =   assLibObj.name+'-'+'Borrower Contribution';         
+                            System.debug('@@saasfocus sf 4 '+fpdObj);
+                            fpdUpdate.add(fpdObj);
+                        }
+                    }else{
+                        System.debug('@@saasfocus sf 5 ');
+                        assLibObjListToCreate.add(assLibObj) ;
+                    }  
+                }else{
+                    if(listFPDetails <> null && listFPDetails.size() > 0){
+                       System.debug('@@saasfocus sf 7 '+listFPDetails);
+                       fpdDelete.addAll(listFPDetails);
+                    }
+                }                   
+                
+            }
+            
+            if(assLibObjListToCreate <> null && assLibObjListToCreate.size() > 0){
+                createFPD(assLibObjListToCreate) ;
+                
+            }
+            
+        }   
+             
+    }
+    
+    public void updateInsertData(){
+        if(fpdInsert <> null && fpdInsert.size() > 0){
+            Insert fpdInsert ;
+        }  
+        if(fpdUpdate <> null && fpdUpdate.size() > 0){
+            Update fpdUpdate ;
+        }
+        if(fpdDelete <> null && fpdDelete.size() > 0){
+            Delete fpdDelete ;
+        }
+        
+    }*/
+    
     
       /*
             =============================================================================
@@ -180,10 +413,10 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         }
     }
     
-   List<Funding_Position__c> fundPosdListforLendi ;
-   map<Id,Id> mapOfrecordType  ;
-            Map<Id,Funding_Position__c> OppFPtMap ;
-   public void createFundingPosition(String event)
+    List<Funding_Position__c> fundPosdListforLendi ;
+    map<Id,Id> mapOfrecordType  ;
+    Map<Id,Funding_Position__c> OppFPtMap ;
+    public void createFundingPosition(String event)
     {        
          fundPosdList = new List<Funding_Position_Detail__c>();
          
@@ -191,7 +424,7 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
          
          fundPosdUpdate = new List<Funding_Position_Detail__c>();
          List<Funding_Position__c> fPosExistingList = new List<Funding_Position__c>(); 
-         List<Funding_Position__c> fPosExistingNew = new List<Funding_Position__c>(); 
+         
          Set<Id> oppId = new Set<Id>();
          Set<Id> accId = new Set<Id>();
          Map<Id,Funding_Position__c> accountFPCountMap = new Map<Id,Funding_Position__c>();
@@ -200,7 +433,7 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
          Map<Id,List<Funding_Position_Detail__c>> assetLiabMap = new Map<Id,List<Funding_Position_Detail__c>>();
          
          List<Id> idObj = new List<Id> ();
-          List<Id> idAccObj = new List<Id> ();
+         List<Id> idAccObj = new List<Id> ();
         
          for(Asset_And_Liability__c assLiab:((List<Asset_And_Liability__c>) trigger.new)){
              if(assLiab.Opportunity__c != null )
@@ -209,24 +442,41 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             if(assLiab.Account__c != null )
              idAccObj.add(assLiab.Account__c);
          }
-        
-        List<opportunity> oppOobj = [Select Id , recordtypeid , AccountId from Opportunity  where id in : idObj  and recordtypeid != null ] ;
          
+         System.debug('@@@saasfocus 21 '+idObj); 
+         System.debug('@@@saasfocus 22 '+idAccObj); 
+         
+        
+        List<opportunity> oppOobj = [Select Id , recordtypeid,recordtype.name, AccountId from Opportunity  where id in : idObj  and recordtypeid != null ] ;
+       
          mapOfrecordType = new  map<Id,Id>();
          
          for(opportunity opp :oppOobj ){
              mapOfrecordType.put(opp.ID ,  opp.recordtypeid);
-            
+             oppRecTypeMap.put(opp.ID ,  opp);
         
          }
-          List<Account> Accountobj = [Select Id , recordtypeid from Account  where id in : idAccObj  and recordtypeid != null ] ;
+         
+         System.debug('@@@saasfocus 23 '+mapOfrecordType);
+         List<Account> Accountobj = [Select Id , recordtypeid,recordtype.name from Account  where id in : idAccObj  and recordtypeid != null ] ;
          
          for(Account  accObj :  Accountobj ){
-            mapOfrecordType.put(accObj.ID ,  accObj.recordtypeid); 
+            mapOfrecordType.put(accObj.ID ,  accObj.recordtypeid);
+            accRecTypeMap.put(accObj.ID ,  accObj); 
              
          }
+         System.debug('@@@saasfocus 24 '+mapOfrecordType);
+         
          Set<Id>  LendiOppId = new Set<Id>();
          for(Asset_And_Liability__c assLiab:((List<Asset_And_Liability__c>) trigger.new)){
+            /*System.debug('@@@saasfocus 15 '+assLiab.Account__c); 
+            System.debug('@@@saasfocus 16 '+mapOfrecordType.get(assLiab.Account__c)); 
+            System.debug('@@@saasfocus 17 '+Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname()); 
+            System.debug('@@@saasfocus 18 '+assLiab.Opportunity__c); 
+            System.debug('@@@saasfocus 19 '+mapOfrecordType.get(assLiab.Opportunity__c)); 
+            System.debug('@@@saasfocus 20 '+Schema.SObjectType.Opportunity.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Opportunity__c)).getname()); */
+        
+            
             if(assLiab.Account__c !=null   && mapOfrecordType.get(assLiab.Account__c) != null  &&  Schema.SObjectType.Account.getRecordTypeInfosById().get(mapOfrecordType.get(assLiab.Account__c)).getname() != 'Lendi'){
                 accId.add(assLiab.Account__c);
                 if(assLiab.Opportunity__c != null){
@@ -241,15 +491,21 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
              
          }
         
+         System.debug('@@@saasfocus 10 '+LendiOppId);
+         System.debug('@@@saasfocus 14 '+accId);
          
          fundPosdListforLendi = [Select id,Account__c   ,Opportunity__c from  Funding_Position__c where Opportunity__c   in :LendiOppId ];
-          fPosExistingList = [Select id,Account__c from Funding_Position__c where Account__c  in :accId];
+         fPosExistingList = [Select id,Account__c from Funding_Position__c where Account__c  in :accId];
+         
+          System.debug('@@@saasfocus 12 '+fundPosdListforLendi);
+          System.debug('@@@saasfocus 13 '+fPosExistingList);
+          
          if(fPosExistingList.size() > 0){
              for(Funding_Position__c fp:fPosExistingList){
                 accountFPCountMap.put(fp.Account__c,fp);
              }
          }
-          OppFPtMap = new Map<Id,Funding_Position__c>();
+         OppFPtMap = new Map<Id,Funding_Position__c>();
          if(fundPosdListforLendi.size() > 0){
                for(Funding_Position__c fp:fundPosdListforLendi){
                     OppFPtMap.put(fp.Opportunity__C , fp);
@@ -267,7 +523,7 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                 }
             }
          }
-           Map<Id,OpportunityLineItem> oppLineItemMapForlendi = new Map<Id,OpportunityLineItem>();
+         Map<Id,OpportunityLineItem> oppLineItemMapForlendi = new Map<Id,OpportunityLineItem>();
          if(LendiOppId.size() > 0){
               List<OpportunityLineItem> oppLineList = [SELECT acfLegal_Fees__c,OpportunityId,clickEstablishment_Fee__c,clickMortgage_Risk_Fee__c FROM OpportunityLineItem where OpportunityId =:LendiOppId ORDER BY CreatedDate ASC LIMIT 1];
             if(oppLineList.size() > 0){
@@ -280,6 +536,7 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
          }
         
          for(Id acc:accId){
+            System.debug('@@@team saasfocus 11 '+accountFPCountMap);  
             if(accountFPCountMap !=null && !accountFPCountMap.containsKey(acc)){
                 Funding_Position__c fpObject = new Funding_Position__c();
                 fpObject.Account__c = acc;
@@ -292,23 +549,31 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             }
 
          }
-         
+         system.debug('@@@lendiId'+LendiOppId);
          for(Id acc: LendiOppId){
+            System.debug('@@@team saasfocus 8 '+OppFPtMap); 
+            System.debug('@@@team saasfocus 9 '+OppFPtMap.containsKey(acc));
             if(OppFPtMap !=null && !OppFPtMap.containsKey(acc)){
+                system.debug('@@@lendiIdEntered');
                 Funding_Position__c fpObject = new Funding_Position__c();
                 fpObject.Opportunity__C = acc;
                
                     if(oppLineItemMapForlendi.containsKey(fpObject.Opportunity__c) && oppLineItemMapForlendi.get(fpObject.Opportunity__c).acfLegal_Fees__c !=null && oppLineItemMapForlendi.get(fpObject.Opportunity__c).clickEstablishment_Fee__c !=null && oppLineItemMapForlendi.get(fpObject.Opportunity__c).clickMortgage_Risk_Fee__c !=null)
+                        
                         fpObject.Lender_Set_Up_Fees__c = (Integer)oppLineItemMapForlendi.get(fpObject.Opportunity__c).acfLegal_Fees__c + (Integer) oppLineItemMapForlendi.get(fpObject.Opportunity__c).clickEstablishment_Fee__c + (Integer) oppLineItemMapForlendi.get(fpObject.Opportunity__c).clickMortgage_Risk_Fee__c;
                 
                 fPosExistingNew.add(fpObject);
             }
 
          }
-         if(fPosExistingNew.size() > 0 && event == 'Insert')
+         system.debug('@@@fundingExist'+fPosExistingNew +' event '+event);
+         if(fPosExistingNew.size() > 0 && event == 'Insert'){
+             system.debug('@@@funding');
              insert fPosExistingNew;
+         }
          set<id> fundingPosSet = new set<id>();
-         if(fPosExistingNew.size() > 0){   
+         if(fPosExistingNew.size() > 0){ 
+             system.debug('@@@funding1');  
              for(Funding_Position__c fpId:fPosExistingNew){
                  fundingPosSet.add(fpId.id);
              }
@@ -331,15 +596,53 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
          string LIM = 'Limit__c';
          string CURRENT_BALANCE = 'Current_Balance__c';
          string REPAYMENT = 'Repayments__c';
+         string PROPERTYTYPE = 'Property_Status__c';
+         string FIRSTHOMEBUYER = 'First_Home_Buyer__c';
 
          for(Asset_And_Liability__c assLiab:((List<Asset_And_Liability__c>) trigger.new)){
             string recordtypename ='';
+            string stampresp = '';
             if(assLiab.recordtypeid !=null)
                 recordtypename = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(assLiab.recordtypeid).getname();
             if(recordtypename == 'Liability Mortgage Loan' && assLiab.Clearing_From_This_Loan__c && event == 'Insert'){
                 insertFPLiabilityRecords( assLiab, accountFPCountMap);
             }
-
+            
+            // added by amar start
+            if(assLiab.Use_as_borrower_contributions_to_loan__c <> null && assLiab.Use_as_borrower_contributions_to_loan__c == true  && event == 'Insert'){
+                
+                createFPD( assLiab, accountFPCountMap);
+            }
+            
+            
+            if(assLiab.Use_as_borrower_contributions_to_loan__c <> null && assLiab.Use_as_borrower_contributions_to_loan__c == true  && event == 'Update'){
+                if(assetLiabMap.get(assLiab.id).size() == 0){
+                        createFPD( assLiab, accountFPCountMap);
+                }else{
+                    for(Funding_Position_Detail__c fpd:assetLiabMap.get(assLiab.id))
+                    {
+                        if(fpd.Category__c == 'Borrower Contribution' && fpd.Detail_Type__c == 'Deposit'){
+                            fpd.Amount__c     = assLiab .Value__c ; 
+                            fpd.name =  assLiab.name+'-'+'Borrower Contribution';                   
+                            fundPosdUpdate.add(fpd);    
+                            System.debug('@@@saasfocus team '+fundPosdUpdate);
+                        }                       
+                    }
+                    
+                }
+                
+            }
+            
+            if(assLiab.Use_as_borrower_contributions_to_loan__c <> null && assLiab.Use_as_borrower_contributions_to_loan__c == false  && event == 'Update'){
+                fundPosdListToBeDeleted = new List<Funding_Position_Detail__c>() ;
+                for(Funding_Position_Detail__c fpd:assetLiabMap.get(assLiab.id)){ 
+                    if(fpd.Category__c == 'Borrower Contribution' && fpd.Detail_Type__c     == 'Deposit'){
+                        fundPosdListToBeDeleted.add(fpd);    
+                        System.debug('@@@saasfocus team '+fundPosdListToBeDeleted);
+                    }                   
+                }           
+            }
+            
             if(recordtypename == 'Liability Mortgage Loan' && assLiab.Clearing_From_This_Loan__c && event == 'Update'){
                 if(assetLiabMap.get(assLiab.id).size() == 0){
                     insertFPLiabilityRecords(assLiab, accountFPCountMap);
@@ -423,10 +726,15 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                 {
                     for(Funding_Position_Detail__c fpd:assetLiabMap.get(assLiab.id)){
                         system.debug('##entered');
-                        if((assLiab.State__c!=null && assLiab.State__c != trigger.oldMap.get(assLiab.id).get(STATE)) || (assLiab.Value__c!=null && assLiab.Value__c != trigger.oldMap.get(assLiab.id).get(VALUE)) || (assLiab.Primary_Purpose__c!=null && assLiab.Primary_Purpose__c != trigger.oldMap.get(assLiab.id).get(PRIMARY_PURPOSE))){
+                        system.debug('@@assLiab'+oppRecTypeMap.get(assLiab.Opportunity__c).recordtype.name);
+                        if((assLiab.State__c!=null && assLiab.State__c != trigger.oldMap.get(assLiab.id).get(STATE)) || (assLiab.Value__c!=null && assLiab.Value__c != trigger.oldMap.get(assLiab.id).get(VALUE)) || (assLiab.Primary_Purpose__c!=null && assLiab.Primary_Purpose__c != trigger.oldMap.get(assLiab.id).get(PRIMARY_PURPOSE)) || (assLiab.Property_Status__c!=null && assLiab.Property_Status__c!= trigger.oldMap.get(assLiab.id).get(PROPERTYTYPE)) || (assLiab.First_Home_Buyer__c!=null && assLiab.First_Home_Buyer__c != trigger.oldMap.get(assLiab.id).get(FIRSTHOMEBUYER))){
                             if(fpd.Detail_Type__c == 'Purchase Stamp Duty'){
-                                fpd.Amount__c = ClickCommon.getStampDutyRate(assLiab.State__c,Integer.valueOf(assLiab.Value__c),assLiab.Primary_Purpose__c);
-                                system.debug('###'+fpd.Amount__c);
+                                if(assLiab.Opportunity__c != null && oppRecTypeMap.get(assLiab.Opportunity__c).Recordtype.name ==  'Lendi'){
+                                    ClickCommon.getStampDutyRate(OppFPtMap.get(assLiab.Opportunity__c).id,assLiab.State__c,String.valueOf(assLiab.Value__c),assLiab.Primary_Purpose__c,assLiab.Property_Status__c,assLiab.First_Home_Buyer__c); 
+                                }
+                                else if(assLiab.Account__c != null && accRecTypeMap.get(assLiab.Account__c).recordtype.name !=  'Lendi'){
+                                    ClickCommon.getStampDutyRate(accountFPCountMap.get(assLiab.Account__c).id,assLiab.State__c,String.valueOf(assLiab.Value__c),assLiab.Primary_Purpose__c,assLiab.Property_Status__c,assLiab.First_Home_Buyer__c);
+                                }
                             }
                             if(fpd.Detail_Type__c == 'Transfer Fee'){
                                 fpd.Amount__c = ClickCommon.calculateTransferFee(String.valueOf(assLiab.State__c),Integer.valueOf(assLiab.Value__c));
@@ -475,6 +783,12 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             insert fundPosdList;
          if(fundPosdUpdate.size()> 0)
             update fundPosdUpdate;
+            
+         if(fundPosdListToBeDeleted <> null && fundPosdListToBeDeleted.size() > 0){
+             delete fundPosdListToBeDeleted ;
+         }   
+          
+        
         
   }
 
@@ -510,8 +824,16 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
 
     Public void insertFPAssetEstateRecords(Asset_And_Liability__c assLiab, Map<Id,Funding_Position__c> accountFPCountMap){
         Funding_Position_Detail__c  fPosdThird = new Funding_Position_Detail__c ();
-        if(assLiab.Value__c !=null && assLiab.State__c !=null && assLiab.Primary_Purpose__c != null)
-            fPosdThird.Amount__c = ClickCommon.getStampDutyRate(assLiab.State__c,Integer.valueOf(assLiab.Value__c),assLiab.Primary_Purpose__c);
+        system.debug('@@@account'+assLiab.Account__c);
+        system.debug('###'+accountFPCountMap.get(assLiab.Account__c));
+        if(assLiab.Value__c !=null && assLiab.State__c !=null && assLiab.Primary_Purpose__c != null && assLiab.Property_Status__c!= null && assLiab.First_Home_Buyer__c != null && assLiab.Opportunity__c != null && oppRecTypeMap.get(assLiab.Opportunity__c) != null &&  oppRecTypeMap.get(assLiab.Opportunity__c).recordtype.name ==  'Lendi'){
+            ClickCommon.getStampDutyRate(OppFPtMap.get(assLiab.Opportunity__c).id,assLiab.State__c,String.valueOf(assLiab.Value__c),assLiab.Primary_Purpose__c,assLiab.Property_Status__c,assLiab.First_Home_Buyer__c); 
+        }
+        else if(assLiab.Value__c !=null && assLiab.State__c !=null && assLiab.Primary_Purpose__c != null && assLiab.Property_Status__c!= null && assLiab.First_Home_Buyer__c != null && assLiab.Account__c != null && accRecTypeMap.get(assLiab.Account__c) != null && accRecTypeMap.get(assLiab.Account__c).recordtype.name !=  'Lendi'){
+            ClickCommon.getStampDutyRate(accountFPCountMap.get(assLiab.Account__c).id,assLiab.State__c,String.valueOf(assLiab.Value__c),assLiab.Primary_Purpose__c,assLiab.Property_Status__c,assLiab.First_Home_Buyer__c);
+            
+        }
+        
         fPosdThird.Category__c = 'Fee';
         fPosdThird.Detail_Type__c = 'Purchase Stamp Duty';
         fPosdThird.Name = assLiab.Name + '- Purchase Stamp Duty';
@@ -798,17 +1120,17 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
                             if(objAsset.Repayment_Frequency__c == 'Weekly'  && objAsset.Repayments__c != null)
                             {
                                 ieObj.Amount__c = objAsset.Repayments__c * 52;
-                                ieObj.Frequency__c = 'Weekly' ;
+                                ieObj.Frequency__c = 'Yearly' ;
                             }
                             if(objAsset.Repayment_Frequency__c == 'Fortnightly' && objAsset.Repayments__c != null)
                             {
                                 ieObj.Amount__c = objAsset.Repayments__c * 26 ;
-                                ieObj.Frequency__c = 'Fortnightly' ;
+                                ieObj.Frequency__c = 'Yearly' ;
                             }
                             if(objAsset.Repayment_Frequency__c == 'Monthly' && objAsset.Repayments__c != null)
                             {
                                 ieObj.Amount__c = objAsset.Repayments__c *12 ; 
-                                ieObj.Frequency__c = 'Monthly' ;
+                                ieObj.Frequency__c = 'Yearly' ;
                             }
                             if(objAsset.Repayment_Frequency__c == 'Anually' && objAsset.Repayments__c != null)
                             {
@@ -921,7 +1243,7 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
         list<id> userLastModifiedbyId = new list<id>();
         string repaymentFrequencyApi = 'Repayment_Frequency__c';
         string repaymentApi = 'Repayments__c';
-         List<Id> IeId = new list<Id>();
+        List<Id> IeId = new list<Id>();
         
       
         for(Asset_And_Liability__c objAsset : (List<Asset_And_Liability__c>)trigger.new)
@@ -1004,6 +1326,202 @@ public class AssetAndLiabilityTriggerHandler extends TriggerHandler
             if( tempFsObj.size() > 0)
                 update tempFsObj;
     }
-     
     
+    public void updateIERecords(list<Asset_And_Liability__c> triggernew){
+        set<id> incomeAssetSet = new set<id>();
+        Map<id,Asset_And_Liability__c> assetIEMap = new Map<id,Asset_And_Liability__c>();
+        List<Income_And_Expense__c> ieList = new List<Income_And_Expense__c>();
+        
+        for(Asset_And_Liability__c objAsset : triggernew)
+        {
+            
+            String REPAYMENT = 'Repayments__c';
+            String REPAYMENTFREQUENCY = 'Repayment_Frequency__c';
+            if(((objAsset.Repayments__c != trigger.OldMap.get(objAsset.id).get(REPAYMENT)) || (objAsset.Repayment_Frequency__c != trigger.OldMap.get(objAsset.id).get(REPAYMENTFREQUENCY)))){
+                incomeAssetSet.add(objAsset.id);  
+                assetIEMap.put(objAsset.id,objAsset);
+            }
+        }
+        
+        system.debug('@@@123'+assetIEMap);
+        system.debug('@@@1234'+incomeAssetSet);
+        List<Income_And_Expense__c> ieListNew = new List<Income_And_Expense__c>();
+        if(incomeAssetSet !=null && incomeAssetSet.size()>0)
+            ieListNew = [Select id,Amount__c,Account__c,Asset_And_Liability__c,Frequency__c from Income_And_Expense__c where Asset_And_Liability__c =:incomeAssetSet];
+        if(ieListNew != null && ieListNew.size() > 0){
+            for(Income_And_Expense__c ie:ieListNew){
+                if(assetIEMap.containsKey(ie.Asset_And_Liability__c) && assetIEMap.get(ie.Asset_And_Liability__c) != null && assetIEMap.get(ie.Asset_And_Liability__c).Repayment_Frequency__c != null && assetIEMap.get(ie.Asset_And_Liability__c).Repayment_Frequency__c == 'Weekly')
+                {
+                    ie.Amount__c = assetIEMap.get(ie.Asset_And_Liability__c).Repayments__c * 52;
+                    ie.Frequency__c = 'Yearly' ;
+                    ieList.add(ie);
+                }
+                if(assetIEMap.containsKey(ie.Asset_And_Liability__c) && assetIEMap.get(ie.Asset_And_Liability__c) != null &&  assetIEMap.get(ie.Asset_And_Liability__c).Repayment_Frequency__c != null && assetIEMap.get(ie.Asset_And_Liability__c).Repayment_Frequency__c == 'Fortnightly' && assetIEMap.get(ie.Asset_And_Liability__c).Repayments__c!= null)
+                {
+                    ie.Amount__c = assetIEMap.get(ie.Asset_And_Liability__c).Repayments__c * 26 ;
+                    ie.Frequency__c = 'Yearly' ;
+                    ieList.add(ie);
+                }
+                if(assetIEMap.containsKey(ie.Asset_And_Liability__c) && assetIEMap.get(ie.Asset_And_Liability__c) != null &&  assetIEMap.get(ie.Asset_And_Liability__c).Repayment_Frequency__c != null && assetIEMap.get(ie.Asset_And_Liability__c).Repayment_Frequency__c == 'Monthly' && assetIEMap.get(ie.Asset_And_Liability__c).Repayments__c != null)
+                {
+                    ie.Amount__c = assetIEMap.get(ie.Asset_And_Liability__c).Repayments__c *12 ; 
+                    ie.Frequency__c = 'Yearly' ;
+                    ieList.add(ie);
+                }
+                if(assetIEMap.containsKey(ie.Asset_And_Liability__c) && assetIEMap.get(ie.Asset_And_Liability__c) != null && assetIEMap.get(ie.Asset_And_Liability__c).Repayment_Frequency__c != null && assetIEMap.get(ie.Asset_And_Liability__c).Repayment_Frequency__c == 'Anually' && assetIEMap.get(ie.Asset_And_Liability__c).Repayments__c != null)
+                {
+                     ie.Amount__c = assetIEMap.get(ie.Asset_And_Liability__c).Repayments__c; 
+                     ie.Frequency__c = 'Yearly' ;
+                     ieList.add(ie);
+                }
+                system.debug('@@@ie'+ieList);
+                if(ieList !=  null && ieList.size() > 0){
+                    update ieList;
+                }
+            } 
+        }
+        else if(ieListNew != null && ieListNew.size() == 0){
+            insertFSRecords(triggernew);
+        }
+    }
+    
+    public void calcLoanValueMaxAsset(String event,Set<id> oppLISet){
+        Set<id> oppIdSet = new Set<Id>();
+        Map<id,OpportunityLineItem> oppProductMap = new Map<id,OpportunityLineItem>();
+        Map<id,id> oppBankMap = new Map<id,id>();
+        Set<id> productId = new Set<id>();
+        Set<String>  postcodeNumberSet = new Set<String>();
+        Map<id,Opportunity> oppMap = new Map<id,Opportunity>();
+        Map<id,id> prodBankMap = new Map<id,id>();
+        Map<id,Double> oppFinalLoanMap = new Map<id,Double>();
+        List<Asset_And_Liability__c> assLiabList = new List<Asset_And_Liability__c>();
+        List<Asset_And_Liability__c> assLiabDMLList; 
+        if(event == 'Insert' || event == 'Update')
+            assLiabDMLList = (List<Asset_And_Liability__c>) trigger.new;
+        else if(event == 'Delete')
+            assLiabDMLList = (List<Asset_And_Liability__c>) trigger.old;
+        else if(event == 'LineItemOperation'){
+            assLiabDMLList =  new List<Asset_And_Liability__c>();
+            oppIdSet = oppLISet;
+        }
+            
+        if(assLiabDMLList != null && assLiabDMLList.size() > 0){
+            for(Asset_And_Liability__c assLi: assLiabDMLList){
+                if(assLi.Opportunity__c !=null){
+                    oppIdset.add(assLi.Opportunity__c); 
+                } 
+                //postcodeNumberSet.add(String.valueOf(assLiab.Postcode__c));
+            }
+        }
+        
+        List<Opportunity> oppList = [Select id,Amount,(Select Id, PricebookEntryId, Product2Id From OpportunityLineItems ORDER BY CreatedDate ASC LIMIT 1) From Opportunity where id=:oppIdset];
+        Map<id,PricebookEntry> priceBookMap = new Map<id,PricebookEntry>([Select id,Product2Id FROM PricebookEntry]);
+      //  string recordtypename = Schema.SObjectType.Asset_And_Liability__c.getRecordTypeInfosById().get(assLiab.recordtypeid).getname();
+        assLiabList = [Select Id,Postcode__c,Used_as_Security__c,RecordType.Name,Value__c,Opportunity__c From Asset_And_Liability__c where Used_as_Security__c = true AND Opportunity__c =:oppIdset AND RecordType.Name = 'Asset Real Estate'];
+        if(assLiabList !=null && assLiabList.size() > 0){
+            for(Asset_And_Liability__c assLiab:assLiabList){
+                postcodeNumberSet.add(String.valueOf(assLiab.Postcode__c));
+            }
+        }
+        for(Opportunity opp:oppList){
+            OpportunityLineItem oppObject = new OpportunityLineItem();
+            
+            oppMap.put(opp.id,opp);
+            if(opp.OpportunityLineItems !=null && opp.OpportunityLineItems.size() > 0){
+                oppObject = opp.OpportunityLineItems;
+                productId.add(priceBookMap.get(oppObject.PricebookEntryId).Product2Id);
+                oppProductMap.put(opp.id,oppObject);
+            }
+        }
+        List<Product2> productList = [Select id,Click_Loans_Bank_Detail__c From Product2 where id =:productId];
+        for(Product2 pro:productList){
+            if(pro.Click_Loans_Bank_Detail__c !=null)
+                prodBankMap.put(pro.id,pro.Click_Loans_Bank_Detail__c);
+        }
+        for(Opportunity opp:oppList){
+            if(oppProductMap !=null && oppProductMap.containsKey(opp.id) && oppProductMap.get(opp.id).PricebookEntryId !=null){
+                //oppProductMap.get(opp.id).PricebookEntryId;
+                if(prodBankMap != null && prodBankMap.containsKey(priceBookMap.get(oppProductMap.get(opp.id).PricebookEntryId).Product2Id))
+                    oppBankMap.put(opp.id,prodBankMap.get(priceBookMap.get(oppProductMap.get(opp.id).PricebookEntryId).Product2Id));
+            }
+        }
+        
+        List<Postcode_Category__c> posCatList = [SELECT Category__c,Click_Loans_Bank_Detail__c,Id,Postcode__r.name FROM Postcode_Category__c where Postcode__r.name =:postcodeNumberSet];
+        Map<String,List<Postcode_Category__c>> posCatMap = new Map<String,List<Postcode_Category__c>>();
+        Map<String,List<Postcode_Feature__c>> posFeatureMap = new Map<String,List<Postcode_Feature__c>>();
+        List<Postcode_Feature__c> posFeatureList = [Select id,Category__c,Bank__c,Loan_Amount_From__c,Loan_Amount_To__c,Max_LVR__c FROM Postcode_Feature__c];  
+        for(Postcode_Category__c pos:posCatList){
+            if(pos.Postcode__r.name !=null && !posCatMap.containsKey(pos.Postcode__r.name))
+                posCatMap.put(String.valueOf(pos.Postcode__r.name),new List<Postcode_Category__c>());
+                
+            posCatMap.get(pos.Postcode__r.name).add(pos);
+        }
+        for(Postcode_Feature__c posFeature:posFeatureList){
+            if(!posFeatureMap.containsKey(posFeature.category__c))
+                posFeatureMap.put(posFeature.category__c,new List<Postcode_Feature__c>());
+            posFeatureMap.get(posFeature.category__c).add(posFeature); 
+        }
+        
+        
+        Double finalLoanMaxProduct = 0;
+        Double proccesLoanMaxProduct = 0;
+     
+        for(Asset_And_Liability__c assLiab:assLiabList){
+            if(posCatMap !=null && posCatMap.containsKey(string.valueOf(assLiab.Postcode__c))){
+                string categoryCode = '';
+                for(Postcode_Category__c pCat:posCatMap.get(String.valueOf(assLiab.Postcode__c))){
+                    if(pCat.Click_Loans_Bank_Detail__c == oppBankMap.get(assLiab.Opportunity__c)){
+                        categoryCode = pCat.Category__c;
+                    }
+                }
+                
+                if(posFeatureMap.containsKey(categoryCode)){
+                    List<Double> proceLoanMaxList = new List<Double>();
+                    for(Postcode_Feature__c posFeature:posFeatureMap.get(categoryCode)){
+                        system.debug('@@@Entered');
+                        //system.debug('@@@Entered123'+posFeature);
+                        //system.debug('@@@assLiab'+assLiab);
+                        proccesLoanMaxProduct = posFeature.Max_LVR__c/100 * assLiab.value__c;
+                        system.debug('@@@oppBank'+oppBankMap.get(assLiab.Opportunity__c));
+                        system.debug('@@@posfeaure'+posFeature.id);
+                        system.debug('@@@posfeaure'+posFeature.Category__c);
+                        system.debug('@@@posfeaure'+posFeature.Bank__c);
+                        system.debug('@@@posLoanAmount'+posFeature.Loan_Amount_To__c);
+                        system.debug('@@@loanMaxProduct'+proccesLoanMaxProduct);
+                        if(oppBankMap.get(assLiab.Opportunity__c) == posFeature.Bank__c && posFeature.Loan_Amount_To__c > proccesLoanMaxProduct){
+                             proceLoanMaxList.add(proccesLoanMaxProduct);
+                             //finalLoanMaxProduct = finalLoanMaxProduct + proccesLoanMaxProduct;
+                             //oppFinalLoanMap.put(assLiab.Opportunity__c,finalLoanMaxProduct); 
+                        }
+                    }
+                    proceLoanMaxList.sort();
+                    
+                    if(proceLoanMaxList.size() > 0){
+                        System.debug('@@@pro'+proceLoanMaxList.get(proceLoanMaxList.size()-1));
+                        finalLoanMaxProduct = finalLoanMaxProduct + proceLoanMaxList.get(proceLoanMaxList.size()-1);
+                        oppFinalLoanMap.put(assLiab.Opportunity__c,finalLoanMaxProduct);  
+                    }
+                }
+                
+            }
+        }
+        if(oppIdset !=null & oppIdset.size() > 0){
+            List<Funding_Position__c> funPosList = [Select id,Loan_Max_Product__c,Opportunity__c FROM Funding_Position__c where Opportunity__c =:oppIdset];
+            for(Funding_Position__c fpos:funPosList){
+                if(oppFinalLoanMap.containsKey(fpos.Opportunity__c)){
+                    fpos.Loan_Max_Asset__c = oppFinalLoanMap.get(fpos.Opportunity__c);
+                }
+            }
+            if(funPosList != null && funPosList.size() > 0){
+                update funPosList;
+            }
+        }
+        
+        system.debug('@@@opp'+oppLISet);
+        if(oppLISet.size() == 0){
+            acfTriggerOnOpportunityLineItemHandler lineitem = new acfTriggerOnOpportunityLineItemHandler();
+            //lineitem.populateLoanMaxProduct('Asset Operation',oppIdset); 
+        }
+    }
+  
 }
