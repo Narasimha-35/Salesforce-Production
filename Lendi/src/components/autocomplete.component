@@ -1,0 +1,84 @@
+<apex:component controller="autoCompleteController">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  
+  <script type="text/javascript" src="{!$Resource.TypeheadAutocomplete}" />
+
+     
+ 
+ <style>
+   .typeahead, .tt-query, .tt-hint {
+            border: 2px solid #CCCCCC;
+            border-radius: 8px;
+            font-size: 12px;
+            height: 25px;
+            outline: medium none;
+            width: 200 px;
+        }
+     .tt-hint {
+         color: #999999;
+      }
+    .tt-dropdown-menu {
+        background-color: #FFFFFF;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        margin-top: 12px;
+        width: 180px;
+    }
+    .tt-suggestion {
+        font-size: 12px;
+        line-height: 24px;
+        //padding: 3px 20px;
+    }
+    .tt-suggestion.tt-is-under-cursor {
+        background-color: #eee;
+        color: #FFFFFF;
+    }
+ 
+ </style>
+  
+  <div id="the-basics">
+    <input class="typeahead" type="text" placeholder="States of USA"/>
+  </div>
+
+ <script> 
+          var substringMatcher = function(strs) {
+          return function findMatches(q, cb) {
+            var matches, substrRegex;
+         
+            
+            matches = [];
+         
+           
+            substrRegex = new RegExp(q, 'i');
+         
+           
+            $.each(strs, function(i, str) {
+              if (substrRegex.test(str)) {
+              
+                matches.push({ value: str });
+              }
+            });
+         
+            cb(matches);
+          };
+        };
+        
+          var s= [];
+           <apex:repeat value="{!lstbank}" var="c">
+              //alert('{!c.acfBank_Name__c}');
+                 s.push("{!JSENCODE(c.acfBank_Name__c)}");
+              </apex:repeat>
+         // alert($('.typeahead').attr('class'));
+          $('#the-basics .typeahead').typeahead({
+              hint: true,
+              highlight: true,
+              minLength: 1
+            },
+            {
+              name: 'states',
+              displayKey: 'value',
+              source: substringMatcher(s)
+            });
+    </script>
+</apex:component>

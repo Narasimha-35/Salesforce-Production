@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Intercom</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <namespacePrefix>Intercom99</namespacePrefix>
+    <types>
+        <members>IntercomAccount</members>
+        <members>IntercomContact</members>
+        <members>IntercomLead</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>IntercomAPISettings__c.intercom_app_api_key__c</members>
+        <members>IntercomAPISettings__c.intercom_app_id__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>IntercomAPISettings__c</members>
+        <name>CustomObject</name>
+    </types>
+    <version>30.0</version>
+</Package>

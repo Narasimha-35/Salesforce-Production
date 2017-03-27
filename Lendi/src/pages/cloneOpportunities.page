@@ -1,0 +1,290 @@
+<apex:page standardController="Opportunity" extensions="acfCreateNewOpportunity" docType="html-5.0" >
+  <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>  
+ <style>
+.pac-container {
+    background-color: #FFF;
+    z-index: 20;
+    position: fixed;
+    display: inline-block;
+    float: left;
+}
+.modal{
+    z-index: 20;   
+}
+.modal-backdrop{
+    z-index: 10;        
+}Ã¢ÂÂ
+</style>
+ <style>
+  .Processing
+     {
+         position: fixed;
+         background: url('/img/loading32.gif');
+         background-repeat: no-repeat;
+         background-position: center;
+         width: 100%;
+         height: 100%;
+         z-index: 10004;
+         left: 0%;
+         top: 0%;
+     }
+ </style>
+ <script>
+ function preloginQues()
+ {
+     PreLoginQuestion();
+ }
+ </script>
+    <apex:form title="Click Loans" style="font-size:15px;" id="frm">  
+      <apex:actionFunction action="{!PreLoginQuestion}" name="PreLoginQuestion" reRender="oppanel,pgmsg" status="statusProcessing"/>
+       <apex:actionFunction action="{!getNewAccountDetails}" name="getNewAccountDetails" reRender="oppanel,pgmsg" status="statusProcessing"/>
+       <apex:actionStatus id="statusProcessing" startStyleClass="Processing"/>
+        <apex:pageBlock >
+         <apex:pageMessages id="pgmsg"></apex:pageMessages>
+            <apex:pageblockSection >
+                
+                <apex:selectList value="{!selectedLoanType}" size="1" label="Please select Loan Type" onchange="preloginQues();">
+                    <apex:selectOptions value="{!LoanType}"/>
+                </apex:selectList>   
+            </apex:pageblockSection>   
+        </apex:pageBlock>
+        <apex:outputPanel id="oppanel">
+        <apex:pageBlock id="pgBlockId" rendered="{!ShowPageBlock}" >
+                <apex:pageBlockButtons >   <apex:commandButton value="Create New Opportunity" action="{!CreateNewOpportunnit}"  reRender="pgmsg,pgBlockId"   status="statusProcessing" /></apex:pageBlockButtons>
+ <apex:pageBlockSection columns="1" id="pbs" title="Account" > 
+        <apex:inputField value="{!oppObj.accountid}"   onchange="getNewAccountDetails();"/>
+ </apex:pageBlockSection>       
+          
+        
+        
+        
+         <apex:repeat value="{!lstWrapperQuestion}" var="ques1" id="rptId">
+        <center><span id="error" style="color: Red; display: none">* Input digits (0 - 9)</span></center>
+         <apex:pageBlockSection columns="2" id="pbs" title="Pre login Question" >    
+            <apex:repeat value="{!ques1.lstRelatedQuestion}" var="ques" id="rptId">
+            <apex:outputtext value="{!ques.objWrapQuestion.acf_Question__c}"/>  
+           <apex:outputPanel id="preloginPicklist" rendered="{!if(OR(ques.objWrapQuestion.acf_Type__c == 'Picklist',ques.objWrapQuestion.acf_Type__c == 'RadioButton',ques.objWrapQuestion.acf_Type__c == 'Checkbox',ques.objWrapQuestion.acf_Type__c == 'Button'),true,false)}">                               
+                      <apex:selectList value="{!ques.strWrapAnswer}" multiselect="false" size="1"> 
+                            <apex:selectOption itemValue="None" itemLabel="--None--"></apex:selectOption>                                             
+                            <apex:selectOptions value="{!ques.lstSelectOpt}"></apex:selectOptions>
+                      </apex:selectList>          
+           </apex:outputPanel> 
+           <apex:outputPanel id="preloginText" rendered="{!if(OR(ques.objWrapQuestion.acf_Type__c == 'Number',ques.objWrapQuestion.acf_Type__c == 'Currency',ques.objWrapQuestion.acf_Type__c == 'Percent'),true,false)}"> 
+                 <apex:input id="textId3" onkeypress="return IsNumeric(event);" value="{!ques.strWrapAnswer}" type="{!if(ques.objWrapQuestion.acf_Type__c == 'Number','tel','text')}">
+                   <script type="text/javascript">
+                     var specialKeys = new Array();
+                     specialKeys.push(8); //Backspace
+                     function IsNumeric(e) 
+                     {
+                        var keyCode = e.which ? e.which : e.keyCode
+                        var ret = ((keyCode >= 46 && keyCode <= 57) || specialKeys.indexOf(keyCode) != -1);
+                        document.getElementById("error").style.display = ret ? "none" : "inline";
+                        return ret;
+                     }
+                    </script>
+                  </apex:input> 
+           </apex:outputPanel>
+           <apex:outputPanel id="preloginText1" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Current_lender__c == false),true,false)}"> 
+                  <apex:inputText id="textId4" value="{!ques.strWrapAnswer}" styleClass="requiredBlock {!if(ques.objWrapQuestion.acf_Postal_Code__c == true,'addresspicker_map','')}">
+                  </apex:inputText>
+                  <div class="clsAddressList"></div>
+           </apex:outputPanel> 
+           
+           <apex:outputPanel id="preloginTextCurrnetLender" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Current_lender__c == true),true,false)}">                                       
+               <apex:selectList value="{!ques.strWrapAnswer}" multiselect="false" size="1" styleClass="requiredBlock">
+                   <apex:selectOptions value="{!BankNames}"></apex:selectOptions>
+               </apex:selectList>              
+           </apex:outputPanel>
+          </apex:repeat>
+         <script>
+                function loadMyScript() {
+                  var script = document.createElement('script');
+                  script.type = "text/javascript";
+                  script.src = "https://code.jquery.com/jquery-latest.min.js";
+                  document.body.appendChild(script);
+                }
+                
+                window.onload = loadMyScript;
+           </script> 
+               
+           <c:googlAPIComponent ></c:googlAPIComponent>
+                      
+       <apex:pageBlockSection id="applicantdata" title="Please select checkbox to copy applicant data" columns="2"> 
+           <apex:pageBlockTable value="{!ques1.lstWrapperApplicant}" var="applicant">
+           <apex:column >
+           <apex:inputCheckbox value="{!applicant.SelectedApplicant}"/>
+
+           
+            </apex:column>
+            <apex:column >
+            <apex:facet name="header">Applicant Name </apex:facet>
+
+            <apex:outputText value="{!applicant.objWrapApplicant.acf_Applicant_Name__c}"></apex:outputText>
+             
+            
+                
+             </apex:column>
+             <apex:column >
+             <apex:pageBlockSection title="Applicant Details" id="Sec1">
+             <script>                   twistSection(document.getElementById('img_{!$Component.Sec1}')); 
+                </script>
+                    
+                 <apex:outputField value="{!applicant.objWrapApplicant.Applicant_Email__c}"/>
+                 <br/>
+               
+                 <apex:outputField value="{!applicant.objWrapApplicant.Applicant_Phone__c}"/>
+                 <br/>
+                
+                 <apex:outputField value="{!applicant.objWrapApplicant.clickApp_1_Monthly_Expenses__c}"/>
+                 <br/>
+                 
+                 <apex:outputField value="{!applicant.objWrapApplicant.clickMarried_To__c}"/>
+                 <br/>
+               
+                 <apex:outputField value="{!applicant.objWrapApplicant.click_Applicant_Number__c}"/>
+                 <br/>
+               
+                 <apex:outputField value="{!applicant.objWrapApplicant.Current_Role__c}"/>
+                 <br/>
+                 
+                 <apex:outputField value="{!applicant.objWrapApplicant.ACf1_Current_employer_Start_Date__c}"/>
+                  <br/>
+                
+                 <apex:outputField value="{!applicant.objWrapApplicant.ACF1_Previous_Employer_Name0__c}"/>
+                 
+                  <br/>
+              
+                 <apex:outputField value="{!applicant.objWrapApplicant.ACF1_Previous_Employer_Name0__c}"/>
+                 
+            
+             
+            </apex:pageBlockSection>
+                
+             </apex:column>
+           <apex:column >
+           <apex:pageBlockSection title="Income and Expance Details" id="Sec2">
+           <script>                   twistSection(document.getElementById('img_{!$Component.Sec2}')); 
+                </script>
+                        <apex:dataTable value="{!applicant.lstIe}" var="income">
+                            <apex:column >
+                                <apex:inputCheckbox value="{!income.SelectedIE}"/>
+                            </apex:column>
+                            <apex:column >
+                                <apex:outputText value="{!income.objWrapIncomeExpense.Name}"/>
+                            </apex:column>
+                            <apex:column >
+                                <apex:pageBlockSection title="Income And Expenses">
+                                     
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.Category__c}"/>
+                                         <br/> 
+                                         
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.acfDetails__c}"/>
+                                         <br/> 
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.Amount__c}"/>
+                                         <br/>
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.Applicant__c}"/>
+                                         <br/> 
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.Asset_And_Liability__c}"/>
+                                         <br/>
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.Asset_And_Liability__c}"/>
+                                         <br/> 
+                                          
+                                         
+                                          
+                                </apex:pageBlockSection>
+                               
+                            </apex:column>
+                        
+                        </apex:dataTable>
+                </apex:pageBlockSection>
+                </apex:column>
+           </apex:pageBlockTable>
+           
+           
+          
+            
+       </apex:pageBlockSection> 
+       <apex:pageBlockSection Title="Please select checkbox to copy asset and liability data" >
+        <apex:pageBlockTable value="{!ques1.lstWrapperAssetAndLiability}" var="Asset">
+           <apex:column >
+           <apex:inputCheckbox value="{!Asset.SelectedAl}"/>
+
+           
+            </apex:column>
+            <apex:column >
+            <apex:facet name="header"> Name </apex:facet>
+
+            <apex:outputText value="{!Asset.objWrapAl.name}"></apex:outputText>
+             
+            
+                
+             </apex:column>
+             <apex:column >
+             <apex:pageBlockSection title="A&L Details"  id="Sec3">
+            <script>                   twistSection(document.getElementById('img_{!$Component.Sec3}')); 
+                </script>
+                <apex:outputText value="{!Asset.objWrapAl.Current_Balance__c}"></apex:outputText>  
+                 <br/>
+                <apex:outputText value="{!Asset.objWrapAl.Limit__c}"></apex:outputText>  
+                 <br/>
+                 <apex:outputText value="{!Asset.objWrapAl.Repayments__c}"></apex:outputText>  
+                 <br/>
+                  <apex:outputText value="{!Asset.objWrapAl.Repayment_Frequency__c}"></apex:outputText>  
+                 <br/>
+                                
+                 
+            
+             
+            </apex:pageBlockSection>
+                
+             </apex:column>
+           <apex:column >
+           <apex:pageBlockSection title="Income and Expance Details" id="Sec4">
+             <script>                   twistSection(document.getElementById('img_{!$Component.Sec4}')); 
+                </script>
+                        <apex:dataTable value="{!Asset.lstIe}" var="income">
+                            <apex:column >
+                                <apex:inputCheckbox value="{!income.SelectedIE}"/>
+                            </apex:column>
+                            <apex:column >
+                                <apex:outputText value="{!income.objWrapIncomeExpense.Name}"/>
+                            </apex:column>
+                            <apex:column >
+                                <apex:pageBlockSection title="Income And Expenses" id="Sec5">
+                                     <script>                   twistSection(document.getElementById('img_{!$Component.Sec5}')); 
+                                      </script>
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.Category__c}"/>
+                                         <br/> 
+                                         
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.acfDetails__c}"/>
+                                         <br/> 
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.Amount__c}"/>
+                                         <br/>
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.Applicant__c}"/>
+                                         <br/> 
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.Asset_And_Liability__c}"/>
+                                         <br/>
+                                          <apex:outputField value="{!income.objWrapIncomeExpense.Asset_And_Liability__c}"/>
+                                         <br/> 
+                                          
+                                         
+                                          
+                                </apex:pageBlockSection>
+                               
+                            </apex:column>
+                        
+                        </apex:dataTable>
+                </apex:pageBlockSection>
+                </apex:column>
+           </apex:pageBlockTable>
+       
+       </apex:pageBlockSection>
+       
+       </apex:pageBlockSection> 
+       </apex:repeat>
+      
+       </apex:pageBlock>
+        </apex:outputPanel>
+</apex:form>
+</apex:page>

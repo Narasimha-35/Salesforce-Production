@@ -1,0 +1,2 @@
+<apex:page StandardController="vhc__Extension__c" extensions="vhc.Ctrl04ExtensionCJ" action="{!Redirect}">
+</apex:page>

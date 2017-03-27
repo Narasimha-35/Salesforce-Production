@@ -1,0 +1,32 @@
+<apex:page showHeader="false" showChat="true">
+
+<head>
+    <STYLE TYPE="text/css">  
+        body, html {
+            height: 100%;
+            overflow: hidden;
+        }; 
+    </STYLE>
+    <script>
+	var ie11 = navigator.appVersion.indexOf("rv:11.0") > 0;
+	
+	
+	if(!ie11 && !(navigator.appVersion.indexOf("MSIE")>0)){
+    var repaintInt = window.setInterval(function(){window.document.body.style.background='transparent';window.document.body.offsetHeight;setTimeout(function(){window.document.body.style.background=''},0)},100)
+    }
+    </script>
+</head>
+
+<body >
+    <iframe src="/apex/VF01Flash" id="frmCTI"  scrolling="no"   frameborder="0" marginwidth="0" marginheight="0" name="frmCTI" height="0"></iframe>
+    <iframe src="" id="frmmain_id" scrolling="auto" frameborder="0" height="100%" marginwidth="0"  marginheight="0" name="frmmain" width="100%"></iframe>
+
+    <script type="text/javascript">
+        if(location.hash)
+            document.getElementById('frmmain_id').src = decodeURIComponent(location.hash.split('#')[1]||'')||'';
+        else
+            document.getElementById('frmmain_id').src = '/home/home.jsp';
+    </script>
+</body>
+
+</apex:page>

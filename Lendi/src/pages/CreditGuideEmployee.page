@@ -1,0 +1,190 @@
+<apex:page renderAs="pdf" showHeader="false" sidebar="false" controller="CreditProposalDisclosureController" docType="html-5.0">
+   <head>
+      <!-- Stylesheets ---->
+      <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+      <link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+      <apex:stylesheet value="{!$Resource.pdfstylesheet}" />
+   </head>
+   <body>
+      <!-- First Page Header -->
+      <div style="margin-top:50px; margin-bottom:50px;">
+         <c:PDFHeaderFooter type="header" position="left"><img style="margin-top:70px; margin-left:100px; display:inline-block; height:85px; " src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_headerlogo.png')}" alt="WL Refi"/></c:PDFHeaderFooter>
+      </div>
+      <c:PDFHeaderFooter type="footer" position="left">
+         <h6 style="font-family:sans-serif;font-weight:normal;border-top:1px solid #ccc; padding:10px 0px;text-align:left; font-size:14px;">Credit Guide – Australian Credit and Finance </h6>
+      </c:PDFHeaderFooter>
+      <!-- Content -->
+      <div class="pageAfter page-break">
+         <table border="0" cellspacing="0" cellpadding="0" align="center" class="clearfix" style="overflow:hidden; color:#000; font-family:sans-serif; margin-bottom:40px; ">
+            <tbody>
+               <tr>
+                  <td align="center"  valign="top" style="border-top:1px #ccc solid;">
+                     <h1 style="font-size:25px;">CREDIT GUIDE</h1>
+                  </td>
+               </tr>
+               <tr style="margin-bottom:40px;">
+                  <td align="left" valign="top">
+                     <h5 style="font-size:18px; font-weight:600;margin: 0px 0px 10px;">About Us</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        Australian Credit and Finance is the trading name of Auscred Pty Ltd, the parent company of your licensed credit assistance provider, Auscred Services Pty Ltd. This Credit Guide sets out important information about the license holder and the services we provide.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <table width="99%" border="1" cellspacing="0" cellpadding="5" align="center" style="border-collapse: initial; box-shadow:0px; margin:20px 0px;font-size:14px; text-align:left; font-size:14px;  ">
+                        <thead>
+                           <tr>
+                              <th style="font-weight:bold; font-size:14px; width:40%;">License Holder</th>
+                              <th style="font-weight:bold; font-size:14px; width:60%;">{!strAclHolder}</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr >
+                              <td style="border-collapse:collaspe; box-shadow:initial; width:40%;">Address</td>
+                              <td style="border-collapse:collaspe; box-shadow:initial; width:60%;"> {!strAclAddress} </td>
+                           </tr>
+                           <tr >
+                              <td style="width:40%;">Phone</td>
+                              <td style="width:60%;"> {!strBrokerPhone} </td>
+                           </tr>
+                           <tr>
+                              <td style="width:40%;">Email</td>
+                              <td style="width:60%;"> {!strBrokerACLEmail}</td>
+                           </tr>
+                           <tr>
+                              <td style="width:40%;">Australian Credit Licence Number</td>
+                              <td style="width:60%;"> {!strAclLicenceNo} </td>
+                           </tr>
+                           <tr>
+                              <td style="width:40%;">EDR Scheme Name</td>
+                              <td style="width:60%;"> {!strBrokerEDR}</td>
+                           </tr>
+                           <tr>
+                              <td style="width:40%;">EDR Membership No</td>
+                              <td style="width:60%;"> {!BrokerACRMemberNo} </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h5 style="font-size:18px; font-weight: 600;margin: 0px 0px 10px;">What is Credit Assistance?</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">Auscred Services Pty Ltd is licensed to provide credit assistance to you under the National Consumer Credit Protection Act 2009. We are required to provide this Credit Guide to you as soon as practicable after it becomes apparent that we are likely to provide credit assistance to you.  We provide “credit assistance” when we:
+                     <ol start="1" style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; padding:15px 20px;">
+                        <li style="margin:5px 0px;">suggest or assist you to apply for a particular credit contract with a credit provider; or</li>
+                        <li style="margin:5px 0px;">suggest or assist you to apply for an increase to an existing credit contract with a credit provider; or</li>
+                        <li style="margin:5px 0px;">suggest you remain in a particular credit contract with a credit provider.  </li>
+                     </ol>
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+      </div>
+      <div class="pageAfter page-break">
+         <table border="0" cellspacing="0" cellpadding="0" align="center" style="color:#000;font-family:sans-serif;  margin-bottom:40px; ">
+            <tbody>
+               <tr>
+                  <td>
+                     <h5 style="font-size:18px; font-weight: 600;margin: 0px 0px 10px; border-top:1px #ccc solid;"> <br/> Preliminary Assessment </h5>
+                     <h6 style="font-size:14px; font-weight: 600;margin: 0px 0px 0px;">What we will need from you</h6>
+                     <br/>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px; "> 
+                        When we provide you with credit assistance, we must only recommend credit products that are not unsuitable for you. To be able to determine which loan products are not unsuitable, we are required to complete a Preliminary Assessment.  When we make this preliminary assessment, we will ask you about your requirements and objectives, your financial and personal situation and your ability to repay the loan that you are considering. In assessing these factors, we are also required to take reasonable steps to verify some of the information you provide us. This verification may include asking you for copies of documents that demonstrate your financial situation (in some cases we may also need to sight original documents) and contacting third parties to assist in verifying the information that you provide.
+                     </p>
+                     <h6 style="font-size:14px; font-weight: 600;margin: 15px 0px 0px;">Obtaining a copy of your Preliminary Assessment</h6>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;margin-bottom:25px;">
+                        You may request a copy of our Preliminary Assessment, and we must give you a copy of it within 7 days (if the request is within the first 2 years post completion of the document) or within 21 days (if the request is after 2 years but before 7 years after it has been prepared). There is no charge for requesting or receiving a copy of the Preliminary Assessment.         
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h5 style="font-size:18px; font-weight: 600;margin: 0px 0px 10px;">How do our Representatives get paid </h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;margin-bottom:25px;">
+                        We are paid commissions by lenders for introducing customers. The lenders we deal with will usually pay us a commission based on the size of loan and the particular loan product you have selected. We will only be paid this commission if your loan is settled and drawn down. We may also be paid an ongoing commission by your lender based on the outstanding balance of your loan. The commissions that we are paid by your lender are not payable by you (they are paid to us either directly by the lender, or paid to us by our Aggregator). At this stage the amount of fee payable is unascertainable. As part of the application process we will provide you with a Credit Proposal, which will include an estimate of the commission that we will receive from the Lender if you decide to proceed with the application and the loan settles. The Commonwealth Bank is the only lender that pays us a bonus based on the amount of business that we introduce to them.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h5 style="font-size:18px; font-weight: 600;margin: 0px 0px 10px;">Fees and charges that are payable by you in relation to our credit assistance</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;margin-bottom:25px;">
+                        We do not charge a fee for our credit assistance unless a finance application is lodged and approved and you then decide to not proceed. Details of this fee will be set out in a Quote document which we will give you before a finance application is lodged.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h5 style="font-size:18px; font-weight: 600;margin: 0px 0px 10px;">Our Top 6 credit providers</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;margin-bottom:25px;">
+                        We source credit products from a range of banks, lenders and other credit providers.  However, at present, we write the most loans with St George Bank, Westpac, Macquarie Bank, ANZ Bank, Bankwest and ING Direct.
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <br/><br/><br/><br/><br/> 
+      </div>
+      <div class="pageAfter page-break">
+         <table border="0" cellspacing="0" cellpadding="0" align="center" style="overflow:hidden; color:#000; font-family:sans-serif; margin-bottom:0px; ">
+            <tbody>
+               <tr>
+                  <td>
+                     <h5 style="font-size:18px; font-weight: 600;margin: 0px 0px 10px; border-top:1px #ccc solid;"><br/> Other people we deal with</h5>
+                     <h6 style="font-size:14px; font-weight: 600;margin: 0px 0px 0px;">Our Aggregator</h6>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        We gain access to the loan products we recommend to you through the services of our Aggregator. In order to gain access to their panel of lenders, our aggregator charges us an annual fee as well as a monthly fee for each of our loan writers.   
+                     </p>
+                     <h6 style="font-size:14px; font-weight: 060;margin: 15px 0px 0px; ">Referrers and Referral fees</h6>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;margin-bottom:25px;">
+                        In some cases, your business may have been referred to us by non-regulated third parties such as real estate agents, accountants, financial planners etc.  Where this is the case and a referral fee is being paid to these parties, the fee will be disclosed in the Credit Proposal document that will be given to you prior to your finance application being lodged.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h5 style="font-size:18px; font-weight: 600;margin: 0px 0px 10px;">Dispute resolution and complaints</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        Whilst we always strive to provide the best possible service, we understand that there may be times where you are not satisfied. If this occurs, and you wish us to do something about it, we have a formal process in place to address your concerns.
+                     </p>
+                     <h6 style="font-size:14px; font-weight: 600;margin: 15px 0px 0px;">Internal Dispute Resolution</h6>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;margin-bottom:25px;">
+                        If you do have a complaint, please contact our Complaints Officer using the details at the start of this document. If you choose to contact us by email, please make sure you include as much information as you can. You should explain the details of your complaint as clearly as you can.  You may do this verbally or in writing. When we receive a complaint, we will attempt to resolve it promptly.
+                     </p>
+                     <h6 style="font-size:14px; font-weight: 600;margin: 15px 0px 0px;">External Dispute Resolution</h6>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;margin-bottom:25px;">
+                        If you are not satisfied with how we have handled your complaint, you may make a formal complaint to our External Dispute Resolution Scheme Provider, the Credit Ombudsman Service Limited. They can be contacted by phone on 1800 138 422 or by visiting their website at www.cosl.com.au.
+                     </p>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <h5 style="font-size:18px; font-weight: 600;margin: 0px 0px 10px;">Things you should know</h5>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;">
+                        We don’t make any promises about the value of any property you finance with us or its future prospects.  You should always rely on your own enquiries. We don’t provide legal or financial advice.  It is important you understand your legal obligations under the loan, and the financial consequences.  If you have any doubts, you should obtain independent legal and financial advice before you enter any loan contract.
+                     </p>
+                     <br/><br/><br/><br/>
+                     <br/>
+                     <br/>
+                     <br/>
+                     <br/>
+                     <h6 style="font-size:14px; font-weight: 600;margin: 15px 0px 0px; border-top:1px #ccc solid;"><br/>Privacy</h6>
+                     <br/>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;margin-bottom:20px;">
+                        We are committed to protecting your privacy. We use the information you provide to assist you with your credit needs. We only provide your information to the companies with whom you choose to deal (and their representatives) unless we are compelled by law. We do not trade, rent or sell your information. If you don’t provide us with full information, we can’t properly advise or assist you. You can check the information we hold about you at any time. For more information about our Privacy Policy, ask us for a copy. For more information on your privacy rights please visit www.privacy.gov.au.
+                     </p>
+                     <h6 style="font-size:14px; font-weight: 600;margin: 15px 0px 0px;">Questions?</h6>
+                     <p style="margin: 0px;font-size: 14px;font-weight: normal;line-height: 18px;margin-bottom:20px;">
+                        If you have any questions about this credit guide or anything else, just ask as we are here to help you.
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </body>
+</apex:page>

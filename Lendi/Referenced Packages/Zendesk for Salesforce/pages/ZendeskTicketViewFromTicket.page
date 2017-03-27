@@ -1,0 +1,3 @@
+<apex:page standardController="Zendesk__Zendesk_Ticket__c" extensions="Zendesk.CtrlZendeskTicketViewFromTicket" action="{!redirectpage}" >
+  <apex:pagemessages />
+</apex:page>

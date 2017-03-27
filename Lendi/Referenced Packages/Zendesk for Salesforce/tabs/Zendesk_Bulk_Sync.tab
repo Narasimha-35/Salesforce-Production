@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <icon>Zendesk/Zendesk_Heart_Badge.png</icon>
+    <label>Zendesk Bulk Sync</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom269: TV Widescreen</motif>
+    <page>ZendeskSyncBulkSync</page>
+</CustomTab>

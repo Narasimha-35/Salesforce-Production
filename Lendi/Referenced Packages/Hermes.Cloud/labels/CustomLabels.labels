@@ -1,0 +1,2765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>ACDStation_Suffix</fullName>
+        <categories>VF04Extension</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ACDStation Suffix</shortDescription>
+        <value>10.0.6.7</value>
+    </labels>
+    <labels>
+        <fullName>ACD_required</fullName>
+        <categories>VF04Extension</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ACD required</shortDescription>
+        <value>Phone number is required.</value>
+    </labels>
+    <labels>
+        <fullName>Action</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Action</shortDescription>
+        <value>Action</value>
+    </labels>
+    <labels>
+        <fullName>Activate_Campaign</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Activate Campaign</shortDescription>
+        <value>The campaign has been successfully activated.</value>
+    </labels>
+    <labels>
+        <fullName>Activate_Campaign_Exception</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Activate Campaign Exception</shortDescription>
+        <value>The action failed on the campaign.</value>
+    </labels>
+    <labels>
+        <fullName>Add_Members</fullName>
+        <categories>VF10</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Add Members</shortDescription>
+        <value>Add Members</value>
+    </labels>
+    <labels>
+        <fullName>Agenda</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Agenda</shortDescription>
+        <value>Agenda</value>
+    </labels>
+    <labels>
+        <fullName>Agent_Description</fullName>
+        <categories>VF03Agent</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Agent Description</shortDescription>
+        <value>Define your call center agent&apos;s rights</value>
+    </labels>
+    <labels>
+        <fullName>Agent_Edit</fullName>
+        <categories>VF03Agent</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Agent Edit</shortDescription>
+        <value>Agent Edit</value>
+    </labels>
+    <labels>
+        <fullName>Agent_Group_Description</fullName>
+        <categories>VF07Group</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Agent Group Description</shortDescription>
+        <value>Create group of agents sharing same skills and settings</value>
+    </labels>
+    <labels>
+        <fullName>Agent_Group_Edit</fullName>
+        <categories>VF07Group</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Agent Group Edit</shortDescription>
+        <value>Agent Group Edit</value>
+    </labels>
+    <labels>
+        <fullName>Agent_Tab</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Agent Tab</shortDescription>
+        <value>Agent</value>
+    </labels>
+    <labels>
+        <fullName>Allowed_Programs</fullName>
+        <categories>VF03Agent</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Allowed Programs</shortDescription>
+        <value>Allowed Programs</value>
+    </labels>
+    <labels>
+        <fullName>Already_Connected_Exception</fullName>
+        <categories>VF06CallFile</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Already Connected Exception</shortDescription>
+        <value>This campaign is already connected to a call file.</value>
+    </labels>
+    <labels>
+        <fullName>Already_assigned_agents</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Already assigned agents</shortDescription>
+        <value>Already assigned agents</value>
+    </labels>
+    <labels>
+        <fullName>Apply_Settings_Failed</fullName>
+        <categories>VF07Group</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Apply Settings Failed</shortDescription>
+        <value>Apply settings failed</value>
+    </labels>
+    <labels>
+        <fullName>Apply_Settings_Success</fullName>
+        <categories>VF07Group</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Apply Settings Success</shortDescription>
+        <value>Apply settings successfull</value>
+    </labels>
+    <labels>
+        <fullName>Assign_Agents</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Assign Agents</shortDescription>
+        <value>Assign Agents</value>
+    </labels>
+    <labels>
+        <fullName>Assign_Agents_To_Campaign</fullName>
+        <categories>VF03</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Assign your agents to campaign</shortDescription>
+        <value>Assign your agents to campaign</value>
+    </labels>
+    <labels>
+        <fullName>Assign_operators</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Assign operators.</shortDescription>
+        <value>Assign operators.</value>
+    </labels>
+    <labels>
+        <fullName>Assigned</fullName>
+        <categories>VF03</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Assigned</shortDescription>
+        <value>Assigned</value>
+    </labels>
+    <labels>
+        <fullName>Auto_Affect_Agents</fullName>
+        <categories>VF24</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Auto Affect Agents</shortDescription>
+        <value>Automatic assignment of agents</value>
+    </labels>
+    <labels>
+        <fullName>Automatic_assignment_for_user_profile</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Automatic assignment for user profile</shortDescription>
+        <value>Automatic assignment for user profile</value>
+    </labels>
+    <labels>
+        <fullName>Average_Rate</fullName>
+        <categories>VF18Competence</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Minimum Level</shortDescription>
+        <value>Minimum Level For</value>
+    </labels>
+    <labels>
+        <fullName>Back</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Back</shortDescription>
+        <value>Back</value>
+    </labels>
+    <labels>
+        <fullName>Back_to_Campaign</fullName>
+        <categories>VF10</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Back to Campaign</shortDescription>
+        <value>Back to Callfile</value>
+    </labels>
+    <labels>
+        <fullName>Back_to_call</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Back to call</shortDescription>
+        <value>Back to call</value>
+    </labels>
+    <labels>
+        <fullName>Batch_Status</fullName>
+        <categories>VF10</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Batch Status</shortDescription>
+        <value>Batch Status</value>
+    </labels>
+    <labels>
+        <fullName>BlackList_Forbidden</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>BlackList_Forbidden</shortDescription>
+        <value>This number is forbidden by manual campaign blacklist.</value>
+    </labels>
+    <labels>
+        <fullName>Blind_Transfer</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Blind Transfer</shortDescription>
+        <value>Blind Transfer</value>
+    </labels>
+    <labels>
+        <fullName>CALL_FAILED</fullName>
+        <categories>DynamicLabels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call Failed</shortDescription>
+        <value>Call failed</value>
+    </labels>
+    <labels>
+        <fullName>CTI_Ready</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ready</shortDescription>
+        <value>Ready</value>
+    </labels>
+    <labels>
+        <fullName>Call</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call</shortDescription>
+        <value>Call</value>
+    </labels>
+    <labels>
+        <fullName>CallFile_Description</fullName>
+        <categories>VF06CallFile</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CallFile Description</shortDescription>
+        <value>Define the list of contacts to call using your Outbound Campaign</value>
+    </labels>
+    <labels>
+        <fullName>CallFile_Edit</fullName>
+        <categories>VF06CallFile</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CallFile Edit</shortDescription>
+        <value>CallFile Edit</value>
+    </labels>
+    <labels>
+        <fullName>CallStatusWarning3</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CallStatusWarning3</shortDescription>
+        <value>&lt;li&gt; 88 : Do Not Call : client number will be added to the DNC List.&lt;/li&gt;
+		            		&lt;li&gt; 90 : Busy : client number will be redialed &lt;/li&gt;
+							&lt;li&gt; 91 : Wrong Number &lt;/li&gt;
+							&lt;li&gt; 92 : No Answer : client number will be redialed&lt;/li&gt; 
+							&lt;li&gt; 93 : Voice Mail: client number will be redialed &lt;/li&gt;
+							&lt;li&gt; 94 : Agent specific call back&lt;/li&gt;
+							&lt;li&gt; 95 : Call back for any agent&lt;/li&gt; 
+							&lt;li&gt; 96 : Unreachable : client number will be redialed&lt;/li&gt; 
+							&lt;li&gt; 97 : transfer&lt;/li&gt;</value>
+    </labels>
+    <labels>
+        <fullName>Call_File_Information</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call File Information</shortDescription>
+        <value>Call File Information</value>
+    </labels>
+    <labels>
+        <fullName>Call_File_Recycle</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call File Recycle</shortDescription>
+        <value>Call File Recycle</value>
+    </labels>
+    <labels>
+        <fullName>Call_File_Synchronisation</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call File Synchronisation</shortDescription>
+        <value>Call File Synchronization</value>
+    </labels>
+    <labels>
+        <fullName>Call_Not_Processed</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call Not Processed</shortDescription>
+        <value>Call Not Processed</value>
+    </labels>
+    <labels>
+        <fullName>Call_Not_Processed_Help</fullName>
+        <categories>VF06CallFileInfo</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call Not Processed Help</shortDescription>
+        <value>Number of call files to process</value>
+    </labels>
+    <labels>
+        <fullName>Call_Status</fullName>
+        <categories>VF05CallStatusItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call Status</shortDescription>
+        <value>Call Status</value>
+    </labels>
+    <labels>
+        <fullName>Call_Status_CTI</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call Status</shortDescription>
+        <value>Call Status</value>
+    </labels>
+    <labels>
+        <fullName>Call_Status_Item_Description</fullName>
+        <categories>VF05CallStatusItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call Status Item Description</shortDescription>
+        <value>Define your call qualification categories</value>
+    </labels>
+    <labels>
+        <fullName>Call_Status_Item_Edit</fullName>
+        <categories>VF05CallStatusItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call Status Item Edit</shortDescription>
+        <value>Call Status Item Edit</value>
+    </labels>
+    <labels>
+        <fullName>Call_Status_Sub_Item_Description</fullName>
+        <categories>VF05CallStatusSubItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call Status Sub Item Description</shortDescription>
+        <value>Define your call qualification subcategories</value>
+    </labels>
+    <labels>
+        <fullName>Call_Status_Sub_Item_Edit</fullName>
+        <categories>VF05CallStatusSubItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call Status Sub Item Edit</shortDescription>
+        <value>Call Status Sub Item Edit</value>
+    </labels>
+    <labels>
+        <fullName>Call_Text</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call Text</shortDescription>
+        <value>Call</value>
+    </labels>
+    <labels>
+        <fullName>Call_back_global</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call back (global)</shortDescription>
+        <value>Call Back (Global)</value>
+    </labels>
+    <labels>
+        <fullName>Call_back_global_help</fullName>
+        <categories>VF06CallFileInfo</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call back global help</shortDescription>
+        <value>Number of call back scheduled by agent after a call</value>
+    </labels>
+    <labels>
+        <fullName>Call_back_personal</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call back (personal)</shortDescription>
+        <value>Call Back (Personal)</value>
+    </labels>
+    <labels>
+        <fullName>Call_back_personal_help</fullName>
+        <categories>VF06CallFileInfo</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call back personal help</shortDescription>
+        <value>Number of call back for a particular agent</value>
+    </labels>
+    <labels>
+        <fullName>Call_completed</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call completed</shortDescription>
+        <value>Call Completed</value>
+    </labels>
+    <labels>
+        <fullName>Call_tab</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call tab</shortDescription>
+        <value>Call</value>
+    </labels>
+    <labels>
+        <fullName>Call_to_retry</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call to retry</shortDescription>
+        <value>Call to retry</value>
+    </labels>
+    <labels>
+        <fullName>Call_unreachable</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Call unreachable</shortDescription>
+        <value>Call Unreachable</value>
+    </labels>
+    <labels>
+        <fullName>Campaign_Member</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Campaign Member</shortDescription>
+        <value>Campaign Members</value>
+    </labels>
+    <labels>
+        <fullName>Cancel</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Cancel</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>Cancel_search</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Cancel search</shortDescription>
+        <value>Cancel search</value>
+    </labels>
+    <labels>
+        <fullName>Cannot_Clone_Manual_Campaign</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Cannot Clone Manual Campaign</shortDescription>
+        <value>A manual campaign can not be cloned</value>
+    </labels>
+    <labels>
+        <fullName>Check_Batch_Status</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Check Batch Status</shortDescription>
+        <value>Check Batch Status</value>
+    </labels>
+    <labels>
+        <fullName>Choose_a_campaign_name</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Choose a campaign name</shortDescription>
+        <value>Choose a campaign name</value>
+    </labels>
+    <labels>
+        <fullName>Closed</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Closed</shortDescription>
+        <value>Closed</value>
+    </labels>
+    <labels>
+        <fullName>CompanyName_Alphanumeric</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CompanyName_Alphanumeric</shortDescription>
+        <value>Company name needs to be a combination of alphabetic and numeric characters.</value>
+    </labels>
+    <labels>
+        <fullName>Competence_Description</fullName>
+        <categories>VF18Competence</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Skill Description</shortDescription>
+        <value>Define requested levels of knowledge per activity</value>
+    </labels>
+    <labels>
+        <fullName>Competence_Edit</fullName>
+        <categories>VF18Competence</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Skill Edit</shortDescription>
+        <value>Skill Edit</value>
+    </labels>
+    <labels>
+        <fullName>Competence_Type</fullName>
+        <categories>VF18Competence</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Skill Type</shortDescription>
+        <value>Add a Skill Type</value>
+    </labels>
+    <labels>
+        <fullName>Conditions</fullName>
+        <categories>VF20IncomingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Conditions</shortDescription>
+        <value>Conditions</value>
+    </labels>
+    <labels>
+        <fullName>Conference</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Conference</shortDescription>
+        <value>Conference</value>
+    </labels>
+    <labels>
+        <fullName>ConfigureCallFile</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Configure the callfile</shortDescription>
+        <value>Configure the callfile</value>
+    </labels>
+    <labels>
+        <fullName>ConfirmCampaignDelete</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Are you sure to delete this campaign ?</shortDescription>
+        <value>Are you sure to delete this campaign ?</value>
+    </labels>
+    <labels>
+        <fullName>Connecting</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Connecting</shortDescription>
+        <value>Connecting</value>
+    </labels>
+    <labels>
+        <fullName>Consultant</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Consultant</shortDescription>
+        <value>Consultant</value>
+    </labels>
+    <labels>
+        <fullName>Create</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Create</shortDescription>
+        <value>Create</value>
+    </labels>
+    <labels>
+        <fullName>Create_your_inbound_campaign_in_2_steps</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Create your inbound campaign in a few steps!</shortDescription>
+        <value>Create your inbound campaign in a few simple steps!</value>
+    </labels>
+    <labels>
+        <fullName>Create_your_outbound_campaign_in_2_steps</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Create your outbound campaign in a few simple steps!</shortDescription>
+        <value>Create your outbound campaign in a few simple steps!</value>
+    </labels>
+    <labels>
+        <fullName>Customer_Management</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Customer Management</shortDescription>
+        <value>Customer Management</value>
+    </labels>
+    <labels>
+        <fullName>DID_Country</fullName>
+        <categories>VF24</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DID Country</shortDescription>
+        <value>Country receiving calls</value>
+    </labels>
+    <labels>
+        <fullName>DNC_ApplyToCallFile</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DNC_ApplyToCallFile</shortDescription>
+        <value>Apply to exisiting CallFile</value>
+    </labels>
+    <labels>
+        <fullName>DNC_DNCListInfo</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DNC_DNCListInfo</shortDescription>
+        <value>DNC List Informations</value>
+    </labels>
+    <labels>
+        <fullName>DNC_DNCListManagement</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DNC_DNCListManagement</shortDescription>
+        <value>DNC List Management</value>
+    </labels>
+    <labels>
+        <fullName>DNC_Import</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DNC_Import</shortDescription>
+        <value>Import</value>
+    </labels>
+    <labels>
+        <fullName>DNC_LastApplicationDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DNC_LastApplicationDate</shortDescription>
+        <value>Last Application Date</value>
+    </labels>
+    <labels>
+        <fullName>DNC_LastUpdate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DNC_LastUpdate</shortDescription>
+        <value>Last update</value>
+    </labels>
+    <labels>
+        <fullName>DNC_NbOfItems</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DNC_NbOfItems</shortDescription>
+        <value>Number of Items</value>
+    </labels>
+    <labels>
+        <fullName>DNC_Reset_DNCList</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DNC_Reset_DNCList</shortDescription>
+        <value>Reset DNC List</value>
+    </labels>
+    <labels>
+        <fullName>Deactivate_Campaign</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Deactivate Campaign</shortDescription>
+        <value>The campaign has been successfully deactivated.</value>
+    </labels>
+    <labels>
+        <fullName>Delete</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Delete</shortDescription>
+        <value>Delete</value>
+    </labels>
+    <labels>
+        <fullName>Delete_Active_Campaign_Exception</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Delete_Active_Campaign_Exception</shortDescription>
+        <value>Please deactivate this campaign before delete action.</value>
+    </labels>
+    <labels>
+        <fullName>Delete_All</fullName>
+        <categories>VF10</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Delete All</shortDescription>
+        <value>Delete All</value>
+    </labels>
+    <labels>
+        <fullName>Delete_ManualCamp_Exception</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Delete ManualCamp Exception</shortDescription>
+        <value>A manual campaign  can not be deleted</value>
+    </labels>
+    <labels>
+        <fullName>Destination_number_must_have_value</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Destination number must have value</shortDescription>
+        <value>Destination Number For External Routing: You must enter a value</value>
+    </labels>
+    <labels>
+        <fullName>Dialling</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Dialling</shortDescription>
+        <value>Dialling</value>
+    </labels>
+    <labels>
+        <fullName>Disable_Popup_Blocker</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Disable_Popup_Blocker</shortDescription>
+        <value>Please disable your pop-up blocker and try again.</value>
+    </labels>
+    <labels>
+        <fullName>Display_existing_campaigns</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Display existing campaigns</shortDescription>
+        <value>Display existing campaigns</value>
+    </labels>
+    <labels>
+        <fullName>Don_t_call_callback_rules</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Don&apos;t call (callback rules)</shortDescription>
+        <value>Don&apos;t call (callback rules)</value>
+    </labels>
+    <labels>
+        <fullName>Dual_call</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Dual call</shortDescription>
+        <value>Dual call</value>
+    </labels>
+    <labels>
+        <fullName>EasyInboundCreationSuccess</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Congratulations</shortDescription>
+        <value>Congratulations ! You have just created the campaign {0}, {1} agents are assigned to it. The phone number for this campaign is {2}</value>
+    </labels>
+    <labels>
+        <fullName>EasyOutboundCreationSuccess</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Congratulations</shortDescription>
+        <value>Congratulations ! You have just created the campaign {0}, {1} agents are assigned to it.</value>
+    </labels>
+    <labels>
+        <fullName>Easy_Inbound_Campaign_Creation</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Easy Inbound Campaign Creation</shortDescription>
+        <value>Easy Inbound Campaign Creation</value>
+    </labels>
+    <labels>
+        <fullName>Easy_Outbound_Campaign_Creation</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Easy Outbound Campaign Creation</shortDescription>
+        <value>Easy Outbound Campaign Creation</value>
+    </labels>
+    <labels>
+        <fullName>Edit_in_advanced_mode</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Edit in advanced mode</shortDescription>
+        <value>Edit in advanced mode</value>
+    </labels>
+    <labels>
+        <fullName>End</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>End</shortDescription>
+        <value>End</value>
+    </labels>
+    <labels>
+        <fullName>End_Text</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>End Text</shortDescription>
+        <value>End</value>
+    </labels>
+    <labels>
+        <fullName>Error_No_Agent</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error No Agent</shortDescription>
+        <value>CTI service is not enabled, because no Hermes Cloud agent is defined for your Salesforce user.</value>
+    </labels>
+    <labels>
+        <fullName>Error_No_flash</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error No flash</shortDescription>
+        <value>To enable CTI toolbar, please click on CTI tab</value>
+    </labels>
+    <labels>
+        <fullName>Exchange</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Exchange</shortDescription>
+        <value>Exchange</value>
+    </labels>
+    <labels>
+        <fullName>Existing_Profile_Group_Name</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Existing Profile Group Name</shortDescription>
+        <value>Another Skill Group have already same name.</value>
+    </labels>
+    <labels>
+        <fullName>Extension</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Extension</shortDescription>
+        <value>Extend Wrapup</value>
+    </labels>
+    <labels>
+        <fullName>Extension_Description</fullName>
+        <categories>VF04Extension</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Extension Description</shortDescription>
+        <value>Define agent&apos;s phone number and station ID</value>
+    </labels>
+    <labels>
+        <fullName>Extension_Edit</fullName>
+        <categories>VF04Extension</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Extension Edit</shortDescription>
+        <value>Extension Edit</value>
+    </labels>
+    <labels>
+        <fullName>Extension_over_number</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Extension over number</shortDescription>
+        <value>The maximum number for Station Name is 2147483647</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Add_Row</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Add Row</shortDescription>
+        <value>Add row</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Advanced</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Advanced</shortDescription>
+        <value>Advanced option</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Advanced_Conditions</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Advanced Conditions</shortDescription>
+        <value>Filter logic</value>
+    </labels>
+    <labels>
+        <fullName>Filter_And</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter And</shortDescription>
+        <value>And</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Apply</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Apply</shortDescription>
+        <value>Apply Filter</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Button</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Button</shortDescription>
+        <value>Search</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Button_Delete</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Button Delete</shortDescription>
+        <value>Delete Filter</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Button_Load</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Load Filter</shortDescription>
+        <value>Load Filter</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Button_Save</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Save Filter button</shortDescription>
+        <value>Save Filter</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Clear</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Clear</shortDescription>
+        <value>Clear Filter</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Clear_Advanced</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Clear Advanced</shortDescription>
+        <value>Remove advanced option</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Delete_Dialog_Title</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Delete Dialog Title</shortDescription>
+        <value>Delete Filter</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Field_label</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Field label</shortDescription>
+        <value>Field</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Load_Dialog_Title</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Load Dialog Title</shortDescription>
+        <value>Load Filter</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Name</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Name</shortDescription>
+        <value>Filter Name</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Name_Mandatory</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Name Mandatory</shortDescription>
+        <value>Filter name is mandatory.</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Operator_label</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter_Operator_label</shortDescription>
+        <value>Operator</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Public</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Public</shortDescription>
+        <value>Public</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Remove</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Remove</shortDescription>
+        <value>Remove</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Remove_Row</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Remove Row</shortDescription>
+        <value>Remove row</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Save_Dialog_Title</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Save Dialog Title</shortDescription>
+        <value>Save Filter</value>
+    </labels>
+    <labels>
+        <fullName>Filter_Value_label</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Value label</shortDescription>
+        <value>Value</value>
+    </labels>
+    <labels>
+        <fullName>Filter_applied</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter applied</shortDescription>
+        <value>Filter applied &amp; page refreshed</value>
+    </labels>
+    <labels>
+        <fullName>Filter_deleted</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter deleted</shortDescription>
+        <value>Filter deleted</value>
+    </labels>
+    <labels>
+        <fullName>Filter_loaded</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter loaded</shortDescription>
+        <value>Filter loaded</value>
+    </labels>
+    <labels>
+        <fullName>Filter_saved</fullName>
+        <categories>Filter, Call File</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter saved</shortDescription>
+        <value>Filter saved</value>
+    </labels>
+    <labels>
+        <fullName>First_Page</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>First Page</shortDescription>
+        <value>First Page</value>
+    </labels>
+    <labels>
+        <fullName>Free_number_information</fullName>
+        <categories>VF04Extension</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Free number information</shortDescription>
+        <value>Free Number Information</value>
+    </labels>
+    <labels>
+        <fullName>Friday</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Friday</shortDescription>
+        <value>Friday</value>
+    </labels>
+    <labels>
+        <fullName>General</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>General</shortDescription>
+        <value>General</value>
+    </labels>
+    <labels>
+        <fullName>Hide_existing_campaigns</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Hide existing campaigns</shortDescription>
+        <value>Hide existing campaigns</value>
+    </labels>
+    <labels>
+        <fullName>Hold</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Hold</shortDescription>
+        <value>Hold</value>
+    </labels>
+    <labels>
+        <fullName>Holiday_Description</fullName>
+        <categories>VF15Holiday</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Holiday Description</shortDescription>
+        <value>Define the campaign’s closing time and affect it to campaigns</value>
+    </labels>
+    <labels>
+        <fullName>Holiday_Edit</fullName>
+        <categories>VF15Holiday</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Holiday Edit</shortDescription>
+        <value>Holiday Edit</value>
+    </labels>
+    <labels>
+        <fullName>Holiday_Item_Description</fullName>
+        <categories>VF16HolidaysItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Holiday Item Description</shortDescription>
+        <value>Define the campaign’s closing time subcategories</value>
+    </labels>
+    <labels>
+        <fullName>Holiday_Item_Edit</fullName>
+        <categories>VF16HolidaysItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Holiday Item Edit</shortDescription>
+        <value>Holiday Item Edit</value>
+    </labels>
+    <labels>
+        <fullName>ID_provided_is_not_a_valid_campaign_Id</fullName>
+        <categories>VF03</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ID provided is not a valid campaign Id</shortDescription>
+        <value>ID provided is not a valid campaign Id</value>
+    </labels>
+    <labels>
+        <fullName>IVR_disabled</fullName>
+        <categories>ivr</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>IVR_disabled</shortDescription>
+        <value>IVR disabled</value>
+    </labels>
+    <labels>
+        <fullName>IVR_enabled</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>IVR_enabled</shortDescription>
+        <value>IVR enabled</value>
+    </labels>
+    <labels>
+        <fullName>In_progress</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>In progress</shortDescription>
+        <value>In progress</value>
+    </labels>
+    <labels>
+        <fullName>Inbound_Template_Description</fullName>
+        <categories>VF24</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Inbound Template Description</shortDescription>
+        <value>...</value>
+    </labels>
+    <labels>
+        <fullName>Inbound_Template_Page_Title</fullName>
+        <categories>VF24</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Inbound Template Page Title</shortDescription>
+        <value>Inbound template creation</value>
+    </labels>
+    <labels>
+        <fullName>Inbound_Template_Subtitle</fullName>
+        <categories>VF24</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Inbound Template Subtitle</shortDescription>
+        <value>Inbound template creation</value>
+    </labels>
+    <labels>
+        <fullName>Inbound_Template_Title</fullName>
+        <categories>VF24</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Inbound Template Title</shortDescription>
+        <value>New Inbound Template</value>
+    </labels>
+    <labels>
+        <fullName>Incoming_Call</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Inbound Call</shortDescription>
+        <value>Inbound Call</value>
+    </labels>
+    <labels>
+        <fullName>Incoming_Campaign_Description</fullName>
+        <categories>VF20IncomingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Inbound Campaign Description</shortDescription>
+        <value>Define your Inbound Campaign details. An Inbound Campaign is a phone number to which customers call in order to have a phone discussion with a customer service representative</value>
+    </labels>
+    <labels>
+        <fullName>Incoming_Campaign_Edit</fullName>
+        <categories>VF20IncomingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Inbound Campaign Edit</shortDescription>
+        <value>Inbound Campaign Edit</value>
+    </labels>
+    <labels>
+        <fullName>Informations</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Information</shortDescription>
+        <value>Information</value>
+    </labels>
+    <labels>
+        <fullName>Interactive</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Interactive</shortDescription>
+        <value>Interactive</value>
+    </labels>
+    <labels>
+        <fullName>Internal_call</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Internal call</shortDescription>
+        <value>Internal call</value>
+    </labels>
+    <labels>
+        <fullName>Item_in_range</fullName>
+        <categories>VF16HolidayItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Item in range</shortDescription>
+        <value>The new holiday item override the range of another Holiday Item</value>
+    </labels>
+    <labels>
+        <fullName>Job_Items_Processed</fullName>
+        <categories>VF10</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Job Items Processed</shortDescription>
+        <value>Job Items Processed</value>
+    </labels>
+    <labels>
+        <fullName>Last_Page</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Last Page</shortDescription>
+        <value>Last Page</value>
+    </labels>
+    <labels>
+        <fullName>Line_Description</fullName>
+        <categories>VF19Line</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Line Description</shortDescription>
+        <value>Create your agent&apos;s line. The line defines the link between the agents and the lines that they manage</value>
+    </labels>
+    <labels>
+        <fullName>Line_Edit</fullName>
+        <categories>VF19Line</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Line Edit</shortDescription>
+        <value>Line Edit</value>
+    </labels>
+    <labels>
+        <fullName>Login</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Login</shortDescription>
+        <value>Login</value>
+    </labels>
+    <labels>
+        <fullName>Login_text</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Login text</shortDescription>
+        <value>Login</value>
+    </labels>
+    <labels>
+        <fullName>Logout</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Logout</shortDescription>
+        <value>Logout</value>
+    </labels>
+    <labels>
+        <fullName>Logout_Text</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Logout Text</shortDescription>
+        <value>Logout</value>
+    </labels>
+    <labels>
+        <fullName>Manual_Campaign</fullName>
+        <categories>VF02Site</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Manual Campaign</shortDescription>
+        <value>Manual Campaign</value>
+    </labels>
+    <labels>
+        <fullName>Manual_Campaign_Exception</fullName>
+        <categories>VF06CallFile</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Manual Campaign Exception</shortDescription>
+        <value>A Manual Campaign can&apos;t be connected to a Call File</value>
+    </labels>
+    <labels>
+        <fullName>MaxActiveOutboundCampaignNumberReached</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>You have reached the maximum number of active Outbound campaign...</shortDescription>
+        <value>Error: You have reached the maximum number of active Outbound campaign. Please delete/disable some outbound campaigns or contact your administrator to allow you more active outbound campaigns</value>
+    </labels>
+    <labels>
+        <fullName>MaxQueueNumberReached</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>You have reached the maximum number of Queue...</shortDescription>
+        <value>Error: You have reached the maximum number of Queue. Please delete some queues or contact your administrator to allow you more Queues</value>
+    </labels>
+    <labels>
+        <fullName>Maximum_Camp_Activated</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Maximum Camp Activated</shortDescription>
+        <value>ERROR: Maximum number of campaign have been activated</value>
+    </labels>
+    <labels>
+        <fullName>Maximum_OutCamp</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Maximum OutCamp</shortDescription>
+        <value>Maximum number of Out Campaign reach for this agent.</value>
+    </labels>
+    <labels>
+        <fullName>Message</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Message</shortDescription>
+        <value>Message</value>
+    </labels>
+    <labels>
+        <fullName>Monday</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Monday</shortDescription>
+        <value>Monday</value>
+    </labels>
+    <labels>
+        <fullName>Name_already_in_use</fullName>
+        <categories>VF02Site</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Name already in use</shortDescription>
+        <value>This name already exists in our base, please find  another one.</value>
+    </labels>
+    <labels>
+        <fullName>New_Agent</fullName>
+        <categories>VF03Agent</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Agent</shortDescription>
+        <value>New Agent</value>
+    </labels>
+    <labels>
+        <fullName>New_Agent_Group</fullName>
+        <categories>VF07Group</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Agent Group</shortDescription>
+        <value>New Agent Group</value>
+    </labels>
+    <labels>
+        <fullName>New_CallFile</fullName>
+        <categories>VF06CallFile</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New CallFile</shortDescription>
+        <value>New CallFile</value>
+    </labels>
+    <labels>
+        <fullName>New_Call_Status_Item</fullName>
+        <categories>VF05CallStatusItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Call Status Item</shortDescription>
+        <value>New Call Status Item</value>
+    </labels>
+    <labels>
+        <fullName>New_Call_Status_Sub_Item</fullName>
+        <categories>VF05CallStatusSubItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Call Status Sub Item</shortDescription>
+        <value>New Call Status Sub Item</value>
+    </labels>
+    <labels>
+        <fullName>New_Competence</fullName>
+        <categories>VF18Competence</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Skill</shortDescription>
+        <value>New Skill</value>
+    </labels>
+    <labels>
+        <fullName>New_Extension</fullName>
+        <categories>VF04Extension</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Extension</shortDescription>
+        <value>New Extension</value>
+    </labels>
+    <labels>
+        <fullName>New_Holiday</fullName>
+        <categories>VF15Holiday</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Holiday</shortDescription>
+        <value>New Holiday</value>
+    </labels>
+    <labels>
+        <fullName>New_Holiday_Item</fullName>
+        <categories>VF16HolidaysItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Holiday Item</shortDescription>
+        <value>New Holiday Item</value>
+    </labels>
+    <labels>
+        <fullName>New_Incoming_Campaign</fullName>
+        <categories>VF20IncomingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Incoming Campaign</shortDescription>
+        <value>New Incoming Campaign</value>
+    </labels>
+    <labels>
+        <fullName>New_Line</fullName>
+        <categories>VF19Line</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Line</shortDescription>
+        <value>New Line</value>
+    </labels>
+    <labels>
+        <fullName>New_Outcamp</fullName>
+        <categories>VF09OutCampaigns</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Outcamp</shortDescription>
+        <value>New Out Campaigns</value>
+    </labels>
+    <labels>
+        <fullName>New_Outgoing_Campaign</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Outgoing Campaign</shortDescription>
+        <value>New Outgoing Campaign</value>
+    </labels>
+    <labels>
+        <fullName>New_Pause_Code</fullName>
+        <categories>VF11PauseCode</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New_Pause_Code</shortDescription>
+        <value>New Pause Code</value>
+    </labels>
+    <labels>
+        <fullName>New_Profile</fullName>
+        <categories>VF18Profile</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Skill</shortDescription>
+        <value>New Skill</value>
+    </labels>
+    <labels>
+        <fullName>New_Profile_Group</fullName>
+        <categories>VF18ProfileGrp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Skill Group</shortDescription>
+        <value>New Skill Group</value>
+    </labels>
+    <labels>
+        <fullName>New_Proxy</fullName>
+        <categories>VF02Proxy</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Proxy</shortDescription>
+        <value>New Proxy</value>
+    </labels>
+    <labels>
+        <fullName>New_Queue</fullName>
+        <categories>VF08Queue</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Queue</shortDescription>
+        <value>New Queue</value>
+    </labels>
+    <labels>
+        <fullName>New_Service_Hours_Group</fullName>
+        <categories>VF17ServiceHourGroup</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Service Hours Group</shortDescription>
+        <value>New Service Hours Group</value>
+    </labels>
+    <labels>
+        <fullName>New_Site</fullName>
+        <categories>VF02Site</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New_Site</shortDescription>
+        <value>New Customer</value>
+    </labels>
+    <labels>
+        <fullName>New_Status_Group</fullName>
+        <categories>VF13CallStatusGroup</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New Status Group</shortDescription>
+        <value>New Status Group</value>
+    </labels>
+    <labels>
+        <fullName>Next</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Next</shortDescription>
+        <value>Next</value>
+    </labels>
+    <labels>
+        <fullName>No_Available_Conection</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No Available Conection</shortDescription>
+        <value>Error: No available connection for this site</value>
+    </labels>
+    <labels>
+        <fullName>No_Availables_Lines</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No Availables Lines</shortDescription>
+        <value>No available lines for new campaign</value>
+    </labels>
+    <labels>
+        <fullName>No_Availables_Queue</fullName>
+        <categories>Vf08Queue</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No Availables Queue</shortDescription>
+        <value>You have exceeded the limit of queues. You can contact vocalcom to have a new limit</value>
+    </labels>
+    <labels>
+        <fullName>No_Call_Status_Exception_Campaign</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No Call Status Exception Campaign</shortDescription>
+        <value>No call status available for this campaign.</value>
+    </labels>
+    <labels>
+        <fullName>No_Clone_Customer</fullName>
+        <categories>VF02Site</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No Clone Customer</shortDescription>
+        <value>A customer cannot be cloned</value>
+    </labels>
+    <labels>
+        <fullName>No_Create_Customer</fullName>
+        <categories>VF02Site</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No Create Customer</shortDescription>
+        <value>Only one customer can be created on this environment</value>
+    </labels>
+    <labels>
+        <fullName>No_Delete_Customer</fullName>
+        <categories>VF02Site</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No Delete Customer</shortDescription>
+        <value>A customer cannot be deleted.</value>
+    </labels>
+    <labels>
+        <fullName>No_DidException_Campaign</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No DidException Campaign</shortDescription>
+        <value>No DID available for this campaign.</value>
+    </labels>
+    <labels>
+        <fullName>No_IVR_available</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No_IVR_available</shortDescription>
+        <value>No IVR available</value>
+    </labels>
+    <labels>
+        <fullName>No_Out_Campaign_Exception</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No Out Campaign Exception</shortDescription>
+        <value>No available Outbound Campaign</value>
+    </labels>
+    <labels>
+        <fullName>No_Outgoing_Campaign</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No Outgoing Campaign</shortDescription>
+        <value>No Outgoing Campaign connected to this call file</value>
+    </labels>
+    <labels>
+        <fullName>No_Queue_Exception_Line</fullName>
+        <categories>VF19Line</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No Queue Exception Line</shortDescription>
+        <value>No queue available for this line.</value>
+    </labels>
+    <labels>
+        <fullName>None</fullName>
+        <categories>Filter</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>None</shortDescription>
+        <value>None</value>
+    </labels>
+    <labels>
+        <fullName>Not_Connected_To_Callfile</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Not Connected To Callfile</shortDescription>
+        <value>ERROR: The campaign is not connected to any CallFile.</value>
+    </labels>
+    <labels>
+        <fullName>Open_files_manager</fullName>
+        <categories>VF23</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Open files manager</shortDescription>
+        <value>Open files manager</value>
+    </labels>
+    <labels>
+        <fullName>Opening</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Opening</shortDescription>
+        <value>Opening</value>
+    </labels>
+    <labels>
+        <fullName>Opening_Hours</fullName>
+        <categories>VF17ServiceHourGroup</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Opening Hours</shortDescription>
+        <value>Opening Hours</value>
+    </labels>
+    <labels>
+        <fullName>Other_Camp_Same_ID</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Other Camp Same ID</shortDescription>
+        <value>Error: Other campaign have same ID</value>
+    </labels>
+    <labels>
+        <fullName>OutCamp_Already_connected</fullName>
+        <categories>VF09OutCampaigns</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Outbound Campaign Already connected</shortDescription>
+        <value>This agent or agent group is already connected to an Outbound Campaign</value>
+    </labels>
+    <labels>
+        <fullName>Outbound_Template_Description</fullName>
+        <categories>VF25</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Outbound Template Description</shortDescription>
+        <value>...</value>
+    </labels>
+    <labels>
+        <fullName>Outbound_Template_Page_Title</fullName>
+        <categories>VF25</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Outbound Template Page Title</shortDescription>
+        <value>Outbound template creation</value>
+    </labels>
+    <labels>
+        <fullName>Outbound_Template_Subtitle</fullName>
+        <categories>VF25</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Outbound Template Subtitle</shortDescription>
+        <value>Outbound Template Creation</value>
+    </labels>
+    <labels>
+        <fullName>Outbound_Template_Title</fullName>
+        <categories>VF25</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Outbound Template Title</shortDescription>
+        <value>New Outbound Template</value>
+    </labels>
+    <labels>
+        <fullName>Outcamp_Description</fullName>
+        <categories>VF09OutCampaigns</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Outbound Campaign Description</shortDescription>
+        <value>Associate Outbound Campaigns to agents or agent group.</value>
+    </labels>
+    <labels>
+        <fullName>Outcamp_Edit</fullName>
+        <categories>VF09OutCampaigns</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Outbound Campaign Edit</shortDescription>
+        <value>Outbound Campaign Edit</value>
+    </labels>
+    <labels>
+        <fullName>Outgoing_Campaign_Description</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Outbound Campaign Description</shortDescription>
+        <value>Define your Outbound Campaign details. An Outbound Campaign  is linked to a list of clients to contact</value>
+    </labels>
+    <labels>
+        <fullName>Outgoing_Campaign_Edit</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Outbound Campaign Edit</shortDescription>
+        <value>Outbound Campaign Edit</value>
+    </labels>
+    <labels>
+        <fullName>Over_max_Holiday_ItemID</fullName>
+        <categories>VF11PauseCode</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Over max Holiday Item ID</shortDescription>
+        <value>Only 99 Holiday Item can be created</value>
+    </labels>
+    <labels>
+        <fullName>Over_max_ID</fullName>
+        <categories>vVf08Queue</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Over max ID</shortDescription>
+        <value>Only 499 queues can be created on the customer</value>
+    </labels>
+    <labels>
+        <fullName>Over_max_status_code_ID</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Over max status code  ID</shortDescription>
+        <value>The Status Code must be between 0 and 99</value>
+    </labels>
+    <labels>
+        <fullName>Overflow</fullName>
+        <categories>VF20IncomingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Overflow</shortDescription>
+        <value>Overflow</value>
+    </labels>
+    <labels>
+        <fullName>Parameter</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Parameter</shortDescription>
+        <value>Parameter</value>
+    </labels>
+    <labels>
+        <fullName>Pause</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Pause</shortDescription>
+        <value>Pause</value>
+    </labels>
+    <labels>
+        <fullName>Pause_Button</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Pause Button</shortDescription>
+        <value>Set</value>
+    </labels>
+    <labels>
+        <fullName>Pause_Code_Description</fullName>
+        <categories>VF11PauseCode</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Pause Code Description</shortDescription>
+        <value>Define your Agent&apos;s Pause Codes. The agents will select these codes on their CTI frame when taking a break</value>
+    </labels>
+    <labels>
+        <fullName>Pause_Code_Edit</fullName>
+        <categories>VF11PauseCode</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Pause Code Edit</shortDescription>
+        <value>Pause Code Edit</value>
+    </labels>
+    <labels>
+        <fullName>Pers</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Pers</shortDescription>
+        <value>Pers.</value>
+    </labels>
+    <labels>
+        <fullName>Personal</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Personal</shortDescription>
+        <value>Personal</value>
+    </labels>
+    <labels>
+        <fullName>Personal_Data</fullName>
+        <categories>VF03Agent</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Personal Data</shortDescription>
+        <value>Personal Data</value>
+    </labels>
+    <labels>
+        <fullName>Phone_Rights</fullName>
+        <categories>VF03Agent</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Phone Rights</shortDescription>
+        <value>Phone Rights</value>
+    </labels>
+    <labels>
+        <fullName>Phonenumber_to_display_required</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Phonenumber to display required</shortDescription>
+        <value>Phonenumber to display: You must enter a value</value>
+    </labels>
+    <labels>
+        <fullName>PleaseWait</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Please wait...</shortDescription>
+        <value>Please wait...</value>
+    </labels>
+    <labels>
+        <fullName>Please_setup_adapter</fullName>
+        <categories>configure</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Please setup adapter</shortDescription>
+        <value>Please setup Hermes Cloud CTI adapter - &lt;a onclick=&quot;DownloadAndGoToCallCenterSetup();&quot; href=&quot;#&quot;&gt;Do it now&lt;/a&gt;</value>
+    </labels>
+    <labels>
+        <fullName>Previous</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Previous</shortDescription>
+        <value>Previous</value>
+    </labels>
+    <labels>
+        <fullName>Prim</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Prim</shortDescription>
+        <value>Main</value>
+    </labels>
+    <labels>
+        <fullName>Primary</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Primary</shortDescription>
+        <value>Main</value>
+    </labels>
+    <labels>
+        <fullName>Profile_Description</fullName>
+        <categories>VF18Profile</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Skill Description</shortDescription>
+        <value>Define skills subcategories. Subcategories are linked to Skills Groups</value>
+    </labels>
+    <labels>
+        <fullName>Profile_Edit</fullName>
+        <categories>VF18Profile</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Skill Edit</shortDescription>
+        <value>Skill Edit</value>
+    </labels>
+    <labels>
+        <fullName>Profile_Group_Description</fullName>
+        <categories>VF18ProfileGrp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Skill Group Description</shortDescription>
+        <value>Define groups of skills requested per activity</value>
+    </labels>
+    <labels>
+        <fullName>Profile_Group_Edit</fullName>
+        <categories>VF18ProfileGrp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Skill Group Edit</shortDescription>
+        <value>Skill Group Edit</value>
+    </labels>
+    <labels>
+        <fullName>Proxy_Action_Exception</fullName>
+        <categories>Exception</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Proxy Action Exception</shortDescription>
+        <value>No action is permitted on Proxy</value>
+    </labels>
+    <labels>
+        <fullName>Proxy_Description</fullName>
+        <categories>VF02Proxy</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Proxy Description</shortDescription>
+        <value>A CTI instance is automatically created and affected when the company is created. Customer&apos;s firewall has to be opened for the public port and IP mentioned by Vocalcom if you want to use the flash connection mode. (Custom Settings &gt; SoftPhone Settings &gt; Force Flash Mode). Otherwise, a websocket connection will be made to the CTI Proxy (port 443)</value>
+    </labels>
+    <labels>
+        <fullName>Proxy_Edit</fullName>
+        <categories>VF02Proxy</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Proxy Edit</shortDescription>
+        <value>Proxy Edit</value>
+    </labels>
+    <labels>
+        <fullName>Qualification_Button</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Qualification Button</shortDescription>
+        <value>Ok</value>
+    </labels>
+    <labels>
+        <fullName>Qualification_Comment</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Qualification Comment</shortDescription>
+        <value>Qualification Comment</value>
+    </labels>
+    <labels>
+        <fullName>Qualify</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Qualify</shortDescription>
+        <value>Qualify</value>
+    </labels>
+    <labels>
+        <fullName>QueueState</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Queues States</shortDescription>
+        <value>Queues State :</value>
+    </labels>
+    <labels>
+        <fullName>Queue_Description</fullName>
+        <categories>VF08Queue</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Queue Description</shortDescription>
+        <value>Create queues to link your agents  to Outbound or Inbound campaigns</value>
+    </labels>
+    <labels>
+        <fullName>Queue_Edit</fullName>
+        <categories>VF08Queue</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Queue Edit</shortDescription>
+        <value>Queue Edit</value>
+    </labels>
+    <labels>
+        <fullName>Ready</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ready</shortDescription>
+        <value>Ready</value>
+    </labels>
+    <labels>
+        <fullName>Ready_Text</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ready Text</shortDescription>
+        <value>Ready</value>
+    </labels>
+    <labels>
+        <fullName>Recent_Tab</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Recent Tab</shortDescription>
+        <value>Recent</value>
+    </labels>
+    <labels>
+        <fullName>RecordStart</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>RecordStart</shortDescription>
+        <value>Start recording</value>
+    </labels>
+    <labels>
+        <fullName>RecordStop</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>RecordStop</shortDescription>
+        <value>Stop recording</value>
+    </labels>
+    <labels>
+        <fullName>RecordedFiles_Launched</fullName>
+        <categories>VF23</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>RecordedFiles_Launched</shortDescription>
+        <value>Recorded files manager is launched in a new window.</value>
+    </labels>
+    <labels>
+        <fullName>Recorded_Files</fullName>
+        <categories>VF23</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Recorded Files</shortDescription>
+        <value>Recorded Files</value>
+    </labels>
+    <labels>
+        <fullName>Recycle</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Recycle</shortDescription>
+        <value>Recycle</value>
+    </labels>
+    <labels>
+        <fullName>Redial</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Redial</shortDescription>
+        <value>Redial</value>
+    </labels>
+    <labels>
+        <fullName>SIP_Information</fullName>
+        <categories>VF04Extension</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SIP Information</shortDescription>
+        <value>SIP Information</value>
+    </labels>
+    <labels>
+        <fullName>Same_Name_Exist</fullName>
+        <categories>VF04Extension</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Same Name Exist</shortDescription>
+        <value>Another extension with same name already exist</value>
+    </labels>
+    <labels>
+        <fullName>Saturday</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Saturday</shortDescription>
+        <value>Saturday</value>
+    </labels>
+    <labels>
+        <fullName>Save</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Save</shortDescription>
+        <value>Save</value>
+    </labels>
+    <labels>
+        <fullName>Search</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Search</shortDescription>
+        <value>Search</value>
+    </labels>
+    <labels>
+        <fullName>Search_agent</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Search agent</shortDescription>
+        <value>Search agent</value>
+    </labels>
+    <labels>
+        <fullName>Sec</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Sec</shortDescription>
+        <value>Sec.</value>
+    </labels>
+    <labels>
+        <fullName>Secondary</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Secondary</shortDescription>
+        <value>Secondary</value>
+    </labels>
+    <labels>
+        <fullName>Select_a_country_for_DID</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Select a country for DID</shortDescription>
+        <value>Select a country for DID</value>
+    </labels>
+    <labels>
+        <fullName>Select_a_dialing_method</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Select a dialing method</shortDescription>
+        <value>Select a dialing method</value>
+    </labels>
+    <labels>
+        <fullName>Select_a_language_for_welcome_messages</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Select a language for welcome messages</shortDescription>
+        <value>Select a language for welcome messages</value>
+    </labels>
+    <labels>
+        <fullName>Select_wich_number_to_display</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Select wich number to display</shortDescription>
+        <value>Select wich number to display</value>
+    </labels>
+    <labels>
+        <fullName>Service_Hours_Group_Description</fullName>
+        <categories>VF17ServiceHourGroup</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Service Hours Group Description</shortDescription>
+        <value>Define your call center’s opening hours</value>
+    </labels>
+    <labels>
+        <fullName>Service_Hours_Group_Edit</fullName>
+        <categories>VF17ServiceHourGroup</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Service Hours Group Edit</shortDescription>
+        <value>Service Hours Group Edit</value>
+    </labels>
+    <labels>
+        <fullName>Site_Description</fullName>
+        <categories>VF02Site</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Site Description</shortDescription>
+        <value>Define your call center details</value>
+    </labels>
+    <labels>
+        <fullName>Site_Edit</fullName>
+        <categories>VF02Site</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Site Edit</shortDescription>
+        <value>Customer Edit</value>
+    </labels>
+    <labels>
+        <fullName>Station</fullName>
+        <categories>VF21</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Station</shortDescription>
+        <value>Station</value>
+    </labels>
+    <labels>
+        <fullName>StationMandatory</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>StationMandatory</shortDescription>
+        <value>Station number is mandatory.</value>
+    </labels>
+    <labels>
+        <fullName>StationNumeric</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>StationFormat</shortDescription>
+        <value>Invalid Station number format.</value>
+    </labels>
+    <labels>
+        <fullName>Station_number</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Station number</shortDescription>
+        <value>Station number</value>
+    </labels>
+    <labels>
+        <fullName>Status_Code_in_Use</fullName>
+        <categories>VF05CallStatusItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Status Code in Use</shortDescription>
+        <value>Status Code already in use.</value>
+    </labels>
+    <labels>
+        <fullName>Status_Detailed_Reserved</fullName>
+        <categories>VF5CallStatusSubItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Status Detailed Reserved</shortDescription>
+        <value>The Status Detailed 0 is reserved for internal use and can not be negative.</value>
+    </labels>
+    <labels>
+        <fullName>Status_Detailed_already_exist</fullName>
+        <categories>VF5CallStatusItem</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Status Detailed in use</shortDescription>
+        <value>Status Detailed already in use.</value>
+    </labels>
+    <labels>
+        <fullName>Status_Group_Description</fullName>
+        <categories>VF13CallStatusGroup</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Status Group Description</shortDescription>
+        <value>Define your call qualification groups</value>
+    </labels>
+    <labels>
+        <fullName>Status_Group_Edit</fullName>
+        <categories>VF13CallStatusGroup</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Status Group Edit</shortDescription>
+        <value>Status Group Edit</value>
+    </labels>
+    <labels>
+        <fullName>Sunday</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Sunday</shortDescription>
+        <value>Sunday</value>
+    </labels>
+    <labels>
+        <fullName>Supervision_Error</fullName>
+        <categories>VF21Supervision</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Supervision Error</shortDescription>
+        <value>To access supervision, your current Salesforce user needs to be connected to an Hermes Cloud agent and this agent requires &quot;Is Supervisor&quot; allowed program.</value>
+    </labels>
+    <labels>
+        <fullName>Supervision_Launched</fullName>
+        <categories>supervision</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Supervision_Launched</shortDescription>
+        <value>Supervision is launched in a new window.</value>
+    </labels>
+    <labels>
+        <fullName>Sync_finished</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Sync finished.</shortDescription>
+        <value>Sync finished.</value>
+    </labels>
+    <labels>
+        <fullName>System_callbacks</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>System callbacks</shortDescription>
+        <value>System callbacks</value>
+    </labels>
+    <labels>
+        <fullName>Telephony</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Telephony</shortDescription>
+        <value>Telephony</value>
+    </labels>
+    <labels>
+        <fullName>Telephony_Options</fullName>
+        <categories>VF03Agent</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Telephony Options</shortDescription>
+        <value>Telephony Options</value>
+    </labels>
+    <labels>
+        <fullName>Thursday</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Thursday</shortDescription>
+        <value>Thursday</value>
+    </labels>
+    <labels>
+        <fullName>To_Advanced_Mode</fullName>
+        <categories>VF26</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Switch to Advanced Mode</shortDescription>
+        <value>Switch to Advanced Mode</value>
+    </labels>
+    <labels>
+        <fullName>To_call</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>To call</shortDescription>
+        <value>To call</value>
+    </labels>
+    <labels>
+        <fullName>Transfer</fullName>
+        <categories>VF01</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Transfer</shortDescription>
+        <value>Transfer</value>
+    </labels>
+    <labels>
+        <fullName>Tuesday</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Tuesday</shortDescription>
+        <value>Tuesday</value>
+    </labels>
+    <labels>
+        <fullName>Update</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Update</shortDescription>
+        <value>Update</value>
+    </labels>
+    <labels>
+        <fullName>VF17_Error1</fullName>
+        <categories>VF17ServiceHourGroup</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error1</shortDescription>
+        <value>End time cannot be earlier than the start time.</value>
+    </labels>
+    <labels>
+        <fullName>VF17_Error2</fullName>
+        <categories>VF17ServiceHourGroup</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error2</shortDescription>
+        <value>Recovery  time cannot be earlier than the end time.</value>
+    </labels>
+    <labels>
+        <fullName>Wednesday</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Wednesday</shortDescription>
+        <value>Wednesday</value>
+    </labels>
+    <labels>
+        <fullName>Wrong_number</fullName>
+        <categories>VF06</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Wrong number</shortDescription>
+        <value>Wrong number</value>
+    </labels>
+    <labels>
+        <fullName>bulkCreateAgents</fullName>
+        <categories>VF03</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>bulkCreateAgents</shortDescription>
+        <value>Create multiple call center agents</value>
+    </labels>
+    <labels>
+        <fullName>bulkCreateAgentsWarning</fullName>
+        <categories>VF03</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>bulkCreateAgentsWarning</shortDescription>
+        <value>Please select some users.</value>
+    </labels>
+    <labels>
+        <fullName>call_completed_help</fullName>
+        <categories>VF06CallFileInfo</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>call completed help</shortDescription>
+        <value>Number of calls completed</value>
+    </labels>
+    <labels>
+        <fullName>call_to_retry_help</fullName>
+        <categories>VF06CallFileInfo</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>call to retry help</shortDescription>
+        <value>Calls already called with no answer. The number of tries for a call is defined on the campaign.</value>
+    </labels>
+    <labels>
+        <fullName>call_unreachable_help</fullName>
+        <categories>VF06CallFileInfo</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>call unreachable help</shortDescription>
+        <value>Nobody answers the call for each attempt</value>
+    </labels>
+    <labels>
+        <fullName>callfile_cannot_be_deleted</fullName>
+        <categories>VF06CallFile</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>callfile cannot be deleted</shortDescription>
+        <value>Once created a callfile cannot be deleted.</value>
+    </labels>
+    <labels>
+        <fullName>disable</fullName>
+        <categories>VF22OutgoingCampaign</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>disable</shortDescription>
+        <value>disable</value>
+    </labels>
+    <labels>
+        <fullName>dont_callback_rule_help</fullName>
+        <categories>VF06CallFileInfo</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>dont callback rule help</shortDescription>
+        <value>Number of don&apos;t call according to the callback rules. Nb : some specific callback rules on outbound campaign can be asked to Vocalcom</value>
+    </labels>
+    <labels>
+        <fullName>in_progress_help</fullName>
+        <categories>VF06CallFileInfo</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>in progress help</shortDescription>
+        <value>Number of calls in progress</value>
+    </labels>
+    <labels>
+        <fullName>inboundTemplateCreation</fullName>
+        <categories>VF24</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Inbound Template Creation</shortDescription>
+        <value>Inbound Template Creation</value>
+    </labels>
+    <labels>
+        <fullName>of</fullName>
+        <categories>General</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>of</shortDescription>
+        <value>of</value>
+    </labels>
+    <labels>
+        <fullName>outboundTemplateCreation</fullName>
+        <categories>VF25</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Outbound Template Creation</shortDescription>
+        <value>Outbound Template Creation</value>
+    </labels>
+    <labels>
+        <fullName>parameters</fullName>
+        <categories>VF25</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Parameters</shortDescription>
+        <value>Parameters</value>
+    </labels>
+    <labels>
+        <fullName>sipError400</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError400</shortDescription>
+        <value>Redial (#400 - Bad Request)</value>
+    </labels>
+    <labels>
+        <fullName>sipError401</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError401</shortDescription>
+        <value>Redial (#401 -  Unauthorized (Used only by registrars or user agents. Proxies should use proxy authorization 407))</value>
+    </labels>
+    <labels>
+        <fullName>sipError403</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError403</shortDescription>
+        <value>Wrong number (#403 - Forbidden)</value>
+    </labels>
+    <labels>
+        <fullName>sipError404</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError404</shortDescription>
+        <value>Wrong number (#404 - Not Found (User not found))</value>
+    </labels>
+    <labels>
+        <fullName>sipError406</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError406</shortDescription>
+        <value>Redial (#406 - Not Acceptable)</value>
+    </labels>
+    <labels>
+        <fullName>sipError408</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError408</shortDescription>
+        <value>Redial (#408 - Request Timeout (Couldn&apos;t find the user in time))</value>
+    </labels>
+    <labels>
+        <fullName>sipError410</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError410</shortDescription>
+        <value>Wrong Number (#410 - Gone (The user existed once, but is not available here any more.))</value>
+    </labels>
+    <labels>
+        <fullName>sipError433</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError433</shortDescription>
+        <value>Hidden Call (#433 - Anonymity Disallowed)</value>
+    </labels>
+    <labels>
+        <fullName>sipError480</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError480</shortDescription>
+        <value>Wrong number (#480 - Temporarily Unavailable)</value>
+    </labels>
+    <labels>
+        <fullName>sipError484</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError484</shortDescription>
+        <value>Wrong number (#484 - Address Incomplete)</value>
+    </labels>
+    <labels>
+        <fullName>sipError486</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError486</shortDescription>
+        <value>Redial (#486 - Busy Here)</value>
+    </labels>
+    <labels>
+        <fullName>sipError487</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError487</shortDescription>
+        <value>Redial (#487 - Request Terminated)</value>
+    </labels>
+    <labels>
+        <fullName>sipError500</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError500</shortDescription>
+        <value>Redial (#500 - Server Internal Error)</value>
+    </labels>
+    <labels>
+        <fullName>sipError501</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError501</shortDescription>
+        <value>Test Number (#501 - Not Implemented: The SIP request method is not implemented here)</value>
+    </labels>
+    <labels>
+        <fullName>sipError503</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError503</shortDescription>
+        <value>Wrong number (#503 - Service Unavailable)</value>
+    </labels>
+    <labels>
+        <fullName>sipError504</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError504</shortDescription>
+        <value>Redial (#504 - Server Time-out)</value>
+    </labels>
+    <labels>
+        <fullName>sipError600</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError600</shortDescription>
+        <value>Recall later (#600)</value>
+    </labels>
+    <labels>
+        <fullName>sipError603</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError603</shortDescription>
+        <value>Wrong Number (#603)</value>
+    </labels>
+    <labels>
+        <fullName>sipError604</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError604</shortDescription>
+        <value>Wrong Number (#604)</value>
+    </labels>
+    <labels>
+        <fullName>sipError606</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError606</shortDescription>
+        <value>Test Number (#606)</value>
+    </labels>
+    <labels>
+        <fullName>sipError666</fullName>
+        <categories>SipErrors</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>sipError666</shortDescription>
+        <value>Logoff / login (#666)</value>
+    </labels>
+    <labels>
+        <fullName>system_callbacks_help</fullName>
+        <categories>VF06CallFileInfo</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>system callbacks help</shortDescription>
+        <value>Number of call backs automaticaly scheduled by the ACD on no answer</value>
+    </labels>
+    <labels>
+        <fullName>wrong_number_help</fullName>
+        <categories>VF06CallFileInfo</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>wrong number help</shortDescription>
+        <value>Number of wrong numbers detected</value>
+    </labels>
+</CustomLabels>

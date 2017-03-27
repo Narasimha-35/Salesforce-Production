@@ -1,0 +1,290 @@
+<apex:page controller="vhc.Ctrl26TemplateHome" tabStyle="vhc__Customer__c" title="{!CompanyName}" action="{!initCheck}">
+    <apex:includeScript value="{!$Resource.vhc__JQuery}" />
+    <apex:includeScript value="{!$Resource.vhc__jquery_vfFloatingHeaders}" />
+    <apex:includeScript value="/soap/ajax/25.0/connection.js" />
+    <apex:includeScript value="/soap/ajax/10.0/apex.js" />
+
+    <style>
+.tableContainer {
+    max-height: 200px;
+    width: 100%;
+    overflow: auto;
+}
+
+.floatingStyle {
+    position: relative;
+}
+
+.Header {
+    border: 1px solid #d7d7d7;
+    border-radius: 6px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background-color: #dedede;
+    padding: 5px;
+    padding-left: 8px;
+    width: 100%;
+    font-family: arial, segoe-UI, verdana, tahoma;
+    font-size: 11pt;
+    font-weight: bold;
+    color: #151515;
+}
+
+.Content {
+    border: 1px solid #d7d7d7;
+    border-bottom: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background-color: #fff;
+    padding: 5px;
+    padding-left: 8px;
+    width: 100%;
+    font-family: arial, segoe-UI, verdana, tahoma;
+    font-size: 11pt;
+    font-weight: bold;
+    height: 150px;
+    color: #151515;
+}
+
+.Content_Last {
+    border: 1px solid #d7d7d7;
+    border-top: 0px;
+    border-radius: 6px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    background-color: #fff;
+    padding: 5px;
+    padding-left: 8px;
+    width: 100%;
+    color: #151515;
+}
+
+.Small {
+    font-family: microsoft sans serif, verdana, tahoma, segoe-UI, verdana,
+        tahoma;
+    font-size: 8pt;
+    color: #808080;
+    padding: 4px;
+    vertical-align: top;
+    font-weight: normal;
+}
+
+.myTable {
+    padding: 0px;
+    margin: 0px;
+    border: 0px
+}
+
+.tdImg {
+    vertical-align: middle;
+}
+
+#noStylePageBlock {
+    background: none;
+    border: none;
+}
+
+.bPageBlock {
+    background: none;
+    border: none;
+}
+</style>
+
+    <script>
+    $(document).ready(function() {
+        $('.floatingHeaderTable').vfFloatingHeaders();
+    });
+    
+    var toggleCampaigns = function(link,div){
+        if($(div).is(':visible')){
+            $(link).find('span').text('{!$Label.Display_existing_campaigns}');    
+            $(link).find('img').attr('src','{!URLFOR($Resource.vhc__img, '/arrow_right.png')}');
+            
+        } else {
+            $(link).find('span').text('{!$Label.Hide_existing_campaigns}');
+            $(link).find('img').attr('src','{!URLFOR($Resource.vhc__img, '/arrow_down.png')}');
+        }
+        $(div).toggle();
+    }
+    
+    
+    var toggleOutboundCampaignActivation=function(campaignId,checkBox){
+        var waitSpan = $('<span>{!$Label.PleaseWait}</span>');
+        $(checkBox).hide();
+        $(checkBox).parent().append(waitSpan);
+        
+        (function(checkBox,waitSpan){
+            setTimeout( function(){
+                sforce.connection.sessionId = '{!$Api.Session_ID}';
+                var res = sforce.apex.execute("vhc/Ctrl22OutgoingCampaign_ButtonClick","ActivateCampaign2", {customerOid:"{!customer.vhc__Oid__c}", customerID:"{!customer.vhc__Customer_Id__c}", outboundCampaignID:campaignId});
+                
+                
+                var success= (JSON?JSON.parse(res[0].isError):res[0].isError=='true');
+                if(success==true){
+                    window.alert(res[0].result);
+                }               
+                if(success==false){
+                    if($(checkBox).is(':checked')){
+                        $(checkBox).attr("checked",false);
+                    } else {
+                        $(checkBox).attr("checked",true);
+                    }
+                }
+
+                $(checkBox).show();
+                waitSpan.remove();
+            });
+        })(checkBox,waitSpan);        
+        return false;
+
+    }
+    </script>
+
+    <apex:sectionHeader title="{!$Label.Site_Edit}" subtitle="{!CompanyName}" />
+    <apex:pagemessages escape="false" />
+    <apex:form >
+
+        <apex:pageBlock id="noStylePageBlock">
+            <apex:commandButton action="{!toAdvanced}" value="{!$Label.To_Advanced_Mode}" style="float: right; margin:0 0 10px 0" />
+
+            <table class="myTable" style="width: 100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="Header">{!$Label.Easy_Inbound_Campaign_Creation}</td>
+                </tr>
+                <tr>
+                    <td class="Content">
+                    <table class="myTable" style="width: 100%" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td ROWSPAN="3" style="width: 124px; vertical-align: middle;"><img src="{!URLFOR($Resource.img, '/Inbound.png')}" /></td>
+                            <td style="color: #0cbbee; padding-left: 20px;" colspan="3">{!$Label.Create_your_inbound_campaign_in_2_steps}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="color: #606060; padding-left: 70px; width: 350px; vertical-align: middle;">
+                            <ul>
+                                <li>{!$Label.Choose_a_campaign_name}</li>
+                                <li>{!$Label.Select_a_country_for_DID}</li>
+                                <li>{!$Label.Select_a_language_for_welcome_messages}</li>
+                                <li>{!$Label.Assign_operators}</li>
+                            </ul>
+                            </td>
+                            <td style="cursor: pointer; padding-right: 10px; width: 150px; vertical-align: middle;"><apex:outputLink value="{!$Page.vhc__VF24InboundTemplate}">
+                                <img src="{!URLFOR($Resource.img, '/start.png')}" />
+                            </apex:outputLink></td>
+                            <td class="Small"></td>
+                        </tr>
+                    </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="Content_Last"><a href="#" onclick="toggleCampaigns(this,$('#inCampaignsContainer'));return false;"><img style="vertical-align: middle;" src="{!URLFOR($Resource.img, '/arrow_right.png')}" /> <span>{!$Label.Display_existing_campaigns}</span></a>
+                    <div id="inCampaignsContainer" style="display: none;"><apex:pageBlockTable value="{!inCampaigns}" var="ic">
+
+                        <apex:column headerValue="Campaign" style="width:50px;">
+                            <apex:outputLink value="/{!ic.campaign.Id}">{!ic.campaign.Name}</apex:outputLink>
+                        </apex:column>
+                        <apex:column headerValue="Number" style="width:50px;">
+                            <apex:outputfield value="{!ic.campaign.vhc__Complete_Number__c}" />
+                        </apex:column>
+                        <apex:column headerValue="Already assigned agents" style="width:100px;">
+                            <apex:outputText value="{!ic.numberOfAgent}" />
+                        </apex:column>
+                        <apex:column style="width:50px;">
+                            <apex:outputLink value="{!$Page.vhc__VF03Agent_TemplateAffect}" rendered="{!ic.campaign.vhc__Queue__c != null}">{!$Label.Assign_Agents}
+                                    <apex:param name="id" value="{!ic.campaign.Id}" />
+                                <apex:param name="redirectToCompany" value="1" />
+                            </apex:outputLink>
+                        </apex:column>
+                        <apex:column style="width:50px;">
+                            <apex:outputLink value="/{!ic.campaign.Id}/e">{!$Label.Edit_in_advanced_mode}
+                                    <apex:param name="retURL" value="{!ic.campaign.Id}" />
+                            </apex:outputLink>
+                        </apex:column>
+                        <apex:column style="width:50px;">
+                            <apex:commandLink action="{!deleteCampaign}" onclick="return confirm('{!$Label.ConfirmCampaignDelete}');">{!$Label.Delete}
+                                    <apex:param name="clickedCampaignId" value="{!ic.campaign.Id}" />
+                            </apex:commandLink>
+                        </apex:column>
+                    </apex:pageBlockTable></div>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <table class="myTable" style="width: 100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="Header">{!$Label.Easy_Outbound_Campaign_Creation}</td>
+                </tr>
+                <tr>
+                    <td class="Content">
+
+                    <table class="myTable" style="width: 100%" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td ROWSPAN="3" style="width: 124px; vertical-align: middle;"><img src="{!URLFOR($Resource.img, '/Outbound.png')}" /></td>
+                            <td style="color: #0cbbee; padding-left: 20px;" colspan="3">{!$Label.Create_your_outbound_campaign_in_2_steps}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="color: #606060; padding-left: 70px; width: 350px; vertical-align: middle;">
+                            <ul>
+                                <li>{!$Label.Choose_a_campaign_name}</li>
+                                <li>{!$Label.Select_a_dialing_method}</li>
+                                <li>{!$Label.Select_wich_number_to_display}</li>
+                                <li>{!$Label.Assign_operators}</li>
+                            </ul>
+                            </td>
+                            <td style="cursor: pointer; padding-right: 10px; width: 150px; vertical-align: middle;"><apex:outputLink value="{!$Page.vhc__VF25OutboundTemplate}">
+                                <img src="{!URLFOR($Resource.img, '/start.png')}" />
+                            </apex:outputLink></td>
+                            <td class="Small"></td>
+                        </tr>
+                    </table>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="Content_Last"><a href="#" onclick="toggleCampaigns(this,$('#outCampaignsContainer')); return false;"><img style="vertical-align: middle;" src="{!URLFOR($Resource.img, '/arrow_right.png')}" /> <span>{!$Label.Display_existing_campaigns}</span></a>
+                    <div id="outCampaignsContainer" style="display: none;"><apex:pageBlockTable value="{!outCampaigns}" var="ic">
+                        <apex:column headerValue="{!$ObjectType.vhc__Outgoing_Campaign__c.label}" style="width:50px;">
+                            <apex:outputLink value="/{!ic.campaign.Id}">{!ic.campaign.Name}</apex:outputLink>
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.vhc__Campaign__c.label}" style="width:50px;">
+                            <apex:outputLink value="/{!ic.callFile.Id}">{!ic.callFile.Name}</apex:outputLink>
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.vhc__Outgoing_Campaign__c.fields.vhc__MaxChannels__c.label}" style="width:50px;">
+                            <apex:outputText value="{!
+                            IF(ic.campaign.outMode__c=='Predictive',
+                                IF(ic.campaign.MaxChannels__c>0,ic.campaign.MaxChannels__c,'Unlimited'),
+                                'N/A'
+                                )
+                            }" />
+                        </apex:column>
+                        <apex:column headerValue="{!$Label.Already_assigned_agents}" style="width:100px;">
+                            <apex:outputText value="{!ic.numberOfAgent}" />
+                        </apex:column>
+                        <apex:column style="width:50px;">
+                            <apex:outputLink value="{!$Page.vhc__VF03Agent_TemplateAffect}">{!$Label.Assign_Agents}
+                                    <apex:param name="id" value="{!ic.campaign.Id}" />
+                                <apex:param name="redirectToCompany" value="1" />
+                            </apex:outputLink>
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.vhc__Outgoing_Campaign__c.fields.vhc__Active__c.label}" style="width:50px;">
+                            <apex:inputcheckbox value="{!ic.campaign.vhc__Active__c}" onclick="return toggleOutboundCampaignActivation('{!ic.campaign.Id}',this);" />
+                        </apex:column>
+
+                        <apex:column style="width:50px;">
+                            <apex:outputLink value="/{!ic.campaign.Id}/e">{!$Label.Edit_in_advanced_mode}
+                                    <apex:param name="retURL" value="{!ic.campaign.Id}" />
+                            </apex:outputLink>
+                        </apex:column>
+                        <apex:column style="width:50px;">
+                            <apex:commandLink action="{!deleteCampaign}" onclick="return confirm('{!$Label.ConfirmCampaignDelete}');">{!$Label.Delete}
+                                    <apex:param name="clickedCampaignId" value="{!ic.campaign.Id}" />
+                            </apex:commandLink>
+                        </apex:column>
+                    </apex:pageBlockTable></div>
+                    </td>
+                </tr>
+            </table>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,250 @@
+<apex:page controller="rh2.PS_SelectMaster_Controller" standardStylesheets="false" sidebar="false"  applyBodyTag="false" docType="html-5.0" tabStyle="PS_Rollup_Helper__tab">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <head> 
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+  
+        <apex:stylesheet value="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"/>
+        <apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
+        <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/modernizr-1.7.min.js') }"/>
+        <apex:includeScript value="//code.jquery.com/jquery-1.11.3.min.js"/>
+    </head> 
+    
+    <style> 
+        [id$=heading] { padding-top:25px; padding-bottom:5px;}
+        [id$=objectList] {margin-left:auto; margin-right:auto; height:425px;}
+        .breadcrumb {font-size:small;}
+        .fieldContainer {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+        .creationSelect {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .half-width {
+            width: 50% !important; 
+        }
+
+        .right-align {
+            margin-left: 85%;
+        }
+
+        .pad-left {
+            padding-left: 8px;
+        }
+
+        .padded-rows-in-table td {
+            padding-right: 4px;
+            padding-left: 4px;
+        }
+
+        .padded-rows-in-table td:first-child {
+            padding-left: 0px;
+        }
+
+        .padded-rows-in-table td:last-child {
+            padding-right: 0px;
+        }
+    </style>
+
+    <apex:form >
+    <div class="slds slds-p-around--xx-large slds-container--large slds-container--center" role="main">
+       <div class="slds-card slds-card--empty">
+            <header class="slds-card__header slds-grid grid--flex-spread slds-text-heading--small slds-truncate">
+                Step 2: Select Target Field
+            </header>
+            <header class="slds-card__header slds-grid grid--flex-spread">
+                <nav role="navigation">
+                    <ol class="slds-breadcrumb slds-list--horizontal">
+                        <li class="slds-list__item slds-text-heading--label"><a href="{!URLFOR($Page.PS_SelectMaster)}">Select Target Object</a></li>
+                        <li class="slds-list__item slds-text-heading--label"><a href="#">Select Target Field</a></li>
+                    </ol>
+                </nav>
+            </header>
+        </div>
+        
+         <div class="slds-card">
+             <header class="slds-card__header slds-grid">
+            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+              <div class="slds-media__body">
+                <h3 class="slds-text-heading--small slds-truncate">Select {!masterObjectLabel} Field for Results</h3> 
+              </div>
+            </div>
+          </header>
+          <apex:outputPanel styleClass="pad-left" id="createExistingSelector">
+            <section class="slds-card__body" >
+                <apex:outputPanel rendered="{!validationErrorsSizeWrapper > 0}">
+                    <div class="slds-notify slds-notify--toast slds-theme--warning">
+                        <apex:repeat value="{!validationErrors}" var="validationError">
+                            <span>
+                                {!validationError}
+                            </span> <br/>
+                        </apex:repeat>
+                    </div>
+                </apex:outputPanel>
+            
+
+            <div class="creationSelect half-width pad-left">
+                <apex:selectRadio styleClass="slds-input padded-rows-in-table" value="{!fieldFormStatus}" layout="">
+                    <apex:selectOptions value="{!fieldOptions}"/>
+                    <apex:actionSupport event="onchange" reRender="createExistingSelector"/>
+                </apex:selectRadio>
+                    <!-- <fieldset>
+                        <span class="slds-radio">
+                            <input type="radio" name="existing" checked="" id="existing-radio"/>
+                            <label for="existing-radio">
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label">Use an existing field</span>
+                            </label>
+                        </span>
+                        <span class="slds-radio"> 
+                            <input type="radio" name="existing" id="new-radio"/>
+                            <label for="new-radio"> 
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label">Create a new field</span>
+                            </label>
+                        </span>
+                    </fieldset> -->
+            </div>
+
+                <apex:outputPanel id="createFieldContainer" rendered="{!shouldRenderCreatingField}">
+                    <div class="fieldContainer half-width pad-left">
+                    <br/>
+                        <table class="slds-table slds-input slds-table--cell-buffer slds-no-row-hover">
+                            <tbody>
+                                <tr>
+                                    <td><apex:outputText value="Field type: " /></td>
+                                    <td>
+                                        <apex:selectList id="fieldType" value="{!fieldType}" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!fieldTypeOptions}" />
+                                            <apex:actionSupport event="onchange" reRender="createFieldContainer"/>
+                                            <apex:actionSupport event="onchange" rerender="createExistingSelector"/>
+                                        </apex:selectList>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><apex:outputText value="Field name: " /></td>
+                                    <td><apex:inputText id="fieldName" value="{!fieldName}"/></td>
+                                    <apex:actionSupport oncomplete="overridePageMessages" event="onchange" rerender="createExistingSelector"/>
+                                </tr>
+                                    <tr class="{!IF(isTextField || isLongTextAreaField, '', 'slds-hide')}">
+                                        <td><apex:outputText value="String length limit: " /></td>
+                                        <td>
+                                            <apex:inputText id="stringLength" value="{!stringLengthLimit}" />
+                                            <apex:actionSupport oncomplete="overridePageMessages" event="onchange" rerender="createExistingSelector"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="{!IF(isLongTextAreaField, '', 'slds-hide')}">
+                                        <td><apex:outputText value="String lines visible: " /></td>
+                                        <td>
+                                            <apex:inputText id="stringLines" value="{!stringLinesVisible}" />
+                                            <apex:actionSupport oncomplete="overridePageMessages" event="onchange" rerender="createExistingSelector"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="{!IF(isNumberField, '', 'slds-hide')}">
+                                        <td><apex:outputText value="Length: " /></td>
+                                        <td>
+                                            <apex:inputText id="NumberLength" value="{!numberDigitLimit}" />
+                                            <apex:actionSupport oncomplete="overridePageMessages" event="onchange" rerender="createExistingSelector"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="{!IF(isNumberField, '', 'slds-hide')}">
+                                        <td><apex:outputText value="Number decimal digit limit: " /></td>
+                                        <td>
+                                            <apex:inputText id="DecimalPlaces" value="{!numberDecimalDigitLimit}" />
+                                            <apex:actionSupport oncomplete="overridePageMessages" event="onchange" rerender="createExistingSelector"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="{!IF(isLookupField, '', 'slds-hide')}">
+                                        <td><apex:outputText value="Lookup name: " /></td>
+                                        <td>
+                                            <apex:inputText id="lookupName" value="{!lookupName}" />
+                                            <apex:actionSupport oncomplete="overridePageMessages" event="onchange" rerender="createExistingSelector"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="{!IF(isLookupField, '', 'slds-hide')}">
+                                        <td><apex:outputText value="Lookup label: " /></td>
+                                        <td>
+                                            <apex:inputText id="lookupLabel" value="{!lookupLabel}" />
+                                            <apex:actionSupport oncomplete="overridePageMessages" event="onchange" rerender="createExistingSelector"/>
+                                        </td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+
+                        <apex:commandLink styleClass="slds-button slds-button--neutral right-align" action="{!finalizeField}" value="Submit" id="finalizeField"/>
+                    </div>
+                </apex:outputPanel>
+
+                <apex:outputPanel id="table" rendered="{!!shouldRenderCreatingField}">
+                <div id="tablecontainer" style=" height:600px;">
+                        <center>
+                        <div style="margin-left:auto; margin-right:auto; width:100%;">
+                            <table class="slds-table slds-table--bordered" style=" margin-left:auto; margin-right:auto;" id="colHeader">
+                               <thead id="tableheader" style="width:100%;">
+                                   <tr style="width:100%;">
+                                     <th style="width:10%;">Action</th>
+                                     <th style="width:25%;" class="slds-text-heading--label slds-is-sortable hidecol" scope="col">
+                                            <apex:commandLink value="Label" action="{! doMasterObjectFieldSort }" rerender="table">
+                                                <apex:param name="sortField" value="Label__c" assignTo="{!sortField}"/>
+                                                <apex:outputText value="{!IF(sortField=='Label__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                            </apex:commandLink>
+                                     </th>
+                                     <th style="width:25%;" class="slds-text-heading--label slds-is-sortable" scope="col">
+                                            <apex:commandLink value="API Name" action="{!doMasterObjectFieldSort}" rerender="table">
+                                                <apex:param name="sortField" value="Object__c" assignTo="{!sortField}"/>
+                                                <apex:outputText value="{!IF(sortField=='Object__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                            </apex:commandLink>
+                                    </th>  
+                                     <th style="width:15%;" class="slds-text-heading--label slds-is-sortable" scope="col">
+                                            <apex:commandLink value="Data Type" action="{!doMasterObjectFieldSort}" rerender="table">
+                                                <apex:param name="sortField" value="Data_Type__c" assignTo="{!sortField}"/>
+                                                <apex:outputText value="{!IF(sortField=='Data_Type__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                            </apex:commandLink>
+                                    </th>  
+                                     <th style="width:25%;" class="slds-text-heading--label slds-is-sortable" scope="col">
+                                            <apex:commandLink value="Help Text" action="{!doMasterObjectFieldSort}" rerender="table">
+                                                <apex:param name="sortField" value="Test_Long_Text__c" assignTo="{!sortField}"/>
+                                                <apex:outputText value="{!IF(sortField=='Test_Long_Text__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                            </apex:commandLink>
+                                    </th>   
+                                   </tr>
+                               </thead>
+                           </table>
+                       </div>    
+                       <div style="height:550px; overflow-y:scroll; margin-left:auto; margin-right:auto;">
+                           <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="width:100%;  margin-left:auto; margin-right:auto;"  id="targetfields">
+                               
+                                <apex:repeat value="{! masterObjectFields }" var="i" >   
+                                <tr>
+                                    <td style="width:10%;">
+                                        
+                                        <a href="{!URLFOR($Page.PS_RollupType)}{!IF(CONTAINS(URLFOR($Page.PS_RollupType), '?'), '&', '?')}mast={!URLENCODE(masterAPI)}&mfld={!URLENCODE(i.Object__c)}">
+                                            Select
+                                        </a>
+                                    </td>
+                                    <td style="width:25%;">{!i.Label__c}</td>
+                                    <td style="width:25%;">{!i.Object__c}</td>
+                                    <td style="width:15%;">{!i.Data_Type__c}</td>
+                                    <td style="width:25%;" class="slds-truncate"><span title="{!i.Test_Long_Text__c}">{!i.Test_Long_Text__c}</span></td>
+                                </tr>
+                               </apex:repeat>    
+                            </table>
+                        </div>
+                     
+                        </center>   
+            </div>
+            </apex:outputPanel>
+            </section>
+          </apex:outputPanel>
+        </div>
+
+        </div>
+    </apex:form>
+    <br/>
+    <c:PS_additionalInformation ></c:PS_additionalInformation>   
+    </html>
+</apex:page>

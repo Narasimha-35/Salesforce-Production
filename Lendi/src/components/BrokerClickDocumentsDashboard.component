@@ -1,0 +1,729 @@
+<apex:component controller="acfDashboardDocumentController_broker" allowDML="true" id="comp">
+<link rel="stylesheet" type="text/css" href="{!$Resource.FileUploadCSS}"/>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"/>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<style type="text/css">
+    @font-face {
+        font-family: 'open_sanslight';
+        src: url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.eot')}");
+        src: url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.eot?#iefix')}") format('embedded-opentype'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.woff2')}") format('woff2'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.woff')}") format('woff'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.ttf')}") format('truetype'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.svg#open_sanslight')}") format('svg');
+        font-weight: normal;
+        font-style: normal;    
+    }
+    .uploadMoreStyle:before
+    {
+        content:'Upload More'!important
+    }
+    .VerifiOnlineStyle:before
+    {
+       content:'Verify Online'!important 
+    }
+    .NotesStyle:before
+    {
+       content:'Add Notes'!important 
+    }
+     .EditNotesStyle:before
+    {
+       content:'Edit Notes'!important 
+    }
+    .marginTopVerify
+    {
+        margin-top:7px;
+    }
+    .sprite{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .input-box + ul.bank-list li:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    a.mcafee:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}"); 
+    }
+    .button{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 28px no-repeat;
+    }
+    .button.getstarted{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 20px no-repeat;
+    }
+    .work-list .cate-box span.quote:before,
+    .work-list .cate-box span.application:before,
+    .work-list .cate-box span.disclousure:before,
+    .work-list .cate-box span.docs:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}"); 
+    }
+    a.viewmore:after,
+    a.viewmore-feature:after{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .footer-social a.f-icon,
+    .footer-social a.link-icon,
+    .footer-social a.t-icon,
+    .footer-social a.u-icon{
+        background:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    a.responsive-menu{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .button.getstarted{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
+    }
+    .button.question{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
+    }
+    .baner-colum span.anzbank:before,
+    .baner-colum span.westpack:before,
+    .baner-colum span.nab:before,
+    .baner-colum span.cwb:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .set-up-row  .set-up-box + span{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    p.creat-acount:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .porf-row {
+     margin-top: 25px;
+    }
+    .displaynone
+    {
+        display:none;
+    }
+    .fileDragupload
+    {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        height: 100%;
+    }
+    .linkClass{
+     font-family: 'open_sanslight';
+     font-size: 0.95em;
+    
+     text-decoration: none;
+     color: #1f8acb;
+     padding: 0px 10px;
+     font-weight: bold;
+     margin-left: 0px;
+     padding-left: 0px;
+    }
+    
+    .dash_doc .h4{
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    /******************replace in stylesheet following code*************/
+.prf-submit-btn{margin-left:0px!important; margin-right:10px;}
+@media all and (min-width: 320px) and (max-width: 800px){
+.porf-row .prf-lble{display:block; width:auto;}
+.porf-row .prf-submit-btn{width:100%;}
+}
+
+/************here is changes for upload image page***************/
+     #selectFileMobID{display:none;}
+     @media all and (min-width:320px) and (max-width: 800px){
+    #browsecompId,#drageImgId{display:none;}
+    #selectFileMobID{display:block;}
+    .email-upload p{display:none;}
+     }
+     
+     .panel{
+background-color:transparent;
+}
+.cstm_panel_body{
+background-color:#fff!important;
+}
+.cstm_content{
+    display:inline-block;
+    width:100%;
+    max-height: 500px;
+    overflow-y: auto;
+}
+    .setup-box .h3{
+        display:block !important;
+    }
+    
+    .previewBtntop:before
+    {
+        margin-top: 55px !important;
+    }
+    
+  .Processing
+     {
+         position: fixed;
+         background: url("{!$Resource.LoadingImg}") !important;
+         background-repeat: no-repeat !important;
+         background-position: center !important;
+         width: 100%;
+         height: 100%;
+         z-index: 10004;
+         left: 0%;
+         top: 0%;
+     }
+</style>
+
+<script>
+ $(document).ready(function ()
+ {
+     $('#changepass').click(function () 
+        {
+          $('#changepwdPopUp').removeClass('displaynone');          
+          $('.messageCell').css('display','none');
+          $('[id$=member_login_strmsg]').remove();
+          $('[id$=current_lender_strmsg]').remove();
+          SetPopupLocation();
+        });
+        $('#divfaded12').click(function () 
+        {
+          $('#changepwdPopUp').addClass('displaynone');
+        });
+        
+        $(window).resize(function(){
+                SetPopupLocation();
+        });
+        
+      $('#DivFaded').click(function () 
+            {
+              $('#divUploadDocument').addClass('displaynone');
+            });
+      if(('{!IsError}')=='true')
+            {
+              $('#divUploadDocument').removeClass('displaynone');
+            }
+     $('.btnOnline').click(function () 
+            { 
+              $('#divUploadDocument').removeClass('displaynone');
+            }); 
+      $('.pop-close').click(function () 
+        { 
+                $('#changepwdPopUp').addClass('displaynone');
+                 $('#divUploadDocument').addClass('displaynone'); 
+       });       
+         
+      });
+      
+      function SetPopupLocation()
+        {
+            var ww =  ($('.header').width() / 2) - ($('.setup-box').width() / 2);
+            $('.setup-box').css('left', ww + 'px');
+        }
+      function uploadindex(indexval){        
+      }
+</script>
+<!-- document.getElementById('pg:CDD:comp:frmDocument:ind').value = indexval;  -->
+<script>
+        
+    function PopupReset()
+    {
+        resetPopup();
+    }  
+    function addNotes(indexval,reqDocName)
+    {  
+        $('#requirednotename').html(reqDocName);
+        document.getElementById('pg:CDD:comp:fm:hdnDocumentName').value = indexval;
+        fetchDocName();      
+    }
+</script> 
+</head>
+<body id="body">
+    <apex:form id="fm">  
+    <script>
+    var parentId;
+    var fileindex;
+    function UploadRequiredDocument(indexval,reqDocId)
+      {   
+           parentId = reqDocId;
+           fileindex = indexval;     
+      }
+      function UploadDocument(indexval)
+      {  
+           document.getElementById('pg:CDD:comp:fm:hdnDocumentName').value = indexval;
+           $('#uploadDocumentLoader').removeClass('displaynone');
+           UploadDocuments();
+      }
+      function deleteImg(indexval)
+      {   
+           document.getElementById('pg:CDD:comp:fm:hdnDocumentName').value = indexval;     
+           DeleteDoc();  
+      }
+      
+      function DocPreview(indexval)
+      { 
+          document.getElementById('pg:CDD:comp:fm:hdnDocumentName').value = indexval;
+          previewdoc();
+      }
+      
+      function reloadme()
+        {
+            window.setTimeout(window.location.reload(), 5000);
+        }
+     
+    var j$ = jQuery.noConflict();
+    var byteChunkArray; 
+    var files;
+    var currentFile;
+    var $upload;
+    var CHUNK_SIZE = 180000; //Must be evenly divisible by 3, if not, data corruption will occur
+    var VIEW_URL = '/servlet/servlet.FileDownload?file=';
+
+    //var parentId, you will see this variable used below but it is set in the component as this is a dynamic value passed in by component attribute
+
+    //Executes when start Upload button is selected
+    function prepareFileUploads(){
+
+        //Get the file(s) from the input field
+        files = document.getElementById('inptFileUpload1').files;
+        
+        //Only proceed if there are files selected
+        if(files.length == 0){
+            alert('Please select a file!');
+            return; //end function
+        }
+        
+        //Disable inputs and buttons during the upload process
+        j$(".uploadBox input").attr("disabled", "disabled");
+        j$(".uploadBox button").attr({
+            disabled: "disabled",
+            class: "btnDisabled"
+        });
+      
+        //Build out the upload divs for each file selected
+        var uploadMarkup = '';
+        for(i = 0; i < files.length; i++){
+            //Determine file display size
+            if(files[i].size > 4000000){
+             alert('Please select a file upto 4 MB');
+             }
+             else
+             {
+                if(files[i].size < 1000000){
+                    var displaySize = Math.floor(files[i].size/1000) + 'K';
+                }else{
+                    var displaySize  = Math.round((files[i].size / 1000000)*10)/10 + 'MB';
+                }
+                
+                //For each file being uploaded create a div to represent that file, includes file size, status bar, etc. data-Status tracks status of upload
+                uploadMarkup += '<div class="upload" data-status="pending" data-index="'+i+'">'; //index used to correspond these upload boxes to records in the files array
+                uploadMarkup += '<div class="fileName"><span class="name">'+ files[i].name + '</span> - '+ displaySize+ '</div>';
+                uploadMarkup += '<div class="percentComplete">0%</div>'
+                uploadMarkup += '<div class="clear"/>';
+                uploadMarkup += '<div class="statusBar">';
+                uploadMarkup += '<div class="statusBarPercent"/>';
+                uploadMarkup += '</div>';
+                uploadMarkup += '</div>';
+             }
+        }
+        
+        //Add markup to the upload box
+        j$('.uploadBox').append(uploadMarkup);
+        
+        //Once elements have been added to the page representing the uploads, start the actual upload process
+      
+        checkForUploads();
+        
+    }
+
+    function checkForUploads(){
+
+        //Get div of the first matching upload element that is 'pending', if none, all uploads are complete
+        $upload = j$(".upload:first[data-status='pending']");
+        
+        if($upload.length != 0){
+            //Based on index of the div, get correct file from files array
+            currentFile = files[$upload.attr('data-index')];
+            
+            /*Build the byteChunkArray array for the current file we are processing. This array is formatted as:
+            ['0-179999','180000-359999',etc] and represents the chunks of bytes that will be uploaded individually.*/
+            byteChunkArray = new Array();  
+            
+            //First check to see if file size is less than the chunk size, if so first and only chunk is entire size of file
+            if(currentFile.size <= CHUNK_SIZE){
+                byteChunkArray[0] = '0-' + (currentFile.size - 1);
+            }else{
+                //Determine how many whole byte chunks make up the file,
+                var numOfFullChunks = Math.floor(currentFile.size / CHUNK_SIZE); //i.e. 1.2MB file would be 1000000 / CHUNK_SIZE
+                var remainderBytes = currentFile.size % CHUNK_SIZE; // would determine remainder of 1200000 bytes that is not a full chunk
+                var startByte = 0;
+                var endByte = CHUNK_SIZE - 1;
+                
+                //Loop through the number of full chunks and build the byteChunkArray array
+                for(i = 0; i < numOfFullChunks; i++){
+                    byteChunkArray[i] = startByte+'-'+endByte;
+                    
+                    //Set new start and stop bytes for next iteration of loop
+                    startByte = endByte + 1;
+                    endByte += CHUNK_SIZE;
+                }
+                
+                //Add the last chunk of remaining bytes to the byteChunkArray
+                startByte = currentFile.size - remainderBytes;
+                endByte = currentFile.size;
+                byteChunkArray.push(startByte+'-'+endByte);
+            }
+            
+            //Start processing the byteChunkArray for the current file, parameter is '' because this is the first chunk being uploaded and there is no attachment Id
+            processByteChunkArray('');
+           
+               
+        }else{
+            //All uploads completed, enable the input and buttons
+            j$(".uploadBox input").removeAttr("disabled");
+            j$(".uploadBox button").removeAttr("disabled").attr("class","btn");
+            
+            /*Remove the browse input element and replace it, this essentially removes
+            the selected files and helps prevent duplicate uploads*/
+            j$("#inptFileUpload1").replaceWith('<input type="file" name="file" multiple="true" id="inptFileUpload1">');
+            window.location.reload();
+        }
+    }
+
+    //Uploads a chunk of bytes, if attachmentId is passed in it will attach the bytes to an existing attachment record
+    function processByteChunkArray(attachmentId){
+
+        //Proceed if there are still values in the byteChunkArray, if none, all piece of the file have been uploaded
+        if(byteChunkArray.length > 0){
+            //Determine the byte range that needs to uploaded, if byteChunkArray is like... ['0-179999','180000-359999']
+            var indexes = byteChunkArray[0].split('-'); //... get the first index range '0-179999' -> ['0','179999']
+            var startByte = parseInt(indexes[0]); //0
+            var stopByte = parseInt(indexes[1]); //179999
+            
+            //Slice the part of the file we want to upload, currentFile variable is set in checkForUploads() method that is called before this method
+            if(currentFile.slice){
+                var blobChunk = currentFile.slice(startByte , stopByte + 1);
+            }else if (currentFile.mozSlice) {
+                var blobChunk = currentFile.mozSlice(startByte , stopByte + 1);
+            }
+            
+            //Create a new reader object, part of HTML5 File API
+            var reader = new FileReader();
+            
+            //Read the blobChunk as a binary string, reader.onloadend function below is automatically called after this line
+            reader.readAsBinaryString(blobChunk);
+            
+            //Create a reader.onload function, this will execute immediately after reader.readAsBinaryString() function above;
+            reader.onloadend = function(evt)
+            { 
+                if(evt.target.readyState == FileReader.DONE){ //Make sure read was successful, DONE == 2
+              
+                    //Base 64 encode the data for transmission to the server with JS remoting, window.btoa currently on support by some browsers
+                    var base64value = window.btoa(evt.target.result);
+                  
+                    //Use js remoting to send the base64 encoded chunk for uploading
+             
+                   
+                     acfDashboardDocumentController_broker.attachBlobs('{!acid}',parentId,attachmentId,currentFile.name,currentFile.type,base64value,fileindex,function(result,event){                        
+                        //Proceed if there were no errors with the remoting call
+                   
+                        if(event.status == true){
+                          
+                            //Update the percent of the status bar and percent, first determine percent complete
+                            var percentComplete = Math.round((stopByte / currentFile.size) * 100);
+                            $upload.find(".percentComplete").text(percentComplete + '%');
+                            $upload.find(".statusBarPercent").css('width',percentComplete + '%');
+                           // setInterval(function(){UploadDocument(fileindex);}, 5000);
+                           //  UploadDocument(fileindex);
+                            //Remove the index information from the byteChunkArray array for the piece just uploaded.
+                            byteChunkArray.shift(); //removes 0 index
+                            
+                            //Set the attachmentId of the file we are now processing
+                            attachmentId = result;
+                                                
+                            //Call process byteChunkArray to upload the next piece of the file
+                            processByteChunkArray(attachmentId);
+                       }else{
+                            //If script is here something broke on the JavasSript remoting call
+                            //Add classes to reflect error
+                            $upload.attr('data-status','complete');
+                            $upload.addClass('uploadError');
+                            $upload.find(".statusPercent").addClass('statusPercentError');
+                            $upload.attr('title',event.message);
+                       
+                            //Check and continue the next file to upload
+                            checkForUploads();
+                        }
+                    });
+                }else{
+                    //Error handling for bad read
+                    alert('Could not read file');
+                }
+            };
+            
+        }else{
+            //This file has completed, all byte chunks have been uploaded, set status on the div to complete
+            $upload.attr('data-status','complete');
+            
+            //Change name of file to link of uploaded attachment
+            $upload.find(".name").html('<a href="' + VIEW_URL + attachmentId + '" target="_blank">'+currentFile.name+'</a>');
+            
+            //Call the checkForUploads to find the next upload div that has data-status="incomplete" and start the upload process. 
+            checkForUploads();
+        }
+    }
+    
+   function opnNotePopUp()
+   {
+       $('#myModal7').modal('toggle');
+        $('#myModal7').modal('show');
+   }
+   function opnPreviewPopUp()
+   {
+       $('#myModal4').modal('toggle');
+        $('#myModal4').modal('show');
+   }
+   function opnIdVerifysetPopup()
+   {
+        $('#myModal6').modal('toggle');
+        $('#myModal6').modal('show');
+   }
+   function opnIdBankstmtsetPopup()
+   {
+        $('#myModal5').modal('toggle');
+        $('#myModal5').modal('show');
+   }
+   
+ </script>
+   
+<apex:pageMessages ></apex:pageMessages>
+<apex:actionStatus startStyleClass="creat-loader" id="ProcessStatus"></apex:actionStatus>
+<apex:actionstatus id="ResetstatusId" starttext="Processing..." startStyleClass="color:red;">
+    <apex:facet name="start">
+        <div style="text-align:center;width:100%;height:100%;opacity:0.2;background-color:#000;position:fixed;left:0px;top:0px;z-index:99;">
+            <img style="position: relative;top: 127px;width:300px" src="{!URLFOR($Resource.AppointmentImage)}"  />
+        </div>    
+     </apex:facet>
+</apex:actionStatus>
+<apex:actionFunction name="resetPopup" action="{!ResetPopup1}" rerender="formId1" status="ResetstatusId"/> 
+<apex:actionFunction action="{!UploadDocumentsNotification}" name="UploadDocumentsNotification" status="ProcessStatus"/>
+<apex:actionFunction action="{!uploadDoc}" name="UploadDocuments" status="ProcessStatus" reRender="comp"/>
+<apex:actionFunction action="{!previewdoc}" name="previewdoc" reRender="previewPnlId" status="ResetstatusId" oncomplete="opnPreviewPopUp();"/>
+<apex:actionFunction action="{!fetchDocName}" name="fetchDocName" status="ResetstatusId" oncomplete="opnNotePopUp();" reRender="formId1"/>  
+<apex:actionFunction action="{!frameURL}" name="opnIdVerifyPopup" status="ResetstatusId" oncomplete="opnIdVerifysetPopup();" reRender="pnlJumioFrmeId"/>
+
+<apex:inputHidden id="hdnDocumentName" value="{!IndexNo}"/>
+
+    <hgroup class="dash_tab_hdng">
+        <h3 class="col-md-5 col-xs-12">Document</h3>
+        <h3 class="col-md-6 col-xs-12 text-center" id="upload_text">Upload</h3>
+       <div class="cstm_border_btm dash_row_10">&nbsp;</div>                                
+    </hgroup>
+    
+    <apex:variable value="{!0}" var="Count"/> 
+    <apex:repeat value="{!lstWrapperDocumnets}" var="doc"> 
+     <section class="dash_doc">
+        <div class="col-md-6 col-xs-12 h4">{!doc.objRequiredDocumnets.Name}</div>
+        <div class="col-md-6 col-xs-12">
+            
+            <!--for bank statement-->
+            <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.click_Is_Uploaded__c),true,false)}">
+                    <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12 doc_btn_done active" style="margin-bottom:7px;">&nbsp;</span></a>
+                    <a href="#"></a>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!if(OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Awaited'),true,false)}">
+                    <!--for bank statement-->
+                    <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.click_Is_Uploaded__c == false),true,false)}">
+                            <a href="#"><span class="custom-file-input col-md-8 col-xs-12 {!If(doc.objRequiredDocumnets.click_Is_Uploaded__c == false,'VerifiOnlineStyle','')}" onclick="opnIdBankstmtPopup();" style="margin-bottom:7px;">&nbsp;</span></a>
+                            <a href="#"></a>
+                    </apex:outputPanel>
+                    <!--for other docs-->
+                    <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false}">
+                        <a href="#" class="col-md-8 col-xs-8 doc_btn_done active {!If(doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,'uploadMoreStyle','')}" data-toggle="modal" data-target="{!If(doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,'#myModal2','')}" onClick="UploadRequiredDocument('{!Count}','{!doc.objRequiredDocumnets.id}');"></a>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,OR(doc.objRequiredDocumnets.acfStatus__c == 'Verified',doc.objRequiredDocumnets.acfStatus__c == 'Uploaded',doc.objRequiredDocumnets.acfStatus__c == 'Not Verified')),true,false)}">
+                        <a href="#" onclick="DocPreview('{!Count}');"><span class="upload_doc btnOnline {!if(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,'previewBtntop','')}">&nbsp;</span></a>              
+                    </apex:outputPanel>        
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!if(AND(doc.objRequiredDocumnets.Click_Is_Note_Type__c,doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false,doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c == false,doc.objRequiredDocumnets.acfStatus__c == 'Note Added'),true,false)}">
+                    <a href="#" onclick="addNotes('{!Count}','{!doc.objRequiredDocumnets.Name}')"><span class="custom-file-input col-md-8 col-xs-12 doc_btn_done active EditNotesStyle">&nbsp;</span></a>
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!if(OR(doc.objRequiredDocumnets.acfStatus__c == 'Pending',doc.objRequiredDocumnets.acfStatus__c == 'Not Verified'),true,false)}">
+                    <!-- <a class="custom-file-input col-md-8 col-xs-12 btnOnline" href="#" data-toggle="modal" name="{!Count}"  onclick="UploadDocument();"  ></a>  -->
+                    <!--      <apex:inputFile value="{!attach.body}" fileName="{!attach.name}" contentType="{!attach.contentType}" styleclass="custom-file-input col-md-8 col-xs-12" id="inptFileUpload" onchange="UploadDocument('{!Count}');" > </apex:inputFile>    -->
+                    <apex:outputPanel rendered="{!AND(doc.objRequiredDocumnets.acf_Bank_Statement_Doc__c,doc.objRequiredDocumnets.Click_Is_Note_Type__c == false,doc.objRequiredDocumnets.click_Is_Uploaded__c ==false)}">
+                            <a href="#"><span class="custom-file-input col-md-8 col-xs-12 VerifiOnlineStyle" onClick="opnIdBankstmtPopup();" style="margin-bottom:7px;" >&nbsp;</span></a>
+                    </apex:outputPanel>
+                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == false}">
+                            <a href="#" data-toggle="modal" ><span class="custom-file-input col-md-8 col-xs-12" data-toggle="modal" data-target="#myModal2" onClick="UploadRequiredDocument('{!Count}','{!doc.objRequiredDocumnets.id}');">&nbsp;</span></a>
+                     </apex:outputPanel>
+                     
+                     <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c == false && doc.objRequiredDocumnets.acf_Is_Identity_Verification_Doc__c == true}">
+                            <a href="#"><span class="custom-file-input col-md-8 col-xs-12 VerifiOnlineStyle" onClick="opnIdVerifyPopup();">&nbsp;</span></a>
+                     </apex:outputPanel>
+        
+                    <apex:outputPanel rendered="{!doc.objRequiredDocumnets.Click_Is_Note_Type__c}">
+                            <a href="#" onclick="addNotes('{!Count}','{!doc.objRequiredDocumnets.Name}')"><span class="custom-file-input col-md-8 col-xs-12 NotesStyle">&nbsp;</span></a>
+                    </apex:outputPanel>           
+            </apex:outputPanel>                        
+        </div>
+       <div class="cstm_border_btm dash_row_10">&nbsp;</div>                                
+    </section>
+    <apex:variable value="{!Count+1}" var="Count"/>
+    </apex:repeat>
+    <!--Jumio starts model here-->
+       <div id="myModal6" class="modal fade" role="dialog">
+           <div class="modal-dialog">                          
+            <div class="modal-content cstm_content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <b><h3 class="modal-title text-center">Verify ID</h3></b>
+                  </div>
+                  <div class="modal-body">
+                    <!--<c:ClickJumioIntegration ></c:ClickJumioIntegration> -->
+                    <apex:outputPanel id="pnlJumioFrmeId">
+                     <apex:iframe src="{!strJumioFrameUrl}"/> 
+                    </apex:outputPanel>
+                  </div>
+             </div> 
+          </div>                                                
+       </div>
+       <!--Jumio ends here-->  
+    <div class="clearfix"></div>
+     <!--Upload more model starts here-->  
+     <div id="myModal2" class="modal fade" role="dialog">   
+              <div class="modal-dialog">                   
+                <!-- Modal content-->
+                <div class="modal-content cstm_content">
+                      <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <h4 class="modal-title">Upload Documents</h4>
+                      </div>
+                      <div class="modal-body">
+                 <!--       <hgroup class="dash_tab_hdng">
+                            <h3 class="col-md-5 col-xs-12">Document</h3>
+                            <h3 class="col-md-6 col-xs-12 text-center">Upload</h3>
+                            <div class="cstm_border_btm row">&nbsp;</div>                                
+                        </hgroup>    -->
+                          
+                          <div class="uploadBox">
+                            <table cellpadding="0" cellspacing="0" class="uploadTable">
+                                <tr>
+                                    <td><input type="file" multiple="true" id="inptFileUpload1" name="file"/></td>
+                                    <td class="buttonTD">
+                                     <input id="multiUploadButtonUId" type="button" title="Upload" class="btn" value=" Save" onClick="prepareFileUploads();"/> 
+                              <!--       <input id="clear" type="button" title="Clear" class="btn" value=" Clear "/> -->
+                                     </td>
+                                </tr>
+                            </table>    
+                            </div> 
+                                     
+                         </div>                   
+                       </div> 
+                    </div>                      
+                   <!-- <div class="cstm_border_btm row">&nbsp;</div>  -->                                                                                     
+                    <div class="clearfix"></div>                                                   
+                 </div>           
+              <!--Upload more model Ends here-->
+              
+              <!--Preview Doc Model starts Here-->
+              <div id="myModal4" class="modal fade" role="dialog">
+                   <div class="modal-dialog">                          
+                    <!-- Modal content-->
+                    <div class="modal-content cstm_content">
+                          <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <b><h3 class="modal-title text-center">Preview Documents</h3></b>
+                          </div>
+                          <div class="modal-body">
+                            <div class="dash_doc">                               
+                              <apex:outputPanel id="previewPnlId">
+                              <apex:actionFunction action="{!DeleteDoc}" name="DeleteDoc" status="loadStatusId" reRender="previewPnlId"/>
+                               <apex:actionstatus id="loadStatusId" startstyleclass="Processing">
+                               <!-- <apex:facet name="start">
+                                  <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>                      
+                                </apex:facet>-->
+                                </apex:actionStatus>
+                                <apex:variable value="{!0}" var="attCount"/>                                         
+                                 <apex:repeat value="{!lstWrapAttach}" var="atVar">
+                                    <apex:outputPanel rendered="{!atVar.isDeleted == false}">
+                                        <div class="col-md-6 col-xs-12 h4">{!atVar.strDocName}</div>
+                                        <div class="col-md-6 col-xs-12">
+                                        <a href="{!atVar.imgUrl}" target="_blank" data-toggle="modal">
+                                             <span class="upload_doc btnOnline" data-toggle="modal">&nbsp;</span>
+                                        </a>                                    
+                                        <a href="#" onclick="deleteImg('{!attCount}');return false;" >
+                                            <span class="delete_doc">&nbsp;</span> 
+                                         </a>                                       
+                                        <div class="cstm_border_btm row" style="border-bottom: none;">&nbsp;</div>                              
+                                        </div> 
+                                       </apex:outputPanel> 
+                                        <apex:variable var="attCount" value="{!attCount+1}" />
+                                     </apex:repeat>
+                                 </apex:outputPanel>                                               
+                                </div>                                
+                          </div>
+                    </div> 
+                 </div>                                                
+              </div>
+      <!--Preview Doc Model ends Here--> 
+ </apex:form>
+   <!--     Bank Statement start here    -->
+        <div id="myModal5" class="modal fade" role="dialog">
+              <div class="modal-dialog"> 
+                <!-- Modal content-->
+                    <div class="modal-content cstm_content" style="max-height: 600px;overflow-y: hidden;">
+                          <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              <h4 class="modal-title" style="text-align:center">Bank Statement</h4>
+                          </div>
+                          <div class="modal-body"> 
+                          <apex:form styleclass="form-horizontal" id="bnkFrameURLId">
+                            <apex:actionFunction action="{!frameURL}" name="opnIdBankstmtPopup" status="ResetstatusId" oncomplete="opnIdBankstmtsetPopup();" reRender="bnkFrameURLId"/>                              
+                            <apex:iframe src="{!strBankFrameURl}"/>  
+                          </apex:form>
+                          </div>
+                    </div>                                 
+              </div>
+         </div>
+   <!--     Bank Statement stop here    -->
+  <!--Notes starts model here-->
+     <div id="myModal7" class="modal fade" role="dialog">
+        <div class="modal-dialog" id="usrfeedPopUp">
+        <div class="modal-content popup_modalcontent cstm_pop_cont" id="pdivfaded">
+        <div class="modal-header cstm_modal_header" id="idSetupBox">        
+              <button type="button" class="close pop_close gray_col" data-dismiss="modal" aria-hidden="true" onclick="PopupReset1();">×</button>
+          <apex:outputPanel id="Ankit1">
+          <!--    <h4 class="modal-title text-center" id="memLoginId">{!requiredDocName}</h4>    -->
+                  <h4 class="modal-title text-center" ><div id="requirednotename"></div></h4>
+          </apex:outputPanel>
+        </div>
+        <div class="modal-body">
+        <apex:form styleclass="form-horizontal" id="formId1">
+        <!--     <apex:actionFunction name="resetPopup" action="{!ResetPopup1}" rerender="abc"/>    --> 
+                <div id ="main_Section">
+                   <apex:outputPanel id="feedsuccessMsg" rendered="{!successMsg1}" style="color:#419ECC;text-align:center;"><p style="margin-bottom:10px;">{!strfeedSuccessmsg1}</p></apex:outputPanel>
+        <!-- <apex:outputPanel id="feedmsg" rendered="{!showMessage1}" style="color:red;text-align:center;"><p style="margin-bottom:10px;">{!strfeedmsg1}</p></apex:outputPanel> -->              
+                        <div class="form-group cstm_form_grp">
+                           <div class="col-md-8 col-md-offset-2">   
+                               <apex:outputPanel id="Ankit2">                        
+                                <apex:inputTextarea value="{!strPost1}" style="height:auto!important;" rows="4" styleClass="form-control cstm_input" onfocus="this.placeholder=''" onblur="this.placeholder='Please complete the info required here. Give us as much detail as possible, and don't worry - you can add to this later.'" html-placeholder="Please complete the info required here. Give us as much detail as possible, and don't worry - you can add to this later." id="inptxtarea" rendered="{!NOT(successMsg1)}" />                                                                  
+                               </apex:outputPanel>
+                            </div>
+                         </div>
+                        <div class="form-group">        
+                        <div class="col-md-12">
+                             <apex:commandButton action="{!addNotes}" styleClass="btn btn-default center-block cstm_btn_w180 cstm_btn_input" value="Submit" id="postBtnId" reRender="formId1" rendered="{!NOT(successMsg1)}" oncomplete="reloadme();"/>
+                         </div>
+                         </div>
+                    </div>
+         </apex:form>
+         </div>                 
+        </div>
+       </div>                                              
+     </div>            
+ <!--Notes ends here-->               
+</body>  
+<!--Pop up close here-->
+</apex:component>

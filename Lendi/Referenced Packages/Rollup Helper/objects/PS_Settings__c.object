@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>Parameters used for the Rollup Helper application.</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Advanced_Currency__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Used to determine if advanced currency management is enabled.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If Advanced Currency Management is enabled in your organization select this check box.</inlineHelpText>
+        <label>zDeprecated</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Advanced_Currency_del__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Used to determine if advanced currency management is enabled.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If Advanced Currency Management is enabled in your organization select this check box.</inlineHelpText>
+        <label>zDeprecated</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Attempt_to_Update_Converted_Leads__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Unchecked - Rollup Helper will ignore all converted leads 
+Checked - Rollup Helper will attempt to update converted leads (may or may not succeed depending this org&apos;s configurations)
+The converted leads are identified by the &quot;isConverted&quot; system field.
+Required settings:
+1. The &quot;Enable Set Audit Fields upon Record Creation and Update Records with Inactive Owners User Permissions&quot; option is checked, found under Setup -&gt; User Interface
+2. Rollup Helper&apos;s record scope is set to 1 (or update single records with real time if applicable)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When checked, Rollup Helper will attempt to update converted leads (the update may or may not succeed depending this org&apos;s configurations). This option is off by default.
+The converted leads are identified by the &quot;isConverted&quot; system field.</inlineHelpText>
+        <label>Attempt to Update Converted Leads</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Batch_Agent_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Batch Agent Id</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Data_Load_Batch_Size__c</fullName>
+        <defaultValue>200</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Data Load Batch Size</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Disable_Advanced_Currency__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Used to determine if advanced currency management should be disabled.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If Advanced Currency Management is disabled in your organization select this check box.</inlineHelpText>
+        <label>Disable Advanced Currency</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Enable_Single_Parent_Processing__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>When checked will prevent multiple children from attempting to update the same parent at the same time.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This will help to prevent record locks caused by multiple rollups attempting to update the same object at the same time.</inlineHelpText>
+        <label>Enable Single Parent Processing</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Enable_Validation_Rule_Helper__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>When checked you can have Rollup Helper updates excluded from your select validation rules.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>To enable Rollup Helper updates to be excluded from a Validation Rule add &apos;&amp;&amp; $Setup.rh2__PS_Settings__c.rh2__Run_Validation_Rule__c&apos; at the end of the contents of the Error Condition Formula section of a validation rule.</inlineHelpText>
+        <label>Enable Validation Rule Helper</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Limit_Pre_Processing__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Leave this unchecked if you only want rollups / records to be processed where a change was actually made to the source field.  Removes non-essential processing such as filtering out fields that don&apos;t need to be updated (Can help w/ Timeout issues).</inlineHelpText>
+        <label>Limit Pre Processing</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Limit_Processing_During_Data_Load__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this if you are receiving time-out issues during a data load.  Removes non-essential processing such as filtering out fields that don&apos;t need to be updated.</inlineHelpText>
+        <label>Limit Processing During Data Load</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>MaxBatch__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of batches to initiate concurrently.</inlineHelpText>
+        <label>Max Concurrent Batch Processes</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MaxFuture__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of Future method calls to initiate concurrently.</inlineHelpText>
+        <label>Max Concurrent Future Processes</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MaxQueueable__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Maximum Jobs Added to the Queue</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Max_Batch__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of batches to initiate concurrently.</inlineHelpText>
+        <label>zDeprecated</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Max_Future__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of Future method calls to initiate concurrently.</inlineHelpText>
+        <label>zDeprecated</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Parent_Sync_Job_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Parent Sync Job Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Premium_Key__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Premium Key</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RecordScope__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Maximum number of records to process asynchronously with Rollup Helper.  This impacts the number of batch / future methods will be called in order to process your entire set of records to complete an asynchronous transaction.  Best to be a multiple of 5.</inlineHelpText>
+        <label>Record Scope</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Record_Size__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Maximum number of records to process asynchronously with Rollup Helper.  This impacts the number of batch / future methods will be called in order to process your entire set of records to complete an asynchronous transaction.  Best to be a multiple of 5.</inlineHelpText>
+        <label>zDeprecated</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Rollup_Group__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Rollup Group</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Rollup_Inactive_Upon_Creation__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Rollup Inactive Upon Creation</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Rollups_Per_Async__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This setting modifies the number of rollups processed per asynchronous job request.</inlineHelpText>
+        <label>Rollups Per Asynchronous Request</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Run_Realtime_Rollup__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If unchecked, the realtime disable script may be used to temporarily turn off rollups.  For more details, please contact support@passagetech.com.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If unchecked, the realtime disable script may be used to temporarily turn off rollups.  For more details, please contact support@passagetech.com.</inlineHelpText>
+        <label>Cannot Disable Realtime By Script</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Run_Validation_Rule__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>LEAVE THIS OPTION CHECKED. If unchecked then users will enter records with validation rules not in effect.  When this setting is added to a validation rule, Rollup Helper will turn off the validation rule upon update to a target record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>LEAVE THIS OPTION CHECKED</inlineHelpText>
+        <label>Run Validation Rule</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Static_Asynchronous_Processing_Enabled__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Static Asynchronous Processing Enabled?</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Usage_of_Limits__c</fullName>
+        <defaultValue>90</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Determines how much of the limit to use. If 100 is entered then Rollup Helper will use all of the governor limit potentially and anything more than that will execute asynchronously in another execution context. By setting it lower it allows custom code.</inlineHelpText>
+        <label>Usage % of Limits</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UseDatedConversionRatesForNonOpps__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>This option is for orgs with MC &amp; ACM enabled. When unchecked (by default), rollups will use the static conversion rate for non-opportunity target objects; when checked, rollups will use the dated conversion rate for non-opp target objects, decided by the child record&apos;s date field (the date field can be selected under per rollup&apos;s advanced settings).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When unchecked (by default), rollups will use the static rate for non-opp target objs; otherwise, use the dated currency rate, decided by each child record&apos;s date field (this date field can be selected under per rollup&apos;s advanced settings).</inlineHelpText>
+        <label>Use Dated Conversion Rates For Non Opps</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ValidateRollup__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Validate Rollup Query</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>emailToSendExceptions__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Rollup Helper will send an email once an hour to this email address with any exceptions that have occured within that hour</inlineHelpText>
+        <label>Email To Send Exceptions</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>runAsModifyingUserOnly__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>This checkbox will cause Rollup Helper to only process queued asynchronous requests for the user that initiated the asynchronous request. If there is a queue record for a user that is not the Modified By user then the queue record will not be processed until a scheduled class runs the queue record or the user associated with the queue record adds an item to the Rollup Helper queue.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This checkbox will cause Rollup Helper to only process queued asynchronous requests for the user that initiated the asynchronous request.</inlineHelpText>
+        <label>Process Queue Items Based On Modified By</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Rollup Helper Settings</label>
+</CustomObject>

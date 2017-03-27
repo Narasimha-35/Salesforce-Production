@@ -1,0 +1,323 @@
+<apex:page standardController="MC4SF__MC_Query__c" extensions="MC4SF.QueryFilterController" action="{!initPage}">
+
+<apex:sectionHeader title="MC Query" subtitle="{!MC4SF__MC_Query__c.Name}"/>
+
+<apex:form >
+
+<apex:pageMessages id="messages" />
+
+<apex:pageBlock id="filters" title="Step 2: Select Filters">
+	<apex:pageBlockButtons location="both">
+		<apex:commandButton value="Cancel" action="{!cancel}"/>
+		<apex:commandButton value="Next Step" action="{!nextStep}"/>
+	</apex:pageBlockButtons>
+
+	Use this page to create your filters.<br/><br/>
+
+	<apex:pageBlockSection title="Objects" columns="1">
+		<apex:outputPanel >
+			<table>
+				<tr>
+					<td>
+						<apex:inputField value="{!mcQuery.MC4SF__Leads__c}">
+							<apex:actionSupport event="onclick" action="{!updateDisplay}" rerender="messages, filters"/>
+						</apex:inputField>
+						Leads<br/>
+						<apex:outputPanel layout="none" rendered="{!mcQuery.MC4SF__Leads__c}">
+							&nbsp;&nbsp;&nbsp;&nbsp;<apex:inputCheckbox value="{!mcQuery.MC4SF__User_Leads_Only__c}"/> My Leads Only
+						</apex:outputPanel>
+					</td>
+					<td width="25"><br/></td>
+					<td>
+						<apex:inputField value="{!mcQuery.MC4SF__Contacts__c}">
+							<apex:actionSupport event="onclick" action="{!updateDisplay}" rerender="messages, filters"/>
+						</apex:inputField>
+						Contacts<br/>
+						<apex:outputPanel layout="none" rendered="{!mcQuery.MC4SF__Contacts__c}">
+							&nbsp;&nbsp;&nbsp;&nbsp;<apex:inputCheckbox value="{!mcQuery.MC4SF__User_Contacts_Only__c}"/> My Contacts Only
+						</apex:outputPanel>
+					</td>
+					<apex:outputPanel layout="none" rendered="{!campaignMembersEnabled}">
+						<td width="25"><br/></td>
+						<td>
+							<apex:inputCheckbox value="{!mcQuery.MC4SF__Campaign_Members__c}">
+								<apex:actionSupport event="onclick" action="{!updateDisplay}" rerender="messages, filters"/>
+							</apex:inputCheckbox>
+							Campaign Members
+						</td>
+					</apex:outputPanel>
+				</tr>
+			</table>
+		</apex:outputPanel>
+	</apex:pageBlockSection>
+	
+	<apex:pageBlockSection id="leadFilters" title="Leads" columns="1" rendered="{!mcQuery.MC4SF__Leads__c}">
+		<apex:outputPanel >
+			<b>Filter By Additional Fields (Optional):</b><br/>
+
+			<table>
+				<tr>
+					<td></td>
+					<td><b>&nbsp;Field</b></td>
+					<td><b>&nbsp;Operator</b></td>
+					<td><b>&nbsp;Value</b></td>
+				</tr>
+				
+				<apex:variable var="currentIndex" value="{!1}"/>
+				<apex:repeat value="{!leadFilterWrappers}" var="wrapper">
+					<tr>
+						<td>
+							<apex:commandButton value="X" action="{!removeLeadRow}" rerender="leadFilters">
+								<apex:param name="queryFilterIndex" assignTo="{!queryFilterIndex}" value="{!currentIndex - 1}"/>
+							</apex:commandButton>
+						</td>
+						<apex:outputPanel layout="none" rendered="{!wrapper.invalid}">
+							<td style="color: red; vertical-align: middle;">&nbsp;{!wrapper.filter.Field_Label__c} [{!wrapper.filter.MC4SF__Field_Name__c}]</td>
+							<td style="color: red; vertical-align: middle;">&nbsp;{!wrapper.filter.MC4SF__Operator__c}</td>
+							<td style="color: red; vertical-align: middle;">&nbsp;{!wrapper.filter.MC4SF__Value__c}</td>
+							<td style="color: red; font-style: italic; vertical-align: middle;">{!wrapper.invalidReason}</td>
+						</apex:outputPanel>
+						
+						<apex:outputPanel layout="none" rendered="{!NOT(wrapper.invalid)}">
+							<td>
+								<apex:selectList value="{!wrapper.filter.MC4SF__Field_Name__c}" size="1" styleClass="leadFieldNameSelect" onchange="updateOperators('Lead', this);">
+									<apex:selectOption itemValue="" itemLabel="--None--"/>
+									<apex:selectOptions value="{!leadFieldOptions}"/>
+								</apex:selectList>
+							</td>
+							<td>
+								<apex:selectList value="{!wrapper.filter.MC4SF__Operator__c}" size="1" styleClass="operatorSelect">
+									<apex:selectOption itemValue="" itemLabel="--None--"/>
+									<apex:selectOptions value="{!operatorOptions}"/>
+								</apex:selectList>
+							</td>
+							<td><apex:inputField value="{!wrapper.filter.MC4SF__Value__c}"/></td>
+							<td style="vertical-align: middle;">{!IF(currentIndex < leadFilterWrappers.size, 'AND', '')}</td>
+						</apex:outputPanel>
+					</tr>
+					<apex:variable var="currentIndex" value="{!currentIndex + 1}"/>
+				</apex:repeat>
+			</table>
+			
+			<apex:commandButton value="Add Row" action="{!addLeadRow}" rerender="leadFilters"/>
+		</apex:outputPanel>
+	</apex:pageBlockSection>
+	
+	<apex:pageBlockSection id="contactFilters" title="Contacts" columns="1" rendered="{!mcQuery.MC4SF__Contacts__c}">
+		<apex:outputPanel >
+			<b>Filter By Additional Fields (Optional):</b><br/>
+
+			<table>
+				<tr>
+					<td></td>
+					<td><b>&nbsp;Field</b></td>
+					<td><b>&nbsp;Operator</b></td>
+					<td><b>&nbsp;Value</b></td>
+				</tr>
+				
+				<apex:variable var="currentIndex" value="{!1}"/>
+				<apex:repeat value="{!contactFilterWrappers}" var="wrapper">
+					<tr>
+						<td>
+							<apex:commandButton value="X" action="{!removeContactRow}" rerender="contactFilters">
+								<apex:param name="queryFilterIndex" assignTo="{!queryFilterIndex}" value="{!currentIndex - 1}"/>
+							</apex:commandButton>
+						</td>
+						<apex:outputPanel layout="none" rendered="{!wrapper.invalid}">
+							<td style="color: red; vertical-align: middle;">&nbsp;{!wrapper.filter.Field_Label__c} [{!wrapper.filter.MC4SF__Field_Name__c}]</td>
+							<td style="color: red; vertical-align: middle;">&nbsp;{!wrapper.filter.MC4SF__Operator__c}</td>
+							<td style="color: red; vertical-align: middle;">&nbsp;{!wrapper.filter.MC4SF__Value__c}</td>
+							<td style="color: red; font-style: italic; vertical-align: middle;">{!wrapper.invalidReason}</td>
+						</apex:outputPanel>
+						
+						<apex:outputPanel layout="none" rendered="{!NOT(wrapper.invalid)}">
+							<td>
+								<apex:inputHidden value="{!wrapper.filter.MC4SF__Field_Name__c}"/>
+								<select class="contactFieldNameSelect" onchange="updateOperators('Contact', this);">
+									<option value="">--None--</option>
+									<optgroup label="Contact">
+										<apex:repeat value="{!contactFieldOptions}" var="option">
+											<apex:outputPanel layout="none" rendered="{!option.value == wrapper.filter.MC4SF__Field_Name__c}">
+												<option value="{!option.value}" selected="selected">{!option.label}</option>
+											</apex:outputPanel>
+											<apex:outputPanel layout="none" rendered="{!option.value != wrapper.filter.MC4SF__Field_Name__c}">
+												<option value="{!option.value}">{!option.label}</option>
+											</apex:outputPanel>
+										</apex:repeat>
+									</optgroup>
+									<optgroup label="Account">
+										<apex:repeat value="{!accountFieldOptions}" var="option">
+											<apex:outputPanel layout="none" rendered="{!option.value == wrapper.filter.MC4SF__Field_Name__c}">
+												<option value="{!option.value}" selected="selected">{!option.label}</option>
+											</apex:outputPanel>
+											<apex:outputPanel layout="none" rendered="{!option.value != wrapper.filter.MC4SF__Field_Name__c}">
+												<option value="{!option.value}">{!option.label}</option>
+											</apex:outputPanel>
+										</apex:repeat>
+									</optgroup>
+								</select>
+							</td>
+							<td>
+								<apex:selectList value="{!wrapper.filter.MC4SF__Operator__c}" size="1" styleClass="operatorSelect">
+									<apex:selectOption itemValue="" itemLabel="--None--"/>
+									<apex:selectOptions value="{!operatorOptions}"/>
+								</apex:selectList>
+							</td>
+							<td><apex:inputField value="{!wrapper.filter.MC4SF__Value__c}"/></td>
+							<td style="vertical-align: middle;">{!IF(currentIndex < contactFilterWrappers.size, 'AND', '')}</td>
+						</apex:outputPanel>
+					</tr>
+					<apex:variable var="currentIndex" value="{!currentIndex + 1}"/>
+				</apex:repeat>
+			</table>
+			
+			<apex:commandButton value="Add Row" action="{!addContactRow}" rerender="contactFilters"/>
+		</apex:outputPanel>
+	</apex:pageBlockSection>
+
+	<apex:pageBlockSection id="campaignMemberFilters" title="Campaign Members" columns="1" rendered="{!mcQuery.MC4SF__Campaign_Members__c}">
+		<apex:outputPanel >
+			<b>Filter By Additional Fields (Optional):</b><br/>
+
+			<table>
+				<tr>
+					<td></td>
+					<td><b>&nbsp;Field</b></td>
+					<td><b>&nbsp;Operator</b></td>
+					<td><b>&nbsp;Value</b></td>
+				</tr>
+				<tr>
+					<td>&nbsp;1.</td>
+					<td>&nbsp;Campaign Name</td>
+					<td>&nbsp;Equals</td>
+					<td><div class="requiredInput"><div class="requiredBlock"/><apex:inputField value="{!campaignMemberObject['CampaignId']}" required="false"/></div></td>
+					<td>AND</td>
+				</tr>
+				
+				<apex:variable var="currentIndex" value="{!1}"/>
+				<apex:repeat value="{!campaignMemberFilterWrappers}" var="wrapper">
+					<tr>
+						<td>
+							<apex:commandButton value="X" action="{!removeCampaignMemberRow}" rerender="campaignMemberFilters">
+								<apex:param name="queryFilterIndex" assignTo="{!queryFilterIndex}" value="{!currentIndex - 1}"/>
+							</apex:commandButton>
+						</td>
+						<apex:outputPanel layout="none" rendered="{!wrapper.invalid}">
+							<td style="color: red; vertical-align: middle;">&nbsp;{!wrapper.filter.Field_Label__c} [{!wrapper.filter.MC4SF__Field_Name__c}]</td>
+							<td style="color: red; vertical-align: middle;">&nbsp;{!wrapper.filter.MC4SF__Operator__c}</td>
+							<td style="color: red; vertical-align: middle;">&nbsp;{!wrapper.filter.MC4SF__Value__c}</td>
+							<td style="color: red; font-style: italic; vertical-align: middle;">{!wrapper.invalidReason}</td>
+						</apex:outputPanel>
+						
+						<apex:outputPanel layout="none" rendered="{!NOT(wrapper.invalid)}">
+							<td>
+								<apex:selectList value="{!wrapper.filter.MC4SF__Field_Name__c}" size="1" styleClass="campaignMemberFieldNameSelect" onchange="updateOperators('CampaignMember', this);">
+									<apex:selectOption itemValue="" itemLabel="--None--"/>
+									<apex:selectOptions value="{!campaignMemberFieldOptions}"/>
+								</apex:selectList>
+							</td>
+							<td>
+								<apex:selectList value="{!wrapper.filter.MC4SF__Operator__c}" size="1" styleClass="operatorSelect">
+									<apex:selectOption itemValue="" itemLabel="--None--"/>
+									<apex:selectOptions value="{!operatorOptions}"/>
+								</apex:selectList>
+							</td>
+							<td><apex:inputField value="{!wrapper.filter.MC4SF__Value__c}"/></td>
+							<td style="vertical-align: middle;">{!IF(currentIndex < campaignMemberFilterWrappers.size, 'AND', '')}</td>
+						</apex:outputPanel>
+					</tr>
+					<apex:variable var="currentIndex" value="{!currentIndex + 1}"/>
+				</apex:repeat>
+			</table>
+			
+			<apex:commandButton value="Add Row" action="{!addCampaignMemberRow}" rerender="campaignMemberFilters"/>
+		</apex:outputPanel>
+	</apex:pageBlockSection>
+</apex:pageBlock>
+
+</apex:form>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>
+	var leadFieldTypes = {!leadFieldTypesJson};
+	var contactFieldTypes = {!contactFieldTypesJson};
+	var accountFieldTypes = {!accountFieldTypesJson};
+	var campaignMemberFieldTypes = {!campaignMemberFieldTypesJson};
+	var fieldTypeOperators = {!fieldTypeOperatorsJson};
+
+	function updateOperators(type, select) {
+		var field = jQuery(select).val();
+	
+		var fieldTypes;
+		if (type == 'Lead') {
+			fieldTypes = leadFieldTypes;
+		} else if (type == 'Contact') {
+			jQuery(select).closest('tr').find('input[type="hidden"]').val(field);
+
+			if (field.indexOf('account.') == -1) {
+				fieldTypes = contactFieldTypes;
+			} else {
+				fieldTypes = accountFieldTypes;
+			}
+		} else if (type == 'CampaignMember') {
+			fieldTypes = campaignMemberFieldTypes;
+		}
+
+		var operatorSelect = jQuery(select).closest('tr').find('.operatorSelect');
+		operatorSelect.find('option').remove();
+		operatorSelect.append(jQuery('<option/>').attr('value', '').text('--None--'));
+		
+		if (field != '--None--') {
+			var fieldType = fieldTypes[field];
+			
+			for (var i = 0; i < fieldTypeOperators[fieldType].length; i++) {
+				operatorSelect.append(jQuery('<option/>').attr('value', fieldTypeOperators[fieldType][i]).text(fieldTypeOperators[fieldType][i]));
+			}
+		}
+	}
+	
+	jQuery(function() {
+	
+		// Setup proper operator options for Lead filters.
+		jQuery('.leadFieldNameSelect').each(function() {
+			if (jQuery(this).val() != '') {
+				var operatorSelect = jQuery(this).closest('tr').find('.operatorSelect');
+				
+				var opertatorValue = operatorSelect.val();
+				
+				updateOperators('Lead', jQuery(this));
+				
+				operatorSelect.val(opertatorValue);
+			} 
+		});
+		
+		// Setup proper operator options for Contact filters.
+		jQuery('.contactFieldNameSelect').each(function() {
+			if (jQuery(this).val() != '') {
+				var operatorSelect = jQuery(this).closest('tr').find('.operatorSelect');
+				
+				var opertatorValue = operatorSelect.val();
+				
+				updateOperators('Contact', jQuery(this));
+				
+				operatorSelect.val(opertatorValue);
+			} 
+		});
+		
+		// Setup proper operator options for Contact filters.
+		jQuery('.campaignMemberFieldNameSelect').each(function() {
+			if (jQuery(this).val() != '') {
+				var operatorSelect = jQuery(this).closest('tr').find('.operatorSelect');
+				
+				var opertatorValue = operatorSelect.val();
+				
+				updateOperators('CampaignMember', jQuery(this));
+				
+				operatorSelect.val(opertatorValue);
+			} 
+		});
+	
+	});
+</script>
+
+</apex:page>

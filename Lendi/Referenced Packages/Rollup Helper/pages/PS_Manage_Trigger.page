@@ -1,0 +1,154 @@
+<apex:page controller="rh2.PS_Manage_Trigger_Controller" action="{!startupManageTrigger}" tabStyle="PS_Enable_Real_Time__tab" sidebar="false"  applyBodyTag="false" docType="html-5.0" >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	
+	<head> 
+    	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    	<apex:includeScript value="{!URLFOR($Resource.rh2__PT_JSZip, '/dist/jszip.js')}"/>
+    	<apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />    
+     </head>
+     
+     <script type="text/javascript">
+		var zipFile = new JSZip();
+		zipFile.generate();
+		
+		function disableButton() {
+			document.getElementById("deployRemove").disabled = true;
+		}		
+	</script>
+	
+    <script> var previousOnload = window.onload; window.onload = function() { if (previousOnload) { previousOnload(); } if({!renderButton} == false && {!deployed} == false) { disableButton() }; } </script>
+	
+	<apex:form id="form">
+	<apex:pageMessages escape="false" />
+	<div class="slds slds-p-around--xx-large slds-container--large slds-container--center slds-grid slds-grid--frame" role="main"> 	
+		<div class="slds-card slds-card--empty slds-m-bottom--medium">
+  			<header class="slds-card__header slds-grid grid--flex-spread">
+	       		<nav role="navigation">
+    				<ol class="slds-breadcrumb slds-list--horizontal">
+   		   				<li class="slds-list__item slds-text-heading--label"><a href="{!URLFOR($Page.PS_Allsettings)}">All Rollup Settings</a></li>
+       				</ol>
+        		</nav>
+  			</header>
+  		</div>
+  		
+		<div class="slds-page-header">
+  			<div class="slds-grid">
+    			<div class="slds-col slds-has-flexi-truncate">
+      				<div class="slds-media">    					
+        				<div class="slds-media__body">
+         					 <p class="slds-text-heading--label">Rollup Helper</p>
+          					<div class="slds-grid">
+            					<h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" >Add/Remove Real Time Trigger for {!deployObjectName}</h1>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+		<apex:outputpanel rendered="{!deployed}" id="deployedMessage">
+		<div class="slds-grid">
+			<div class="slds-col slds-size--1-of-3 slds-col slds-size--1-of-3"></div>
+			<div class="slds-box slds-theme--default slds-grid--align-center slds-m-top--medium" align="center">
+  				<p>
+  					Apex Trigger <b> {!RollupTriggerName} </b> is installed.
+  				</p>
+  				<p>  		
+					Apex Class <b> {!RollupTriggerTestName} </b> is installed.  		
+				</p>
+				<p>
+					Click <b>Remove</b> to uninstall the Apex Trigger and Apex Class for this child object.
+				</p>
+			</div>
+			<div class="slds-col slds-size--1-of-3"></div>			
+		</div>
+		</apex:outputpanel>
+		<apex:outputpanel rendered="{!IF(AND(NOT(deployed), renderButton), TRUE, FALSE)}" id="notDeployedMessage">
+		<div class="slds-grid">
+			<div class="slds-col slds-size--1-of-3 slds-col slds-size--1-of-3"></div>
+			<div class="slds-box slds-theme--default slds-grid--align-center slds-m-top--medium" align="center">
+  				<p>
+  					Apex Trigger <b> {!RollupTriggerName} </b> does not exist.
+  				</p>
+  				<p>  		
+					Apex Class <b> {!RollupTriggerTestName} </b> does not exist.  		
+				</p>
+				<p>
+					Click <b>Deploy {!deployObjectName} Trigger</b> to install the Apex Trigger and Apex Class for this child object.
+				</p>
+			</div>
+			<div class="slds-col slds-size--1-of-3"></div>			
+		</div>
+		</apex:outputpanel>
+        <apex:outputpanel rendered="{!IF(AND(NOT(deployed), NOT(renderButton)), TRUE, FALSE)}" id="preDeployedMessage">
+		<div class="slds-grid">
+			<div class="slds-col slds-size--1-of-3 slds-col slds-size--1-of-3"></div>
+			<div class="slds-box slds-theme--default slds-grid--align-center slds-m-top--medium" align="center">
+  				<p>
+  					Apex Trigger <b> {!DefaultRollupTriggerName} </b> was deployed by default on install.
+  				</p>
+  				<p>
+  					These triggers are not designed to be removed and are part of the Rollup Helper default package.
+  				</p>
+  				<p>
+					Click <b>Back</b> to return to the previous page.
+				</p>
+			</div>
+			<div class="slds-col slds-size--1-of-3"></div>			
+		</div>
+            
+        <script type="text/javascript">
+            (function(){
+                disableButton();
+            })();
+        </script>
+		</apex:outputpanel>
+    	<div class="slds-grid slds-grid--align-center">
+    		<div class="slds-col slds-m-top--medium" rendered="{!renderButton}" align="center">   			 			
+				<input class="slds-button slds-button--brand" type="button" id="deployRemove" onclick="generateZip();" value="{!IF(Deployed, 'Remove', 'Deploy')} {!deployObjectName} Trigger"  />
+				&nbsp;
+				<apex:commandButton styleClass="slds-button slds-button--neutral" value="Back" action="{!backPressed}" />
+			</div>
+		</div>
+		<div class="slds-grid slds-m-vertical--small"><span></span></div>
+		<div class="slds-card">
+     		<header class="slds-card__header slds-grid">
+     			<div class="slds-col">
+               		<h3 class="slds-text-heading--small slds-truncate">Real Time Triggers in Org</h3>
+               	</div>		
+     		</header>
+     		<body>
+    			 <section class="slds-card__body slds-grid">
+    			 	<table class="slds-table slds-table--bordered slds-max-medium-table--stacked" id="table" >
+    			 	<tbody>
+    			 		<apex:repeat value="{!apexTriggersToDisplayMap}" var="trigKey">
+   				 			<tr>
+   				 			<td>
+   								<a href="/{!apexTriggersToDisplayMap[trigKey]}" target="_blank">{!trigKey}</a>
+							</td>
+							</tr>
+						</apex:repeat>
+    			 	</tbody>
+   				 	</table>
+   				 </section>
+   			</body>
+     	</div>	
+		
+		<apex:actionPoller action="{!checkAsyncRequest}" interval="5" rerender="form, deployedMessage" oncomplete="disableButton();" rendered="{!NOT(ISNULL(AsyncResult))}"/>
+		
+		<apex:actionFunction name="deployZip" action="{!deployZip}" rendered="{!ISNULL(AsyncResult)}" rerender="form, deployedMessage">
+			<apex:param name="data" assignTo="{!ZipData}" value=""/>
+		</apex:actionFunction> 
+		
+		<c:zip name="generateZip" id="czip" oncomplete="deployZip(data);" rendered="{!ISNULL(AsyncResult)}">
+			<c:zipEntry path="package.xml" data="{!PackageXml}"/>
+			<c:zipEntry path="destructiveChanges.xml" data="{!DestructiveChangesXml}" rendered="{!Deployed}"/>
+			<c:zipEntry path="classes/{!RollupTriggerTestName}.cls-meta.xml" data="{!TriggerTestCodeMetadata}" rendered="{!NOT(Deployed)}"/>
+			<c:zipEntry path="classes/{!RollupTriggerTestName}.cls" data="{!TriggerTestCode}" rendered="{!NOT(Deployed)}"/>
+			<c:zipEntry path="triggers/{!RollupTriggerName}.trigger-meta.xml" data="{!TriggerCodeMetadata}" rendered="{!NOT(Deployed)}"/>
+			<c:zipEntry path="triggers/{!RollupTriggerName}.trigger" data="{!TriggerCode}" rendered="{!NOT(Deployed)}"/>
+		</c:zip>
+		
+	</div>
+	</apex:form>
+</html>
+</apex:page>

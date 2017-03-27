@@ -1,0 +1,21 @@
+<apex:page controller="Saasfocus_HotTransfer_Controller" action="{!ChangeBroker}" >
+    <apex:form >
+        <apex:actionFunction name="InsertCalender" action="{!InsertCalender}" />
+        <apex:outputPanel rendered="{!!iscall}">
+        <apex:pageBlock >
+          <apex:pageMessages ></apex:pageMessages>
+          
+          <apex:commandButton value="cancel" action="{!Back}"/>
+          
+        </apex:pageblock>
+        </apex:outputPanel>
+    </apex:form>
+    <script>
+        if('{!e.id}'!=null && '{!iscall}'=='true')
+        {
+          //alert('{!iscall}');
+            InsertCalender();
+        }
+    </script>
+
+</apex:page>

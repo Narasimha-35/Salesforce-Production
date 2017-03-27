@@ -1,0 +1,69 @@
+<apex:page StandardController="vhc__Holiday_Item__c"  extensions="vhc.Ctrl16HolidaysItem" action="{!init}">
+
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/jquery-1.9.0.min.js')}" ></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/ui-1.10.0/jquery.ui.core.min.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/ui-1.10.0/jquery.ui.widget.min.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/ui-1.10.0/jquery.ui.tabs.min.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'include/ui-1.10.0/jquery.ui.position.min.js')}"></script> 
+    <script type="text/javascript" src="{!URLFOR($Resource.JQueryTimePicker, 'jquery.ui.timepicker.js')}" ></script>
+
+    <link rel="stylesheet" href="{!URLFOR($Resource.JQueryTimePicker, 'include/ui-1.10.0/ui-lightness/jquery-ui-1.10.0.custom.min.css')}" /> 
+    <link rel="stylesheet" href="{!URLFOR($Resource.JQueryTimePicker, 'jquery.ui.timepicker.css')}" />  
+    
+    <style>
+    #ui-timepicker-div { 
+        padding: 0.2em; 
+        background-color: #fff; 
+        font-size:11px;
+    }
+    </style>
+    
+    
+    
+<apex:sectionHeader title="{!$Label.New_Holiday_Item}" subtitle="{!$Label.Holiday_Item_Edit}" rendered="{!obj.id==null}"/>
+<apex:sectionHeader title="{!$Label.Holiday_Item_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+<apex:outputText value="{!$Label.Holiday_Item_Description}" rendered="{!ISValid}"/>
+<apex:pageMessages />
+<br/>&nbsp;
+
+    <apex:form id="myForm" rendered="{!ISValid}">
+        <apex:pageBlock title="{!$Label.Holiday_Item_Edit}" mode="edit">
+            <apex:pageBlockButtons > 
+                <apex:commandButton action="{!Save}" value="{!$Label.Save}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.Informations}">
+                <apex:inputField value="{!obj.Name}" required="true"/>
+                <apex:outputField value="{!obj.vhc__Holidays__c}"/>
+                <apex:inputField value="{!obj.vhc__Closed_Date__c}" required="true"/>
+<!--                <apex:inputField value="{!obj.Message__c}"/>-->
+                <apex:pageBlockSectionItem />
+                <apex:inputField value="{!obj.vhc__Hour_Begin__c}" styleclass="timepicker"/>
+                <apex:inputField value="{!obj.vhc__Hour_End__c}" styleclass="timepicker"/>
+                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+ <script>
+$(document).ready(function() {
+ $('.timepicker').timepicker(
+            { 
+                hours: {
+                starts: 0,               
+                ends: 23
+            },
+            minutes: {
+                starts: 0,           
+                ends: 59,
+                interval: 1
+            }    
+         }
+     ).keypress(function(event){
+        event.preventDefault();
+        return false;
+        
+    });
+      $('.timepicker')
+});
+</script>
+</apex:page>

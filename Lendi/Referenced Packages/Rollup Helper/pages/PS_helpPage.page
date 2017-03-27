@@ -1,0 +1,315 @@
+<apex:page standardStylesheets="false"  sidebar="false" applyBodyTag="false" docType="html-5.0">
+     <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+     <head> 
+     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+     <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/modernizr-1.7.min.js') }"/>
+    
+     <apex:stylesheet value="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"/>
+     <apex:includeScript value="//code.jquery.com/jquery-1.10.2.js"/>
+     <apex:includeScript value="//code.jquery.com/ui/1.10.4/jquery-ui.js"/>
+     <apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
+
+     <style type="text/css">
+     	li>ul.faq-inner-list {
+     		margin-top: 16px;
+     		list-style-type: square;
+     	}
+     	li>ul.faq-inner-list>li {
+     		margin-left: 38px;
+     	}
+     </style>
+     
+     </head> 
+     
+     <script>
+     	function selectfaq(){
+     		document.getElementById('tab1').className = "slds-tabs__item slds-text-heading--label slds-active";
+     		document.getElementById('tab2').className = "slds-tabs__item slds-text-heading--label";
+     		document.getElementById('tab3').className = "slds-tabs__item slds-text-heading--label";
+     		
+     		document.getElementById('tab-default-1').className = "slds-tabs__content slds-show";
+     		document.getElementById('tab-default-2').className = "slds-tabs__content slds-hide";
+     		document.getElementById('tab-default-3').className = "slds-tabs__content slds-hide";
+     	}
+     	
+     	function selecttroubleshoot(){
+     		document.getElementById('tab2').className = "slds-tabs__item slds-text-heading--label slds-active";
+     		document.getElementById('tab1').className = "slds-tabs__item slds-text-heading--label";
+     		document.getElementById('tab3').className = "slds-tabs__item slds-text-heading--label";
+     		
+     		document.getElementById('tab-default-2').className = "slds-tabs__content slds-show";
+     		document.getElementById('tab-default-1').className = "slds-tabs__content slds-hide";
+     		document.getElementById('tab-default-3').className = "slds-tabs__content slds-hide";
+     	}
+     	
+     	function selectvideos(){
+     		document.getElementById('tab3').className = "slds-tabs__item slds-text-heading--label slds-active";
+     		document.getElementById('tab2').className = "slds-tabs__item slds-text-heading--label";
+     		document.getElementById('tab1').className = "slds-tabs__item slds-text-heading--label";
+     		
+     		document.getElementById('tab-default-3').className = "slds-tabs__content slds-show";
+     		document.getElementById('tab-default-2').className = "slds-tabs__content slds-hide";
+     		document.getElementById('tab-default-1').className = "slds-tabs__content slds-hide";
+     	}
+
+     	function selectExceptions(){
+     		document.getElementById('tab3').className = "slds-tabs__item slds-text-heading--label slds-active";
+     		document.getElementById('tab2').className = "slds-tabs__item slds-text-heading--label";
+     		document.getElementById('tab1').className = "slds-tabs__item slds-text-heading--label";
+     		
+     		document.getElementById('tab-default-3').className = "slds-tabs__content slds-show";
+     		document.getElementById('tab-default-2').className = "slds-tabs__content slds-hide";
+     		document.getElementById('tab-default-1').className = "slds-tabs__content slds-hide";
+     	}
+     </script>
+     
+     <div class="slds slds-p-around--xx-large slds-container--large slds-container--center" role="main"> 
+    	<div class="slds-card">
+    		<header class="slds-card__header slds-grid grid--flex-spread slds-text-heading--small slds-truncate slds-theme--alt-inverse">
+    			<h1 class="slds-text-heading--large">Help &amp; FAQ</h1>
+    		</header>
+    		<section class="slds-card__body slds-theme--default">
+	     	<div class="slds-tabs--default">
+			  <ul class="slds-tabs--default__nav" role="tablist">
+			    <li id="tab1" class="slds-tabs__item slds-text-heading--label slds-active" title="FAQ" role="presentation"><a href="#" onclick="selectfaq();" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1">FAQ</a></li>
+			    <li id="tab2" class="slds-tabs__item slds-text-heading--label" title="Troubleshooting Tips" role="presentation"><a href="#" onclick="selecttroubleshoot();" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2">Troubleshooting Tips</a></li>
+			    <li id="tab3" class="slds-tabs__item slds-text-heading--label" title="Help Videos" role="presentation"><a href="#" role="tab" onclick="selectvideos();" tabindex="-1" aria-selected="false" aria-controls="tab-default-3">Help Videos</a></li>
+			  </ul>
+			  <div id="tab-default-1" class="slds-tabs__content slds-show" role="tabpanel">
+			  
+				    <script>
+			         	var rh = rh || {};
+			    		rh.j$ = jQuery.noConflict();
+			            rh.j$(function() {
+			                rh.j$( "#faq" ).accordion({ collapsible: true, active: false, heightStyle: "content"});
+			            });    
+		        	</script>
+		      
+		     
+		     
+		     		<apex:actionRegion > 
+		                
+		               <div>
+		               <div id="faq" > 
+
+		               <h3>How do I get visibility to exceptions that have occurred in my organization?</h3>
+		               <div>
+		               		You can view your Rollup Helper exceptions <a href="{!URLFOR($Page.PS_viewExceptions)}">here</a>.
+		               </div>	
+
+		               <h3>I am receiving a pop-up telling me to schedule my rollup with a date filter.  Why?</h3>
+		               <div>
+		               		Rollups with a date filter often times need to be scheduled to remain accurate.  The frequency of the date rollups should 
+		               		be scheduled based on two factors: purpose of the data and relative frequency with which each child record is updated.  If the data is used for a monthly snapshot of Opportunity data, for example, then the rollup should be scheduled to run before the reporting snapshot runs.<br/><br/>
+
+		               		Without a schedule, if a child record is not updated for a long period of time and eventually no longer matches the defined date criteria, if no database update is triggered the rollup will not run to recalculate the results.<br/><br/>
+
+		               		Please note that this mostly applies to filters that use SOQL date literals such as LAST_WEEK or THIS_YEAR.  If you're filtering based on a relatively static date and a defined date range, a schedule may not be necessary.  An example of a date filter that may not necessitate a schedule would be Opportunities created in July 2016. <br/><br/>
+
+		               		If you need assistance determining whether a schedule is necessary for your rollup, please feel free to contact our support team at support@passagetech.com.
+		               </div>
+		               
+		               <!-- Start of name and description -->
+		               <h3>My source object isn't appearing in the list.  Why?</h3>
+		               <div>
+		               		The list of source objects to choose from is populated based on the relationship fields on a particular object.  If the source 
+		               		(child) object has a relationship with the selected target (parent) object, it will appear in the list.  If your source object is 
+		               		not appearing in the list, double check to make sure the correct target object / field are selected, then make sure a relationship 
+		               		exists between the source and target objects.  If your field still does not appear in the list, please contact support@passagetech.com.
+		               </div>
+		               
+		               <h3>What is SOQL Selectivity?  Why does it matter?</h3>
+		               <div>
+		               		A "selective" SOQL query filter is one that filters on an indexed field.  Indexed fields can be compared to the classification
+		               		system in a library - they make it much easier to find what you are looking for in a very large space full of books that tend to 
+		               		look more or less the same.  Without that system, it would take a much longer time to find anything in the library - and the same is
+		               		true of a SOQL query.<br/><br/>
+		               		
+		               		Some resources from Salesforce regarding SOQL selectivity include:<br/>
+		               		
+		               		<ul>
+		               			<li><a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_SOQL_VLSQ.htm">Working with Very Large SOQL Queries</a></li>
+		               			<li><a href="http://resources.docs.salesforce.com/194/0/en-us/sfdc/pdf/salesforce_query_search_optimization_developer_cheatsheet.pdf">Database Query and Search Optimization Cheat Sheet</a></li>
+		               			<li><a href="https://help.salesforce.com/apex/HTViewSolution?id=000199003">Query Plan Tool How To / FAQ</a></li>
+		               		</ul>
+		               		
+		               </div>
+		               
+		               <h3>Why are fields missing on my exception / schedule pages?</h3>              
+		               <div>
+							Field permissions may not be assigned to your user.  Please add the Rollup Helper - All Access permission set to 
+							your user and try again.
+		               </div>
+		                   
+		               <h3>What are recommended best practices regarding scheduling?</h3>
+		               <div>
+		                    We recommend when scheduling that you prioritize rollups that calculate based on a date filter to ensure accuracy of those numbers.  
+		                    We also recommend that you check the estimated Run time of a rollup (visit the Rollups tab, then hover over the 'Action' arrow and 
+		                    click Run) and avoid scheduling rollups more frequently than the estimated processing time in order to avoid a queue buildup.
+		               </div> 
+		               
+		               <h3>Why are no objects appearing on the Enable Real Time tab?</h3>
+		               <div>
+		               		The object list on the Enable Real Time tab consists of source objects of existing rollups.  If you have not 
+		               		yet configured any rollups, please create a rollup.  The source object should then appear in the list.
+		               </div>
+		       		   
+		       		   <h3>Why is my rollup touching all records?</h3>
+		       		   <div>
+		       		   		When a scheduled or manual rollup run occurs, the run will force the rollup update out to all records.  In an update on our 
+		       		   		near term roadmap, you will be able to filter which parent records a rollup may run for.	       		   		
+		       		   </div>
+		       		   
+		       		   <h3>Why is Rollup Helper showing up as the last modified by user on my records?</h3>
+		       		   <div>
+		       		   		By default, manual and scheduled rollup runs will run under the managed package setup user 'Rollup Helper'.  This 
+		       		   		behavior can be changed by deleting the 'Rollup Batch Agent - Hourly' scheduled job, navigating to the Rollups tab, and
+		       		   		clicking 'Run As...' while logged in as the desired Run As user.
+		       		   </div>
+		       		   
+		       		   <h3>Why am I getting an error that says 'Rollup Helper has encountered one or more exceptions..." and where can I see the error?</h3>
+		       		   <div>
+		       		   		The error you are seeing is a notification that is automatically added to the page when any Rollup Helper Exception record exists.
+		       		   		Rollup Helper exceptions are logged when Rollup Helper is unable to save a record as part of any rollup run and can be viewed on 
+		       		   		the Rollup Helper Exceptions tab.  
+		       		   </div>
+		       		   
+		       		   <h3>Why are no objects appearing in the list on the exceptions tab?</h3>
+		       		   <div>
+		       		   		Only objects that are the target object of a rollup that has recently encountered an exception will appear in the list.  If no 
+		       		   		objects appear, no exception records currently exist.
+		       		   </div>
+		       		   <h3>How do I export my rollups to a CSV?</h3>
+		       		   <div>
+		       		   		<ul>
+		       		   			<li>Step 1) Navigate to the <strong>Export Rollups</strong> tab.
+		       		   				<ul class="faq-inner-list">
+		       		   					<li>If you cannot see the <strong>Export Rollups</strong> tab, click on <strong>Setup</strong> and then <strong>Users</strong> under <strong>Manage Users</strong>.</li>
+		       		   					<br />
+		       		   					<li>Find your user in the list (there may be multiple pages) and click on the name. Click on the <strong>Profile</strong> on your User detail record.</li>
+		       		   					<br />
+		       		   					<li>From your profile, click on <strong>Edit</strong>. Do a Ctrl+F (Cmd+F) search for <strong>Export Rollups</strong>. The setting within the profile should have a drop down. Set it to <strong>Default On</strong> and click on save at the very top.</li>
+		       		   				</ul>
+		       		   			</li>
+		       		   			<br />
+		       		   			<li>Step 2) Click the checkbox next to each rollup that you would like to rollup and then click on <strong>Export Selected</strong>.
+			       		   			Alternatively, you can also click on the <strong>Export All</strong> button to select all of them for export.
+		       		   			</li>
+		       		   			<br />
+		       		   			<li>Step 3) Review all of the rollups that are set to be exported in the <strong>Rollups To Be Exported</strong> list.
+			       		   			Once you have confirmed that they are the rollups that you want to export, select <strong>Download</strong>.
+			       		   			This should open up a save dialog from your browser. Select a folder to save the CSV to and you're done.
+		       		   			</li>
+		       		   		</ul>
+		       		   </div>
+		       		   <h3>How do I import my rollups from another environment?</h3>
+		       		   <div>
+		       		   		<ul>
+		       		   			<li>Step 1) Navigate to the setup menu and type <strong>Data Import Wizard</strong>  in the quick find/search bar. Click on the link <strong>Data Import Wizard</strong> that shows up below under <strong>Administer</strong>.</li>
+		       		   			<br />
+		       		   			<li>Step 2) On the Data Import Wizard page, click on the large green button that says <strong>Launch Wizard</strong>.</li>
+		       		   			<br />
+		       		   			<li>Step 3) You should now be on the <strong>Import your Data in to Salesforce</strong> page. In the first column, select the tab that says <strong>Custom Object</strong>. In the list that shows up, scroll down and select Rollup Exports (there should be a green checkmark that shows up).</li>
+		       		   			<br />
+		       		   			<li>Step 4) Once the center box shows <strong>What do you want to do?</strong>, select the top option <strong>Add new records</strong>. Leave the <strong>Match by:</strong> and <strong>Which User field designates record owners?</strong> drop-downs as None.</li>
+		       		   			<br />
+		       		   			<li>Step 5) On the third box, you can either select the Rollup Helper export CSV file from your computer and drag it to the <strong>Drag CSV file here to upload</strong> box, or click on the <strong>CSV</strong> link and click on <strong>Choose File</strong> to select the CSV file. Leave the other settings at the default values and click on the green <strong>Next</strong> button at the bottom right of the page.</li>
+		       		   			<br />
+		       		   			<li>Step 6) You should see the <strong>Edit Field Mapping: Rollup Exports</strong> page.
+		       		   			Map the three fields from our CSV file. The first field to map is <strong>type__c</strong> to type.
+		       		   			Then map <strong>RollupOrFilterData__c</strong> to <strong>Rollup Or Filter Data</strong> and <strong>filterJobRollupKey__c</strong> to <strong>Filter Job Rollup Key</strong>.</li>
+		       		   			<br />
+		       		   			<li>Step 7) Click on the green <strong>Next</strong> button at the bottom right corner of the page which will take you to the <strong>Review &amp; Start Import</strong> page.
+		       		   			If everything looks good here (3 columns mapped), click on the green <strong>Start Import</strong> button on the bottom right corner of the page and your rollups and filters should begin importing without any issues.</li>
+		       		   			<br />
+		       		   			<br />
+		       		   			<li>You can view a visual guide to the import process <a href="https://drive.google.com/file/d/0BwlwYPXYAzRKUUQwaHZwT1pUWGs/view?usp=sharing" target="_blank">here</a>.</li>
+		       		   		</ul>
+		       		   </div>
+		             </div> 
+		             </div>
+		             
+		             </apex:actionRegion>
+					
+			  </div>
+			  <div id="tab-default-2" class="slds-tabs__content slds-hide" role="tabpanel">
+			  
+				    <script>
+			         	var rh = rh || {};
+			    		rh.j$ = jQuery.noConflict();
+			            rh.j$(function() {
+			                rh.j$( "#troubleshoot" ).accordion({ collapsible: true, active: false, heightStyle: "content"});
+			            });    
+		        	</script>
+		      
+		     
+		     
+		     		<apex:actionRegion > 
+		                
+		               <div>
+		               <div id="troubleshoot" > 
+		               
+		               <!-- Start of name and description -->
+		               
+		               <h3>My rollup isn't updating automatically.</h3>              
+		               <div>
+							If you are a Premium customer and your rollup is not automatically updating, please check the Run Mode column on the 
+							Rollups tab.  If a lightning bolt does not appear in the run mode column for that rollup, no real-time trigger exists on that rollup's 
+							source object.  Please view the Enable Real Time tab to create the trigger with just a few clicks!
+		               </div>
+		               
+		               <h3>I keep getting errors saying that Rollup Helper cannot update because of a validation rule.  What should I do?</h3>
+		               <div>
+		               		You can enable Validation Rule Helper to allow Rollup Helper to update regardless of validation on the target object.  First,
+		               		check 'Enable Validation Helper' in the Rollup Helper Settings (Setup -> Develop -> Custom Settings).  Then, add the following 
+		               		text to the end of all of your validation rules: 
+		               		<br/><br/>
+		               		 &amp;&amp;   $Setup.rh2__PS_Settings__c.rh2__Run_Validation_Rule__c
+		               
+		               </div>
+		               
+		               <h3>My rollup is running, but it doesn't seem to be returning the results I would expect it to.</h3>
+		               <div>
+		               		Usually, any filters you have on the rollup are the culprit when dealing with this type of issue.  You can run the rollup query
+		               		in the Query Editor of the developer console, adding the ID of the parent record as an additional filter, to see what Rollup Helper
+		               		should be returning for a given record.  
+		               		
+		               		Additionally, if it is possible that you may need to query archived records to get the correct result (such as tasks, which archive 
+		               		automatically after one year) please view the Advanced Settings on the rollup edit page and check 'Query Archived Records'.
+		               </div>
+		               
+		               <h3>My real-time rollups are encountering Too Many SOQL Queries / Too Many Query Rows errors.</h3>
+		               <div> 
+		               		Unfortunately, there are several possible reasons why Rollup Helper may encounter these errors:  Circular logic, data skew, 
+		               		and other code in the same execution context being just a few possibilities. <br/>
+		               		
+		               		If you are a Premium customer and begin encountering these errors, please contact support@passagetech.com so that 
+		               		our support staff can perform a root cause analysis and help you determine the best solution to the problem.	               		
+		               
+		               </div>
+		                   
+		              
+		             </div> 
+		             </div>
+		             
+		             </apex:actionRegion>
+			
+			  </div>
+			  <div id="tab-default-3" class="slds-tabs__content slds-hide" role="tabpanel"> 
+			  		<apex:actionRegion > 		                
+		                <div style="padding-left:15px;">
+		                	<h3 class="slds-text-heading--small">Rollup Helper Help Video Playlist</h3><br/>
+		               		<div id="videos" > 		               
+				               <div>
+									<apex:iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLfryc3zXHX0rrITdFDrn-ONgswUCwzmTu" frameborder="0" />
+				               </div>
+		             		</div> 
+		             	</div>		             
+		            </apex:actionRegion>
+			  </div>
+			</div>
+		</section>
+		</div>
+     </div>
+    </html>  
+</apex:page>

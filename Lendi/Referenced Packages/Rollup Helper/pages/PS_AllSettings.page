@@ -1,0 +1,366 @@
+<apex:page controller="rh2.PS_settingManagementController" standardStylesheets="false" sidebar="false" applyBodyTag="false" docType="html-5.0" action="{! numActive }" tabStyle="PS_All_Rollups__tab">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head> 
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/modernizr-1.7.min.js') }"/>
+        <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }" />
+        <apex:stylesheet value="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"/>
+        <apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+     
+        <apex:includeScript value="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"/>
+        <apex:stylesheet value="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"/>
+        <apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
+    </head> 
+    
+    <style>
+        
+        @media screen and (max-width: 1280px){
+            .hideFullColumn tr > .hidecol
+            {
+                display:none;
+            }
+        }
+        
+        @media screen and (max-width:1024px){
+            .hideFullColumn tr > .hidecol
+            {
+                display:none;
+            }
+                .hideFullColumn tr > .hidecol2
+            {
+                display:none;
+            }
+            
+        }
+        
+        @media (max-width:768px){
+            .showActionColumn
+            {
+                display:table-cell;
+            }
+            .hideDropdown
+            {
+                display:none !important;
+            }
+        }
+        
+        @media (min-width:769px){
+            .showActionColumn
+            {
+                display:none;
+            }
+            .hideDropdown
+            {
+                display:initial;
+            }
+        }
+        
+        #progressbar { height: 10px; margin-left:50px; margin-top: 10px; }
+    </style>
+    
+    <script>
+    
+        //Verify namespace is ready
+        var rh = rh || {};
+        rh.j$ = jQuery.noConflict();
+        
+        var val = {!count};
+        val == 3 ? val = 100 : val *= 33;
+        
+        rh.j$(function() {
+            rh.j$( "#progressbar" ).progressbar({
+                value: val
+            });       
+        });
+        
+        if(val == 100) {
+            var css = '.ui-widget-header { background: red; }',
+                head = document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
+        
+            style.type = 'text/css';
+            if (style.styleSheet){
+              style.styleSheet.cssText = css;
+            } else {
+              style.appendChild(document.createTextNode(css));
+            }
+            
+            head.appendChild(style);
+        }
+        
+        var prevValue;
+    </script>
+
+    <apex:form >
+          <apex:actionFunction action="{!toggleActiveRollups}" name="activate" /> 
+    </apex:form>
+            
+    <apex:form >
+        <div class="slds slds-p-around--xx-large slds-container--large slds-container--center" role="main"> 
+        
+        <apex:outputPanel rendered="{! !customSettingsExist }">
+        <div class="slds-card slds-card--empty">
+            <header class="slds-card__header  slds-text-heading--small slds-truncate">
+                All Rollups
+            </header>
+            <section class="slds-card__body">
+                <h3 class="slds-text-heading--small slds-p-top--large slds-p-bottom--large">No rollup settings exist yet.</h3>
+                <button type="button" onclick="window.open('{!URLFOR($Page.rh2__PS_SelectMaster)}', '_self')"
+                        class="slds-button slds-button--neutral slds-button--small slds-m-bottom--x-large">Create Rollup</button>  
+            </section>
+        </div>
+    </apex:outputPanel> 
+        
+    <apex:outputPanel rendered="{! customSettingsExist }">
+        <div class="slds-card">
+        <header class="slds-card__header slds-grid">
+        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+            <div class="slds-media__body">
+                <h3 class="slds-text-heading--small slds-truncate">All Rollups</h3>
+            </div>
+        </div>
+        <div class="slds-no-flex">
+        <apex:outputPanel rendered="{! notPaid }">
+        <button  type="button" onClick="window.open('http://www.passagetechnology.com/rollup-helper-order');" class="slds-button slds-button--brand">
+        Upgrade Rollup Helper</button>
+    </apex:outputPanel>    
+                &nbsp;
+                <apex:outputLink value="{!URLFOR($Page.rh2__PS_SelectMaster)}" styleClass="slds-button slds-button--neutral" rendered="{!NOT(showMilestoneMessage)}">
+                    New
+                </apex:outputLink>    
+                <apex:commandButton value="Run As {!$User.FirstName + ' ' + $User.LastName}" styleClass="slds-button slds-button--neutral" action="{!newAgent}" 
+                rendered="{!NOT(isRunningUserCurrentUser)}" reRender="running_user, table"/> 
+             
+   
+            </div>
+          </header>
+          <section class="slds-card__body">
+              <apex:outputPanel rendered="{!showMilestoneMessage}">
+                  <div class="slds-box slds-theme--info slds-theme--alert-texture" style="width:98%; margin-left:auto; margin-right:auto;">
+                      You have activated {! count } rollups.
+                      Need more? Please
+                      <a href="http://www.passagetechnology.com/rollup-helper-order" target="new">upgrade</a>!
+                      Like Rollup Helper?
+                      <a href="https://appexchange.salesforce.com/listingDetail?listingId=a0N30000009i3UpEAI&tab=r" target="new">
+                      Give us a review.
+                      </a>
+                  </div>
+              </apex:outputPanel>
+              <br/>
+            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked hideFullColumn" id="allRollups">
+              <thead>
+                <tr style="width:100%;">
+                  <th class="slds-text-heading--label hidecol" scope="col">
+                     <span style="width:10%; word-wrap:break-word; white-space:normal !important;"> <apex:commandLink value="Label" action="{! doSettingSort }" > 
+                          <apex:param name="sortField" value="rollupLabel__c" assignTo="{!sortField}"/> 
+                          <apex:outputText value="{!IF(sortField=='rollupLabel__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/> 
+                      </apex:commandLink> </span>
+                  </th>  
+                  <th class="slds-text-heading--label showActionColumn"  scope="col">Action</th> 
+                  <th class="slds-text-heading--label" style="width:5%;" scope="col">Run Mode</th>
+                  <th class="slds-text-heading--label slds-cell-wrap hidecol" scope="col">
+                     <span style="width:10%;"><apex:commandLink value="Relationship Field" action="{! doSettingSort }" > 
+                        <apex:param name="sortField" value="relationshipField__c" assignTo="{!sortField}"/> 
+                        <apex:outputText value="{!IF(sortField=='relationshipField__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/> 
+                     </apex:commandLink> </span>
+                  </th>
+                  <th class="slds-text-heading--label" scope="col">
+                     <span style="width:10%; "><apex:commandLink value="Source Field" action="{! doSettingSort }" > 
+                        <apex:param name="sortField" value="sourceField__c" assignTo="{!sortField}"/> 
+                        <apex:outputText value="{!IF(sortField=='sourceField__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/> 
+                     </apex:commandLink> </span>
+                  </th>
+                  <th class="slds-text-heading--label hidecol2" style="width:5%;" scope="col">
+                     <apex:commandLink value="Logic" action="{! doSettingSort }" > 
+                        <apex:param name="sortField" value="Logic__c" assignTo="{!sortField}"/> 
+                        <apex:outputText value="{!IF(sortField=='Logic__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/> 
+                     </apex:commandLink> 
+                  </th>
+                  <th class="slds-text-heading--label hidecol2" scope="col">
+                     <span style="width:10%;  "><apex:commandLink value="Condition" action="{! doSettingSort }" > 
+                        <apex:param name="sortField" value="relationshipName__c" assignTo="{!sortField}"/> 
+                        <apex:outputText value="{!IF(sortField=='relationshipName__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/> 
+                     </apex:commandLink> </span>
+                  </th>
+                  <th class="slds-text-heading--label" scope="col">
+                     <span style="width:15%; "><apex:commandLink value="Target Field" action="{! doSettingSort }" > 
+                        <apex:param name="sortField" value="targetField__c" assignTo="{!sortField}"/> 
+                        <apex:outputText value="{!IF(sortField=='targetField__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/> 
+                     </apex:commandLink> </span>
+                  </th>
+                  <th class="slds-text-heading--label hidecol" scope="col">
+                     <span style="width:15%;"><apex:commandLink value="Description" action="{! doSettingSort }" > 
+                        <apex:param name="sortField" value="description__c" assignTo="{!sortField}"/> 
+                        <apex:outputText value="{!IF(sortField=='description__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/> 
+                     </apex:commandLink></span> 
+                  </th>
+                  <th class="slds-text-heading--label" style="width:5%;">
+                    <span title="Select All">
+                    <apex:commandLink onclick="(function() { selectAllCheckboxes(this,'activeCheckbox'); activate(); })()" rerender="activeColumn">
+                           <apex:inputCheckbox value="{!allActiveCheck}" id="select-all"/>
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label slds-assistive-text">select all</span>
+                    </apex:commandLink>
+                    </span>
+                    &nbsp; Active
+                    </th>   
+                    <th class="slds-text-heading--label" style="width:5%;">ACTION</th>
+                </tr>
+              </thead>
+              <tbody> 
+               <apex:repeat value="{!customSettings}" var="item">
+                            <tr> 
+                                <td style="word-break:break-all;" data-label="Rollup Label" class="slds-cell-wrap hidecol">
+                                    
+                                    &nbsp;{! item.rollupLabel__c }</td>
+                        
+                                <td data-label="Action" class="showActionColumn">
+                                    <apex:outputPanel rendered="{!IF(item.rh2__conditional__c, true, false)}">
+                        
+                                    <apex:outputLink value="/apex/PS_Run" rendered="{!isBlank(item.rh2__targetFieldName__c)}" styleClass="slds-button slds-button--xsmall slds-button--neutral">
+                                        <apex:param name="s" value="{!item.name}"/>
+                                        <apex:outputText value="Run"/>
+                                    </apex:outputLink>        
+                       
+                                    <apex:outputLink value="/apex/PS_Run" rendered="{!not(isBlank(item.rh2__targetFieldName__c))}" styleClass="slds-button slds-button--xsmall slds-button--neutral">
+                                        <apex:param name="s" value="{!item.name}"/>
+                                        <apex:outputText value="Run"/>
+                                    </apex:outputLink>
+                                                
+                                    </apex:outputPanel> 
+                                                
+                                                
+                                    <apex:outputPanel rendered="{!IF(item.rh2__conditional__c, true, false)}" > 
+                                    <apex:outputLink value="/apex/PS_Job" rendered="{!isBlank(item.rh2__targetFieldName__c)}" styleClass="slds-button slds-button--xsmall slds-button--neutral">
+                                        <apex:param name="s" value="{!item.name}"/>
+                                        <apex:outputText value="Schedule"/>
+                                           
+                                    </apex:outputLink>
+                                    <apex:outputLink value="/apex/PS_Job" rendered="{!not(isBlank(item.rh2__targetFieldName__c))}" styleClass="slds-button slds-button--xsmall slds-button--neutral">
+                                        <apex:param name="id" value="{!item.rh2__targetFieldName__c}"/>
+                                        <apex:outputText value="Schedule"/>
+                                        </apex:outputLink>
+              
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputLink value="/apex/PS_RollupType?s={!item.Name}" styleClass="slds-button slds-button--xsmall slds-button--neutral">Edit</apex:outputLink>
+                                        
+                                        
+                                    <apex:commandLink value="Del" reRender="setting_values, master_block, running_user, displayNum, menu" action="{! delCustomSetting }" styleClass="slds-button slds-button--xsmall slds-button--neutral">
+                                        <apex:param name="settingId" value="{! item.Name }"/>
+                                    </apex:commandLink>
+                            
+                                </td>
+                                <td data-label="Run Time" class="slds-cell-shrink slds-truncate  slds-text-align--center" style="width:5%;">
+                                    <apex:outputPanel rendered="{!item.rh2__isRealTime__c}">
+                                        <span title="Real Time"><i class="fa fa-bolt"></i></span>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!AND(item.rh2__conditional__c, item.rh2__targetFieldLength__c == 1)}">
+                                        <span title="Scheduled">
+                                            <apex:outputLink rendered="{!isBlank(item.rh2__targetFieldName__c)}" value="/apex/PS_Job?s={!item.Name}"><i class="fa fa-calendar"></i></apex:outputLink>
+                                            <apex:outputLink rendered="{!not(isBlank(item.rh2__targetFieldName__c))}" value="/apex/PS_Job?id={!item.rh2__targetFieldName__c}"><i class="fa fa-calendar"></i></apex:outputLink>
+                                        </span>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!AND(!item.rh2__isRealTime__c, item.rh2__targetFieldLength__c != 1, item.rh2__conditional__c)}">
+                                        <span title="Manual Run Only"><apex:outputLink value="/apex/PS_Run?s={!item.Name}"><i class="fa fa-info-circle"></i></apex:outputLink></span>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{! !item.conditional__c }">
+                                        <span title="Inactive"><i class="fa fa-exclamation-triangle"></i></span>
+                                    </apex:outputPanel>
+                                </td>
+                                <td class="slds-cell-wrap hidecol" style="word-break:break-all;" data-label="Relationship Field">{! item.relationshipField__c }</td>
+                                <td class="slds-cell-wrap" style="word-break:break-all;" data-label="Source Field">{!item.sourceFieldObject__c} &gt; {! item.sourceField__c }</td>
+                                <td class="hidecol2" data-label="Logic" style="width:5%;">{! item.logic__c }</td>
+                                <td class="slds-cell-wrap hidecol2" data-label="Condition"><apex:outputLink value="/apex/PS_DefineFilter?f={! item.condition__c }">{! item.relationshipName__c }</apex:outputLink></td>
+                                <td class="slds-cell-wrap" style="word-break:break-all;" data-label="Target Field"> {! item.targetField__c }</td>
+                                <td class="hidecol slds-cell-wrap" style="word-break:break-all;" data-label="Description">{! item.description__c }</td>
+                                <td data-label="Active" class="slds-cell-shrink" style="width:5%;">
+                                    <apex:commandLink onClick="if (!confirmActive('{!item.rh2__conditional__c}', '{!item.rh2__targetField__c}', {!count}, {!notpaid})) return false;" action="{!setActive}"> 
+                                        <apex:inputCheckbox value="{!item.rh2__conditional__c}" id="activeCheckbox"/>
+                                        <apex:param name="rollupId" value="{!item.name}"/> 
+                                    </apex:commandLink> </td>
+                                    
+                                    <td style="width:5%;">
+                                    <div class="slds-dropdown-trigger slds-dropdown-trigger--click hideDropdown" id="{!item}">  
+                                          <button class="slds-button slds-button--icon-border-filled hideDropdown" type="button" onClick="showOrHideDropdown('{!JSENCODE(item.id)}');">
+                                            <i class="fa fa-caret-down"></i>
+                                          </button>
+                                          <div class="slds-dropdown slds-dropdown--left slds-dropdown--actions slds-dropdown--menu hideDropdown">
+                                             <ul id="menu" class="slds-dropdown__list hideDropdown" role="menu">
+                         
+                                                
+                                                <apex:outputPanel rendered="{!IF(item.rh2__conditional__c, true, false)}">
+                                                <li class="slds-dropdown__item ">
+                        
+                                                <apex:outputLink value="/apex/PS_Run" rendered="{!isBlank(item.rh2__targetFieldName__c)}" styleClass="slds-truncate">
+                                                    <apex:param name="s" value="{!item.name}"/>
+                                                    <apex:outputText value="Run"/>
+                                                </apex:outputLink>        
+                       
+                                                <apex:outputLink value="/apex/PS_Run" rendered="{!not(isBlank(item.rh2__targetFieldName__c))}" styleClass="slds-truncate">
+                                                    <apex:param name="id" value="{!item.rh2__targetFieldName__c}"/>
+                                                    <apex:outputText value="Run"/>
+                                                </apex:outputLink>
+                                                </li>
+                                                </apex:outputPanel> 
+                                                                                             
+                                                <apex:outputPanel rendered="{!IF(item.rh2__conditional__c, true, false)}" > 
+                                                <li class="slds-dropdown__item">
+                                                <apex:outputLink value="/apex/PS_Job" rendered="{!isBlank(item.rh2__targetFieldName__c)}" styleClass="slds-truncate">
+                                                    <apex:param name="s" value="{!item.name}"/>
+                                                    <apex:outputText value="Schedule"/>
+                                                    
+                                                </apex:outputLink>
+                                                <apex:outputLink value="/apex/PS_Job" rendered="{!not(isBlank(item.rh2__targetFieldName__c))}" styleClass="slds-truncate">
+                                                    <apex:param name="id" value="{!item.rh2__targetFieldName__c}"/>
+                                                    <apex:outputText value="Schedule"/>
+                                                </apex:outputLink>
+                       
+                                                </li>
+                                                </apex:outputPanel>
+                                                
+                                                
+                                                <li class="slds-dropdown__item">
+                                                <apex:outputLink value="/apex/PS_RollupType?s={!item.Name}" styleClass="slds-truncate">Edit</apex:outputLink>
+                                                </li>
+                                                
+                                                <li class="slds-dropdown__item">
+                                                <apex:commandLink value="Del" reRender="setting_values, master_block, running_user, displayNum, menu" onClick="if(!confirm('Are you sure you want to delete this rollup?')) return false;" action="{! delCustomSetting }" styleClass="slds-truncate">
+                                                    <apex:param name="settingId" value="{! item.Name }"/>
+                                                </apex:commandLink>
+                                                </li>
+                                                
+                                                                                               
+                                            </ul>
+                                          </div>
+                                    </div>
+                                    </td>
+                                
+                        
+                                     
+                            </tr>
+                        </apex:repeat>
+              </tbody>
+            </table>
+          </section>
+          <footer class="slds-card__footer"> 
+              <apex:outputText value="Running As {!runningUser}" rendered="{!isBatchActive}"/>
+              <apex:outputText value="Click 'Run As {!$User.FirstName} {!$User.LastName}' to Select a Running User" rendered="{! !isBatchActive }"/>
+              <apex:outputText value="{!Count} of {!total} Rollups Active" style="float:right;" />
+          </footer>
+        </div>
+        
+    </apex:outputPanel>     
+
+    <apex:param name="rendered" value="{! showMilestoneMessage }" />
+       
+    </div>  
+             
+    </apex:form>
+       <br/> <br/>
+   
+    <c:PS_additionalInformation ></c:PS_additionalInformation>    
+        
+    
+    </html>
+</apex:page>

@@ -1,0 +1,24 @@
+<apex:component >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+    
+    <apex:stylesheet value="{!URLFOR($Resource.WLHTMLResources,'/css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.WLHTMLResources,'/css/style.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.WLHTMLResources,'/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.WLHTMLResources,'/js/html5.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.WLHTMLResources,'/js/js.js')}"/>
+    
+    <!--<apex:stylesheet value="{!URLFOR($Resource.WLHTMLResources,'/css/bootstrap.css')}" />
+    
+    
+    <apex:stylesheet value="{!URLFOR($Resource.WLHTMLResources,'/css/bootstrap-theme.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.WLHTMLResources,'/css/bootstrap-theme.min.css')}" />
+    
+    
+    
+    <apex:includeScript value="{!URLFOR($Resource.WLHTMLResources,'/js/bootstrap.js')}"/>-->
+    
+</head>
+</apex:component>

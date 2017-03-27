@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>ErrorPage</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>ErrorPage</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>true</enableActivities>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Inbound_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <description>You can receive incoming sms to this number.</description>
+        <externalId>false</externalId>
+        <label>Inbound Number</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mobile_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Mobile Number</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>SMS_Text__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>SMS Text</label>
+        <length>4000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>actionTaken__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>actionTaken</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>external_field__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <deprecated>false</deprecated>
+        <externalId>true</externalId>
+        <label>external field</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>taskId__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>taskId</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Incoming SMS</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Inbound_Number__c</columns>
+        <columns>Mobile_Number__c</columns>
+        <columns>SMS_Text__c</columns>
+        <columns>actionTaken__c</columns>
+        <columns>external_field__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>I-{00000000}</displayFormat>
+        <label>Incoming SMS Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Incoming SMS</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Mobile_Number__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>SMS_Text__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Inbound_Number__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATEDBY_USER</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <listViewButtons>Create_Lead</listViewButtons>
+        <listViewButtons>Create_Contact</listViewButtons>
+        <listViewButtons>Create_Task</listViewButtons>
+        <listViewButtons>Create_Case</listViewButtons>
+        <listViewButtons>Create_Opportunity</listViewButtons>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Create_Case</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Case</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)} 
+
+var packagePrefix = &quot;smagicinteract__&quot;; 
+var records = {!GETRECORDIDS($ObjectType.Incoming_SMS__c)}; 
+if (records[0] == null) 
+{ 
+alert(&quot;Please select at least one Record&quot;);
+} 
+else{ 
+var action = &quot;Create Case&quot;; 
+var recordIds = &quot;&quot;; 
+for (var n in records) { 
+if(n == &apos;remove&apos; || n == &apos;indexOf&apos;) continue; 
+recordIds = recordIds + records[n]; 
+
+if (n != records.length-1) { 
+recordIds = recordIds + &quot;,&quot;; 
+} 
+} 
+var queryString = parent.window.location.pathname; 
+if (parent.window.location.search){ 
+queryString = queryString + parent.window.location.search 
+} 
+
+var url = &quot;/apex/&quot;+packagePrefix+&quot;LookupConfigAction?retURL=&quot;+queryString + &quot;&amp;action=&quot;+action+&quot;&amp;recordIds=&quot;+ recordIds; 
+
+parent.window.location = url; 
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_Contact</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Contact</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+
+var packagePrefix = &quot;smagicinteract__&quot;;
+var records = {!GETRECORDIDS($ObjectType.Incoming_SMS__c)};
+if (records[0] == null)
+{
+    alert(&quot;Please select at least one Record&quot;);
+}
+else{
+       var action = &quot;Create Contact&quot;;
+       var recordIds = &quot;&quot;;
+	for (var n in records) {
+               if(n == &apos;remove&apos; || n == &apos;indexOf&apos;) continue;
+              	recordIds  = recordIds  + records[n];
+                                  
+		if (n != records.length-1) {
+			recordIds  = recordIds  + &quot;,&quot;;
+		}
+	}
+  var queryString =  parent.window.location.pathname;
+   if (parent.window.location.search){
+        queryString = queryString + parent.window.location.search
+    }
+
+   var url = &quot;/apex/&quot;+packagePrefix+&quot;LookupConfigAction?retURL=&quot;+queryString + &quot;&amp;action=&quot;+action+&quot;&amp;recordIds=&quot;+ recordIds;
+ 
+  parent.window.location = url;
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_Lead</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Lead</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+
+var packagePrefix = &quot;smagicinteract__&quot;;
+var records = {!GETRECORDIDS($ObjectType.Incoming_SMS__c)};
+if (records[0] == null)
+{
+    alert(&quot;Please select at least one Record&quot;);
+}
+else{
+       var action = &quot;Create Lead&quot;;
+       var recordIds = &quot;&quot;;
+	for (var n in records) {
+               if(n == &apos;remove&apos; || n == &apos;indexOf&apos;) continue;
+              	recordIds  = recordIds  + records[n];
+                                  
+		if (n != records.length-1) {
+			recordIds  = recordIds  + &quot;,&quot;;
+		}
+	}
+  var queryString =  parent.window.location.pathname;
+   if (parent.window.location.search){
+        queryString = queryString + parent.window.location.search
+    }
+
+   var url = &quot;/apex/&quot;+packagePrefix+&quot;LookupConfigAction?retURL=&quot;+queryString + &quot;&amp;action=&quot;+action+&quot;&amp;recordIds=&quot;+ recordIds;
+ 
+  parent.window.location = url;
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_Opportunity</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Opportunity</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)} 
+
+var packagePrefix = &quot;smagicinteract__&quot;; 
+var records = {!GETRECORDIDS($ObjectType.Incoming_SMS__c)}; 
+if (records[0] == null) 
+{ 
+alert(&quot;Please select at least one Record&quot;); 
+} 
+else{ 
+var action = &quot;Create Opportunity&quot;; 
+var recordIds = &quot;&quot;; 
+for (var n in records) { 
+if(n == &apos;remove&apos; || n == &apos;indexOf&apos;) continue; 
+recordIds = recordIds + records[n]; 
+
+if (n != records.length-1) { 
+recordIds = recordIds + &quot;,&quot;; 
+} 
+} 
+var queryString = parent.window.location.pathname; 
+if (parent.window.location.search){ 
+queryString = queryString + parent.window.location.search 
+} 
+
+var url = &quot;/apex/&quot;+packagePrefix+&quot;LookupConfigAction?retURL=&quot;+queryString + &quot;&amp;action=&quot;+action+&quot;&amp;recordIds=&quot;+ recordIds; 
+
+parent.window.location = url; 
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_Task</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Task</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)} 
+
+var packagePrefix = &quot;smagicinteract__&quot;; 
+var records = {!GETRECORDIDS($ObjectType.Incoming_SMS__c)}; 
+if (records[0] == null) 
+{ 
+alert(&quot;Please select at least one Record&quot;) ;
+} 
+else{ 
+var action = &quot;Create Task&quot;; 
+var recordIds = &quot;&quot;; 
+for (var n in records) { 
+if(n == &apos;remove&apos; || n == &apos;indexOf&apos;) continue; 
+recordIds = recordIds + records[n]; 
+
+if (n != records.length-1) { 
+recordIds = recordIds + &quot;,&quot;; 
+} 
+} 
+var queryString = parent.window.location.pathname; 
+if (parent.window.location.search){ 
+queryString = queryString + parent.window.location.search 
+} 
+
+var url = &quot;/apex/&quot;+packagePrefix+&quot;LookupConfigAction?retURL=&quot;+queryString + &quot;&amp;action=&quot;+action+&quot;&amp;recordIds=&quot;+ recordIds; 
+
+parent.window.location = url; 
+}</url>
+    </webLinks>
+</CustomObject>

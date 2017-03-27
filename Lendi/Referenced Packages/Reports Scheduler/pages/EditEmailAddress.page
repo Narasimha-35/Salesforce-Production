@@ -1,0 +1,30 @@
+<apex:page controller="CRMG_RS.EditEmailAddress" id="pg" sidebar="false" showHeader="false">
+	<apex:form id="frm">
+		<apex:pageMessages />
+			<apex:pageBlock id="pb">
+				<apex:pageBlockButtons >
+					<apex:commandButton value="Save" action="{!doSave}" onComplete="refreshParent();" rerender="frm"/>
+					<apex:commandButton value="Cancel" onClick="closeWin();"/>
+				</apex:pageBlockButtons>
+				<apex:pageBlockSection columns="1" id="pbs" title="Email Addresses" collapsible="false">
+					<apex:inputTextArea value="{!sObj['Email_To__c']}" cols="100" rows="4"/>
+					<apex:inputTextArea value="{!sObj['Email_CC__c']}" cols="100" rows="4"/>
+					<apex:inputTextArea value="{!sObj['Email_BCC__c']}" cols="100" rows="4"/>
+				</apex:pageBlockSection>
+			</apex:pageBlock>
+			<apex:inputHidden value="{!isSuccess}" id="isSuccessHidden"/>
+	</apex:form>
+	<script type="text/javascript">
+		function refreshParent(){
+			var isSuccess = document.getElementById('pg:frm:isSuccessHidden').value;
+			if(isSuccess == 'true'){
+				 closeWin();
+    	}
+		}
+		
+		function closeWin(){
+			window.opener.location = '/{!JSENCODE(sObjectId)}';
+	    window.close();
+		}
+	</script>
+</apex:page>

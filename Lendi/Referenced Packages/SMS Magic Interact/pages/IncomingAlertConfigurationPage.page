@@ -1,0 +1,60 @@
+<apex:page standardController="smagicinteract__forward_config__c" extensions="smagicinteract.IncomingAlertConfigurationController" tabStyle="SMS_Magic_Settings__tab">
+<script type="text/javascript">
+	function collapseSection(){
+		var elementId = '{!$Component.confForm.incomingSettings.configuringPanel}';
+		var displayElement = document.getElementById(elementId);
+		var divDisplayVal = displayElement.style.display;
+		if(divDisplayVal == "block")
+			displayElement.style.display = "none";
+		if(divDisplayVal == "none")
+			displayElement.style.display = "block";
+	}
+</script>
+
+<apex:pageMessages /><br/>
+<apex:form id="confForm">
+<apex:pageBlock id="incomingSettings" title="Incoming SMS Notification">
+ 	<apex:pageBlockSection title="Set Notifications for User" rendered="{!hasPermission}">
+ 	        <apex:selectRadio value="{!disableValue}" layout="pageDirection" onclick="sayUserPanel()">
+	        <apex:actionFunction name="sayUserPanel" action="{!showUser}"  status="myStatus"/>
+	            <apex:selectOption itemValue="isDisable" itemLabel="Disable For All Users"/>
+	            <apex:selectOption itemValue="isCustomize" itemLabel="Customize Settings for Each User"/>
+	       </apex:selectRadio>	
+	</apex:pageBlockSection>
+	
+	<apex:outputPanel id="configuringFields" rendered="{!isRenderUI}">
+		<apex:pageBlockSection id="userConfigurationSection" title="User Configuration" onclick="collapseSection();" />
+		<br/>
+		<apex:outputPanel id="configuringPanel" style="display:block;">
+			<apex:outputPanel id="configuringPanel1" style="display:block;" rendered="{!IF(hasPermission && isRenderUI,true,false)}">		
+				<apex:selectList size="1" id="userList" value="{!selectedUserId}" >
+				    <apex:selectOptions value="{!userListDropdown}"/>
+			    </apex:selectList>
+			    <br/><br/>
+		    </apex:outputPanel>
+		    <table>
+		    	<tr>
+		    		<td class="labelCol">Notification Method :</td>
+		    		<td>
+		    			<apex:selectList id="methodDropDownId" size="1"  value="{!selectedMethod}">
+		    				<apex:selectOptions value="{!methodDropDownList}"/>
+					    </apex:selectList>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td class="labelCol">Keyword :</td>
+		    		<td>
+		    			<apex:inputText value="{!keyWord}" />
+		    		</td>
+		    	</tr>
+		    </table>
+	    </apex:outputPanel>
+	</apex:outputPanel>
+	
+	<apex:pageBlockButtons location="Bottom">
+		<apex:commandButton action="{!save}" value="Save"/>
+	</apex:pageBlockButtons>
+	
+</apex:pageBlock>
+</apex:form>    
+</apex:page>

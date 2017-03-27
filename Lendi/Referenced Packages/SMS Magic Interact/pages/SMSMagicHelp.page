@@ -1,0 +1,166 @@
+<apex:page controller="smagicinteract.HelpController" >
+<apex:includeScript value="{!$Resource.smagicinteract__BulkSMSJS}"/>
+<apex:pageMessages />  
+	<apex:pageBlock title="Help for SMS Magic API key" rendered="{!IF (show =='APIkey' || show =='all',true, false)}" >
+		<apex:pageBlockButtons location="top" rendered="{!IF (show =='APIkey' || show =='all',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+	    SMS Magic application requires an API key authentication for registration. Below steps need to be followed for registration:<br/><br/> 
+	    &nbsp;&nbsp;&nbsp;&nbsp; 1.	Click "Register" button on SMS Magic Dashboard (under SMS Magic tab).<br /><br />
+	    &nbsp;&nbsp;&nbsp;&nbsp; 2.	SMS Magic API key will be emailed to you (To the email id mentioned in Salesforce User details)<br /><br />
+	    &nbsp;&nbsp;&nbsp;&nbsp; 3.	Copy the API key from email ID and paste it in space provided in SMS Magic tab.<br /><br />
+	    &nbsp;&nbsp;&nbsp;&nbsp; 4.	Click Save.<br /><br />
+	    If you face any issue, please contact us at &nbsp; <apex:outputLink value="mailto:care@screen-magic.com">care@screen-magic.com</apex:outputLink>.<br /><br />
+    </apex:pageBlock>
+
+    <apex:pageBlock title="Help for SMS Magic Configuration" rendered="{!IF (show =='SMSMagicConfig' || show =='all',true, false)}" >
+     	<apex:pageBlockButtons location="top" rendered="{!IF (show =='SMSMagicConfig',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=SMSMagicConfig');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>     	
+        Under configurations you can configure a sender ID that you require. Follow below Rules to decide the Sender ID at your end.<br/><br/>
+		&nbsp;&nbsp;&nbsp;&nbsp; 1. US &nbsp; : Alphanumeric Sender IDs are not allowed. Only Numeric Sender ID is allowed. SMS goes with standard US number (+12147587469).<br/><br/>
+		&nbsp;&nbsp;&nbsp;&nbsp; 2. India &nbsp; : The Sender ID request will be initial part of engagement. The sender ID request placed is configured within 4-6 hrs on any working day. The sender ID should be 5-8 (minimum 5 characters and Maximum 8 characters Long). (strictly only for India)<br/><br/>
+		&nbsp;&nbsp;&nbsp;&nbsp; 3. Others &nbsp; : The Sender ID can be 11 characters long (Alphanumeric) and 13 chars allowed for numeric number (i.e. standard number in International format). It can be configured under configuration button on SMS Magic Tab.<br/><br/>
+
+		You can set the default country for sending SMS.<br /><br />
+		
+		You can create the template object type in the Configurations tab. Before creating the template for any object the template type should be defined here.<br/><br/>
+		Here you can update your API key. This API key is used in authentication process.<br/>
+		Admin gets this API key via email after registering SMS Magic.<br/><br/>
+		 
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Help for SMS Templates" rendered="{!IF (show == 'SMSTemplates' || show =='all',true, false)}" >
+    	<apex:pageBlockButtons location="top" rendered="{!IF (show =='SMSTemplates',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=SMSTemplates');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+		Allows you to view/edit the existing templates.<br/> <br/>
+		Please make sure that the template name is not left blank. <br/>
+		The templates will be visible only in the object defined in the template type configuration.   
+	</apex:pageBlock>
+    
+    <apex:pageBlock title="Help for SMS History" rendered="{!IF (show == 'SMSHistory' || show =='all',true, false)}" >
+        <apex:pageBlockButtons location="top" rendered="{!IF (show =='SMSHistory',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=SMSHistory');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+        SMS history will give you a view of the SMS’s sent .
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Help for SMS Magic Home" rendered="{!IF (show == 'SMHome' || show =='all',true, false)}" >
+    	<apex:pageBlockButtons location="top" rendered="{!IF (show =='SMHome',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=SMHome');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+        SMS Magic Basic Package has following features:<br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;1. Send Branded Message (Configure your Sender ID).<br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;2. Create/Edit/Use Templates for SMS for Standard Objects.<br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;3. Send Bulk SMS from Contacts and Leads in just a click.<br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;4. Create Auto SMS from within the object like events and tasks.<br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;5. Send SMS from Apex Code.<br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;6. Use SMS Magic SMS sending/receiving pipe.<br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;7. API Support for :<br/>
+		   &nbsp;&nbsp;&nbsp;&nbsp; Sending SMS / Bulk SMS (from any Apex Code trigger you write)<br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;8. Use templates <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;9. Write Trigger for workflows (Write simple Apex Triggers for workflows to send.<br/> <br/>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Help for Creating New SMS Template" rendered="{!IF (show == 'NewSMSTemplate' || show =='all',true, false)}" >
+    	<apex:pageBlockButtons location="top" rendered="{!IF (show =='NewSMSTemplate',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=NewSMSTemplate');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+        Please add name to a template. If templates are created without name then send SMS button will give an error.<br/> <br/>
+		While creating a template you are asked for template object type. Please select the object for which you want to select the template ( E.g.: to create a template for opportunity object the template type should be opportunity.<br/> <br/>
+		If you cannot see the object type in the drop down while creating a template please add the template object type from the configuration.<br/> <br/>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Help for Composing New SMS" rendered="{!IF (show == 'NewSMS' || show =='all',true, false)}" >
+    	<apex:pageBlockButtons location="top" rendered="{!IF (show =='NewSMS',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=NewSMS');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+        Please make sure to add country code before mobile numbers while sending SMS. <br/> <br/>
+		If you want a specific country code to be prefixed default for all your SMS, drop and email to &nbsp; <apex:outputLink value="mailto:care@screen-magic.com">care@screen-magic.com</apex:outputLink> <br/> <br/>
+		The send SMS button picks up mobile number from "mobile" field. If you want to pick it from your custom field you can change the button configurations.<br/> <br/>
+		Just change the highlighted filed in the Send SMS button code to the desired field :
+			var phoneField = 'Phone';<br/> <br/>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Help for sending Bulk SMS" rendered="{!IF (show == 'BulkSendSMS' || show =='all',true, false)}" >
+        <apex:pageBlockButtons location="top" rendered="{!IF (show =='BulkSendSMS',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=BulkSendSMS');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+       Please make sure that country codes are present in a uniform format.<br/> <br/> 
+		If you want a specific country code to be prefixed default for all your SMS, drop and email to &nbsp; <apex:outputLink value="mailto:care@screen-magic.com">care@screen-magic.com</apex:outputLink><br/> <br/>
+		The send Bulk SMS button picks up mobile number from "mobile" field. If you want to pick it from your custom field you can change the button configurations.<br/> <br/>
+		Just change the highlighted filed in the Send Bulk SMS button code to the desired field:
+		 	var phoneField = 'Phone'; <br/> <br/>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Help for Incoming" rendered="{!IF (show == 'IncomingSMS' || show =='all',true, false)}" >
+    <apex:pageBlockButtons location="top" rendered="{!IF (show =='IncomingSMS',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=IncomingSMS');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+    For setting up incoming SMS in your SF org, please follow the below steps: <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;1. Procure a Virtual Mobile number. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;2. Goto Configurations button under SMS Magic object. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;3. Fill in the credentials for the SMS pull Authorization. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;4. Create a new sender ID containing the VMN. (e.g. If you have a VMN 441234567890 then create a sender ID 441234567890) <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;5. Drop an email to care@screen-magic and we will make the configurations required to push SMS into SF. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;6. Now you can use this sender ID to send SMS's and the users can reply back to the SMS received. The reply will be visible in your SF org. <br/> <br/>
+    
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Help for sending SMS from Campaign" rendered="{!IF (show == 'CampaignSMSSend' || show =='all',true, false)}" >
+        <apex:pageBlockButtons location="top" rendered="{!IF (show =='CampaignSMSSend',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=CampaignSMSSend');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+        For sending mass SMS to all your customers, you can make use of Campaigns. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;1. You can select the desired users and add them in a campaign. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;2. Use Send SMS button on campaigns to send SMS to all the campaign members. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;3. You can also schedule the campaigns created. <br/> <br/>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Help for Forwarding Configuration" rendered="{!IF (show == 'ForwordingConfiguration' || show =='all',true, false)}" >
+        <apex:pageBlockButtons location="top" rendered="{!IF (show =='ForwordingConfiguration',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=ForwordingConfiguration');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+        Forward Configuration is an action on Incoming SMS. Here you can define action on Incoming SMS such as SMS alert or E-mail alert. <br/> <br/>
+        Here you can define to which User you want to send SMS / E-mail alert. You can filter it using Keyword. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;1. You can define Keyword. If you define any keyword then when any message start from that keyword then that SMS / E-mail alert will be send to define User.<br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;2. You can either select SMS alert or E-mail alert or both. <br/> <br/>
+		<i>(Note : You can save the record without any keyword. In that case you will get alerts for all Incoming SMS.)</i><br/> <br/>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Help for Incoming Lookup Configuration" rendered="{!IF (show == 'IncomingLookupConfiguration' || show =='all',true, false)}" >
+        <apex:pageBlockButtons location="top" rendered="{!IF (show =='IncomingLookupConfiguration',true, false)}">
+		    <apex:form >
+				<apex:commandButton value="FeedBack" onclick="redirectTo('/apex/FeedbackPage','/apex/SMSMagicHelp?from=IncomingLookupConfiguration');return false;" />
+			</apex:form>
+		</apex:pageBlockButtons>
+        Forward Configuration is an action on Incoming SMS. Here you can define auto lookup action on Incoming SMS. <br/> <br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;1. Select the name of Object on which you wants a Lookup. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;2. Before that you need to add lookup field of that object into Incoming SMS object. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;3. Then select the mobile number field from the drop down. <br/> <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;4. Now select the reference field from the object (Incoming SMS). <br/> <br/>
+	</apex:pageBlock>
+</apex:page>

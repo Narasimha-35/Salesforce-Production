@@ -1,0 +1,255 @@
+<apex:page label="Rollup Helper Health Check" controller="rh2.PS_healthCheck_Controller" standardStylesheets="false" sidebar="false" applyBodyTag="false" docType="html-5.0">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head> 
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/modernizr-1.7.min.js') }"/>
+        <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }" />
+        <apex:stylesheet value="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"/>
+        <apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+     
+        <apex:includeScript value="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"/>
+        <apex:stylesheet value="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"/>
+        <apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
+    </head>
+    <style>
+        .tooltipPosition{
+            z-index:99;
+            position:fixed;
+        }
+        
+    </style>
+    <script>
+        function setPositionOfTooltip(tooltip, label){
+            var xPos = 0;
+            var yPos = 0;
+            var height = 0;
+            
+            var item = document.getElementById(label);
+            
+            while(item){
+            
+                xPos += (item.offsetLeft - item.scrollLeft + item.clientLeft);
+                yPos += (item.offsetTop - item.scrollTop + item.clientTop);
+                
+                item = item.offsetParent;
+            }
+            var tt = document.getElementById(tooltip);
+            var height = $('#' + tooltip).outerHeight(true);
+            
+            tt.style.top = yPos - height + 'px';
+          
+            tt.style.left = xPos - 15 + 'px';
+        }
+        
+        function setShowTooltipFormatting(tooltip){
+            var tt = document.getElementById(tooltip);
+            
+            tt.style.display = 'block';
+            tt.style.overflow = 'visible';
+            tt.style.wordWrap = 'break-word';
+        }
+    </script>
+    <apex:form >
+        <div class="slds slds-p-around--xx-large slds-container--large slds-container--center" role="main">
+            <div class="slds-card">
+                <header class="slds-card__header slds-theme--alt-inverse">
+                    <h3 class="slds-text-heading--medium">Rollup Helper Health Check</h3>
+                </header>
+                <section class="slds-card__body">
+                    <apex:outputPanel id="pageWrapper">
+                        <h3 style="margin-left:15px; padding-bottom:15px;" class="slds-text-heading--small">Current Rollup Helper Status:</h3>
+                        <div style="margin-left:15px; width:33%;" class="{!IF(highRiskExist, 'slds-box slds-box--x-small slds-theme--error', IF(!highRiskExist && (mediumRiskExist || (lowRiskCount > 2)), 'slds-box slds-box--x-small slds-theme--warning', 'slds-box slds-box--x-small slds-theme--success'))}">
+                            <apex:outputPanel rendered="{!if(totalIssueCount > 0, true, false)}" > 
+                                <apex:outputPanel rendered="{!highRiskExist}">
+                                    {!highRiskCount} high risk item
+                                    <apex:outputText rendered="{!IF(highRiskCount > 1, true, false)}">s</apex:outputText>
+                                    <apex:outputText rendered="{!AND(mediumRiskExist, lowRiskExist)}">, </apex:outputText>
+                                    <apex:outputText rendered="{!OR(AND(lowRiskExist, !mediumRiskExist), AND(!lowRiskExist, mediumRiskExist))}"> and </apex:outputText>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!mediumRiskExist}">
+                                    {!mediumRiskCount} medium risk item
+                                    <apex:outputText rendered="{!IF(mediumRiskCount > 1, true, false)}">s</apex:outputText>
+                                    <apex:outputText rendered="{!AND(highRiskExist, lowRiskExist)}">,</apex:outputText>
+                                    <apex:outputText rendered="{!lowRiskExist}"> and </apex:outputText>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!lowRiskExist}">
+                                    {!lowRiskCount} low risk item
+                                    <apex:outputText rendered="{!IF(lowRiskCount > 1, true, false)}">s</apex:outputText>
+                                </apex:outputPanel>
+                                need<apex:outputText rendered="{!IF(totalIssueCount == 1, true, false)}">s</apex:outputText> to be addressed.
+                            </apex:outputPanel>   
+                            <apex:outputPanel rendered="{!if(totalIssueCount == 0, true, false)}">
+                                There are currently 0 common Rollup Helper issues detected!
+                            </apex:outputPanel>
+                        </div>
+                        <apex:outputPanel rendered="{!IF(totalIssueCount > 0, true, false)}">
+                            <br/>
+                            <table class="slds-table slds-no-row-hover slds-table--bordered" style="width:98%; margin-left:auto; margin-right:auto;">
+                                <thead>
+                                    <tr>
+                                        <th>Risk Level</th>
+                                        <th>Issue Found</th>
+                                        <th>Issue Summary</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!issuesToDisplay}" var="i">
+                                        <tr>
+                                            <td>
+                                                {!i.severity}
+                                            </td>
+                                            <td>
+                                                {!i.issueName}
+                                            </td>
+                                            <apex:outputPanel rendered="{!IF(contains(i.issueName, 'queue buildup'), true, false)}">
+                                                
+                                                <td id="queue">
+                                                    
+                                                    <p  class="slds-text-heading--label">
+                                                    <a onmouseover="setShowTooltipFormatting('help-queue'); setPositionOfTooltip('help-queue', 'queue');  " onmouseout="document.getElementById('help-queue').style.display = 'none';" >
+                                                        <img class="slds-icon slds-icon--x-small" src="{!URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/icons/utility/info_60.png')}"></img>
+                                                    </a>Queue Buildup </p>
+                                                    
+                                                </td>
+                                                <div class="slds-popover slds-popover--tooltip slds-nubbin--bottom-left" id="help-queue" style="position:fixed; z-index:99; display:none !important;">
+                                                    <div class="slds-popover__body">
+                                                        A queue buildup of at least 500 records has been found.  Since a Rollup Helper queue record represents an asynchronous execution,
+                                                        the accuracy of some of your rollups may be impacted. Errors may also be encountered if the total number of records in the table
+                                                        builds up high enough. Please contact Support to determine the cause of the queue buildup so that we can prevent the issue from reoccurring.</div></div>
+                                                
+                                               <br/>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(contains(i.issueName, 'Rollup Helper exceptions'), true, false)}"> 
+                   
+                                                    <td id="exctab">
+                                                        
+                                                        <p  class="slds-text-heading--label"> 
+                                                        <a onmouseover="setShowTooltipFormatting('help-exctab'); setPositionOfTooltip('help-exctab', 'exctab'); " onmouseout="document.getElementById('help-exctab').style.display = 'none';" >
+                                                            <img class="slds-icon slds-icon--x-small" src="{!URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/icons/utility/info_60.png')}"></img>
+                                                        </a>Exceptions Found</p>
+                                                        
+                                                    </td>
+                                                    <div class="slds-popover slds-popover--tooltip slds-nubbin--bottom-left tooltipPosition" id="help-exctab" style="position:fixed; z-index:99; display:none !important;">
+                                                        <div class="slds-popover__body">
+                                                            Rollup Helper has encountered one or more exception(s) recently.  Please visit the Rollup Helper Exceptions page for more detailed 
+                                                            information regarding the specific errors.  
+                                                            
+                                                            Rollup Helper provides tools such as Validation Helper and Single Parent Processing to help prevent these exceptions from occurring.  
+                                                            If you have any questions regarding a specific exception encountered, please feel free to contact our support team at support@passagetech.com.</div></div>
+                                            
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(contains(i.issueName, 'Exception Monitor'), true, false)}">
+                                                <td id="excMonitor">                                                    
+                                                    <p  class="slds-text-heading--label"> 
+                                                    <a onmouseover="setShowTooltipFormatting('help-excMonitor'); setPositionOfTooltip('help-excMonitor', 'excMonitor'); " onmouseout="document.getElementById('help-excMonitor').style.display = 'none';" >
+                                                        <img class="slds-icon slds-icon--x-small" src="{!URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/icons/utility/info_60.png')}"></img>
+                                                    </a>Exception Monitor Job Needs Configuration</p>                                                
+                                                </td>
+                                                <div class="slds-popover slds-popover--tooltip slds-nubbin--bottom-left tooltipPosition" id="help-excMonitor" style="position:fixed; z-index:99; display:none !important;">
+                                                    <div class="slds-popover__body">
+                                                        The Rollup Helper Exception Monitor job, which checks for, reports, and cleans up various error conditions in the app, is currently not optimally scheduled.  Please click the 'Schedule Job' link to ensure that the job is scheduled correctly.</div></div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(contains(i.issueName, 'deactivated'), true, false)}"> 
+                                                
+                                                    <td id="excroll-{!i.uniqueId}">
+                                                        
+                                                         
+                                                        <p class="slds-text-heading--label">   
+                                                        <a onmouseover="setShowTooltipFormatting('help-excroll'); setPositionOfTooltip('help-excroll', 'excroll-{!i.uniqueId}'); " onmouseout="document.getElementById('help-excroll').style.display = 'none';">
+                                                            <img class="slds-icon slds-icon--x-small" src="{!URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/icons/utility/info_60.png')}"></img>
+                                                           
+                                                        </a>Rollup Deactivated Due To An Exception </p>    
+                                                    </td>
+                                                    <div class="slds-popover slds-popover--tooltip slds-nubbin--bottom-left tooltipPosition" id="help-excroll" style="position:fixed; z-index:99; display:none !important;">
+                                                        
+                                                            <div class="slds-popover__body">
+                                                                A rollup setting that has been deactivated due to an exception has been found.  This issue is most commonly caused by changes made to 
+                                                                fields or objects that are referenced by the rollup, so please make sure that all relevant fields and objects still exist.
+                                                                
+                                                                Once you have done so, you can try reactivating the rollup.  Once the rollup validation runs again, the exception should be removed 
+                                                                and the rollup should resume functioning.
+                                                                
+                                                                If this does not resolve the issue, please contact support for assistance in troubleshooting the exception.</div></div>
+                                                    
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(contains(i.issueName, 'asynchronous jobs'), true, false)}"> 
+                                              
+                                                    <td id="jobs">
+                                                       
+                                                        <p class="slds-text-heading--label">
+                                                        <a onmouseover="setShowTooltipFormatting('help-jobs'); setPositionOfTooltip('help-jobs', 'jobs');" onmouseout="document.getElementById('help-jobs').style.display = 'none';">
+                                                            <img class="slds-icon slds-icon--x-small" src="{!URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/icons/utility/info_60.png')}"></img>
+                                                        </a>Not Enough Asynchronous Jobs Available</p>
+                                                    </td>
+                                                     <div class="slds-popover slds-popover--tooltip slds-nubbin--bottom-left tooltipPosition" id="help-jobs" style="position:fixed; z-index:99; display:none !important;">
+                                                        <div class="slds-popover__body">
+                                                            Rollup Helper allows the user to designate how many asynchronous jobs of each type Rollup Helper is able to use to handle any 
+                                                            asynchronous rollup processing demands.  
+                                                            
+                                                            Depending on asynchronous processing demand in your environment, too few asynchronous jobs can cause queue buildups or long rollup
+                                                            processing times.
+                                                            
+                                                            The cumulative total of the three Asynchronous Processing settings (Maximum Concurrent Batch, Maximum Concurrent Future, Maximum Jobs Added to the Queue) should equal or exceed 30 jobs.</div></div>
+
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(contains(i.issueName, 'Manual Run Only'), true, false)}"> 
+                                                    <td id="manual-{!i.uniqueId}">
+                                                       
+                                                       <p class="slds-text-heading--label"> 
+                                                        <a onmouseover="setShowTooltipFormatting('help-manual'); setPositionOfTooltip('help-manual', 'manual-{!i.uniqueId}');" onmouseout="document.getElementById('help-manual').style.display = 'none';">
+                                                            <img class="slds-icon slds-icon--x-small" src="{!URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/icons/utility/info_60.png')}"></img>
+                                                        </a>Manual Run Only Rollup Found</p>
+                                                    </td>
+                                                     <div class="slds-popover slds-popover--tooltip slds-nubbin--bottom-left tooltipPosition" id="help-manual" style="position:fixed; z-index:99; display:none !important;">
+                                                        <div class="slds-popover__body"> 
+                                                            One or more rollup setting(s) in your environment is currently in a Manual Run Only state.  Manual Run Only rollups will never automatically
+                                                            update and will need to be manually rerun any time you wish to see an updated calculation.
+                                                            
+                                                            If you would like to ensure that the rollup does not require a user to manually trigger a rollup run, please either enable real time for the 
+                                                            rollup or create a schedule.</div></div>
+                                         
+                                            </apex:outputPanel>
+                                             <apex:outputPanel rendered="{!IF(contains(i.issueName, 'run upon creation'), true, false)}"> 
+                                                
+                                                    <td id="init-{!i.uniqueId}">
+                                                        
+                                                            
+                                                        <p class="slds-text-heading--label">
+                                                        <a onmouseover="setShowTooltipFormatting('help-init'); setPositionOfTooltip('help-init', 'init-{!i.uniqueId}');" onmouseout="document.getElementById('help-init').style.display = 'none';">
+                                                            <img class="slds-icon slds-icon--x-small" src="{!URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/icons/utility/info_60.png')}"></img>
+                                                        </a>Rollup Not Run On Creation</p>
+                                                    </td>
+                                                    
+                                                    <div class="slds-popover slds-popover--tooltip slds-nubbin--bottom-left tooltipPosition" id="help-init" style="position:fixed; z-index:99; display:none !important;"> 
+                                                        <div class="slds-popover__body"> 
+                                                            One or more rollup setting(s) in your environment most likely was not run upon creation.
+                                                            Manually running the rollup when it is created ensures that the field is initialized for all records, regardless of whether
+                                                            the record has been recently updated or not.  Without the manual run, historical data may not be correctly rolled up.</div></div>  
+                                            </apex:outputPanel>
+                                            <td>
+                                                <apex:outputLink target="_blank" rendered="{!IF(i.action == 'View Exceptions', true, false)}" value="{!URLFOR($Page.rh2__PS_viewExceptions)}">{!i.action}</apex:outputLink>
+                                                <apex:outputLink target="_blank" rendered="{!IF(i.action == 'Contact Support', true, false)}" value="mailto:support@passagetech.com">{!i.action}</apex:outputLink>
+                                                <apex:outputLink target="_blank" rendered="{!IF(i.action == 'Update Settings', true, false)}" value="/setup/ui/editCustomSettingsData.apexp?id={!org.Id}&isOrg=1">{!i.action}</apex:outputLink>
+                                                <apex:outputLink target="_blank" rendered="{!IF(i.action == 'Enable Realtime', true, false)}" value="/apex/PS_Manage_Trigger?mast={!i.rollupObject}">{!i.action}</apex:outputLink>
+                                                <apex:outputLink target="_blank" rendered="{!IF(i.action == 'Schedule Rollup', true, false)}" value="/apex/PS_Job?s={!i.rollupName}">{!i.action}</apex:outputLink>
+                                                <apex:outputLink target="_blank" rendered="{!IF(i.action == 'Run Rollup', true, false)}" value="/apex/PS_Run?s={!i.rollupName}">{!i.action}</apex:outputLink>
+                                                <apex:commandLink rendered="{!IF(i.action == 'Schedule Job', true, false)}" value="Schedule Job" action="{!doRescheduleExceptionMonitor}" oncomplete="location.reload();"/>
+                                            </td>
+                                        </tr> 
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                            
+                            
+                        </apex:outputPanel>
+                    
+                    </apex:outputPanel>  
+                </section>
+                <footer class="slds-card__footer"><h3 class="slds-text-heading--label">If you have any questions...</h3>
+                    <p>If you have any questions or are experiencing an issue that is not addressed by this page, please feel free to <a href="mailto:support@passagetech.com">Contact Support</a> at any time for assistance.</p></footer>
+            </div>
+        </div>
+    </apex:form>
+    </html>
+</apex:page>

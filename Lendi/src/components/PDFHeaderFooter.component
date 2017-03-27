@@ -1,0 +1,25 @@
+<apex:component >
+    <apex:attribute name="styleclass" type="String" description="TODO: Describe me"/>
+    <!-- Component Attributes -->
+    <apex:attribute type="string" name="type"
+        description="Determines if the component renders as a header or footer" />
+    <apex:attribute type="string" name="position"
+        description="Determines if component should render the text on the left, center, or right" />
+    <apex:attribute type="boolean" name="showPageNumbers"
+        description="Determines if the header/footer information displays the page number information." />
+        
+    <!-- Component Variables -->    
+    <apex:variable var="styleClass" value="{!LOWER(type)}_{!LOWER(position)}"/>
+    
+    <!-- Component Body -->
+    <apex:outputPanel id="panelHeaderFooter" 
+        styleClass="{!styleClass}"
+        layout="block">
+        
+        <apex:outputPanel layout="none" rendered="{!showPageNumbers}">
+            <div> <span class="pageNumber"/>  </div>
+        </apex:outputPanel>
+        
+        <apex:componentBody />
+    </apex:outputPanel>
+</apex:component>

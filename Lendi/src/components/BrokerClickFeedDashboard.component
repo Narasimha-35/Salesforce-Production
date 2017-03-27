@@ -1,0 +1,335 @@
+<apex:component controller="acfFeedDashboard_broker">
+ 
+ <head>
+<style type="text/css">
+    @font-face {
+        font-family: 'open_sanslight';
+        src: url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.eot')}");
+        src: url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.eot?#iefix')}") format('embedded-opentype'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.woff2')}") format('woff2'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.woff')}") format('woff'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.ttf')}") format('truetype'),
+             url("{!URLFOR($Resource.acfResources, 'acfResources/fonts/opensans-light-webfont.svg#open_sanslight')}") format('svg');
+        font-weight: normal;
+        font-style: normal;    
+    }
+    
+    .sprite{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .input-box + ul.bank-list li:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    a.mcafee:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}"); 
+    }
+    .button{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 28px no-repeat;
+    }
+    .button.getstarted{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/airow.png')}") 93% 20px no-repeat;
+    }
+    .work-list .cate-box span.quote:before,
+    .work-list .cate-box span.application:before,
+    .work-list .cate-box span.disclousure:before,
+    .work-list .cate-box span.docs:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}"); 
+    }
+    a.viewmore:after,
+    a.viewmore-feature:after{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .footer-social a.f-icon,
+    .footer-social a.link-icon,
+    .footer-social a.t-icon,
+    .footer-social a.u-icon{
+        background:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    a.responsive-menu{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .button.getstarted{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
+    }
+    .button.question{
+        background:#1f8acb url("{!URLFOR($Resource.acfResources, 'acfResources/images/response-airow.png')}") 85% 14px no-repeat;
+    }
+    .baner-colum span.anzbank:before,
+    .baner-colum span.westpack:before,
+    .baner-colum span.nab:before,
+    .baner-colum span.cwb:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    .set-up-row  .set-up-box + span{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    p.creat-acount:before{
+        background-image:url("{!URLFOR($Resource.acfResources, 'acfResources/images/sprite.png')}");
+    }
+    
+    
+    .publishercontainer,.comboMenu
+    {
+        display:none;
+    }
+    
+    /***************for feed section by Danish********************/
+.cxallfeedactions .feeditemActionMenu{display:none;}
+.container{background:transparent;}
+
+
+.feedcontainer .feeditem{
+
+border:none!important;
+height: auto;
+display: inline-block;
+width: 100%;
+padding: 5px 0px 0px 0px;
+min-height: inherit;
+font-size:18px;
+font-family: 'open_sanslight';
+margin-top:15px;
+}
+.feedcontainer{
+max-width:100%;
+}
+.feeditem .feeditemfirstentity,
+.feeditemcommentbody .feedcommentuser{
+font-size: 0.85em;
+color: #666666;
+display: inline-block;
+vertical-align: top;
+font-weight: bold;
+padding-bottom: 3px;
+}
+.feeditemcommentbody .feedcommentuser{display:block;}
+
+.feeditem a.actorentitylink{
+  font-size: 0.9em!important;
+  color: #424242!important;
+  padding: 0px 0px 4px 0px!important;
+  margin: 0px!important;
+  font-weight: bold!important;
+  font-family: Arial, Gotham,"Helvetica Neue", Helvetica, sans-serif!important;
+  text-decoration: none;
+}
+
+.chatterUserGuestBadge {
+  vertical-align: top;
+  display: block;
+  padding-top: 0px;
+  font-family: Arial, Gotham,"Helvetica Neue", Helvetica, sans-serif;
+  color: #777777!important;
+  font-size: 0.78em;
+  padding-bottom: 0px;
+  font-weight: normal!important;
+  margin-top: 0px;
+  height: auto;
+  line-height: 20px;
+}
+
+.feedTrackedChangePreambleMessage,
+.feeditemtext.cxfeeditemtext, .feedcommenttext{
+font-family: Arial, Gotham,"Helvetica Neue", Helvetica, sans-serif!important;
+  color: #777777!important;
+  font-size: 0.78em!important;
+  padding-bottom: 0px!important;
+  font-weight: normal!important;
+  line-height: 18px!important;
+  margin-top: 0px!important;
+  height: auto!important;
+  display : block!important;
+}
+
+.feedcontainer a, .feeditemtimestamp{
+  font-family: 'Arial'!important;
+  color: #b5b4b4!important;
+  font-size: 0.7em!important;
+  padding-top: 0px!important;
+  padding-right: 0px!important;
+}
+
+.feedcontainer .feeditemcontent{
+  display: inline-block;
+  width:84%;
+  margin-left: 8px!important;
+  padding-top: 0px!important;
+}
+.feedcontainer .feeditem .preamblecontainer{
+line-height:12px;
+}
+.book-appoint, .refiance{font-size:16px;}
+.feedcontainer .feeditemusericon{
+width:82px;
+height:82px;
+}
+
+ .chatter-photo {
+      width: 13% !important;
+    } 
+    .chatter-avatarRegular .chatter-photo{
+      vertical-align: top!important;
+      max-width: 76px;
+      max-height: 76px;
+      width: 100%!important;
+      height: 100%!important;
+      
+    }
+
+    .showmorefeeditemscontainer{
+          text-align: center !important;
+    }
+    a:hover{
+        color: #337ab7 !important;
+    }
+     
+     @media (max-width: 800px){
+         .feedcontainer .feeditemcomment{
+             margin-left: 0px!important;
+         }
+         .chatter-avatarRegular .chatter-photo, .feeditemcommentphoto img{
+              max-width: 40px!important;
+              max-height: 40px!important;
+         }
+         .feedcontainer .feeditemcontent{
+             width: 75%!important;
+         }
+         .feeditemextras.cxchattertextareacontainer.chattertextareacontainer{
+             margin-left: -65px;
+         }
+         .feeditemcommentphoto{
+             width: 12%!important;
+             float: left!important;
+         }
+         .feeditemcommentbody{display:inline-block!important;}
+     }
+
+.feedcontainer .feeditemcomment{
+  border-top: 1px #e6e5e5 solid;
+  margin-bottom: 10px;
+  padding: 12px;
+  margin-top: 10px;
+  margin-left: -98px;
+  margin-right: -25px;
+  display: inline-block;
+  width: inherit;
+  box-sizing: border-box;
+}
+
+.feeditemcommentphoto{width:13.5%; float:left;}
+.feeditemcommentphoto img{width: 100%!important; height: 100%!important; max-width: 76px; max-height: 76px;}
+.feedcommentuser span.chatterUserGuestBadge{margin:0px;}
+span.feedcommenttext{margin:0px!important; padding:0px!important;}
+
+.cxcommentplaceholder  label span{
+    color:font-family: Arial, Gotham,"Helvetica Neue", Helvetica, sans-serif;
+    color: #777777!important;
+    font-size:0.8em;
+}
+
+.newcommenttextwrapper textarea{
+  font-family: "OpenSans";
+  color: #b9b9b9;
+  font-size: 1em;
+  border-color: #dfdddd;
+  padding: 6px 12px;
+  min-height: 76px!important;
+  resize: none;
+      
+  }
+
+.cxcommentplaceholderaction{
+  font-family: "OpenSans";
+  color: #b9b9b9;
+  font-size: 0.7em;
+  border: 1px #dfdddd solid;
+  padding: 6px 12px;
+  resize: none;   font-weight: normal;
+}
+  
+  
+.feedcontainer .feeditemcommentnew .newcommentbutton{
+width: auto!important;
+border-radius: 5px;
+border: 2px #bee5fd solid!important;
+padding: 5px 15px;
+display: inline-block;
+float: right;
+margin-top: 10px;
+background-color:#fff;
+margin-right:0px;
+color:#48a8e3!important;
+}
+.top-login a.member-login{
+font-size: 1.2em;
+}
+
+
+/************changes in stylesheet here***************/
+.dashboard{font-size:16px;}
+.dashboard-heading{display:block;}
+ul.dash-steps li{margin:inherit;}
+.dash-btn{background:transparent;background-color:#233972;}
+@media all and (min-width: 320px) and (max-width: 800px){
+ul.dash-steps li{margin:initial;}
+}
+
+.cxcontentcommentaction
+{
+    display:none;
+}
+
+.feedcontainer .feeditem:after{
+    display:block;
+    content:'';
+    background-color:#dddddd;
+    height:1px;
+    margin-left:-10px!important;
+    margin-right:-10px!important;
+    margin-top:15px;
+}
+
+.feeditemfooter{line-height:20px!important;}
+.chatter-avatarStyle{display:none;}
+.liketext{display:none;}
+.feeditemseparatingdot{display:none;}
+.feeditemcommentplaceholder{display:none!important;}
+chattertextareacontainer
+{
+    margin-left: -88px;
+}
+feeditemcomments
+{
+   margin-left: -113px;
+   margin-right: -11px;
+}
+.trackedChangeRollover a
+{
+font-family: Arial, Gotham,"Helvetica Neue", Helvetica, sans-serif!important;
+color: #777777!important;
+font-size: 0.9em!important;
+font-weight: normal!important;
+line-height: 18px!important;
+text-decoration: none;
+}
+.feeditemtext a
+{
+display:none;
+}
+.chatterUserGuestBadge{
+display:none;
+}
+</style>
+<script>
+ 
+</script>
+</head>
+                <body>            
+                            <hgroup class="dash_tab_hdng">
+                                <h3 class="col-md-12">Recent Activity</h3>
+                            </hgroup>
+                            <div class="cstm_border_btm dash_row_10">&nbsp;</div>                             
+                            <div class="clearfix"></div>
+                            <chatter:feed entityId="{!user_obj.accountID}"/>  
+                 </body>
+</apex:component>

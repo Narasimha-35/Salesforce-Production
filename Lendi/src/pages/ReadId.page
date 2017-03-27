@@ -1,0 +1,12 @@
+<apex:page controller="FileUploader">
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="4"> 
+                  <apex:inputFile value="{!contentFile}"  filename="{!nameFile}"/>
+                  <apex:commandButton value="Import Account" action="{!readFile}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock >
+     </apex:pageBlock>
+   </apex:form>
+</apex:page>

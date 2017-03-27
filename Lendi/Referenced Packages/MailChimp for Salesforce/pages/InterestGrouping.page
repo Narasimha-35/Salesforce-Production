@@ -1,0 +1,34 @@
+<apex:page standardController="MC4SF__MC_Interest_Grouping__c" readOnly="true" extensions="MC4SF.InterestGroupingOverrideController">
+<style>
+.fewerMore { display: none;}
+</style>
+<apex:outputPanel rendered="{!MC4SF__MC_Interest_Grouping__c.Id == null}">
+	<div class="message errorM3">
+		<table border="0" cellpadding="0" cellspacing="0" class="messageTable" style="padding: 0px; margin: 0px;">
+			<tr valign="top">
+				<td><img alt="ERROR" class="msgIcon" src="/s.gif" title="ERROR"/></td>
+				<td class="messageCell"><div class="messageText"><span style="color:#cc0000"><h4>Error:</h4></span>MC Interest Groupings cannot be created from Salesforce.com.</div></td>
+			</tr>
+		</table>
+	</div>
+</apex:outputPanel>
+
+<apex:form rendered="{!MC4SF__MC_Interest_Grouping__c.Id != null}" >
+<apex:detail subject="{!MC4SF__MC_Interest_Grouping__c}" rendered="true" relatedList="true">
+	<apex:pageblock id="interestGroupList">
+ 		<apex:facet name="header">
+ 			<h2 style="font-size:11pt;font-weight:bold;">MC Interest Groups</h2>
+ 		</apex:facet>
+ 		<apex:pageBlockTable value="{!interestGroups}" var="interestGroup" rendered="{!NOT(ISNULL(interestGroups))}" id="interestGroupTable">
+ 			<apex:column headervalue="MC Interest Groups">
+	 			<apex:outputlink value="/{!interestGroup.Id}" rendered="{!ISNULL(interestGroup.MC4SF__Long_Name__c)}">{!interestGroup.Name}</apex:outputlink>
+	 			<apex:outputlink value="/{!interestGroup.Id}" rendered="{!NOT(ISNULL(interestGroup.MC4SF__Long_Name__c))}">{!interestGroup.MC4SF__Long_Name__c}</apex:outputlink>
+ 			</apex:column>
+ 		</apex:pageBlockTable>
+ 		<apex:commandLink value="Show more »" action="{!showMoreInterestGroup}" reRender="interestGroupList,interestGroupTable" rendered="{!moreInterestGroup==false && !ISNULL(interestGroups)}" />
+ 		<apex:commandLink value="Show less «" action="{!showLessInterestGroup}" reRender="interestGroupList,interestGroupTable" rendered="{!moreInterestGroup==true && !ISNULL(interestGroups)}"/>
+ 		<apex:outputLabel value="No records to display" rendered="{!(ISNULL(interestGroups))}" styleClass="noRowsHeader"></apex:outputLabel>
+ 	</apex:pageblock>
+ </apex:detail>
+</apex:form>
+</apex:page>

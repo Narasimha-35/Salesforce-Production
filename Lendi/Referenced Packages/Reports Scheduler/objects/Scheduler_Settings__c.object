@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>true</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>Allow_All_External_Domains__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Allow All External Domains</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Allow_Empty_Reports__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Leaving this checkbox means that we NOT send reports that we detect are empty of records</inlineHelpText>
+        <label>Enable Sending Empty Reports</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Approved_Domains__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Semi-colon separated list of domains</inlineHelpText>
+        <label>Approved External Domains</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Approved_Email_Addresses__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Semi-colon separated list of email addresses</inlineHelpText>
+        <label>Approved External Email Addresses</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Auto_Suggest_Email_Address__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>There are two User Interface options for the Scheduled Reports &amp; Dashboard pages. Marking this box as &quot;True&quot; presents the new interface for selecting recipients of your Scheduled Reports and Dashboards. Leave blank If you have more than 250,000 contacts.</inlineHelpText>
+        <label>Use Auto Suggest for Email Addresses</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Blocked_Domains__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Semi-colon separated list of domains</inlineHelpText>
+        <label>Blocked External Domains</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Blocked_Email_Addresses__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Semi-colon separated list of email addresses</inlineHelpText>
+        <label>Blocked External Email Addresses</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Custom_Domain_Enabled__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this if custom domain is enabled in your salesforce organization</inlineHelpText>
+        <label>Custom Domain Enabled?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Custom_Domain__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>e.g. mycompany.salesforce.com</inlineHelpText>
+        <label>Custom Domain</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Dashboard_Image_Folder__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Dashboard Image Folder</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Default_Org_Email_Domain__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Add your organizations domain using this format   @mycompany.com</inlineHelpText>
+        <label>Default Org Email Domain</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Footer_Text__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Footer Text</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Logo_Alignment__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Header Logo Alignment</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Left</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Center</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Right</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Report_Refresh_Frequency__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Report Refresh Frequency</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Every 30 minutes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Every Hour</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Every 2 hours</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Every 4 hours</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Every 12 hours</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Every 24 hours</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Salesforce_Environment__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Salesforce Org</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Production</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sandbox</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Scheduled_Job_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Scheduled Job Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Use_for__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Use for</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Both Scheduled Reports and Dashboards</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Scheduled Dashboards</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Scheduled Reports</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>Scheduler Settings</label>
+    <nameField>
+        <displayFormat>S-{0000}</displayFormat>
+        <label>Settings ID</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Scheduler Settings</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

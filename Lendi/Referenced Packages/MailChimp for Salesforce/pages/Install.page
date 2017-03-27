@@ -1,0 +1,126 @@
+<apex:page tabStyle="MC_Setup__tab" controller="MC4SF.InstallController" action="{!initPage}">
+
+<apex:sectionHeader title="MailChimp for Salesforce" subtitle="Install"/>
+
+<apex:form id="form">
+
+<apex:pageMessages />
+
+<apex:pageBlock id="step1" title="Step 1: Authenticate" rendered="{!isMailChimpAdmin && step == 'Step 1'}">
+	<div style="text-align: center;">
+		<table style="margin-left: auto; margin-right: auto;">
+			<tr>
+				<td align="left">
+					<apex:commandButton value="Login" action="{!login}" onclick="alert('You will be temporarily redirected to MailChimp to authenticate and will be returned to salesforce.com upon completion.');"/>
+						
+					<br/><br/>
+					<a href="http://kb.mailchimp.com/article/i-cant-log-in-to-my-mailchimp-account" target="_blank">Forgot password?</a><br/><br/>
+					Don't have an account? <a href="https://login.mailchimp.com/signup/" target="_blank">Sign up for free</a>
+				</td>
+				<td width="100"><br/></td>
+				<td>
+					<div style="background-color: #fff; -webkit-border-radius: 8px; border-radius: 8px; width: 350px; text-align: left; padding: 15px;">
+						<span style="font-family: Arial; font-size: 18px; font-weight: normal; color: #333;">MailChimp can help!</span><br/><br/>
+						We're here to help. Send us an email at <a href="mailto:salesforce@mailchimp.com">salesforce@mailchimp.com</a> and we'll be sure to respond shortly.<br/><br/>
+						<a href="http://kb.mailchimp.com/article/what-is-mailchimp-for-salesforce" target="_blank">About MailChimp for Salesforce</a><br/><br/>
+						<a href="http://kb.mailchimp.com/article/how-do-i-install-mailchimp-for-salesforce" target="_blank">Installation Guide</a>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</apex:pageBlock>
+
+<apex:pageBlock id="step2" title="Step 2: Lead Creation" rendered="{!isMailChimpAdmin && step == 'Step 2'}">
+	<apex:pageBlockButtons >
+		<apex:commandButton id="step2ComeBackLaterButton" value="Come Back Later" action="{!saveStep2}" styleClass="{!IF(shouldLoadMergeVars, 'btnDisabled', '')}"/>
+		<apex:commandButton id="readyToMapFieldsButton" value="I am Ready to Map Fields" action="{!saveStep2AndMapFields}" styleClass="{!IF(shouldLoadMergeVars, 'btnDisabled', '')}"/>
+	</apex:pageBlockButtons>
+
+	This app can create new Leads in Salesforce based on new email addresses from MailChimp.
+	This effectively turns all of your MailChimp based signup forms into Salesforce web to lead forms!!!
+	If you would like to create Salesforce Leads from MailChimp data, check the box below.
+	Take a moment to make this decision:
+
+	<ul>
+		<li>The initial upload of MailChimp Subscribers can be large and could create a lot of Leads. <b>Only check the box below if you want to create Leads during the initial upload.</b></li>
+		<li>
+			Make sure your <a href="/setup/ui/bplist.jsp?id=00Q&setupid=LeadProcess" target="_blank">Lead configuration</a> and your company are ready to handle all the new Leads. You may want to:
+			<ul>
+				<li>Review your lead assignment rules</li>
+				<li>Verify you have a Lead Process enabled if you intend to use lead assignment rules</li>
+				<li>Review auto-response, validation or workflow rules to see if any should be modified or turned off during upload</li>
+				<li>Sanity check any triggers you have defined on the Lead object</li>
+				<li>In the next step make sure your mapping populates any required fields or has a default defined.</li>
+			</ul>
+		</li>
+		<li>Map fields. Mapped MailChimp merge variables will copy data to your new Leads. Unmapped merge variables mean you will have inconsistent data between MailChimp and Salesforce.</li>
+		<li>You will have the option to turn on Lead creation after the upload.</li>
+	</ul>
+	
+	<apex:inputCheckbox value="{!allowMailChimpToCreateLeads}"/> <b>Allow MailChimp to create Leads in Salesforce?</b>
+	
+	<apex:outputPanel layout="none" rendered="{!shouldLoadMergeVars}">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script>
+			var mcLists = {!mcListsJson};
+			var mcListCount = mcLists.length;
+	
+			// Turn off buffering so that all remoting calls are made one at a time in order.
+			Visualforce.remoting.buffer = false;
+
+			jQuery(function() {
+	
+				// Disable the Come Back Later and Ready To Map Fields buttons until all lists are loaded.
+				jQuery('input[id$="step2ComeBackLaterButton"]').removeClass('btn').attr('disabled', 'disabled');
+				jQuery('input[id$="readyToMapFieldsButton"]').removeClass('btn').attr('disabled', 'disabled');
+						
+				// Add cell in header to place load status message.
+				jQuery('div.pbHeader td.pbTitle').closest('tr').append('<td class="pbHelp listLoadStatus"/>');
+
+				if (mcListCount > 0) {
+					loadMergeVars();
+				}
+			
+			});
+	
+			function loadMergeVars() {
+				if (mcLists.length == 0) {
+					// Update load status message.
+					jQuery('td.listLoadStatus').html('<span style="color: green">All lists loaded</span>');
+					
+					// Enable the Come Back Later and Ready To Map Fields buttons.
+					jQuery('input[id$="step2ComeBackLaterButton"]').toggleClass('btn btnDisabled').removeAttr('disabled');
+					jQuery('input[id$="readyToMapFieldsButton"]').toggleClass('btn btnDisabled').removeAttr('disabled');
+					
+					return;
+				}
+	
+				var mcList = mcLists.shift();
+				
+				jQuery('td.listLoadStatus').html('<span style="color: orange">Loading list ' + (mcListCount - mcLists.length) + ' of ' + mcListCount + ' - ' + mcList.Name + '</span>');
+	
+				Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.InstallController.loadMergeVars}', mcList.Id, function(result, event) {
+					if (event.status) {
+						loadMergeVars();
+					} else {
+						alert('Error loading merge variables for List.');
+					}
+				});
+			}
+		</script>
+	</apex:outputPanel>
+</apex:pageBlock>
+
+<apex:pageBlock id="step3" title="Step 3: Map Fields - {!currentMcList.Name}" rendered="{!isMailChimpAdmin && step == 'Step 3'}">
+	<apex:pageBlockButtons >
+		<apex:commandButton value="Come Back Later" action="{!saveStep3}"/>
+		<apex:commandButton value="Save" action="{!saveStep3AndNext}"/>
+	</apex:pageBlockButtons>
+
+	<c:Mappings listId="{!currentMcList.Id}" baseController="{!mappingsBaseController}"/>
+</apex:pageBlock>
+
+</apex:form>
+
+</apex:page>

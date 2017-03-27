@@ -1,0 +1,155 @@
+<apex:page StandardController="vhc__Skills__c" extensions="vhc.Ctrl18Competence" action="{!init}">
+
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.WS_Ressource, 'CSS/slide_competence.css')}" /> 
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.WS_Ressource, 'CSS/style.css')}" /> 
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.WS_Ressource, 'CSS/jquery.tagsinput.css')}" /> 
+
+ <script src="{!URLFOR($Resource.WS_Ressource, 'JS/jquery.tagsinput.js')}" type="text/javascript"></script>
+
+<style type="text/css"> wait, wait * { cursor: wait; } </style>
+
+<apex:includeScript value="{!$Resource.vhc__JQuery}"/>
+
+	<style type="text/css">
+		.opening_hour
+	{
+		vertical-align: inherit !important;
+	}
+.tagsinput  {
+		float: left;
+		position: relative;
+		display: block;
+		margin: 0 0 0 20px;}
+.select_periode_grp	{
+	float: left;
+	display: block;
+	position: relative;
+	width: 180px;}
+</style>
+
+<script>
+var tagID;
+	$(document).ready(function() {
+	    tagID = $('#profile_tags');
+		tagID.tagsInput({
+					'onRemoveTag':RemoveProfile,
+					'interactive':false,
+					'width':'auto'
+			});
+		
+		tagID.importTags($('.curr_tag').text());	
+		
+		
+		InitProfile();
+		
+	});
+	
+	
+	function InitProfile()
+	{
+		var txt = $('.added_tag').text();
+		tagID.addTag(txt);
+						
+		document.body.style.cursor = 'default';
+		$('.select_periode_grp').change(function() {
+			
+			if($(this).val() != '')
+			{
+				document.body.style.cursor = 'wait';
+				AddProfileGroup();
+			}
+		});
+		
+		
+		$(".lbl_rate").click(function(){
+			$(this).next(".sldr_rate").slideToggle(0);
+			$('.handle-clpse', $(this)).css('background-position', $(this).next(".sldr_rate").is(':visible')?'0 -11px':'0 0')
+		});
+		
+	}
+
+	function RemoveProfile(obj)
+	{
+		var cName = obj.replace(' ', '_');
+		document.body.style.cursor = 'wait';
+		var className = $('.' + cName).attr('class').replace(cName + ' ' , '');
+		$('.' + cName).remove();
+		$('.remove_group').val(className);
+		RemoveProfileGroup();
+	}
+	
+</script>
+
+	<apex:sectionHeader title="{!$Label.New_Competence}" subtitle="{!$Label.Competence_Edit}" rendered="{!obj.id==null}"/>
+	<apex:sectionHeader title="{!$Label.Competence_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+	<apex:outputText value="{!$Label.Competence_Description}" rendered="{!ISValid}"/>
+	<apex:pageMessages />
+	<br/>&nbsp;
+
+    <apex:form id="myForm" styleClass="form_competence" rendered="{!ISValid}">
+       <apex:actionFunction name="AddProfileGroup" action="{!AddProfileGroup}" rerender="select_periode_grp,skills" onComplete="InitProfile()"/>
+       <apex:actionFunction name="RemoveProfileGroup" action="{!RemoveProfileGroup}" rerender="select_periode_grp,skills" onComplete="InitProfile()"/>
+       <apex:inputText value="{!unSelectedProfileGrp}" id="theTextInput" styleClass="remove_group" style="display:none"/>
+       <apex:pageBlock title="{!$Label.Competence_Edit}" mode="edit"> 
+	           <apex:pageBlockButtons > 
+	               <apex:commandButton action="{!Save}" value="{!$Label.Save}"/>
+	               <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/> 
+	           </apex:pageBlockButtons>
+	           <apex:pageBlockSection title="{!$Label.Informations}" columns="1" collapsible="true" id="competence">
+				<!--  SELECTED COMPETENCE-->
+					<h6>{!$Label.Competence_Type}</h6>
+					<apex:outputpanel >
+	            	<apex:selectList styleClass="select_periode_grp" value="{!selectedProfileGrp}" size="1" id="select_periode_grp">
+					  	<apex:selectOptions value="{!NonSelectedProfileGroup}" />
+					</apex:selectList> 
+				<!--  TAG AREA -->
+				
+					<input type="text" class="profile_tags" id="profile_tags"/>
+					<span class="tag_div"></span>
+				</apex:outputpanel>
+				</apex:pageBlockSection>	
+		
+			<script>
+			</script>
+      
+	        </apex:pageBlock>
+	        <!--  LIST COMPETENCE-->
+	        <apex:outputPanel id="skills">
+	        	<span style="display:none;" class="curr_tag">{!Tags}</span>
+	        	<span style="display:none;" class="added_tag">{!newProfileName}</span>
+					<apex:variable var="index" value="{!0}" />
+					<apex:repeat value="{!selectedProfileGroupList}" var="profID">
+						<script>
+							var id = '{!JsEncode(selectedProfileGroupList[profID].Id)}';
+							var name = '{!JsEncode(selectedProfileGroupList[profID].Name)}'.replace(' ', '_');
+							$('.tag_div').html($('.tag_div').html() + '<span style="display:none;" class="' + name + ' ' + id + '" >aa</span>' );
+						</script>
+						<div class="cmptce_rate">
+		         			<div class="lbl_rate">
+		         				<span class="handle-clpse"></span>
+		         				<span class="cat_n">{!selectedProfileGroupList[profID].Name}</span>
+		         				<apex:outputpanel styleClass="close_panel">
+			         				<!-- <input type="checkbox" class="chk_profile {!selectedProfileGroupList[profID].Id}" style="z-index: 100000;" checked="checked" onclick="Remove1Profile(this)"/>
+			         				{!selectedProfileGroupList[profID].Name}-->
+		         				</apex:outputpanel>
+		         			</div>
+			         		<div class="sldr_rate clearfix">
+				         			<apex:repeat value="{!profileMap[selectedProfileGroupList[profID].ID]}" var="customProfile">
+			<!--	         			labelStyleClass="opening_hour monday_hour"-->
+							    		<div class="opening_hour monday_hour box_slider" >
+									     	<span class="sub_cat_n">
+										     	<span>{!$Label.Average_Rate}</span>
+										     	<span class="v_cat">{!customProfile.profileName} :</span>
+									     	</span>
+									     	<apex:outputpanel >
+											    <c:Slide_Bar result="{!customProfile.Skills.Level__c}" min="0" max="9" objID="outRetries_{!ROUND(index,0)}"/> 
+											    <apex:variable var="index" value="{!index + 1}" /> 
+								    </apex:outputpanel>  
+								</div>
+						     </apex:repeat>
+					      </div>
+					  </div>
+				</apex:repeat>
+			</apex:outputPanel>
+    </apex:form> 
+</apex:page>

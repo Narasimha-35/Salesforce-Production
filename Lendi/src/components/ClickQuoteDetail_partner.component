@@ -1,0 +1,80 @@
+<apex:component controller="ClickQuoteDetail_partner"  >
+
+
+<style>
+.frequently-ask{
+display:none;
+}
+</style>
+
+  <aside class="col-md-4 col-sm-12">
+
+               <div class="mg_move15">
+                <section class="postlog_quote">
+                    <header class="quote_headaer col-md-12">
+                        <h3 class="h3">Quote Details</h3>
+                    </header>
+                    
+                    <article class="col-md-12 quote_cont">
+                        <section class="progress cst_progress">
+                          <apex:outputPanel id="progressBarPnlId">
+                            <div class="progress-bar" style="width: {!intWidth}%;" id="QuoteBarId">
+                            </div>
+                          </apex:outputPanel>
+                        </section>
+                        <hgroup class="pst_quote_grp">
+                            <h3>Loan Purpose</h3>
+                            <h4>{!strLoanPurpose}</h4>
+                        </hgroup>
+                        
+                        <hgroup class="pst_quote_grp">
+                            <h3>Current Loan Amount</h3>
+                            <h4>
+                                <apex:outputText value="${0, number, ###,##0}">
+                                    <apex:param value="{!decCurrLoanAmt}"/>
+                                </apex:outputText>
+                            </h4>
+                        </hgroup>
+                        
+                        <hgroup class="pst_quote_grp">
+                            <h3>Est. Property Value</h3>
+                            <h4>
+                                <apex:outputText value="${0, number, ###,##0}">
+                                    <apex:param value="{!decEstPropVal}"/>
+                                </apex:outputText>
+                            </h4>
+                        </hgroup>
+                        
+                        <hgroup class="pst_quote_grp col-md-6">
+                            <h3>Best Rate</h3>
+                            <h4>
+                                <apex:outputText value="{0, number, ###,##0.00}%">
+                                    <apex:param value="{!decBestRate}"/>
+                                </apex:outputText>
+                            </h4>
+                        </hgroup>  
+                        
+                        <hgroup class="pst_quote_grp col-md-6">
+                            <h3>Comparison</h3>
+                            <h4>
+                                <apex:outputText value="{0, number, ###,##0.00}%">
+                                    <apex:param value="{!decComparison}"/>
+                                </apex:outputText>
+                            </h4>
+                        </hgroup>
+                        
+                        <hgroup class="pst_quote_grp">
+                            <h3>Est. Monthly Payment</h3>
+                            <h4>
+                                <apex:outputText value="${0, number, ###,##0}">
+                                    <apex:param value="{!decMonthlyPayment}"/>
+                                </apex:outputText>
+                            </h4>
+                        </hgroup>                                                                      
+                 </article>                    
+             </section>
+            
+             
+            </div>
+            </aside>
+</apex:component>

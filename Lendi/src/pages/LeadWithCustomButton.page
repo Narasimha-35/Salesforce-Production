@@ -1,0 +1,391 @@
+<apex:page standardController="Lead" extensions="LeadWithCustomButtonControllerExtension" tabStyle="Lead" docType="html-5.0">
+    <head>
+      <meta charset="utf-8" />
+      <title>jQuery UI Button - Radios</title>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" />
+      <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+      <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+      <script src="{!URLFOR($Resource.ZebraDatePicker, 'ZebraDatePicker/zebra_datepicker.js')}"></script>
+      <link rel="stylesheet" href="{!URLFOR($Resource.ZebraDatePicker, 'ZebraDatePicker/default.css')}" />
+      <link rel="stylesheet" href="{!URLFOR($Resource.ZebraDatePicker, 'ZebraDatePicker/style.css')}" />
+      <style>
+        .boxStyle {
+            margin-top:10px;
+            text-align: center;
+            background-color: white;
+            width: 44%;
+            height: 115px;
+            border: 2px;
+            border-color: #D4FFFF;
+            border-style: solid;
+            display: inline-block;
+        }
+        .boxStyleH {
+            margin-top:10px;
+            text-align: center;
+            background-color: white;
+            width: 220px;
+            border: 2px;
+            border-color: #D4FFFF;
+            border-style: solid;
+            display: block;
+        }
+        .boxStyle2 {
+            margin-top:10px;
+            text-align: center;
+            background-color: white;
+            width: 95%;
+            height: 215px;
+            border: 2px;
+            border-color: #D4FFFF;
+            border-style: solid;
+            display: block;
+        }
+        .boxStyle3 {
+            margin-top:10px;
+            text-align: center;
+            background-color: white;
+            width: 95%;
+            height: 115px;
+            border: 2px;
+            border-color: #D4FFFF;
+            border-style: solid;
+            display: block;
+        }
+        h1 {
+            margin-top:10px;
+            font-size:large;
+        }
+        .leftHalf {
+            width:257px;
+            height:360px;
+            float:left;
+        }
+        .rightHalf {
+            width:222px;
+            height:360px;
+            float:left;
+        }
+        .middleHalf {
+            width:425px;
+            height:360px;
+            float:left;
+        }
+        .Zebra_DatePicker {
+            position: relative;
+        }
+        .numberInputStyle {
+            height: 25px;
+            border: solid 1px #dcdcdc;
+            transition: box-shadow 0.3s, border 0.3s;
+        }
+        .numberInputStyle input[type="text"]:focus,
+        .numberInputStyle input[type="text"].focus {
+            border: solid 1px #707070;
+            box-shadow: 0 0 5px 1px #969696;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+      </style>
+      <script>
+        $(document).ready(function() {
+            $('#dateForLastRefinance').Zebra_DatePicker({
+              always_visible: $('#container'),
+              direction: -1,
+              onSelect: function(dt1, dt2, dt3, dt4) {
+                updateLastRefinanceDate(dt2);
+              }
+            });
+            $('#dateForFixedExpiryDate').Zebra_DatePicker({
+              always_visible: $('#container2'),
+              onSelect: function(dt1, dt2, dt3, dt4) {
+                updateFixedExpiryDate(dt2);
+              }
+            });
+            $( "#creditBox" ).buttonset();
+            $( "#employmentStatusBox" ).buttonset();
+            $( "#housingStatusBox" ).buttonset();
+            $( "#mortgageStatusBox" ).buttonset();
+            $( "#interestBox" ).buttonset();
+            $( "#lookingToBuyBox" ).buttonset();
+            $( "#bankBox" ).buttonset();
+            $('#loadAmount').on('focusout', function(){
+                 updateLoadAmount($(this).val());
+            });
+            $('#currentRate').on('focusout', function(){
+                updateInterestRate($(this).val());
+            });
+         });
+
+        function getRadioButtonCH() {
+            var value = $('input[name="creditRadio"]:checked').val();
+            updateCreditHistory(value);
+        }
+        
+        function getRadioButtonES() {
+            var value = $('input[name="employmentStatusRadio"]:checked').val();
+            updateStatusHistory(value);
+        }
+        
+        function getRadioButtonHS() {
+            var value = $('input[name="housingStatusRadio"]:checked').val();
+            updateHousingStatusHistory(value);
+        }
+        
+        function getRadioButtonMS() {
+            var value = $('input[name="mortgageStatusRadio"]:checked').val();
+            updateMortgageStatusHistory(value);
+        }
+        
+        function getInterestType() {
+            var value = $('input[name="interestRadio"]:checked').val();
+            updateInterestType(value);
+        }
+        
+        function getLookingToBuy() {
+            var value = $('input[name="lookingToBuyRadio"]:checked').val();
+            updateLookingToBuy(value);
+        }
+        
+        function getCurrentLender() {
+            var value = $('input[name="baRadio"]:checked').val();
+            updateCurrentLender(value);
+        }
+      </script>
+    </head>
+    <body>
+        <div style="display:block;width:100%;height:360px;">
+        <div class="leftHalf">
+          <div id="employmentStatusBox" class="boxStyle2">
+            <h1>Employment Status</h1>
+            <br/>
+            <input type="hidden" id="employmentStatus" value="{! lead.Employment_Status__c}"/>
+            <br/><br/>
+            <input onclick="javascript:getRadioButtonES();" type="radio" id="radioES1" name="employmentStatusRadio" value="Full Time" /><label for="radioES1">Full Time</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getRadioButtonES();" type="radio" id="radioES2" name="employmentStatusRadio" value="Part Time" /><label for="radioES2">Part Time</label>&nbsp;&nbsp;&nbsp;<br/><br/>
+            <input onclick="javascript:getRadioButtonES();" type="radio" id="radioES3" name="employmentStatusRadio" value="Self Employed" /><label for="radioES3">Self Employed</label>&nbsp;&nbsp;&nbsp;<br/><br/>
+            <input onclick="javascript:getRadioButtonES();" type="radio" id="radioES4" name="employmentStatusRadio" value="Unemployed" /><label for="radioES4">Unemployed</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getRadioButtonES();" type="radio" id="radioES5" name="employmentStatusRadio" value="Casual" /><label for="radioES5">Casual</label>&nbsp;&nbsp;&nbsp;<br/><br/>
+            <input onclick="javascript:getRadioButtonES();" type="radio" id="radioES6" name="employmentStatusRadio" value="Centrelink or Pension" /><label for="radioES6">Centrelink/Pension</label>&nbsp;&nbsp;&nbsp;
+            <script>
+                (function (){
+                    var esValueToCompare = $('#employmentStatus').val();
+                    $('input[name="employmentStatusRadio"]').each(function(){
+                        if ($(this).val() == esValueToCompare) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                })();
+            </script>
+          </div>
+          <div id="mortgageStatusBox" class="boxStyle3">
+            <h1>Loan Status</h1>
+            <input type="hidden" id="mortgageStatus" value="{! lead.Current_Loan_Type__c}" />
+            <br/><br/>
+            <input onclick="javascript:getRadioButtonMS();" type="radio" id="radioMS1" name="mortgageStatusRadio" value="Owner Occupied" /><label for="radioMS1">Owner</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getRadioButtonMS();" type="radio" id="radioMS2" name="mortgageStatusRadio" value="Investment Property" /><label for="radioMS2">Investment</label>&nbsp;&nbsp;&nbsp;<br/><br/>
+            <input onclick="javascript:getRadioButtonMS();" type="radio" id="radioMS3" name="mortgageStatusRadio" value="Commercial" /><label for="radioMS3">Commercial</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getRadioButtonMS();" type="radio" id="radioMS4" name="mortgageStatusRadio" value="Construction" /><label for="radioMS4">Construction</label>&nbsp;&nbsp;&nbsp;
+            <script>
+                (function (){
+                    var msValueToCompare = $('#mortgageStatus').val();
+                    $('input[name="mortgageStatusRadio"]').each(function(){
+                        if ($(this).val() == msValueToCompare) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                })();
+            </script>       
+          </div>
+      </div>
+      <div class="middleHalf">
+        <div id="creditBox" class="boxStyle">
+            <h1>Credit History</h1>
+            <input type="hidden" id="creditHistory" value="{! lead.Credit_History__c}"/>
+            <br/><br/>
+            <input onclick="javascript:getRadioButtonCH();" type="radio" id="radio1" name="creditRadio" value="Excellent - No Issues" /><label for="radio1">Excellent</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getRadioButtonCH();" type="radio" id="radio4" name="creditRadio" value="Average - Paid telco/utility default" /><label for="radio4">Average</label>&nbsp;&nbsp;&nbsp;
+            <br/><br/>
+            <input onclick="javascript:getRadioButtonCH();" type="radio" id="radio3" name="creditRadio" value="Fair - Multiple Defaults" /><label for="radio3">Fair</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getRadioButtonCH();" type="radio" id="radio2" name="creditRadio" value="Poor - Prior Bankruptcy or Part 9" /><label for="radio2">Poor</label>
+            <script>
+                (function (){
+                    var valueToCompare = $('#creditHistory').val();
+                    $('input[name="creditRadio"]').each(function(){
+                        if ($(this).val() == valueToCompare) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                })();
+            </script>
+          </div>
+          <div id="interestBox" class="boxStyle">
+            <h1>Mortgage Type</h1>
+            <input type="hidden" id="interestType" value="{! lead.Current_Interest_Rate_Type__c}" />
+            <br/><br/>
+            <input onclick="javascript:getInterestType();" type="radio" id="radioI1" name="interestRadio" value="Variable" /><label for="radioI1">Variable</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getInterestType();" type="radio" id="radioI2" name="interestRadio" value="Variable / Fixed Split" /><label for="radioI2">Split</label>&nbsp;&nbsp;&nbsp;
+            <br/><br/>
+            <input onclick="javascript:getInterestType();" type="radio" id="radioI3" name="interestRadio" value="Fixed" /><label for="radioI3">Fixed</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getInterestType();" type="radio" id="radioI4" name="interestRadio" value="Line of Credit" /><label for="radioI4">LoC</label>&nbsp;&nbsp;&nbsp;
+            <script>
+                (function (){
+                    var iValueToCompare = $('#interestType').val();
+                    $('input[name="interestRadio"]').each(function(){
+                        if ($(this).val() == iValueToCompare) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                })();
+            </script>
+          </div>
+          <div id="housingStatusBox" class="boxStyle">
+            <h1>Housing Status</h1>
+            <input type="hidden" id="housingStatus" value="{! lead.Housing_Status__c}" />
+            <br/><br/>
+            <input onclick="javascript:getRadioButtonHS();" type="radio" id="radioHS1" name="housingStatusRadio" value="Boarding/Family" /><label for="radioHS1">Family</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getRadioButtonHS();" type="radio" id="radioHS2" name="housingStatusRadio" value="Mortgage" /><label for="radioHS2">Mortgage</label>&nbsp;&nbsp;&nbsp;
+            <br/><br/>
+            <input onclick="javascript:getRadioButtonHS();" type="radio" id="radioHS3" name="housingStatusRadio" value="Own Outright" /><label for="radioHS3">Own</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getRadioButtonHS();" type="radio" id="radioHS4" name="housingStatusRadio" value="Renting" /><label for="radioHS4">Rent</label>&nbsp;&nbsp;&nbsp;
+            <script>
+                (function (){
+                    var hsValueToCompare = $('#housingStatus').val();
+                    $('input[name="housingStatusRadio"]').each(function(){
+                        if ($(this).val() == hsValueToCompare) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                })();
+            </script>
+          </div>
+          <div id="lookingToBuyBox" class="boxStyle">
+            <h1>Looking To Buy</h1>
+            <input type="hidden" id="lookingToBuy" value="{! lead.Looking_To_Buy__c}" />
+            <br/><br/>
+            <input onclick="javascript:getLookingToBuy();" type="radio" id="radioLTB1" name="lookingToBuyRadio" value="Within a year" /><label for="radioLTB1">&#60; a year</label>&nbsp;&nbsp;&nbsp;
+            <input onclick="javascript:getLookingToBuy();" type="radio" id="radioLTB2" name="lookingToBuyRadio" value="In 2 years" /><label for="radioLTB2">2 Years</label>&nbsp;&nbsp;&nbsp;
+            <br/><br/>
+            <input onclick="javascript:getLookingToBuy();" type="radio" id="radioLTB3" name="lookingToBuyRadio" value="More than 2 years" /><label for="radioLTB3">&#62; 2 years</label>&nbsp;&nbsp;&nbsp;
+            <script>
+                (function (){
+                    var ltbValueToCompare = $('#lookingToBuy').val();
+                    $('input[name="lookingToBuyRadio"]').each(function(){
+                        if ($(this).val() == ltbValueToCompare) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                })();
+            </script>
+          </div>
+          <div class="boxStyle" style="background-color: #f2f2f2; width:140px;display:inline-block; height:75px;">
+                <h1>Current Rate</h1><br/><br/>
+                <input type="number" id="currentRate" placeholder="4.88" class="numberInputStyle" style="width:35px; font-size:15px;" value="{! lead.Current_Interest_Rate__c}"/>%
+            </div>
+            <div class="boxStyle" style="background-color: #f2f2f2;width:140px;display:inline-block;height:75px;">
+                <h1>Loan Amount</h1><br/><br/>
+                $<input type="number" id="loadAmount" placeholder="480000" class="numberInputStyle" style="width:65px; font-size:15px" value="{! lead.Current_Loan_Value__c}"/>
+            </div>
+      </div>
+      <div class="rightHalf">
+        <div class="boxStyleH">
+            <h1>Last Refinance</h1><br/>
+            <input type="text" id="dateForLastRefinance" value="{! lastRefinance}" /><br/><br/>
+            <div id="container">
+            </div>
+        </div>
+        <div class="boxStyleH">
+            <h1>Fixed Expiry Date</h1><br/>
+            <input type="text" id="dateForFixedExpiryDate" value="{! fixedExpiry}" /><br/><br/>
+            <div id="container2"></div>
+        </div>
+      </div>
+      </div>
+      <div id="bankBox" style="width:650px;height:270px;border:2px solid #D4FFFF;">
+        <h1>Current Lender</h1><br/>
+        <div>
+            <input type="hidden" id="currentLenderDB" value="{! lead.Current_Lender__c}" />
+            
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA11" name="baRadio" value="AMP" /><label for="radioBA11">AMP<!--<i class="sprite sprite-amp-bank"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA12" name="baRadio" value="ANZ" /><label for="radioBA12">ANZ<!--<i class="sprite sprite-anz_logo"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA1" name="baRadio" value="Bank SA" /><label for="radioBA1">BankSA<!-- <i class="sprite sprite-BankSA"></i> --></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA2" name="baRadio" value="BankWest" /><label for="radioBA2">BankWest<!--<i class="sprite sprite-Bankwest"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA3" name="baRadio" value="Connective Home Loans" /><label for="radioBA3">Connective Home Loans<!-- <i class="sprite sprite-Connective"></i> --></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA15" name="baRadio" value="Citibank" /><label for="radioBA15">Citibank<!--<i class="sprite sprite-citibank"></i>--></label>&nbsp;&nbsp;<br/><br/>
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA16" name="baRadio" value="Commonwealth Bank" /><label for="radioBA16">Commonwealth Bank<!-- <i class="sprite sprite-commbank"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA4" name="baRadio" value="FirstMac" /><label for="radioBA4">FirstMac <!-- <i class="sprite sprite-FirstMac"></i> --></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA17" name="baRadio" value="Gateway Credit Union" /><label for="radioBA17">Gateway Credit Union <!-- <i class="sprite sprite-gateway-credit-union"></i>--></label>&nbsp;&nbsp;            
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA5" name="baRadio" value="Heritage Bank" /><label for="radioBA5">Heritage Bank <!-- <i class="sprite sprite-Heritage-Bank"></i>--></label>&nbsp;&nbsp;<br/><br/>
+            
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA6" name="baRadio" value="Homeloans Limited" /><label for="radioBA6">Home Loans Ltd<!-- <i class="sprite sprite-Homeloans_Ltd_Logo"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA7" name="baRadio" value="IMB Building Society" /><label for="radioBA7">IMB<!--<i class="sprite sprite-IMB"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA8" name="baRadio" value="ING Direct" /><label for="radioBA8">ING Direct<!--<i class="sprite sprite-ING-Direct"></i>--></label>&nbsp;&nbsp;
+            
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA18" name="baRadio" value="Keystart Home Loans" /><label for="radioBA18">Keystart<!-- <i class="sprite sprite-keystart_logo"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA19" name="baRadio" value="LaTrobe Financial" /><label for="radioBA19">LaTrobe<!--<i class="sprite sprite-large14"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA20" name="baRadio" value="Liberty Financial" /><label for="radioBA20">Liberty<!-- <i class="sprite sprite-liberty_financial"></i>--></label>&nbsp;&nbsp;<br/><br/>
+            
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA21" name="baRadio" value="Macquarie Bank Mortgage Solutions" /><label for="radioBA21">Macquarie Bank<!--<i class="sprite sprite-macquarie-bank"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA22" name="baRadio" value="ME Bank" /><label for="radioBA22">ME Bank<!--<i class="sprite sprite-me-bank"></i> --></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA23" name="baRadio" value="MKM Capital" /><label for="radioBA23">MKM Capital <!--<i class="sprite sprite-mkm_6002"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA13" name="baRadio" value="Bank of Melbourne" /><label for="radioBA13">Melbourne Bank<!--<i class="sprite sprite-bank-of-melbourne-logo"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA9" name="baRadio" value="National Australia Bank" /><label for="radioBA9">NAB<!--<i class="sprite sprite-NAB-Logo"></i>--></label>&nbsp;&nbsp;<br/><br/>
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA10" name="baRadio" value="Pepper Home Loans" /><label for="radioBA10">Pepper<!--<i class="sprite sprite-Pepper"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA14" name="baRadio" value="Bank of Queensland" /><label for="radioBA14">Queensland Bank<!--<i class="sprite sprite-boqlogo"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA24" name="baRadio" value="St George Bank" /><label for="radioBA24">St George<!-- <i class="sprite sprite-stgeorge"></i>--></label>&nbsp;&nbsp;
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA25" name="baRadio" value="Suncorp Bank" /><label for="radioBA25">Suncorp<!--  <i class="sprite sprite-suncorp"></i>--></label>&nbsp;&nbsp;
+            
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA26" name="baRadio" value="Teachers Mutual Bank" /><label for="radioBA26">Teachers Mutual Bank<!-- <i class="sprite sprite-teachers"></i>--></label>&nbsp;&nbsp;<br/><br/>
+            <input onclick="javascript:getCurrentLender();" type="radio" id="radioBA27" name="baRadio" value="Westpac" /><label for="radioBA27">Westpac<!-- <i class="sprite sprite-westpac"></i>--></label>&nbsp;&nbsp;
+            <script>
+                (function (){
+                    var baValueToCompare = $('#currentLenderDB').val();
+                    $('input[name="baRadio"]').each(function(){
+                        if ($(this).val() == baValueToCompare) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                })();
+            </script>
+        </div>
+      </div>
+      <apex:form >
+          <apex:actionFunction action="{! saveCreditHistory}" name="updateCreditHistory" rerender="">
+              <apex:param name="creditHistory" value="" assignTo="{! currectCreditHistory}"/>
+          </apex:actionFunction>
+          <apex:actionFunction action="{! saveEmploymentStatus}" name="updateStatusHistory" rerender="">
+              <apex:param name="employmentStatus" value="" assignTo="{! employmentStatus}"/>
+          </apex:actionFunction>
+          <apex:actionFunction action="{! saveHousingStatus}" name="updateHousingStatusHistory" rerender="">
+              <apex:param name="housingStatus" value="" assignTo="{! housingStatus}"/>
+          </apex:actionFunction>
+          <apex:actionFunction action="{! saveMortgageStatus}" name="updateMortgageStatusHistory" rerender="">
+              <apex:param name="mortgageStatus" value="" assignTo="{! mortgageStatus}"/>
+          </apex:actionFunction> 
+          <apex:actionFunction action="{! saveInterestType}" name="updateInterestType" rerender="">
+              <apex:param name="interestType" value="" assignTo="{! interestType}"/>
+          </apex:actionFunction>
+          <apex:actionFunction action="{! saveLastRefinanceDate}" name="updateLastRefinanceDate" rerender="">
+              <apex:param name="lastRefinance" value="" assignTo="{! lastRefinance}"/>
+          </apex:actionFunction>
+          <apex:actionFunction action="{! saveFixedExpiryDate}" name="updateFixedExpiryDate" rerender="">
+              <apex:param name="fixedExpiry" value="" assignTo="{! fixedExpiry}"/>
+          </apex:actionFunction>
+          <apex:actionFunction action="{! saveLookingToBuy}" name="updateLookingToBuy" rerender="">
+              <apex:param name="lookingToBuy" value="" assignTo="{! lookingToBuy}"/>
+          </apex:actionFunction>
+          <apex:actionFunction action="{! saveLoadAmount}" name="updateLoadAmount" rerender="">
+              <apex:param name="loadAmount" value="" assignTo="{! loadAmount}"/>
+          </apex:actionFunction>
+          <apex:actionFunction action="{! saveInterestRate}" name="updateInterestRate" rerender="">
+              <apex:param name="interestRate" value="" assignTo="{! interestRate}"/>
+          </apex:actionFunction>
+          <apex:actionFunction action="{! saveCurrentLender}" name="updateCurrentLender" rerender="">
+              <apex:param name="currentLender" value="" assignTo="{! currentLender}"/>
+          </apex:actionFunction>    
+      </apex:form>
+    </body>
+</apex:page>

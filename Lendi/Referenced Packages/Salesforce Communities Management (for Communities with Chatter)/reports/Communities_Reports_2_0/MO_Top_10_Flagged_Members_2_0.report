@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>RowCount</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <downGroupingContext>Network.NetworkActivityAudits$EntityCreatedBy</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel># Flags</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <columns>
+        <field>Network$Name</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$Action</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$ParentEntityType</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$ParentEntity</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$Description</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$EntityType</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkActivityAudits$CreatedBy</field>
+    </columns>
+    <description>The top 10 members with the most flags.</description>
+    <filter>
+        <criteriaItems>
+            <column>Network.NetworkActivityAudits$Action</column>
+            <operator>equals</operator>
+            <value>f</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Network.NetworkActivityAudits$EntityCreatedBy</field>
+        <sortByName>FORMULA1</sortByName>
+        <sortOrder>Desc</sortOrder>
+        <sortType>CustomSummaryFormula</sortType>
+    </groupingsDown>
+    <name>MO - Top 10 Flagged Members</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Network_Moderation_20__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Network$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

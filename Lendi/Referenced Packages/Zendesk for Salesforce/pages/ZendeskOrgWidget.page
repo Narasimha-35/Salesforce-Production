@@ -1,0 +1,29 @@
+<apex:page controller="Zendesk.ZendeskSetting" title="Edit Zendesk organization settings">
+
+  <apex:sectionHeader title="Zendesk for Salesforce" subtitle="User Data Lookup Settings" />
+
+  <apex:outputPanel id="pageMessages">
+    <apex:pageMessages />
+  </apex:outputPanel>
+
+  <apex:form >
+  <apex:pageBlock title="Mapped record types" mode="edit">
+    <apex:pageBlockButtons location="top">
+      <apex:commandButton action="{!saveFields}" value="Save"/>
+      <apex:commandButton action="{!URLFOR($Action.Zendesk__Zendesk_Widget_Entity__c.New)}" value="New record type"/>
+      <apex:commandButton action="{!URLFOR($Action.Zendesk__Zendesk_Widget_Entity__c.List, $ObjectType.Zendesk__Zendesk_Widget_Entity__c)}" value="Manage record types"/>
+    </apex:pageBlockButtons>
+    <apex:pageBlockSection title="Fields from Salesforce record types displayed in Zendesk user profiles" columns="1">
+      <apex:repeat value="{!widgetEntities}" var="entity">
+        <apex:pageBlockSection columns="1">
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value="{!entity.Name}" />
+            <c:ZendeskWidgetFieldEdit widgetEntityname="{!entity}" />
+          </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+      </apex:repeat>
+    </apex:pageBlockSection>
+  </apex:pageBlock>
+  </apex:form>
+
+</apex:page>

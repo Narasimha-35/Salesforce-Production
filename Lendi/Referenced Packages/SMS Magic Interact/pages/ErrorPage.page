@@ -1,0 +1,7 @@
+<apex:page standardController="smagicinteract__Incoming_SMS__c">
+
+<apex:pageBlock title="Error" >
+	 You can not Create Or Edit message here.<br/>
+	 Here you can only see the receive messages..!!  
+</apex:pageBlock>
+</apex:page>

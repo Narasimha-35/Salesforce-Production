@@ -1,0 +1,7 @@
+<apex:page standardController="Contact" >
+<div style="position:relative">
+    <div style="z-index:-1;position:absolute;left:0;top:0;">loading...</div>
+    <iframe style="border:1px solid #c9c9c9 !important;height:500px;width:100%;border:0" src="https://force.intercom.io/canvas?intercom_app_id={!$Setup.Intercom99__IntercomAPISettings__c.Intercom99__intercom_app_id__c}&intercom_app_api_key={!$Setup.Intercom99__IntercomAPISettings__c.Intercom99__intercom_app_api_key__c}&current_email={!URLENCODE($User.email)}&id={!contact.id}&name={!contact.name}&email={!URLENCODE(contact.email)}&type=contact"></iframe>
+</div>
+<div class="intercom-spacer" style="margin:10px 0 0 0;"></div>
+</apex:page>

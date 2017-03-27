@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>FIRST_NAME</field>
+    </columns>
+    <columns>
+        <field>LAST_NAME</field>
+    </columns>
+    <columns>
+        <field>COMPANY_ACCT</field>
+    </columns>
+    <columns>
+        <field>EMAIL</field>
+    </columns>
+    <columns>
+        <field>CREATED_DATE</field>
+    </columns>
+    <columns>
+        <field>CONVERTED</field>
+    </columns>
+    <columns>
+        <field>OPP_NAME</field>
+    </columns>
+    <description>Converted Leads Organized by Website Lead Source</description>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>LEAD_SOURCE</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FK_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Web Converted Lead Source</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityLead@Opportunity.WebSource__c</reportType>
+    <scope>org</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>LAST_ACTIVITY</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

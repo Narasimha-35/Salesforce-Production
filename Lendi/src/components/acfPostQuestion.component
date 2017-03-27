@@ -1,0 +1,81 @@
+<apex:component controller="WLPostquestionController" allowDML="true" id="pid">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<title>Feed Dashboard</title>
+<!--
+<link href="{!URLFOR($Resource.acfResources, 'acfResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/js.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/nav.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfResources, 'acfResources/js/html5.js')}"></script>
+-->
+</head>
+<script>
+$(document).ready(function ()
+{
+    ManageScript();       
+});
+
+function ManageScript()
+{
+    $('#usrfeed').click(function () 
+    {
+      $('#usrfeedPopUp').removeClass('displaynone'); 
+    });
+    
+    $('#pdivfaded').click(function () 
+    {
+        $('#usrfeedPopUp').addClass('displaynone'); 
+        resetPopup();
+    });
+    
+    $('.pop-close').click(function () 
+    { 
+        $('#usrfeedPopUp').addClass('displaynone'); 
+        resetPopup();
+    }); 
+    $('#quoteFeedId').click(function () 
+    {
+      $('#usrfeedPopUp').removeClass('displaynone'); 
+    }); 
+}
+</script>
+<style>
+    .displaynone
+    {
+        display:none;
+    }
+    .setup-box .h3{
+        display:block !important;
+    }
+</style>
+<main class="container-fluid">
+    <div id="usrfeedPopUp" Class="pop-up-form displaynone">
+        <div id="pdivfaded" class="faded">&nbsp;</div>
+        <section class="setup-box" id="idSetupBox" style="min-height: 322px;left: 25%;">
+            <a href="#" class="pop-close">Close<span class="fa fa-close">&nbsp;</span></a>
+        <apex:form id="frmId">
+           <apex:actionFunction name="resetPopup" action="{!ResetPopup}" rerender="frmId"/>
+           
+               <hgroup>
+                       <h2 class="h3" style="margin-bottom: 15px;"> We would like to help you! </h2>
+                       <apex:outputPanel id="feedsuccessMsg" rendered="{!successMsg}" style="color:#419ECC;text-align:center;"><p style="margin-bottom:10px;">{!strfeedSuccessmsg}</p></apex:outputPanel>
+                       <apex:outputPanel id="feedmsg" rendered="{!showMessage}" style="color:red;text-align:center;"><p style="margin-bottom:10px;">{!strfeedmsg}</p></apex:outputPanel>
+               </hgroup>          
+                <div class="set-up-row">
+                 <apex:inputTextarea id="feedTextId" styleClass="set-up-box col-md-6  col-sm-10" value="{!strPost}" html-placeholder="Please enter your query here!" style="margin-bottom: 20px;text-transform: initial;" rendered="{!NOT(successMsg)}"/>
+                 <span style="display:none;">&nbsp;</span>
+                </div>
+                 <div class="set-up-row auto">
+                 <apex:commandLink styleClass="btn col-md-12 stup-btn-mgnbtm" value="Submit" action="{!postQuery}" id="postBtnId" rerender="frmId" rendered="{!NOT(successMsg)}"/>
+                 </div>
+                  <div class="clearfix"></div> 
+                  <script>ManageScript();</script>
+         </apex:form>                                                    
+            </section> 
+         
+    </div>
+    <section class="frequently-ask row-fluid">If you have any questions, you can always talk with your mortgage expert<a href="#" class="btn faq-btn" id="usrfeed">Ask A Question</a></section>
+</main>
+</apex:component>

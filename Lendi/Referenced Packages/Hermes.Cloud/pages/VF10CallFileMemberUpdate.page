@@ -1,0 +1,281 @@
+<apex:page standardcontroller="vhc__Campaign__c" extensions="vhc.Ctrl10CallFileMemberUpdate" tabstyle="vhc__Campaign__c" >
+ 
+ <!--<apex:includeScript value="{!$Resource.JQuery}"/>-->
+  		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css" type="text/css" />
+  		<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.WS_Ressource, 'CSS/progress.css')}" /> 
+  		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script> 
+  		
+<apex:sectionHeader title="Campaign - {!campaign.name}" subtitle="Manage Members">
+	<div class="ptBreadcrumb">
+		&nbsp;&nbsp;«&nbsp;
+		<apex:outputLink value="/{!campaign.id}">{!$Label.Back_to_Campaign}: {!campaign.name}</apex:outputLink>
+	</div>
+</apex:sectionHeader>
+<apex:pageMessages id="msg"/>
+<div>
+
+<script>
+	var isProgressbar=false;
+	function wait(op){
+		if(op=='start'){
+			document.body.style.cursor= "wait";
+			return;
+		}
+		
+		document.body.style.cursor="default";
+		document.body.scrollTop = 0;
+	}
+	function checkBatchStatus(){
+	    var batchId =  $("#batchInput input").val();
+	    if(batchId==""){
+		   log("No batch Id");
+		   return;
+	    }
+		vhc.Ctrl10CallFileMemberUpdate.getApexJobById(batchId,setBatchStatus,log);		
+	}
+	
+	function setBatchStatus(res){
+		if(!isProgressbar){
+		    initProgressbar('batch');
+			isProgressbar=true;
+		}
+		res= JSON.parse($("<div/>").html(res).text());
+		setProgressbar('batch',res.JobItemsProcessed,res.TotalJobItems);
+		$("#batchStatus").html(res.Status);
+		$("#totalTask").html(res.TotalJobItems);
+		$("#taskNumber").html(res.JobItemsProcessed);
+		if(res.TotalJobItems==res.JobItemsProcessed ){
+			checkBatchStatus();
+			return;
+		} 
+		if(res.Status=='Completed'){
+			$(".myFilter_button").click();
+			return false;
+		}
+		setTimeout(checkBatchStatus,100);
+	}
+	function log(res){
+		if(typeof(console) !== 'undefined' && console != null) {
+			console.log(res);
+		}
+	}
+
+	function initProgressbar(op){
+		$( "#progressbar_"+op ).progressbar({value: 0});  		
+		
+		// Set color
+		
+		var progressbar = $( "#progressbar_" + op );
+       	var progressbarValue = progressbar.find( ".ui-progressbar-value" );
+		progressbarValue.css({
+        		"background": '#4E718F' 
+       	});
+					
+	}
+	function setProgressbar(op,index,size){
+		var pc = parseInt(100 - ( (index/size) * 100)); 		
+    	$("#progressbar_"+op).progressbar( "option", "value", 100-pc );		 					
+	}
+
+	$(document).ready(function(){
+		var bId = '{!batchId}';
+		if(bId){
+			checkBatchStatus();
+		}
+	});
+</script>
+<apex:form >
+	<style type="text/css">
+		.sync_box input {
+		    background:  red;
+  			color: #FFFFFF;
+		}
+	</style>
+	<apex:actionRegion >
+		<apex:actionFunction name="removeMembers" action="{!removeMembers}" reRender="theTable , msg"  oncomplete="wait('end')"/>
+<!--		<apex:actionFunction name="updateMembers" action="{!updateMembers}"/>-->
+		<apex:inputHidden value="{!selectedStatus}" id="selectedStatus"/> 
+		<apex:inputHidden value="{!checkedIds}" id="checkedIds"/>
+		<apex:inputHidden value="{!orderBY}" id="orderBY"/>
+	</apex:actionRegion>
+	
+	<apex:outputpanel id="batch" styleClass="dn">
+		<span id="batchInput"><apex:inputText value="{!batchId}" /></span>
+	</apex:outputpanel>
+	
+	<div class="box" style="float: right">
+	  <div class="sync_box">
+		   <apex:commandbutton styleclass="delete" action="{!RunAll}" value="{!$Label.Delete_All}" rerender="batch , msg" oncomplete="checkBatchStatus()" onclick="if({!countQuery} >=49000){alert('Only first 49000 rows will be processed.');} $('#batchStatus').html('Starting')"/><br/>
+		   <div id="progressbar_batch" class="bar"></div>
+		   <div class="val_rslt">{!$Label.Job_Items_Processed}: <span class="counter" id="taskNumber">0</span > {!$Label.of} <span id="totalTask">0</span></div>
+		   <div>Batch Status: <span id="batchStatus">Ready</span></div>
+	  </div>
+	</div>
+  
+	<div class="dn">
+		<a href="javascript:void(0)" onclick="checkBatchStatus()" >{!$Label.Check_Batch_Status}</a>
+	</div>
+	
+	<br/>
+	<apex:panelgroup id="filter">
+		<c:Filter f="{!filterComponent}" />		<br/>
+		<apex:commandbutton id="saveFilterBtn" action="{!go}" onclick="wait('start');setSql();" value="{!$Label.Filter_Button}" reRender="theTable" oncomplete="wait('end')"/>
+		<br/><br/>
+	</apex:panelgroup> 
+	<apex:pageBlock title="{!$Label.Campaign_Member}" mode="edit">
+		<apex:pageBlockButtons >
+			<input type="button" class="btn" value="{!$Label.Filter_Remove}" onclick="if(setCBIds())removeMembers();"/>
+		</apex:pageBlockButtons>
+		<apex:panelgroup id="theTable">
+			<apex:pageblocktable value="{!Records}" var="cm" > 
+				<apex:column width="10px">
+					<apex:facet name="header">
+						<input type="checkbox" id="selectAllCB" onclick="selectAll(this);"/>
+					</apex:facet>
+					<input type="checkbox" id="cbtf_{!cm.id}" value="{!cm.id}" onclick="selectOne();"/>
+				</apex:column>
+			 
+				<apex:column width="10px">
+					<apex:facet name="header">
+						{!$Label.Action}
+					</apex:facet> 
+							<span class="actionLink" >
+<!--							<a href="/{!UrlEncode(cm.id)}/e?retURL=/apex/VF10CallFileMemberUpdate?id={!UrlEncode(CampaignId)}">Edit</a>-->
+<!--							| &nbsp;-->
+							<apex:commandLink value="Remove" action="{!removeMembers}" onclick="setId('{!JsEncode(cm.id)}');"></apex:commandLink>
+							</span>
+				</apex:column>				 
+				<apex:repeat value="{!CMFields}"  var="field">
+					<apex:column rendered="{! !CONTAINS(field,'contact__r') && !CONTAINS(field,'lead__r')}">
+						<apex:facet name="header">
+							<apex:commandLink action="{!sortRes}" reRender="theTable" onclick="setOrderBy(this);">
+								<apex:outputLabel value="{!$ObjectType.vhc__Campaign_Member__c.Fields[field].Label}"/>
+								<input type="hidden" value="{!$ObjectType.Campaign_Member__c.Fields[field].Name}" />
+							</apex:commandLink>
+						</apex:facet>
+						<apex:outputpanel >
+							<apex:outputpanel rendered="{!CONTAINS(field,'contact') || CONTAINS(field,'lead') || CONTAINS(field,'opportunity') || CONTAINS(field,'account') }" >
+								<apex:outputField value="{!cm[field]}"/>
+							</apex:outputpanel>
+							<apex:outputpanel rendered="{!NOT(CONTAINS(field,'contact')) && NOT(CONTAINS(field,'lead'))  && NOT(CONTAINS(field,'opportunity')) && NOT(CONTAINS(field,'account'))}" >
+								<apex:outputText value="{!cm[field]}"/>
+							</apex:outputpanel>					
+						</apex:outputpanel>
+					</apex:column>
+					<!--<apex:column rendered="{!CONTAINS(field,'contact__r')}">
+						<apex:facet name="header">
+							<apex:commandLink action="{!sortRes}" reRender="theTable" onclick="setOrderBy(this);">
+								<apex:outputLabel value="{!$ObjectType.Contact.Fields[SUBSTITUTE(field,'contact__r.','')].Label}"/>
+								<input type="hidden" value="{!$ObjectType.Contact.Fields[SUBSTITUTE(field,'contact__r.','')].Name}" />
+							</apex:commandLink>
+						</apex:facet>
+						<apex:outputField value="{!cm.contact__r[SUBSTITUTE(field,'contact__r.','')]}"/>
+					</apex:column>
+					<apex:column rendered="{!CONTAINS(field,'lead__r')}">
+						<apex:facet name="header">
+							<apex:commandLink action="{!sortRes}" reRender="theTable" onclick="setOrderBy(this);">
+								<apex:outputLabel value="{!$ObjectType.Lead.Fields[SUBSTITUTE(field,'lead__r.','')].Label}"/>
+								<input type="hidden" value="{!$ObjectType.Lead.Fields[SUBSTITUTE(field,'lead__r.','')].Name}" />
+							</apex:commandLink>
+						</apex:facet>
+						<apex:outputText value="{!cm.lead__r[SUBSTITUTE(field,'lead__r.','')]}"/>
+					</apex:column>    
+				--></apex:repeat> 
+			</apex:pageblocktable>
+	<br/>
+	<div class="paginator">
+		<span class="left">
+			<span class="selectorTarget">
+				<apex:outputpanel rendered="{!countQuery > 0}" layout="none">
+				{!((setCon.PageSize*(setCon.PageNumber-1))+1)}-
+				{!if((setCon.PageNumber*setCon.PageSize)>setCon.ResultSize,setCon.ResultSize,(setCon.PageNumber*setCon.PageSize))}
+				{!$Label.of}  
+				{!setCon.ResultSize}<apex:outputpanel rendered="{!countQuery > 200}" layout="none">+</apex:outputpanel>	
+				</apex:outputpanel> 
+			</span>
+		</span>
+		<span class="prevNextLinks">
+			<span class="prevNext">
+				<apex:outputLabel rendered="{!!(setCon.PageNumber!=1)}" ><img class="firstoff" src="/s.gif"/></apex:outputLabel>
+				<apex:commandLink action="{!setCon.first}" rerender="theTable" onclick="wait('start')" oncomplete="wait('end')" rendered="{!setCon.PageNumber!=1}"><img class="first" alt="{!$Label.First_Page}" title="{!$Label.First_Page}" src="/s.gif"/></apex:commandLink>
+			</span>
+			<span class="prevNext">
+				<apex:outputLabel rendered="{!!setCon.HasPrevious}" ><img class="prevoff" src="/s.gif"/>{!$Label.Previous}</apex:outputLabel>
+				<apex:commandLink action="{!setCon.previous}" rerender="theTable" onclick="wait('start')" oncomplete="wait('end')" rendered="{!setCon.HasPrevious}"><img class="prev" alt="{!$Label.Previous}" title="{!$Label.Previous}" src="/s.gif"/>{!$Label.Previous}</apex:commandLink>
+			</span>
+			<span class="prevNext">
+				<apex:outputLabel rendered="{!!setCon.HasNext}" value="{!$Label.Next}"><img class="nextoff" src="/s.gif"/></apex:outputLabel>
+				<apex:commandLink action="{!setCon.next}" rerender="theTable" onclick="wait('start')" oncomplete="wait('end')" rendered="{!setCon.HasNext}">{!$Label.Next}<img class="next" alt="{!$Label.Next}" title="{!$Label.Next}" src="/s.gif"/></apex:commandLink>
+			</span>
+			<span class="prevNext">
+				<apex:outputLabel rendered="{!!setCon.HasNext}" ><img class="lastoff" src="/s.gif"/></apex:outputLabel>
+				<apex:commandLink action="{!setCon.last}" rerender="theTable" onclick="wait('start')" oncomplete="wait('end')" rendered="{!setCon.HasNext}"><img class="last" alt="{!$Label.Last_Page}" title="{!$Label.Last_Page}" src="/s.gif"/></apex:commandLink>
+			</span>
+		</span>	
+		<span class="right"></span>
+	</div>
+	
+	</apex:panelgroup>
+	</apex:pageBlock>
+
+	<script type="text/javascript">
+	
+		String.prototype.startsWith = function(str){
+		    return (this.indexOf(str) === 0);
+		}
+		function setOrderBy(obj){
+			document.getElementById('{!JsEncode($Component.orderBY)}').value = obj.getElementsByTagName('input')[0].value ;
+		}
+		function  setCBIds(){
+			var pan = document.getElementById('{!$Component.theTable}');
+			var input = document.getElementsByTagName('input');
+			var num=0;			
+			var cb ='' ;
+			for (var i = 0 ; i < input.length ; i++){	
+				if( input[i].id.startsWith("cbtf_"))
+					if(input[i].type=="checkbox")
+						if(input[i].checked){
+						cb+=input[i].value+";";
+						num++;
+						}			 
+			}
+			document.getElementById('{!JsEncode($Component.checkedIds)}').value=cb.slice(0,-1);
+			//alert(document.getElementById('{!JsEncode($Component.checkedIds)}').value);
+			if(num==0){
+				alert('Please select at least one record.');
+				return false;
+			}
+			return true;
+		}
+		function  setId(obj){
+			document.getElementById('{!JsEncode($Component.checkedIds)}').value=obj;
+			return true;
+		}
+		function selectAll(obj){
+			var value = obj.checked;
+			var pan = document.getElementById('{!JsEncode($Component.theTable)}');
+			var input = document.getElementsByTagName('input');
+			var num=0;			
+			var cb ='' ;
+			for (var i = 0 ; i < input.length ; i++){	
+				if( input[i].id.startsWith("cbtf_"))
+					if(input[i].type=="checkbox")
+						input[i].checked=value;	 
+			}
+			
+		}
+		function selectOne(){
+			document.getElementById('selectAllCB').checked=false;
+		}
+		function addSelectedWithStatus(obj){
+			if(setCBIds())
+			{
+				document.getElementById('{!JsEncode($Component.selectedStatus)}').value = obj;
+				updateMembers();
+			}
+		}
+	</script>
+</apex:form>
+</div> 
+</apex:page>

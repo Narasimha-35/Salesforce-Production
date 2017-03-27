@@ -1,0 +1,142 @@
+<apex:page standardcontroller="vhc__Campaign__c" extensions="vhc.Ctrl06CallFileInf" showHeader="false" action="{!init}">
+
+<script  src="/jslibrary/1341513998000/sfdc/main.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+window.onload = function() {
+	sfdcPage.setHelp('Call_Not_Processed', '{!JSENCODE($Label.Call_Not_Processed_Help)}');
+	sfdcPage.setHelp('Call_back_global', '{!JSENCODE($Label.Call_back_global_help)}');
+	sfdcPage.setHelp('Call_back_personal', '{!JSENCODE($Label.Call_back_personal_help)}');
+	sfdcPage.setHelp('Call_to_retry', '{!JSENCODE($Label.call_to_retry_help)}');
+	sfdcPage.setHelp('System_callbacks', '{!JSENCODE($Label.system_callbacks_help)}');
+	sfdcPage.setHelp('In_progress', '{!JSENCODE($Label.in_progress_help)}');
+	sfdcPage.setHelp('Call_completed', '{!JSENCODE($Label.call_completed_help)}');
+	sfdcPage.setHelp('Call_unreachable', '{!JSENCODE($Label.call_unreachable_help)}');
+	sfdcPage.setHelp('Don_t_call_callback_rules', '{!JSENCODE($Label.dont_callback_rule_help)}');
+	sfdcPage.setHelp('Wrong_number', '{!JSENCODE($Label.wrong_number_help)}');
+	sfdcPage.executeOnloadQueue();
+};
+
+ 
+
+</script>
+<apex:pageMessages />
+<apex:pageBlock title="{!$Label.Call_File_Information}">
+
+        <apex:pageBlockSection title="{!$Label.To_call}">
+
+			<apex:pageBlockSectionItem >
+				<apex:outputPanel >   
+					<span class="helpButton" id="Call_Not_Processed-_help" >
+						<apex:outputLabel value="{!$Label.Call_Not_Processed}"/> 
+						<img src="/s.gif"   alt="" class="helpOrb" title="" />
+					</span>
+				</apex:outputPanel>
+	            <apex:outputText value="{!res.NotProcessed}"/>
+            </apex:pageBlockSectionItem> 
+            
+            <apex:pageBlockSectionItem >
+				<apex:outputPanel >
+					<span class="helpButton" id="Call_back_global-_help" >
+						<apex:outputLabel value="{!$Label.Call_back_global}"/> 
+						<img src="/s.gif"   alt="" class="helpOrb" title="" />
+					</span>
+				</apex:outputPanel>
+	            <apex:outputText value="{!res.CallBack - res.PersoCallBack - res.SysCallBack}"/>
+	            
+            </apex:pageBlockSectionItem> 
+
+			<apex:pageBlockSectionItem >
+				<apex:outputPanel >
+					<span class="helpButton" id="Call_back_personal-_help" >
+						<apex:outputLabel value="{!$Label.Call_back_personal}"/> 
+						<img src="/s.gif"   alt="" class="helpOrb" title="" />
+					</span>
+				</apex:outputPanel>
+	            <apex:outputText value="{!res.PersoCallBack}"/>
+            </apex:pageBlockSectionItem>
+           
+            <apex:pageBlockSectionItem >
+            	<apex:outputPanel >
+					<span class="helpButton" id="Call_to_retry-_help" >
+						<apex:outputLabel value="{!$Label.Call_to_retry}"/> 
+						<img src="/s.gif"   alt="" class="helpOrb" title="" />
+					</span>
+				</apex:outputPanel>
+	            <apex:outputText value="{!res.ToBeRetried -res.CallInProgress }"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem >
+            	<apex:outputPanel >
+					<span class="helpButton" id="System_callbacks-_help" >
+						<apex:outputLabel value="{!$Label.System_callbacks}"/> 
+						<img src="/s.gif"   alt="" class="helpOrb" title="" />
+					</span>
+				</apex:outputPanel>
+	            <apex:outputText value="{!res.SysCallBack }"/>
+            </apex:pageBlockSectionItem>
+             
+			<apex:pageBlockSectionItem >
+				<apex:outputPanel >
+					<span class="helpButton" id="In_progress-_help" >
+						<apex:outputLabel value="{!$Label.In_progress}"/> 
+						<img src="/s.gif"   alt="" class="helpOrb" title="" />
+					</span>
+				</apex:outputPanel>
+	            <apex:outputText value="{!res.CallInProgress }"/>
+            </apex:pageBlockSectionItem>
+            
+        </apex:pageBlockSection> 
+        
+        <apex:pageBlockSection title="{!$Label.Closed}">
+        
+<!--			<apex:pageBlockSectionItem >-->
+<!--				<apex:outputLabel value="{!$Label.Call_temporaly_disabled}"/> -->
+<!--	            <apex:outputText value="{!res.TempDisabled}"/>-->
+<!--            </apex:pageBlockSectionItem> -->
+            
+            <apex:pageBlockSectionItem >
+            	<apex:outputPanel >
+					<span class="helpButton" id="Call_completed-_help" >
+						<apex:outputLabel value="{!$Label.Call_completed}"/> 
+						<img src="/s.gif"   alt="" class="helpOrb" title="" />
+					</span>
+				</apex:outputPanel>
+	            <apex:outputText value="{!res.Completed }"/>
+            </apex:pageBlockSectionItem> 
+
+			<apex:pageBlockSectionItem >
+				<apex:outputPanel >
+					<span class="helpButton" id="Call_unreachable-_help" >
+						<apex:outputLabel value="{!$Label.Call_unreachable}"/> 
+						<img src="/s.gif"   alt="" class="helpOrb" title="" />
+					</span>
+				</apex:outputPanel> 
+	            <apex:outputText value="{!res.Unreachable }"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem >
+           	 <apex:outputPanel >
+					<span class="helpButton" id="Don_t_call_callback_rules-_help" >
+						<apex:outputLabel value="{!$Label.Don_t_call_callback_rules}"/> 
+						<img src="/s.gif"   alt="" class="helpOrb" title="" />
+					</span>
+				</apex:outputPanel>
+	            <apex:outputText value="{!res.NoMoreCallBack }"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem >
+           		<apex:outputPanel >
+					<span class="helpButton" id="Wrong_number-_help" >
+						<apex:outputLabel value="{!$Label.Wrong_number}"/> 
+						<img src="/s.gif"   alt="" class="helpOrb" title="" />
+					</span>
+				</apex:outputPanel>
+	            <apex:outputText value="{!res.SysWrongNum }"/>
+            </apex:pageBlockSectionItem>
+            
+        </apex:pageBlockSection>
+
+    </apex:pageBlock> 
+</apex:page>

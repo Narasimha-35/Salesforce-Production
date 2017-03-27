@@ -1,0 +1,13 @@
+<apex:page standardController="Zendesk__ZendeskLog__c" tabStyle="IntegrationLogs__tab" id="thePage">
+    <div style="margin-bottom:10px;">
+        <div style="margin-bottom:10px;margin-left:5px;">
+            <div style="padding:15px 0 0;padding:left:5px; vertical-align:middle;">
+                <apex:outputLabel value="Integration Logs" for="tab" style="font-size:0.9em;font-weight:bold;"/>
+                <br/>
+                <apex:outputText value="Home" style="font-size:1.8em;"/>
+            </div>
+        </div>
+    </div>
+    <apex:enhancedList type="ZendeskLog__c" height="600" rowsPerPage="25"/>
+
+</apex:page>

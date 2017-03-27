@@ -1,0 +1,400 @@
+<apex:component controller="WLHeader" allowDML="true"> 
+<apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"/>
+  <head>
+  <!-- <meta name="google-site-verification" content="iRYw9nmvgUyV907ghtpW7fAhzOaySN8smW8SecjZhBE" />
+  <meta name="msvalidate.01" content="6EC952A5D4EDCC4985A8FB51BAB6A322" /> -->
+  
+        <script>
+      $(document).ready(function ()
+      {
+        $('.memebrloginClass').click(function () 
+        {
+          $('#loginformId').removeClass('displaynone'); 
+          $('#main_Section').addClass('displaynone'); 
+          $('#forgotpwdPopup').addClass('displaynone'); 
+          $('#memLoginId').removeClass('displaynone');         
+          $('.messageCell').css('display','none');
+          SetPopupLocation();
+        });
+        
+        $('.forgot_pass').click(function () 
+        {
+          $('#loginformId').addClass('displaynone'); 
+          $('#main_Section').removeClass('displaynone'); 
+          $('#forgotpwdPopup').removeClass('displaynone'); 
+          $('#memLoginId').addClass('displaynone');         
+          SetPopupLocation();
+        });    
+        
+        $('#talktohumanId').click(function () 
+        {
+          $('#secTalkToHuman').css('display','block');
+          $('#secRequestACall').css('display','none'); 
+          resetPopup(); 
+        });  
+        
+        $('.thumanClass').click(function () 
+        {
+          $('#secTalkToHuman').css('display','block');
+          $('#secRequestACall').css('display','none'); 
+          resetPopup(); 
+        });    
+        
+        
+        $(window).resize(function(){
+                SetPopupLocation();
+        });
+        
+        $('.focusenter').keypress(function(e) 
+        {
+            var keyCode;
+            if (window.event) // IE
+            {
+                keyCode = e.keyCode;
+            }
+            else if (e.which) // Netscape/Firefox/Opera
+            {
+                keyCode = e.which;
+            }
+            
+            if (keyCode == 13)
+            {
+                $('[id$=btnLogin]').trigger('click');
+            }
+        });   
+      });    
+    
+    function SetPopupLocation()
+    {
+        //alert($('.setup-box').width());
+        //alert($('.header').width());
+      /*  var ww =  ($('.header').width() - $('.setup-box').width() - 210) / 2;
+        $('.setup-box').css('left', ww + 'px');*/
+        var ww =  ($('.header').width() / 2) - ($('.setup-box').width() / 2);
+        $('.setup-box').css('left', ww + 'px');
+    }
+    
+    function autoCosewindow()
+    {
+        if($('[id$=hiddenMailsentId]').val() === 'true'){
+                
+          
+        }
+         window.setTimeout(ClosepopUp, 5000);
+    }
+    function ClosepopUp() 
+    {  
+       resetforgotPopup();
+      
+        //document.getElementById("j_id0:j_id58:j_id59:frmId:userID").value= '';
+       $('#MemberLoginPopUp').addClass('displaynone');
+       $('#main_Section').addClass('displaynone'); 
+       $('#loginformId').removeClass('displaynone');
+       $('#forgotpwdPopup').addClass('displaynone'); 
+       $('#memLoginId').removeClass('displaynone'); 
+    }
+    function setTimeZoneId()
+    {   
+      var tz = jstz.determine();
+      $('[id$=hiddenTimezoneId]').val(tz.name())
+    }
+    function openfun()
+    {
+         $('#menu_section').removeClass('displaynone');
+    }
+    
+    function ResetCookies()
+    {
+        ResetCookies();
+    }
+    
+   </script> 
+   <style>
+     .separatory
+      {
+          background: url("{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/seprator_y.jpg')}") left top no-repeat !important;
+          width: 25px;
+          height: 495px;
+          position: absolute;
+          left: 410px;
+      }
+      @media(max-width: 800px){
+           .separatory{display:none;}
+           .minwidth9{width:auto!important;}
+           .modal-content{padding-left:0px!important;}
+      }
+      .displaynone
+      {
+        display:none!important;
+      }
+      .minwidth9
+      {
+        width:900px;
+      }
+      .modal-content
+      {
+        //min-height: 570px;
+      }
+      .cstm_modal_header
+      {
+          padding-bottom:0px;
+      }
+      p.logsubhdng
+      {
+        color: #223972;
+        font-weight: bold;
+        text-align: left;
+        font-size: 17px;
+        line-height: 22px;
+        font-family: "open_sanslight";
+        padding-bottom: 7px;
+        padding-top: 7px;
+      }
+      .cstm_modal_header h4 span
+      {
+         font-family:"Open Sans Bold";
+      }
+      .cusstmBtn100p
+      {
+          width:100%;
+      }
+      .n_mgn{margin:0px!important;}
+      .cstm_btn_input-login{
+      background-color: #233972!important;
+    border-radius: 5px!important;
+    text-align: center!important;
+    padding: 10px 30px!important;
+    color: #fff!important;
+    font-family: 'open_sanslight'!important;
+    font-size: 1.2em!important;
+    / text-transform: capitalize!important; /
+    background-image: none!important;
+    margin-bottom: 10px!important;
+      }
+   </style> 
+  </head>
+       <!--Login Popup start here-->
+       <div class="modal" id="myModal">
+            <div class="modal-dialog minwidth9">
+              <div class="modal-content popup_modalcontent cstm_pop_cont">
+               <div class="col-md-6 col-xs-12">
+                  <div class="separatory">
+                  </div>
+                    <div class="modal-header cstm_modal_header col-md-10">
+                    <div class="row">                   
+                      <h4 class="modal-title" id="memLoginId">Member <span>Login</span></h4>
+                      <h4 class="modal-title displaynone" id="forgotpwdPopup">Forgot <span>Password</span></h4>
+                      <div class="col-md-11">
+                        <p class="row logsubhdng">Already started the loan process?
+                        Continue your application here.</p>
+                        </div>
+                        </div>
+                    </div>       
+                    <div class="clearfix"></div>
+                   <div class="modal-body">
+                   <apex:form id="frmId" forceSSL="true" styleclass="form-horizontal">
+                    <apex:inputHidden id="hiddenTimezoneId" value="{!strTimezoneId}"/>
+                    <apex:inputHidden id="hiddenMailsentId" value="{!mailSent}"/>
+                    <apex:actionFunction action="{!resetforgotPopup}" name="resetforgotPopup" reRender="optforgotErrors"/>
+                     <apex:actionFunction action="{!clearUserSessionCookies}" name="ResetCookies"/>  
+                        <div id ="main_Section" class = "displaynone">
+                        <!--<apex:outputPanel id="main_Section" styleClass="displaynone"> -->
+                          <apex:outputPanel id="optforgotErrors">    
+                           <center><apex:pageMessages ></apex:pageMessages>
+                           <apex:outputPanel rendered="{!mailsent}" style="color:#1f8acb;font-size: 1.1em;">{!showConfirmMsg}</apex:outputPanel>
+                           </center>
+                           <!--</apex:outputPanel>    -->               
+                           <!--<apex:outputPanel id="mail_section" rendered="{!if(showConfirmMsg != null && showConfirmMsg != '', false,true)}">-->
+                            <apex:outputPanel rendered="{!NOT(mailsent)}">
+                            <div class="form-group cstm_form_grp">
+                                <div class="col-md-11">
+                                    <apex:inputText id="userID" value="{!strforgotUsername}" styleClass="form-control cstm_input row" onBlur="if (this.placeholder == '') {this.placeholder = 'Enter email';}" onFocus="if (this.placeholder == 'Enter email') {this.placeholder = '';}" html-placeholder="Enter email"/>
+                                     <p class="row">Please Enter Your User Name</p>
+                                </div>
+                             </div>
+                            <div class="form-group">        
+                            <div class="col-md-offset-3 col-md-5 col-xs-12 col-xs-offset-0">
+                                <apex:commandButton action="{!ResetPassword}" status="LoadstatusId" styleClass="btn btn-default col-md-12 col-xs-12 cstm_btn_input row" value="Submit" reRender="optforgotErrors,main_Section,hiddenMailsentId" oncomplete="autoCosewindow();"/>                            
+                             </div>
+                             </div>
+                            </apex:outputPanel>
+                            </apex:outputPanel>
+                         
+                        </div>
+                        <div id="loginformId">
+                        <apex:outputpanel id="optErrors">
+                            <apex:pagemessages />
+                        </apex:outputpanel>
+                        <div class="form-group cstm_form_grp">
+                          <div class="col-md-11">
+                            <apex:inputText value="{!strusername}" styleClass="form-control cstm_input row" onBlur="if (this.placeholder == '') {this.placeholder = 'Enter email';}" onFocus="if (this.placeholder == 'Enter email') {this.placeholder = '';}" html-placeholder="Enter email"/>
+                            <p class="row">Please Enter Your Email Id</p>
+                          </div>
+                        </div>
+                        <div class="form-group cstm_form_grp">
+                          <div class="col-md-11">  
+                            <apex:inputSecret value="{!strPassword}" redisplay="true" styleClass="form-control cstm_input row" onBlur="if (this.placeholder == '') {this.placeholder = 'Enter password';}" onFocus="if (this.placeholder == 'Enter password') {this.placeholder = '';}" html-placeholder="Enter password"/>        
+                            <p class="row">Please Enter Your Password</p>
+                          </div>
+                        </div>
+                        <div class="form-group">        
+                          <div>
+                            <div class="checkbox">
+                              <a href="#" id="forgotPwdId" class="forgot_pass">Forgot Password</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group">        
+                          <div class="col-md-12 col-xs-12">
+                          <div class="row">
+                             <apex:commandButton action="{!memberLogin}" id="btnLogin" styleClass="btn btn-default center-block cstm_btn_w180 cstm_btn_input-login" value="Submit" reRender="optErrors" status="Loadstatus" onclick="setTimeZoneId();"/>  
+                             <apex:actionstatus id="Loadstatus" starttext="verifying">
+                              <apex:facet name="start">
+                                <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="left:20px;"/>                      
+                              </apex:facet>
+                             </apex:actionStatus>
+                          </div>
+                        </div>
+                        </div>
+                        </div>
+                     </apex:form>
+                 </div>
+                </div>
+                <div class="col-md-6 col-xs-12">
+
+                    <div class="modal-header cstm_modal_header col-md-10 col-md-offset-1">
+                    <div class="row">                   
+                          <h4 class="modal-title" id="memLoginId">Internet <span>Banking</span></h4>
+                          <div class="col-md-11">
+                            <p class="row logsubhdng">Already a customer? Login to your internet banking.</p>
+                            </div>
+                        </div>
+                    </div>       
+                    <div class="clearfix"></div>
+                   <div class="modal-body">
+                   <apex:form forceSSL="true" styleclass="form-horizontal">
+           
+                        <div class="form-group n_mgn">        
+                          <div class="col-md-12 col-xs-12">
+                             <a href="https://www.lsn.com.au/LsnWeb/faces/LsnLogin.jsp?EWF_FORM_NAME=0001693&EWF_BUTTON_Submit=Submit" class="btn btn-default center-block cusstmBtn100p cstm_btn_input" target="_blank" value="">Login with 7 Digit Access Code</a>
+                             <!--<apex:commandButton action="{!memberLogin}" id="btnLogin" styleClass="btn btn-default center-block cusstmBtn100p cstm_btn_input" value="Login with 7 Digit Access Code" reRender="optErrors" status="Loadstatus" onclick="setTimeZoneId();"/>  
+                             <apex:actionstatus starttext="verifying">
+                              <apex:facet name="start">
+                                <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="left:20px;"/>                      
+                              </apex:facet>
+                             </apex:actionStatus>-->
+                             
+                          </div>
+                        </div>
+                       <div class="form-group n_mgn"  style="margin:0px;">        
+                          <div class="col-md-12 col-xs-12">
+                            <a href="https://www.access-online.com.au/clickloans-online" class="btn btn-default center-block cusstmBtn100p cstm_btn_input" target="_blank">Login with 8 Digit Access Code</a>
+                             <!--<apex:commandButton action="{!memberLogin}" styleClass="btn btn-default center-block cusstmBtn100p cstm_btn_input" value="Login with 8 Digit Access Code" reRender="optErrors" status="Loadstatus" onclick="setTimeZoneId();"/>  
+                             <apex:actionstatus starttext="verifying">
+                              <apex:facet name="start">
+                                <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="left:20px;"/>                      
+                              </apex:facet>
+                             </apex:actionStatus>-->
+                          </div>
+                        </div>
+                     </apex:form>
+                 </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <!--Login Pop up close here-->
+        <!-- Talk to human pop up starts here-->
+        <c:ClickTalkToHuman ></c:ClickTalkToHuman>
+        <!-- Talk to human pop up ends here -->
+        <div class="container {!IF(pge_name != 'clickhome', 'container_cstm', '')}">
+            <div class="row">
+            <apex:outputPanel rendered="{!pge_name == 'clickdashboard'}">
+                <section class="col-xs-2 about_response menu_left">
+                   <span></span>
+                </section>
+            </apex:outputPanel>
+            <h1 class="col-md-4 col-xs-8">
+                <div class="logo {!IF(pge_name == 'clickdashboard', 'dashboard_border', '')}">
+                   <apex:outputpanel rendered="{!isLoggedIn == false}">
+                    <a href="/clickhome">
+                     <apex:outputpanel rendered="{!pge_name == 'clickhome'}">  <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/logo_landing.png')}" alt="click Refi"/></apex:outputpanel>
+                     <apex:outputpanel rendered="{!pge_name != 'clickhome'}">   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="click Refi"/> </apex:outputpanel>
+                    </a>
+                    </apex:outputpanel>
+                   <apex:outputpanel rendered="{!isLoggedIn == true}"> 
+                    <a href="/clickdashboard">
+                     <apex:outputpanel rendered="{!pge_name == 'clickhome'}">  <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/logo_landing.png')}" alt="click Refi"/></apex:outputpanel>
+                     <apex:outputpanel rendered="{!pge_name != 'clickhome' && pge_name !='acfjumiointegration'}">   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/logo.jpg')}" alt="click Refi"/> </apex:outputpanel>
+                      <apex:outputpanel rendered="{!pge_name =='acfjumiointegration'}">   <img src="{!URLFOR($Resource.acfResources, 'acfResources/images/Whitelabel_headerlogo.png')}" alt="click Refi"/> </apex:outputpanel>
+                    </a>
+                   </apex:outputpanel>
+                </div>
+            </h1><!--col-md-4 close-->           
+          <section class="col-md-8 {!IF(pge_name == 'clickdashboard', 'col-xs-2', 'col-xs-4')}">
+           <aside>
+                <apex:outputPanel rendered="{!pge_name != 'clickdashboard'}">
+                    <a href="#" class="{!if(pge_name == 'clickhome','responsive-menu_white','responsive-menu')}" id="responsive" onclick="openfun();">&nbsp;</a>
+                    <ul class="sub-response" id="sub-res">
+                        <li><a href="#myModal3" data-toggle="modal" id="mob_talktohumanId">Talk to a Human</a></li>
+                        <li>
+                          <apex:outputpanel rendered="{!isLoggedIn == false}"><a href="#myModal" data-toggle="modal" id="mob_memberLoginId">Sign In</a></apex:outputpanel>
+                          <apex:outputpanel rendered="{!isLoggedIn == true}"> <a href="/secur/logout.jsp" oncomplete="ResetCookies();">Sign Out</a></apex:outputpanel>
+                        </li>
+                    </ul>
+                    
+                    <div class="top-tab">
+                        <ul>
+                            <li><apex:outputpanel rendered="{!pge_name != 'clickhome'}"><a href="#myModal3" data-toggle="modal" id="talktohumanId" class="thumanClass">Talk to a Human</a></apex:outputpanel></li>
+                            <li><apex:outputpanel rendered="{!pge_name == 'clickhome'}"><a href="#myModal3" data-toggle="modal" id="talktohumanId" style="font-family:Open Sans Bold;" class="thumanClass">Talk to a Human</a></apex:outputpanel></li>
+                            <li>
+                                <apex:outputpanel rendered="{!pge_name != 'clickhome'}">
+                                    <apex:outputpanel rendered="{!isLoggedIn == false && pge_name != 'clickpreliminaryquote' && pge_name != 'clickpreloginquestions'}">  <a href="#myModal" data-toggle="modal" class="sign_in memebrloginClass" id="memberLoginId">Sign In</a> </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!isLoggedIn == true}">  <a href="/secur/logout.jsp" oncomplete ="ResetCookies();" class="sign_in">Sign Out</a> </apex:outputpanel>
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!pge_name == 'clickhome'}">
+                                    <apex:outputpanel rendered="{!isLoggedIn == false && pge_name != 'clickpreliminaryquote' && pge_name != 'clickpreloginquestions'}">  <a href="#myModal" data-toggle="modal" class="sign_in memebrloginClass" style="font-family:Open Sans Bold;">Sign In</a> </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!isLoggedIn == true}">  <a href="/secur/logout.jsp" oncomplete="ResetCookies();" class="sign_in" style="font-family:Open Sans Bold;">Sign Out</a> </apex:outputpanel>
+                                </apex:outputpanel>
+                            </li>
+                        </ul>
+                    </div><!--top-tab close-->
+               </apex:outputPanel>  
+               
+               <apex:outputPanel rendered="{!pge_name == 'clickdashboard'}" >
+                    <a href="#" class="{!if(pge_name == 'clickhome','responsive-menu_white','responsive-menu')}" id="responsive" onclick="openfun();">&nbsp;</a>
+                    <ul class="sub-response" id="sub-res">
+                        <li><a href="#myModal3" data-toggle="modal" id="mob_talktohumanId">Talk to a Human</a></li>
+                        <li><a href="/ClickEditProfile">Edit Profile</a></li>
+                        <li>
+                          <apex:outputpanel rendered="{!isLoggedIn == false}"><a href="#myModal" data-toggle="modal" id="mob_memberLoginId">Sign In</a></apex:outputpanel>
+                          <apex:outputpanel rendered="{!isLoggedIn == true}"> <a href="/secur/logout.jsp" oncomplete="ResetCookies();">Sign Out</a></apex:outputpanel>
+                        </li>
+                    </ul>
+                    
+                    <div class="top-tab">
+                       
+                       <nav class="col-md-12 dash_edit_top">
+                            <div class="row">
+                                <a href="/ClickEditProfile" class="edit">Edit Profile</a>                    
+                                <apex:outputpanel rendered="{!isLoggedIn == false}"> <a href="#myModal" data-toggle="modal" class="sign_in memebrloginClass">Sign In</a> </apex:outputpanel>
+                                <apex:outputpanel rendered="{!isLoggedIn == true}"> <a href="/secur/logout.jsp" oncomplete="ResetCookies();" class="sign_in">Log Out</a> </apex:outputpanel>
+                            </div>  
+                       </nav>
+                        <div class="clearfix"></div>
+                             
+                         <ul class="col-md-12">
+                               <li style="float:right;"><a href="#myModal3" data-toggle="modal" id="talktohumanId" class="thumanClass">Talk to a Human</a></li>
+                         <!--  <li><a href="/ClickEditProfile">Edit Profile</a></li>
+                            <li>
+                                 <apex:outputpanel rendered="{!isLoggedIn == false}"> <a href="#myModal" data-toggle="modal" class="sign_in">Sign In</a> </apex:outputpanel>
+                                 <apex:outputpanel rendered="{!isLoggedIn == true}"> <a href="{!strURLPrefix}secur/logout.jsp" class="sign_in">Sign Out</a> </apex:outputpanel>
+                            </li> -->
+                        </ul>
+                    </div><!--top-tab close-->
+               </apex:outputPanel>
+            </aside> <!--aside clos-->    
+         </section><!--col-md-8 close-->          
+        </div><!--row fluid close 2nd-->
+        </div><!--container close-->
+</apex:component>

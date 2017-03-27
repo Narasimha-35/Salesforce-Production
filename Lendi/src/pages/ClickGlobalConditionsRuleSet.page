@@ -1,0 +1,275 @@
+<apex:page id="thePage" controller="GlobalDealIQRulecontrollerExtn" docType="html-5.0"  cache="false" sidebar="false" standardStylesheets="false">
+    <style>
+        .preloader
+        {
+        top:40%;
+        left:50%;
+        position:absolute;
+        //margin-right:80%;
+        }
+        .row{display:block; margin-bottom:1em;}
+        .w30{width:30%;}
+        .row:after,
+        .row:before{display:block; content:'';}
+        .colum-3{
+        width: 25%;
+        float: left;
+        box-sizing: border-box;
+        padding-right: 10px;
+        }
+        .mgleft-10{margin-left:10px;}
+        .clearfix{clear:both;"
+        .clearfix:after,
+        .clearfix:before{content;''; display:table;}
+    </style>
+    <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
+    <link href="//cdn.muicss.com/mui-0.1.21/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdn.muicss.com/mui-0.1.21/js/mui.min.js"></script>
+    <script>
+        $( document ).ready(function() {
+            console.log( "ready!" );
+           // var m = document.getElementById('thePage:theForm:counteId').value;
+            //alert(m);
+            //selectBanks();
+        });
+        /* function selectBanks(){
+            var x = document.getElementById('thePage:theForm:a');
+            var i =0;
+            var y = document.getElementById('thePage:theForm:theBank').value;
+            
+            for(var i=0;i<=x.length;i++){
+               if (y.indexOf(x[i].value) > -1){
+                   x[i].selected = true;
+               }
+            }
+        } */
+        
+        
+         function checkAllp(){
+            var items = document.getElementsByClassName('xyz');
+            
+            if(document.getElementById("thePage:theForm:bankBlock:j_id45:pageBankBlock:checkedone").checked){
+                for (var i = 0; i < items.length; i++){
+                
+                    document.getElementById(items[i].name).checked = true;
+                }
+                }
+                else
+                {
+                    for (var i = 0; i < items.length; i++){
+                
+                    document.getElementById(items[i].name).checked = false;
+                   }
+                }
+          } 
+          
+          function checkAllProduct(){
+            var items = document.getElementsByClassName('productSection');
+            
+            if(document.getElementById("thePage:theForm:bankProductBlock:j_id53:blockTablePage:checkedone1").checked){
+                for (var i = 0; i < items.length; i++){
+                
+                    document.getElementById(items[i].name).checked = true;
+                }
+                }
+                else
+                {
+                    for (var i = 0; i < items.length; i++){
+                
+                    document.getElementById(items[i].name).checked = false;
+                   }
+                }
+          } 
+                    function checkAllProductfalse(){
+                    document.getElementById("thePage:theForm:bankProductBlock:j_id53:blockTablePage:checkedone1").checked = false;
+                    }
+                     function checkAllBankfalse(){
+                        document.getElementById("thePage:theForm:bankBlock:j_id45:pageBankBlock:checkedone").checked = false;
+                        }
+        
+    </script>
+    <apex:form id="theForm">
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:outputPanel id="saved" rendered="{!isSaved}">
+            <h6>Data is saved successfully</h6>
+        </apex:outputPanel>
+        <apex:inputHidden value="{!selectbank}" id="theBank"/>
+        <div class="mui-checkbox">
+            <label>
+                <apex:inputCheckbox value="{!isActive}"/>
+                Active Rule
+            </label>
+        </div>
+        <legend>Rule Information</legend>
+        <div class="mui-form-group">
+            <apex:inputText html-class="mui-form-control" value="{!name}"></apex:inputText>
+            <label class="mui-form-floating-label">Rule Name</label>
+        </div>
+        <div class="mui-form-group">
+            <apex:inputTextarea html-class="mui-form-control" value="{! description}"></apex:inputTextarea>
+            <label class="mui-form-floating-label">Rule Description</label>
+        </div>
+        <apex:actionStatus id="actStatusId" starttext="verifying" >
+            <apex:facet name="start" >
+                <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/>
+            </apex:facet>
+        </apex:actionStatus>
+        <div class="mui-select" style="Width:20%">
+            <apex:selectList value="{!selectedVal}" size="1" >
+                <apex:selectOptions value="{!bankname}"/>
+                <apex:actionSupport event="onchange" reRender="bankProduct" status="actStatusId"/>
+            </apex:selectList>
+        </div>
+        <br/>
+        <br/>
+        <apex:outputPanel id="bankProduct">
+            <apex:outputPanel rendered="{!IF(selectedVal != '',true,false)}">
+                <!--<div class="mui-form-group" style="overflow: scroll; width: 400px; height: 200px;">-->
+                <apex:pageBlock id="bankBlock" rendered="{!IF(selectedVal == 'Bank',true,false)}">
+                <apex:pageBlockSection columns="1">
+                    <apex:pageBlockTable id="pageBankBlock" value="{!lstSetController}" var="bank">
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:inputCheckbox id="checkedone" onclick="checkAllp()" styleClass="inputStyle"/>
+                            </apex:facet>
+                            <apex:inputCheckBox id="finalCheck" value="{!bank.selected}"  styleclass="xyz"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Bank Name</apex:facet>
+                            <apex:outputText value="{!bank.bankName}"/>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                    <apex:outputPanel >
+                       <apex:commandButton value="<<Previous" action="{!previous}" rendered="{!hasPrevious}" reRender="bankBlock" oncomplete="checkAllBankfalse()" />
+                       <apex:commandButton value="Next >>" action="{!next}" rendered="{!hasNext}" reRender="bankBlock"  oncomplete="checkAllBankfalse()"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSection>    
+                </apex:pageBlock>
+                <apex:pageBlock id="bankProductBlock" rendered="{!IF(selectedVal == 'Product',true,false)}">
+                  <apex:pageBlockSection columns="1" > 
+                    <apex:pageBlockTable id="blockTablePage" value="{!productBankWrapperListforPagination}" var="bank">
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:inputCheckbox id="checkedone1" onclick="checkAllProduct()" styleClass="inputStyle"/>
+                            </apex:facet>
+                            <apex:inputCheckBox id="finalCheckProduct" styleClass="productSection" value="{!bank.selected}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Product Name</apex:facet>
+                            <apex:outputText value="{!bank.productName}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Bank Name</apex:facet>
+                            <apex:outputText value="{!bank.bankName}"/>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                     <apex:outputPanel >
+                       <apex:commandButton value="<<Previous" action="{!previousproduct}" rendered="{!hasPreviousproduct}" reRender="bankProductBlock" oncomplete="checkAllProductfalse()" />
+                       <apex:commandButton value="Next >>" action="{!nextproduct}" rendered="{!hasNextproduct}" reRender="bankProductBlock" oncomplete="checkAllProductfalse()" />
+                    </apex:outputPanel>
+                      </apex:pageBlockSection> 
+                </apex:pageBlock>
+                <!--</div>-->
+            </apex:outputPanel>
+        </apex:outputPanel>
+        <div class="mui-select" style="Width:20%">
+            <apex:selectList size="1" value="{!sendcategory}" label="Category">
+                <apex:outputLabel value="Category"/>
+                <apex:selectOptions value="{!categoryqwe}" />
+            </apex:selectList>
+        </div>
+        <br/>
+        <br/>
+        <div>
+        <div>
+            <br/>
+            <br/>
+            <div>
+                <apex:outputPanel id="rulePanel" layout="block">
+                    <apex:repeat value="{!OuterwrapperList}" var="wrapOuter">
+                        <div>
+                            <fieldset>
+                                <div class="row">
+                                    <div class="mui-select w30">
+                                        <apex:selectList value="{!wrapOuter.SObjectName}" size="1" >
+                                            <apex:selectOptions value="{!ActiveSobjects}"/>
+                                            <apex:actionSupport event="onchange" action="{!addObjectField}" reRender="b" status="actStatusId">
+                                            </apex:actionSupport>
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div style="width:80%; float:left;">
+                                        <apex:repeat value="{!wrapOuter.wrapObjectList}" var="ruleSet">
+                                            <div class=" colum-3">
+                                                <div class="mui-select">
+                                                    <apex:selectList size="1" value="{!ruleSet.nameField}" label="Category" id="b">
+                                                        <apex:selectOptions value="{!ruleSet.objectfield}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                            <div class=" colum-3">
+                                                <div class="mui-select">
+                                                    <apex:selectList size="1" value="{!ruleSet.operatorname}" label="Category" >
+                                                        <apex:selectOptions value="{!operator}"/>
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                            <div class=" colum-3">
+                                                <div class="mui-select">
+                                                    <apex:inputText html-class="mui-form-control" value="{!ruleSet.expressionValue}"></apex:inputText>
+                                                </div>
+                                            </div>
+                                            <div class="colum-3">
+                                                <apex:commandLink value="DEL" action="{!removeFilter}" id="removeLink"  rerender="rulePanel" status="actStatusId">
+                                                    <apex:param id="recOrder" name="orderName" value="{!wrapOuter.counterWrap}-{!ruleSet.orderNo}"/>
+                                                </apex:commandLink>
+                                            </div>
+                                            <div class="clearfix"/>                    
+                                        </apex:repeat>
+                                        </div>
+                                    </div>
+                                    <div style="float:right; width:20%;">
+                                        <apex:CommandLink Styleclass="mui-btn mui-btn-primary mui-btn-raised"  id="removeButton" value="Remove" onclick="removeGlobalFilter('{!wrapOuter.counterWrap}');return false;" status="actStatusId"/>
+                                    </div>
+                                    <div style="clear:both;"></div>
+                                    <button class="mui-btn mui-btn-primary mui-btn-raised" onclick="addFilter('{!wrapOuter.counterWrap}');return false;" status="actStatusId">Add New Filter</button>
+                            </fieldset>
+                            </div> 
+                            <div style="clear:both;"></div>
+                            <br/><br/>
+                    </apex:repeat>
+                </apex:outputPanel>
+                </div>
+                <apex:actionFunction action="{!addFilter}" name="addFilter" reRender="rulePanel" status="actStatusId">
+                    <apex:param id="recOrder" name="recName" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!removeGlobalFilter}" name="removeGlobalFilter" reRender="rulePanel" status="actStatusId">
+                    <apex:param id="recOrderGlobal" name="orderNameGlobal" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!addFilterObject}" name="addFilterObject" reRender="rulePanel" status="actStatusId"/>
+            </div>
+            <div>
+                <button class="mui-btn mui-btn-primary mui-btn-raised" onclick="addFilterObject();return false;" status="actStatusId">Add New</button>
+            </div>
+        </div>
+        <br/>
+        <div class="mui-checkbox">
+            <label>
+                <apex:inputCheckbox value="{!reqdoc}">
+                    <apex:actionSupport event="onchange"  reRender="c" status="actStatusId"/>
+                </apex:inputCheckbox>
+                Add required Doc
+            </label>
+        </div>
+        <div class="mui-select" style="width:20%; float:left; margin-right:10px;">
+            <apex:selectList size="1" value="{!doc}" label="Category" id="c" >
+                <apex:selectOptions value="{!documentmaster}"/>
+            </apex:selectList>
+        </div>
+        <br/>
+        <br/>
+        <apex:commandLink Styleclass="mui-btn mui-btn-primary mui-btn-raised"  value="Save" action="{!saveConditionRules}"></apex:commandLink>
+    </apex:form>
+</apex:page>

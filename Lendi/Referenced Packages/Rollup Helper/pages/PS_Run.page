@@ -1,0 +1,96 @@
+<apex:page standardController="rh2__RH_Job__c" extensions="rh2.PS_DefineJob_Controller" sidebar="false"  applyBodyTag="false" docType="html-5.0" >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	
+	<head> 
+    	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+         <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/RollupRun.js') }"/>
+    	 <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }"/>
+    	<apex:includeScript value="//code.jquery.com/jquery-1.11.3.min.js"/>
+    	<apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />    
+     </head>
+     
+  <script>
+        
+        //Verify namespace is ready
+        var rh = rh || {};
+        rh.rollupRun = new RollupRun();
+        rh.rollupRun.batchSize = {!maxBatchSize};
+        rh.estimateRecordsDuration = estimateRecordsDuration;
+        var overwriteFlag;
+            
+        
+        rh.j$ = jQuery.noConflict();
+        rh.j$(document).ready(function() {
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.PS_DefineJob_Controller.maxRecords}',
+                           '{! JSENCODE(parentObjectName) }', estimateRecordsDuration, {escape:true, timeout:120000});
+        });
+        
+        function confirmRunOnce(overwrite, fieldName) 
+        {
+                     
+            if(overwrite == true)
+            {
+            return confirm("WARNING: Running this rollup will cause the information in " + fieldName + " field to be " +
+                            "overwritten. If this is not the desired action please press cancel and deselect 'Overwrite " +
+                            "existing informaton' in the edit rollup page under the advanced options.");
+            }       
+            return true;       
+        }
+		
+           
+  </script>
+  
+    <body>
+    	<apex:form >
+	 	<div class="slds slds-p-around--xx-large slds-container--large slds-container--center slds-grid slds-grid--frame" role="main"> 	  
+	 		<div class="slds-card slds-card--empty">
+  				<header class="slds-card__header slds-grid grid--flex-spread">
+	       			<nav role="navigation">
+    					<ol class="slds-breadcrumb slds-list--horizontal">
+   		   					<li class="slds-list__item slds-text-heading--label"><a href="{!URLFOR($Page.PS_Allsettings)}">All Rollup Settings</a></li>
+       					</ol>
+        			</nav>
+  				</header>
+  			</div>
+ 			<div class="slds-card">
+				<header class="slds-card__header slds-grid">
+           			<div class="slds-col">
+               			<h3 class="slds-text-heading--small slds-truncate">Run Rollup</h3>
+             		</div>
+             			
+         			<div class="slds-col--padded" align="right">   					           			
+             			<apex:commandButton styleClass="slds-button slds-button--brand" id="runOnce" value="Run Once" action="{!runForAllRecords}" onClick="if (!confirmRunOnce({!overwrite}, '{!targetField}')) return false;"/>                   		
+                  		&nbsp;
+                  		<apex:inputHidden value="{!maxRecords}" id="maxRecords"/>         		             
+            			<apex:commandButton styleClass="slds-button slds-button--neutral" action="{!URLFOR($Page.PS_AllSettings)}" value="Cancel" />
+         			</div>        				
+         		</header>
+         		<section class="slds-card__body">
+         			<div class="slds-grid slds-grid--align-center">
+         				<div class="slds-col slds-shrink">        			
+         					<div class="slds-box slds-theme--default slds-shrink">
+         						<div class="slds-grid slds-grid--align-center">
+	         						<span class="slds-text-heading--small" align="middle">{!targetField} Rollup</span>
+	                   				<apex:inputHidden value="{!rh2__RH_Job__c.rh2__Rollup_Name__c}" />	                  
+	               	 			</div>
+	               				<br/>
+	                			<div class="slds-grid slds-grid--align-center">
+	                				<span class="slds-col"> Running this rollup will take an estimated: </span>
+	                			</div>
+	               					<div class="slds-grid slds-grid--align-center">             					
+             					<span style="color:red" id="estWaitTime"/>  
+                     			</div>
+                     			<div class="slds-grid slds-grid--align-center">	
+             						<apex:outputPanel id="runOncePanel"/>           					        					
+  								</div>                     		
+             				</div> 
+             			</div>
+             		</div>                   
+            	</section> 
+            	
+         	</div>	
+	 	</div>
+	 	</apex:form>
+	</body>
+</html>
+</apex:page>

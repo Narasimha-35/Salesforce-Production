@@ -1,0 +1,52 @@
+<apex:page controller="vhc.Ctrl24InboundTemplate" tabStyle="vhc__IncomingCampaign__c" title="{!$Label.Inbound_Template_Page_Title}" >
+    <apex:sectionHeader title="{!$Label.Inbound_Template_Title}" subtitle="{!$Label.Inbound_Template_Subtitle}" rendered="true" />
+    <apex:outputText value="{!$Label.Inbound_Template_Description}" rendered="true" />
+    <apex:pagemessages />
+    <br />&nbsp;
+    <apex:form rendered="{!isError==false}">
+        <apex:pageBlock title="{!$Label.inboundTemplateCreation}">
+            <apex:pageBlockSection title="{!$Label.parameters}" id="inboundtemplateparams">
+                
+                <apex:pageBlockSectionItem id="CampaignName">
+                    <apex:outputLabel value="{!$ObjectType.vhc__IncomingCampaign__c.fields.Name.label}" />
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <div class="requiredBlock"></div>
+                        <apex:inputText required="true" label="{!$ObjectType.vhc__IncomingCampaign__c.fields.Name.label}" value="{!campaignName}" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                {!$ObjectType.vhc__IncomingCampaign__c.fields.vhc__Language__c.label}
+                    <apex:selectList required="true" value="{!LanguageValue}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!LanguageOptions}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                {!$Label.DID_Country}
+                    <apex:selectList required="true" value="{!selectedCountry}" size="1">
+                        <apex:selectOptions value="{!countriesOptions}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    {!$Label.Auto_Affect_Agents}
+                    <apex:inputCheckBox value="{!autoAffectAgents}" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    {!$Label.Automatic_assignment_for_user_profile}
+				 	<apex:selectList value="{!selectedProfileId}" multiselect="false" size="6">
+				            <apex:selectOptions value="{!listProfiles}"/>
+				 	</apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!save}" value="{!$Label.Save}"  />
+                <!-- onclick="return confirm('{!$Label.Confirm_Inbound_Template}');" -->
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

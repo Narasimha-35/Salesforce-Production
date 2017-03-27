@@ -1,0 +1,71 @@
+<apex:page controller="smagicinteract.SMHomeController" tabStyle="SM_Home__tab" >
+    
+<apex:includeScript value="/soap/ajax/15.0/connection.js"/>
+<apex:includeScript value="/soap/ajax/15.0/apex.js"/>
+<apex:includeScript value="{!$Resource.smagicinteract__BulkSMSJS}"/>
+    
+<apex:sectionHeader title="SMS Magic - {!$User.FirstName} {!$User.LastName}" subtitle="Dashboard"/>
+    
+<apex:form >
+<apex:pageBlock title="SMS Magic"  helpTitle="Help For this Page?" helpUrl="{!helpLink}">
+<apex:pageMessages />
+
+<apex:pageBlockButtons location="top" rendered="{!isRegistered}">
+<apex:commandButton value="New SMS" rendered="{!isRegistered}" onclick="redirectTo('/apex/NewSMS','/apex/SMHome');return false;" title="New SMS" />
+<apex:commandButton value="New SMS Template"  rendered="{!isRegistered}" onclick="redirectTo('/apex/NewSMSTemplate','/apex/SMHome');return false;" title="New SMS Template" />
+</apex:pageBlockButtons>
+
+<apex:pageBlockSection title="Registration" columns="2" rendered="{!showRegistration}">
+<apex:outputText value="For registration click on register button" />
+<apex:actionFunction name="executeWS" action="{!executeWS}"></apex:actionFunction>
+<apex:commandButton action="{!manualRegister}" value="Register" onComplete="executeWS();"/>
+</apex:pageBlockSection>
+
+<apex:pageBlockSection title="API key Configuration" columns="1" rendered="{!showApiKeyConfiguration}">
+<apex:outputLabel value="API Key" for="apiKey"/>
+<apex:inputText value="{!apiKey}" id="apiKey" maxlength="256"/>
+<apex:commandButton value="Save" action="{!saveApiKey}"/>
+</apex:pageBlockSection>
+
+<apex:pageBlockSection title="SMS Magic Information" columns="2" rendered="{!showSMSMagicInfo}">
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="AccountId" for="accountId"/>
+<apex:outputText value="{!accountId}"  id="accountId"/>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem rendered="{!IF(usingThirdPartyPipe, false, true)}">
+<apex:outputLabel value="Remaining Credits" for="availableCredits"   />
+<apex:outputText value=""  id="availableCredits">
+{!availableCredits}   
+&nbsp;&nbsp;&nbsp;<apex:outputLink target="_blank" rendered="{!IF (renderMe, true, false)}" value="http://screen-magic.com/salesforce/shoppingCart.html" style="color:red;">Click to buy more credits
+</apex:outputLink>
+</apex:outputText>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+
+</apex:pageBlockSectionItem>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="Recent SMS" columns="1"  rendered="{!isRegistered}">
+	<apex:pageBlockTable value="{!recentSMS}" var="sms" columnsWidth="25%,25%,25%,25%" width="100%">
+		<apex:column value="{!sms.smagicinteract__Name__c}" headerValue="Name" width="20%" title="{!sms.smagicinteract__Name__c}"/>
+		<apex:column value="{!sms.smagicinteract__PhoneNumber__c}" headerValue="Mobile" width="20%" title="{!sms.smagicinteract__PhoneNumber__c}"/>
+		<apex:column value="{!sms.smagicinteract__SMSText__c}" headerValue="Text" width="40%" style="max-width:250px; overflow:hidden;" title="{!sms.smagicinteract__SMSText__c}"/>
+		<apex:column value="{!sms.CreatedDate}" headerValue="CreatedOn" width="20%" title="{!sms.CreatedDate}"/>
+	</apex:pageBlockTable>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="Recent Inbound SMS" columns="1"  rendered="{!isRegistered}">
+	<apex:pageBlockTable value="{!recentInboundSMS}" var="sms" columnsWidth="25%,25%,25%,25%" width="100%">
+        <apex:column value="{!sms.smagicinteract__Inbound_Number__c}" headerValue="Inbound Number" width="20%" title="{!sms.smagicinteract__Inbound_Number__c}"/>        
+        <apex:column value="{!sms.smagicinteract__Mobile_Number__c}" headerValue="Mobile" width="20%" title="{!sms.smagicinteract__Mobile_Number__c}"/>
+        <apex:column value="{!sms.smagicinteract__SMS_Text__c}" headerValue="Text" width="40%" style="max-width:250px; overflow:hidden;" title="{!sms.smagicinteract__SMS_Text__c}"/>
+        <apex:column value="{!sms.CreatedDate}" headerValue="CreatedOn" width="20%" title="{!sms.CreatedDate}"/>
+	</apex:pageBlockTable>
+</apex:pageBlockSection>
+
+
+</apex:pageBlock>
+</apex:form>
+
+</apex:page>

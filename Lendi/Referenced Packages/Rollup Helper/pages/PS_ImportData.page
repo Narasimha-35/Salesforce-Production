@@ -1,0 +1,168 @@
+<apex:page controller="rh2.PS_ImportDataController"  sidebar="false"  applyBodyTag="false" docType="html-5.0" >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">	 
+	 <head>
+      
+    	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    	<apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />    
+    	<style>
+    		.pageNumber {
+				margin: 4px;
+				display: inline;
+			}
+    	</style>
+     </head>
+     
+     <script type="text/javascript">
+    
+        function replacePageRefDL(){ 
+        
+            if(window.location.replace){     
+                window.location.replace("PS_ExportFile");     
+            } else { 
+                window.location.href="PS_ExportFile";
+            }
+        
+        }   
+    
+    </script>
+    
+     <body>
+    	<apex:form >
+	 	<apex:actionFunction action="{!deleteAllExportedRollups}" name="deleteExportedRollupAF" rerender="exportTable" status="inprogress"/>
+	 	<div class="slds slds-p-around--xx-large slds-container--large slds-container--center slds-grid slds-grid--frame" role="main"> 	  
+	 		<div class="slds-card slds-card--empty">
+  				<header class="slds-card__header slds-grid grid--flex-spread">
+	       			<nav role="navigation">
+    					<ol class="slds-breadcrumb slds-list--horizontal">
+   		   					<li class="slds-list__item slds-text-heading--label"><a href="{!URLFOR($Page.PS_Allsettings)}">All Rollup Settings</a></li>
+       					</ol>
+        			</nav>
+  				</header>
+  			</div>
+ 			<div class="slds-card">
+				<header class="slds-card__header slds-grid">
+           			<div class="slds-col">
+               			<h3 class="slds-text-heading--small slds-truncate">Select Rollups for Export</h3>               
+             		</div>
+             		<div class="slds-col" align="right">
+             			<apex:commandButton styleClass="slds-button slds-button--neutral" value="Export Selected" action="{! regExport }" rerender="exportedRollups, exportTable" status="inprogress"/>
+             			&nbsp;
+                   		<apex:commandButton styleClass="slds-button slds-button--neutral" value="Export All" action="{! allExport }" rerender="exportedRollups, rollupToExport, exportTable" status="inprogress"/>
+             		</div>
+             	</header>
+             	
+             	<apex:outputPanel id="rollupTable">
+	             	<apex:outputPanel style="width:100%;" id="rollupExport">
+						<apex:commandLink styleClass="pageNumber" rendered="{! pT.farFromFirstPage }" value="1" action="{! goToFirstPage }" rerender="rollupTable, allRollups" />
+						<apex:outputText rendered="{! pT.hasLeftOverflow }" value=" ... " styleClass="pageNumber" />
+						<apex:commandLink styleClass="pageNumber" rendered="{! pT.hasTwoPagesPrevious }" value="{! pT.pageNumber - 2 }" action="{! goTwoPagesLeft }" rerender="rollupTable, allRollups" />
+						<apex:commandLink styleClass="pageNumber" rendered="{! pT.hasPreviousPage }" value="{! pT.pageNumber - 1 }" action="{! goToPreviousPage }" rerender="rollupTable, allRollups" />
+						<apex:outputText styleClass="pageNumber" style="color: blue;" value=" {! pT.pageNumber } "
+							rendered="{! OR( pT.hasPreviousPage, pT.hasNextPage ) }" />
+						<apex:commandLink styleClass="pageNumber" rendered="{! pT.hasNextPage }" value="{! pT.pageNumber + 1 }" action="{! goToNextPage }"  />
+						<apex:commandLink styleClass="pageNumber" rendered="{! pT.hasTwoPagesNext }" value="{! pT.pageNumber + 2 }" action="{! goTwoPagesRight }" rerender="rollupTable, allRollups" />
+						<apex:outputText rendered="{! pT.hasRightOverflow }" value=" ... " styleClass="pageNumber" />
+						<apex:commandLink styleClass="pageNumber" rendered="{! pT.farFromLastPage }" value="{! pT.maxPageNumber }" action="{! goToLastPage }" rerender="rollupTable, allRollups" />
+						<apex:commandLink styleClass="pageNumber" style="padding-left:15px;" value="Show All" action="{! showAll }" rendered="{!  OR( pT.hasPreviousPage, pT.hasNextPage ) }" rerender="rollupTable" />
+						<apex:commandLink styleClass="pageNumber" value="Show Less" action="{! showLess }" rendered="{! showingAll }" rerender="rollupTable" />			
+					</apex:outputPanel>
+	             	<section class="slds-card__body slds-grid">
+	            		<table class="slds-table slds-table--bordered slds-max-medium-table--stacked hideFullColumn" id="allRollups">
+	              			<thead>
+	                		<tr style="width:100%;">
+	                  			<th class="slds-text-heading--label">
+	                    			<apex:commandLink value="Select"/  > 
+	                    		</th>   
+	                   
+	                  			<th class="slds-text-heading--label" scope="col">
+	                     			<apex:commandLink value="Target Field"  > 
+	                        		<apex:param name="sortField" value="targetField__c" assignTo="{!sortField}"/> 
+	                    
+	                     			</apex:commandLink> 
+	                  			</th>
+	                  			<th class="slds-text-heading--label" scope="col">
+	                     			<apex:commandLink value="Logic" > 
+	                        		<apex:param name="sortField" value="Logic__c" assignTo="{!sortField}"/> 
+	                     			</apex:commandLink> 
+	                  			</th>
+	                  			<th class="slds-text-heading--label" scope="col">
+	                     			<apex:commandLink value="Source Field" > 
+	                        		<apex:param name="sortField" value="sourceField__c" assignTo="{!sortField}"/> 
+	                     			</apex:commandLink> 
+	                  			</th>
+	                  		</tr>
+	                  		</thead>
+	                  		<tbody>
+	               				<apex:repeat value="{!rollups}" var="item">
+	               				
+	               				<tr>           					
+									<td><apex:inputCheckbox value="{!item.selected}" id="inputId"/></td>
+	               					<td class="slds-truncate" data-label="Source Field">{! item.ds.targetField__c }</td>
+	               					<td data-label="Type">{! item.ds.logic__c }</td>              					
+	               					<td class="slds-truncate" data-label="Source Field">{! item.ds.sourceField__c }</td>
+	               				</tr>
+	               				</apex:repeat>
+	               			</tbody>
+	             		</table>
+	             	</section>  
+             	</apex:outputPanel>          	
+         	</div>
+         	<div class="slds-card">
+				<header class="slds-card__header slds-grid">
+           			<div class="slds-col">
+               			<h3 class="slds-text-heading--small slds-truncate">Rollups To Be Exported</h3> 
+               			<div class="slds-text-body--medium"> <apex:actionStatus startText="Processing..." id="inprogress"/> </div>
+             		</div>
+             		<div class="slds-col" align="right">
+						<apex:commandButton styleClass="slds-button slds-button--neutral" value="Download"  onclick="replacePageRefDL();" oncomplete="deleteExportedRollupAF();"  rerender="false" status="inprogress"/> 
+					
+						&nbsp;                   
+                		<apex:commandButton styleClass="slds-button slds-button--neutral"  value="Clear" action="{!deleteExportRollup}" rerender="exportTable, sec2" status="inprogress"/>             			
+             		</div>
+             	</header>
+             	<apex:outputpanel id="exportTable">
+             	<apex:outputPanel style="width:100%;">
+					<apex:commandLink styleClass="pageNumber" rendered="{! AND(pTExport.farFromFirstPage, showingAllExports == false) }" value="1" action="{! goToFirstPageExports }" rerender="exportTable" />
+					<apex:outputText rendered="{! AND(pTExport.hasLeftOverflow, showingAllExports == false) }" value=" ... " styleClass="pageNumber" />
+					<apex:commandLink styleClass="pageNumber" rendered="{! AND(pTExport.hasTwoPagesPrevious, showingAllExports == false) }" value="{! pTExport.pageNumber - 2 }" action="{! goTwoPagesLeftExports }" rerender="exportTable" />
+					<apex:commandLink styleClass="pageNumber" rendered="{! AND(pTExport.hasPreviousPage, showingAllExports == false) }" value="{! pTExport.pageNumber - 1 }" action="{! goToPreviousPageExports }" rerender="exportTable" />
+					<apex:outputText styleClass="pageNumber" style="color: blue;" value=" {! pTExport.pageNumber } "
+						rendered="{! AND(OR( pTExport.hasPreviousPage, pTExport.hasNextPage ), showingAllExports == false) }" />
+					<apex:commandLink styleClass="pageNumber" rendered="{! AND(pTExport.hasNextPage, showingAllExports == false) }" value="{! pTExport.pageNumber + 1 }" action="{! goToNextPageExports }"  />
+					<apex:commandLink styleClass="pageNumber" rendered="{! AND(pTExport.hasTwoPagesNext, showingAllExports == false) }" value="{! pTExport.pageNumber + 2 }" action="{! goTwoPagesRightExports }" rerender="exportTable" />
+					<apex:outputText rendered="{! AND(pTExport.hasRightOverflow, showingAllExports == false) }" value=" ... " styleClass="pageNumber" />
+					<apex:commandLink styleClass="pageNumber" rendered="{! AND(pTExport.farFromLastPage, showingAllExports == false) }" value="{! pTExport.maxPageNumber }" action="{! goToLastPageExports }" rerender="exportTable" />
+					<apex:commandLink styleClass="pageNumber" style="padding-left:15px;" value="Show All" action="{! showAllExports }" rendered="{!  AND( OR( pTExport.hasPreviousPage, pTExport.hasNextPage ), showingAllExports == false) }" rerender="exportTable" />
+					<apex:commandLink styleClass="pageNumber" value="Show Less" action="{! showLessExports }" rendered="{! showingAllExports }" rerender="exportTable" />			
+				</apex:outputPanel> 
+             	<section class="slds-card__body slds-grid">
+             		
+            		<table class="slds-table slds-table--bordered slds-max-medium-table--stacked hideFullColumn" id="allRollups">
+              			<thead>
+                		<tr style="width:100%;">
+                  			<th class="slds-text-heading--label">
+                  				<span>PS_Export_Rollups ID</span>
+                  			</th>
+                  		</tr>
+                  		</thead>
+                  		<tbody>
+                  			<apex:repeat value="{!exportRollups}" var="exprol">
+                  			<tr>
+                  				<td>{!exprol.er.name} </td>
+                				<td>{!exprol.nameField} </td>
+                				<td>{!exprol.targetField} </td>
+                				<td>{!exprol.sourceField} </td>
+                				<td>{!exprol.logic} </td>
+                  			</tr>                 			
+                  			</apex:repeat>
+                  		</tbody>
+                  	</table>
+                  
+                  </section>
+                  	</apex:outputpanel>
+        	</div>
+      	</div>
+      	</apex:form>
+      </body>
+</html>
+</apex:page>

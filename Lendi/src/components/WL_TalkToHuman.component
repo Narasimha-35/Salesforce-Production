@@ -1,0 +1,173 @@
+<apex:component controller="acfTalkToHuman" allowDML="true" id="comId">
+  <head>
+  <script>
+     $(document).ready(function ()
+      {
+        $('#supportId').click(function () 
+        {
+          $('#customerSupportPopUp').removeClass('csdisplaynone'); 
+        });
+        $('.clsmsupport').click(function () 
+        {
+          $('#customerSupportPopUp').removeClass('csdisplaynone'); 
+          $(".sb-slidebar").removeClass("add-sb-sdbar");
+          $(".container-fluid").removeClass("add-body-sdbar");
+        });
+        $('#csdivfaded').click(function () 
+        {
+          $('#customerSupportPopUp').addClass('csdisplaynone');
+          $('#secTalkToHuman').css('display','block');
+          $('#secRequestACall').css('display','none');  
+          resetPopup();
+        });
+      });
+    function showThisSection(id)
+    {
+       $('#secTalkToHuman').css('display','none');
+       $('#'+id).css('display','block');
+       $('#dvsecRequestACallinner').show();
+       $('#submitbtn').show();
+       
+      // document.getElementById('pid:j_id1:comId:frmRequestACall:txtReqEmail').value = '';
+       //document.getElementById('pid:j_id1:comId:frmRequestACall:RCEmail').value = '';
+       //document.getElementById('pid:j_id1:comId:frmRequestACall:RCPhone').value = '';
+       
+    }
+    function autoCosewindowTTH()
+    {
+        var success = document.getElementById('pid:j_id1:comId:frmRequestACall:success').value;
+        if(success == "true")
+        {
+           /* $('#dvsecRequestACallinner').hide();
+            $('#submitbtn').hide();*/
+            window.setTimeout(ClosepopUpTTH, 5000);
+        }
+            
+    }
+    function ClosepopUpTTH()
+    {
+        $('#customerSupportPopUp').addClass('csdisplaynone');
+        $('#secTalkToHuman').css('display','block');
+        $('#secRequestACall').css('display','none');
+        resetPopup();
+    }
+  </script>
+  <style>
+      .input_btm_mgn{
+          margin-bottom: 15px;
+      }
+      .btn-req-center{
+          width: 240px;
+      }
+      .col-sm-custom
+      {
+          margin-left:22%;
+      }
+    @media only screen 
+    and (min-device-width : 768px) 
+    and (max-device-width : 1024px) 
+    and (orientation : Landscape) 
+    {
+        .pop-up-form .setup-box
+        {
+            left:16%;
+        }
+    }
+  </style>
+  </head>
+    <div id="customerSupportPopUp" Class="pop-up-form csdisplaynone">
+    
+        <div id="csdivfaded" class="faded">&nbsp;</div>
+           <section class="setup-box" id="idSetupBox">
+             <a href="#" class="pop-close">Close<span class="fa fa-close">&nbsp;</span></a>
+              <hgroup>
+             <h3 class="h3">Talk to a<span class="upd-bold">Human</span></h3>
+                <h4 class="h4" style="display:block;">We are here to help</h4>
+            </hgroup>
+            <div class="hr-color">&nbsp;</div>   
+             <section class="col-md-8 col-md-offset-3 col-sm-12 col-sm-offset-0 col-sm-custom" id="secTalkToHuman">
+                 <article class="row-fluid talk_sapce">
+                     <div class="col-md-5 talk_humn_list">Call Us</div>
+                        <div class="col-md-6 talk_humn_img"><a href="#" style="text-decoration:none;">{!$Label.Customer_Support_Contact_Number_ACF}</a></div>
+                    </article>
+                 <article class="row-fluid talk_sapce">
+                     <div class="col-md-5 talk_humn_list">Request a call</div>
+                        <div class="col-md-6 talk_humn_img"><a href="#" class="talk_reqCall" onclick="showThisSection('secRequestACall');" style="text-decoration:none;">&nbsp;</a></div>
+                    </article>
+                    
+                 <article class="row-fluid talk_sapce">
+                     <div class="col-md-5 talk_humn_list">Skype</div>
+                        <div class="col-md-6 talk_humn_img"><a href="skype:austcreditandfinance" class="talk_skype" style="text-decoration:none;">&nbsp;</a></div>
+                    </article>                    
+                                                                           
+                </section>
+                <!-- Request a call Start -->
+            <section id="secRequestACall" class="col-md-8 col-sm-12 col-sm-offset-0" style="display:none;">
+               <apex:form id="frmRequestACall">
+                   <apex:actionFunction name="VerifyReqMail" action="{!VerifyEmail}" rerender="pnlReqEmailVerify,txtReqEmail" status="Loadstatus"/><!-- pnlReqEmailVerify -->
+                    <apex:actionFunction name="resetPopup" action="{!ResetPopup}" rerender="frmRequestACall"/>  
+                        <div id="dvsecRequestACallinner">
+                        <apex:outputPanel id="pnlReqEmailVerify">
+                           <div class="set-up-row">
+                            <label class="col-md-3"></label>
+                            <apex:outputPanel id="msgPanelId" rendered="{!if(strReqErrorMsg != null && strReqErrorMsg != '', true,false)}" style="{!if(success == 'true','color:#3F6ABA;','color:red;')}margin-bottom:20px;text-align:center;"><p>{!strReqErrorMsg}</p></apex:outputPanel>
+                            </div>
+                            <div class="set-up-row">
+                                <label class="col-md-3" style="padding-top: 10px;">Name</label>
+                                <apex:inputText value="{!strReqName}" styleClass="set-up-box col-md-9 col-sm-10 input_btm_mgn" id="txtReqEmail"/>   
+                            </div>                  
+                            <div class="set-up-row">
+                                
+                                <label class="col-md-3" style="padding-top: 10px;">E-mail</label>
+                                <apex:inputText id="RCEmail" value="{!strReqEmail}" styleClass="set-up-box col-md-9 col-sm-10 input_btm_mgn" onblur="VerifyReqMail();"/>
+                                   <span style="{!IF(isEmailVerified,'display:block;','display:none;')} left: 100%;">&nbsp;</span>  
+                                   <apex:actionstatus id="Loadstatus" starttext="verifying">
+                                    <apex:facet name="start">
+                                        <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                                    </apex:facet>
+                                   </apex:actionStatus>
+                            </div>
+                          </apex:outputPanel>
+                            <div class="set-up-row">
+                                <label class="col-md-3" style="padding-top: 10px;">Phone</label>
+                                <div class="set-up-box plcholder_61 col-md-9 col-sm-10 input_btm_mgn clsOnlynumeric">
+                                <apex:inputText id="RCPhone" value="{!strReqPhone}" styleClass="col-md-11 col-md-offset-1"/>
+                                </div>
+                            </div>
+                            <script>
+                                $('.clsOnlynumeric').keypress(function(e) {
+                                    var keyCode;
+                                    if (window.event) // IE
+                                    {
+                                        keyCode = e.keyCode;
+                                    }
+                                    else if (e.which) // Netscape/Firefox/Opera
+                                    {
+                                        keyCode = e.which;
+                                    }
+                                    //alert(keyCode == undefined);
+                                   // alert($(this).val());            
+                                    return ((!((keyCode < 48) || (keyCode > 57))) || (keyCode == 8));
+                                });
+                                
+                            </script>
+                        </div>
+                   
+                    <div class="set-up-row" id="submitbtn">
+                        <apex:commandButton value="Request A Call" oncomplete="autoCosewindowTTH();" action="{!RequestACall}" reRender="frmRequestACall" styleclass="btn col-md-8 col-sm-offset-12 col-sm-offset-0 col-md-offset-4 stup-btn-mgnbtm btn-req-center" status="LoadstatusReq"/>
+                        <apex:inputhidden id="success" value="{!success}"/>
+                        <apex:actionstatus id="LoadstatusReq" starttext="verifying">
+                            <apex:facet name="start">
+                                <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" style="position:absolute; right:280px; top:7px;"/>                      
+                            </apex:facet>
+                        </apex:actionStatus>
+                    </div>                                                                         
+              </apex:form>
+            </section>
+            <!-- Request a call End -->
+            <div class="clearfix"></div>
+            <p class="creat-acount">Don’t worry, it’s free and your details are safe with us</p>                                                       
+            </section> 
+    </div>
+    
+</apex:component>

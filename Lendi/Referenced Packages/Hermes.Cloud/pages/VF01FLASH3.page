@@ -1,0 +1,411 @@
+<apex:page showHeader="false" controller="vhc.Ctrl01CTI" title="Hermes Cloud">
+    <script type="text/javascript">
+    	// Some SF libraries do some crap with array prototype
+    	Object.defineProperty(Array.prototype,"remove", {enumerable:false});
+    </script>
+	<apex:includeScript value="/support/api/31.0/interaction.js" />
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/jquery-1.7.2.min.js')}"/>
+    
+	<script src="/soap/ajax/15.0/connection.js" type="text/javascript"></script>
+	<script src="/soap/ajax/15.0/apex.js" 		type="text/javascript"></script>    
+	
+	<script type="text/javascript">
+		var ie = navigator.appVersion.indexOf("MSIE")>0 || navigator.appVersion.indexOf("rv:11.0") > 0;
+		var ie11 = navigator.appVersion.indexOf("rv:11.0") > 0;
+		var ie10 = ie11 || navigator.appVersion.indexOf("MSIE 10") > 0;
+			var ie9 = navigator.appVersion.indexOf("MSIE 9.0") > 0;
+		var uniquePageId = Math.random();
+		var isInConsole = false;
+		sforce.connection.sessionId = "{!$Api.Session_ID}";
+		var AdminURL = "{!IF((AdminURL == null), '', AdminURL)}";
+		
+		/*for (var i = 0; i < localStorage.length; i++){
+			var k = localStorage.key(i);
+			if(k!='vhc_popup_last_keepalive'){
+				localStorage.removeItem(k);
+			}
+		}*/
+		var Labels = {
+			MANUAL_CAMPAIGN : '{!$Label.Manual_Campaign}',
+			INTERNAL_CALL   : '{!$Label.Internal_call}'
+		}
+	</script>
+	<!-- Embedded Softphone JS management  -->
+
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_ActiveX.js')}"  />   
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/jssip-devel.js')}"  />   
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/flashProxy_Constants.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/tools.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_UI_Labels.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_UI.js')}"/> 
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_UI_States.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_BL.js')}" /> 
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_BL_Buttons.js')}"/>  
+   
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/flashProxy.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/SF_Proxy.js')}"   />
+
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/flash/swfobject.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/Toolbar.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/AgentLink.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/AgentButton.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/CallStatus.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/CallStatusGroup.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/PauseCode.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/CallInformation.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/Accessories.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/Status.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/SearchModeInformation.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/ProxySupport.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/libphonenumber.js')}"/>
+	
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/StringUtility.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/AgentLinkWebSocket.js')}"/>
+	
+	<script type="text/javascript">
+	var campaigns = {!CampaignWithNumberFormats};
+	
+	if(campaigns["Manual Campaign"]){
+		campaigns["Campagne Manuelle"]=campaigns["Manual Campaign"];
+	} else if (campaigns["Campagne Manuelle"]){
+		campaigns["Manual Campaign"]=campaigns["Campagne Manuelle"];
+	}
+	</script>
+<body>
+
+<script type="text/javascript">
+	var loaded = false;
+	document.addEventListener('DOMContentLoaded',function(){localStorage.setItem('vhc_flashPopupLoaded','true')});
+    var agentPermissions = window.agentPermissions || {};
+    agentPermissions.manualCall = {!ManualCall};
+    sendToStorage('vhc_agentPermissions',JSON.stringify(agentPermissions));
+</script>
+
+<script type="text/javascript"> 
+	//var activexSupported = false; 
+	var activexSupported = isActiveXSupportedOnCurrentBrowser() ;
+	var webRTCSupported = navigator.getUserMedia ||
+                navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia ||
+                navigator.msGetUserMedia;
+	sendToStorage('vhc_activexSupported',JSON.stringify(activexSupported));
+</script>
+    
+<!-- IE conditional comment. Render following ONLY in IE (any version). start -->
+
+   <!-- <apex:outputText value="<" escape="false" />!--[if IE]<apex:outputText value=">" escape="false" />
+   -->
+        <script type="text/javascript" src="{!URLFOR($Resource.CTI3, '/js/cti/IE_Related.js')}"></script> 
+        <script type="text/javascript"> //var activexSupported = true; </script>
+    <!-- <apex:outputText value="<" escape="false" />![endif]--<apex:outputText value=">" escape="false" />
+    -->
+    
+<!-- IE conditional comment. end -->
+
+<div id="Log" style="display: none; width:100%; height:300px; overflow:scroll"></div>
+<div id="Flash" style="position: absolute; overflow:hidden; left: -200000px;"></div>
+
+<script type="text/javascript">
+	
+	window.addEventListener('storage',function(e){
+		var evt = e || event;
+		
+		if(evt.key=='vhc_flash_call' && evt.newValue!=null){
+
+	    	var func = evt.newValue.split('¤¤¤')[0].split(/;(.+)?/);
+			
+			if(func[1]===undefined){
+				flashProxy[func[0]]();
+			} else {
+				flashProxy[func[0]](JSON.parse(func[1]));
+			}
+	    }
+	    
+	    if(evt.key=='vhc_flashTimerA_call' && evt.newValue!=null){
+
+	    	var func = evt.newValue.split(/;(.+)?/);
+						
+			if(func[1]===undefined){
+				flashProxy.timerA[func[0]]();
+			} else {
+				flashProxy.timerA[func[0]](JSON.parse(func[1]));
+			}
+	    }
+	    
+	    if(evt.key=='vhc_flashTimerB_call' && evt.newValue!=null){
+
+	    	var func = evt.newValue.split(/;(.+)?/);
+						
+			if(func[1]===undefined){
+				flashProxy.timerB[func[0]]();
+			} else {
+				flashProxy.timerB[func[0]](JSON.parse(func[1]));
+			}
+	    }
+	    
+	    if(evt.key=='vhc_SP'){
+	    	var func = evt.newValue.split(/;(.+)?/);
+	    	log('localStorage : '+evt.newValue);
+	    	if(func[1]){
+	    		CTI_BL.sp[func[0]].defer(JSON.parse(func[1]));
+	    	}
+	    }
+	    
+	    if(evt.key=='vhc_SP_UpdateStatus'){
+	    	var args = JSON.parse(evt.newValue.split('¤¤¤')[0]);
+	    	var status=args.status;
+	    	var msg=args.message;
+	    	SP_updateStatus(status,msg);
+	    }
+	});
+	
+	
+	var popupKeepAlive = function(){
+	
+		sendToStorage("vhc_popup_last_keepalive",new Date().getTime());
+	
+		setTimeout(popupKeepAlive,1000);
+	
+	};
+	popupKeepAlive();
+	
+	
+	
+	
+    window.onbeforeunload = function () {
+        /*if ((CTI_BL && CTI_BL.status && CTI_BL.status.callStatus !== CTI_BL.CALL_STATUS.NO)
+            || CTI_BL.flash.GetAgentState () === CTI_BL.flash.AgentStates.WRAPUP
+        )*/
+        //CLEAN LOCALSTORAGE FIRST
+        	localStorage.clear();
+            //return 'Are you sure you want to leave?';
+    }
+
+    var objTypes = {
+        '{! JsEncode($ObjectType.Lead.keyPrefix)    }' : '{! JsEncode($ObjectType.Lead.Label)    }',
+        '{! JsEncode($ObjectType.Contact.keyPrefix) }' : '{! JsEncode($ObjectType.Contact.Label) }'
+    };
+
+    var ctiFrame;
+    
+    var agentlink_toolbar;
+    
+    ctrlProxy = {
+        createnewcallWithStatId : '{!JsEncode($RemoteAction.Ctrl01CTI.createnewcallWithStatId)}', 
+        updateCallfinish     : '{!JsEncode($RemoteAction.Ctrl01CTI.updateCallfinish)}',
+        searchForCaller      : '{!JsEncode($RemoteAction.Ctrl01CTI.searchForCaller)}', 
+        updateQualification  : '{!JsEncode($RemoteAction.Ctrl01CTI.updateQualification)}',
+        addToDNCL 			 : '{!JsEncode($RemoteAction.Ctrl01CTI.addToDNCL)}', 
+        getAgentList         : '{!JsEncode($RemoteAction.Ctrl01CTI.getAgentList)}',
+        getAgentByCode       : '{!JsEncode($RemoteAction.Ctrl01CTI.getAgentByCode)}',
+        getSIPinfo           : '{!JsEncode($RemoteAction.Ctrl01CTI.getSIPinfo)}',
+        isManualCallAllowedByBlacklistForNumber : '{!JsEncode($RemoteAction.Ctrl01CTI.isManualCallAllowedByBlacklistForNumber)}',
+        keepAlive 			 : '{!JsEncode($RemoteAction.Ctrl01CTI.getLastRecentCalls)}',
+        getDateTimeGMT		 :	'{!JsEncode($RemoteAction.Ctrl01CTI.getDateTimeGMT)}'
+    };
+
+
+	
+    var oldWinowOnLoadEvent = window.onload;
+    document.addEventListener('DOMContentLoaded',
+		
+    /*window.onload = */function () {
+    
+    	document.title = 'Hermes Cloud';
+    	
+    	if(window.WebSocket && !{!forceFlashMode}){
+    		flashProxy.CreateWebSocket({!CustomerId});
+    	
+    	} else {
+	    	var so = new SWFObject("{!URLFOR($Resource.CTI3, '/flash/AgentLink.swf')}", "AgentLink", "100", "30", "9", "");
+	        so.write(document.getElementById("Flash"));
+	        flashProxy.CreateFlash (so);
+    	}
+                 
+        agentlink_toolbar = flashProxy.agentlink_toolbar;
+
+        CTI_BL.flash = flashProxy;
+        CTI_BL.sf = SF_Proxy;
+        CTI_BL.sp = CTI_SP;
+        CTI_BL.sf.bl = CTI_BL.flash.bl = CTI_BL;
+
+        CTI_BL.flash.timerA = new Timer('timerA');
+        CTI_BL.flash.timerB = new Timer('timerB');
+
+		CTI_BL.flash.timerA.writeTimerFunction = function(text){
+        	sendToStorage('vhc_timerA',text);
+        }
+
+        CTI_BL.flash.timerB.writeTimerFunction = function(text){
+        	sendToStorage('vhc_timerB',text);
+        }
+
+		setTimeout(function(){
+			
+			sendToStorage('vhc_blAction','connect;'+JSON.stringify(['{!JsEncode(ProxyAddress)}']));
+			
+			if (oldWinowOnLoadEvent) oldWinowOnLoadEvent ();
+		}
+		,2000);
+
+    });
+       
+    var nbInterval = 0;
+    /*
+    setInterval(function(){
+    	if(!getFromStorage('vhc_CTI_last_keepalive')){
+    		//window.onbeforeunload=null;
+    		open(location, '_self').close();
+    	}else {
+    		var lastCTIKeepAlive = new Date(parseInt(getFromStorage('vhc_CTI_last_keepalive')));
+			if((new Date().getTime() - lastCTIKeepAlive.getTime())/1000 > 5){
+	    		//window.onbeforeunload=null;
+	    		open(location, '_self').close();
+    		}
+    	}
+    },5000);
+    */
+    
+    
+    
+</script>
+
+	<script type="text/javascript"> var activexSupported = false; </script>
+	<script type="text/javascript"> var activexSupported = isActiveXSupportedOnCurrentBrowser() ; </script>
+	
+<!-- IE conditional comment. Render following ONLY in IE (any version). start -->
+
+<!--     <apex:outputText value="<" escape="false" />!--[if IE]<apex:outputText value=">" escape="false" />
+-->
+    
+          <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.CTI, '/css/ie9.css')}" /> 
+          <script type="text/javascript"> //var activexSupported = true; </script>
+          
+
+        <script type="text/javascript">
+            var createActiveXObjects = function (wraperElement) {
+                if (! wraperElement)
+                    return;
+                    
+                if (wraperElement.ownerDocument.getElementById ('Configurator'))
+                    return;
+
+                var configuratorDiv = document.createElement('div');
+                configuratorDiv.innerHTML = '<OBJECT id="Configurator" language="vbscript" align="middle" style="position: absolute; overflow:hidden; left: -200000px;" ' +
+                    'classid="clsid:0FCE1162-5E04-40FB-9C99-5AF3919CB41E" VIEWASTEXT=""' +
+                    'CODEBASE="{!URLFOR($Resource.ActiveX, 'HnetConfigurator.cab')}#version=5,0,0,0">' +
+                        '<PARAM NAME="_Version" VALUE="65536"/> ' +
+                        '<PARAM NAME="_ExtentX" VALUE="0"/> ' +
+                        '<PARAM NAME="_ExtentY" VALUE="0"/> ' +
+                        '<PARAM NAME="_StockProps" VALUE="0"/> ' +
+                    '</OBJECT>';
+                    
+                    
+                    var inter = setInterval(function(){
+                    	var configurator = document.getElementById('Configurator');
+                    	
+                    	if(configurator){
+                    		try{
+                    		//if(typeof(console) !== 'undefined' && console != null)
+                    		//	console.log(new Date() + " :::: START checksystem");
+                    		configurator.CheckSystem("http://hermes-cloud.com/hermes_net_v4/PlateformPublication/Activex_Flash/");
+                    		//if(typeof(console) !== 'undefined' && console != null)
+                    		//	console.log(new Date() + " :::: START add object");
+                    		configuratorDiv.innerHTML+= '<OBJECT id="SoftPhone" language="vbscript" align="middle" style="position: absolute; overflow:hidden; left: -200000px;" ' +
+			                    'classid="clsid:12C3C2B3-CA8E-4471-8BBC-38D8AD043657" VIEWASTEXT=""' +
+			                    'CODEBASE="{!URLFOR($Resource.ActiveX, 'VocalcomSoftPhone.CAB')}#version=4,3,0,0">' +
+			                        '<PARAM NAME="_Version" VALUE="65536"/> ' +
+			                        '<PARAM NAME="_ExtentX" VALUE="0"/> ' +
+			                        '<PARAM NAME="_ExtentY" VALUE="0"/> ' +
+			                        '<PARAM NAME="_StockProps" VALUE="0"/> ' +
+			                    '</OBJECT>';
+                    		clearInterval(inter);
+                    		//if(typeof(console) !== 'undefined' && console != null)
+							//	console.log(new Date() + " :::: AFTER add object");
+                    		} catch(e){
+                    			//alert(e);
+                    			
+                    		}	
+                    		
+                    	}
+                    },1000);
+                    
+                wraperElement.appendChild(configuratorDiv);
+            };
+            
+            var createActiveXObjects64 = function (wraperElement) {
+            
+                if (! wraperElement)
+                    return;
+                    
+                if (wraperElement.ownerDocument.getElementById ('Configurator'))
+                    return;
+
+                var configuratorDiv = document.createElement('div');
+                configuratorDiv.innerHTML = '<OBJECT id="Configurator" language="vbscript" align="middle" style="position: absolute; overflow:hidden; left: -200000px;" ' +
+                    'classid="clsid:0FCE1162-5E04-40FB-9C99-5AF3919CB41E" VIEWASTEXT=""' +
+                    'CODEBASE="{!URLFOR($Resource.ActiveX64, 'HnetConfigurator_x64.cab')}#version=5,0,0,0">' +
+                        '<PARAM NAME="_Version" VALUE="65536"/> ' +
+                        '<PARAM NAME="_ExtentX" VALUE="0"/> ' +
+                        '<PARAM NAME="_ExtentY" VALUE="0"/> ' +
+                        '<PARAM NAME="_StockProps" VALUE="0"/> ' +
+                    '</OBJECT>';
+                    var inter = setInterval(function(){
+                    	var configurator = document.getElementById('Configurator');
+                    	
+                    	if(configurator){
+                    		clearInterval(inter);
+                    		try{
+                    		configurator.CheckSystem("http://hermes-cloud.com/hermes_net_v4/PlateformPublication/Activex_Flash/");
+                    		configuratorDiv.innerHTML += '<OBJECT id="SoftPhone" language="vbscript" align="middle" style="position: absolute; overflow:hidden; left: -200000px;" ' +
+			                    'classid="clsid:12C3C2B3-CA8E-4471-8BBC-38D8AD043657" VIEWASTEXT=""' +
+			                    'CODEBASE="{!URLFOR($Resource.ActiveX64, 'VocalcomSoftPhone_x64.CAB')}#version=4,3,0,0">' +
+			                        '<PARAM NAME="_Version" VALUE="65536"/> ' +
+			                        '<PARAM NAME="_ExtentX" VALUE="0"/> ' +
+			                        '<PARAM NAME="_ExtentY" VALUE="0"/> ' +
+			                        '<PARAM NAME="_StockProps" VALUE="0"/> ' +
+			                    '</OBJECT>';
+			                }catch(e){}
+			            }
+					},1000);
+			            
+			               
+                wraperElement.appendChild(configuratorDiv);
+            };
+
+        </script>
+
+<!-- 
+    <apex:outputText value="<" escape="false" />![endif]--<apex:outputText value=">" escape="false" />
+-->
+
+<!-- IE conditional comment. end -->
+<script type="text/javascript">
+try{
+	if(ie){
+		if ({!ie64} == false ) {
+			window.createActiveXObjects && createActiveXObjects (document.body);
+		} else {
+			window.createActiveXObjects64 && createActiveXObjects64 (document.body);
+		}
+	}
+}catch(e){
+	if(typeof(console) !== 'undefined' && console != null) {
+		console.log(e);
+	}
+}
+</script>
+
+
+<img src="{!URLFOR($Resource.CTI3, '/img/hermes-cloud-115x115.png')}" style="width: 70px;
+vertical-align: top;
+margin: 15px;
+display: inline-block;
+padding: 0px;"></img>
+<div style="display: inline-block;
+width: calc(100% - 123px);
+padding: 0;
+margin-top: 13px;">This popup handles the communication with the telephony server. Please, do not close it during your use of Hermes Cloud.</div>
+</body>
+
+</apex:page>

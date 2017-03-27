@@ -1,0 +1,466 @@
+<apex:page controller="rh2.PS_SelectMaster_Controller" action="{!setupRollupTypePage}" standardStylesheets="false"  sidebar="false" applyBodyTag="false" docType="html-5.0" tabStyle="PS_Rollup_Helper__tab">
+     <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+     <head> 
+     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+     <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/modernizr-1.7.min.js') }"/>
+     <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }"/>
+    
+     <apex:stylesheet value="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"/>
+     <apex:stylesheet value="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"/>
+     <apex:includeScript value="//code.jquery.com/jquery-1.10.2.js"/>
+     <apex:includeScript value="//code.jquery.com/ui/1.10.4/jquery-ui.js"/>
+     <apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
+     
+     </head> 
+ 
+    <style>
+        [id$=heading] { padding-top:20px; padding-bottom:5px;}
+        .h_scroll {overflow-x:auto;}
+        .caption {font-size:smallest; padding-left:10px; padding-bottom:5px; padding-top:5px;}
+        .breadcrumb {font-size:small;}
+        .ndLabel { padding-top:4px; }
+        .nameArea { margin-right:0px;padding-right:0px; }
+        .descriptionArea { margin-left:0px;padding-left:0px; } 
+        
+        @media screen and (min-width:1025px){
+            #sourceObjSelect{
+                width:35%;
+            }
+        }
+    </style>
+    
+    <script type="text/javascript">
+    
+    var rh = rh || {};
+    rh.j$ = jQuery.noConflict();
+    
+    function unhideTDAndPopulateRels(){
+        document.getElementById("relFieldSelect").style.display="table-cell";
+    }
+        
+  </script>
+  
+  <script> var previousOnload = window.onload; window.onload = function() { if (previousOnload) { previousOnload(); } showModal({!showSchedulePopup }, "modalPopup"); } </script>
+   
+    <apex:form >
+    <div class="slds slds-p-around--xx-large slds-container--large slds-container--center" role="main">
+    <div class="slds-card slds-card--empty">
+            <header class="slds-card__header slds-grid grid--flex-spread slds-text-heading--small slds-truncate">
+                Step 3: Select Source Field
+            </header>
+            <header class="slds-card__header slds-grid grid--flex-spread ">
+                <nav role="navigation">
+                    <ol class="slds-breadcrumb slds-list--horizontal">
+                        <li class="slds-list__item slds-text-heading--label"><a href="{!URLFOR($Page.PS_SelectMaster)}">Select Target Object</a></li>
+                        <li class="slds-list__item slds-text-heading--label"><a href="{!URLFOR($Page.PS_SelectTargetField)}?mast={!masterAPI}">{!masterObjectLabel} Field For Results</a></li>
+                        <li class="slds-list__item slds-text-heading--label"><a href="#">Define Summary Calculation</a></li>
+                    </ol>
+                </nav>
+            </header>
+        </div>
+        <br/>
+    <apex:outputPanel layout="block" rendered="{!AND(NOT(ISBLANK(masterObjectLabel)), NOT(ISBLANK(targetField_c)))}">
+        
+        
+         <apex:pagemessages />
+            
+            <!-- Start of object selection -->
+            <div class="slds-card">
+             <header class="slds-card__header slds-grid slds-theme--alt-inverse">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                    <div class="slds-media__body">
+                        <h4 class="slds-text-heading--small slds-truncate">Which object would you like to use as the source of your rollup? ({! masterObjectLabel } Child)</h4>
+                    </div> 
+                </div>
+             </header>
+             <section class="slds-card__body">
+                <apex:outputPanel id="objectSelectSection">
+                    <apex:outputPanel >
+                    <apex:outputpanel >
+                                                  
+                            
+                            <apex:outputPanel >
+                                <apex:actionStatus id="statusMessage" startText="(Refreshing)" stopText=" " styleClass="caption" />
+                            </apex:outputPanel>  
+                        </apex:outputpanel>
+                    <apex:outputpanel styleClass="slds-grid slds-container--left slds-container--small" style="padding-left:15px;" id="relationtxt">
+                        
+                        
+                        <br/>
+                        <apex:outputPanel styleClass="slds-col">
+                        <apex:outputText value="Select Child Object"/><br/> 
+                        <apex:outputPanel rendered="{! sourceObjectController.hasMultiplePages }"> 
+                            <div >
+                                <c:Paginate pageController="{! sourceObjectController }" renderedComponent="objectSelectSection" />
+                            </div>
+                        </apex:outputPanel>
+                        <apex:actionRegion > 
+                            <apex:selectList size="5" value="{!selectedSourceObj}" >
+                                <apex:actionsupport event="onchange"  rerender="relationtxt, bottomWrapper, fieldHeader, field1, field2, source, filter, saveCancelBtns, sourceObjSelect" status="statusMessage" action="{!clearSourceApi}"/>
+                                <apex:selectOptions value="{!sourceObjectController.PaginatedList}"/>
+                            </apex:selectList>
+                        </apex:actionRegion> 
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{! NOT(ISBLANK(selectedSourceObj)) }" styleClass="slds-col" id="relation">
+                                <apex:outputText value="Select Relationship Field"  /><br/>
+                                <apex:selectList size="5" value="{! sourceAPI }" rendered="{! NOT(ISBLANK(selectedSourceObj)) }" >
+                                    <apex:actionSupport event="onchange" action="{! refreshSource1 }" reRender="bottomWrapper, fieldHeader, field1, field2, source,  filter, saveCancelBtns" status="statusMessage"/>
+                                    <apex:selectOptions value="{! sourceObjects }" /> 
+                                </apex:selectList>
+                        </apex:outputPanel>   
+                        
+                     
+                            
+                      </apex:outputPanel>
+                      
+                    <br/>
+                    <div style="padding-left:15px;">
+                    <a href="{!URLFOR($Page.PS_helpPage)}" target="_blank" >My source object isn't appearing in the list.  Why?</a>      
+                    </div>    
+                  </apex:outputpanel>
+            
+            </apex:outputPanel>
+            </section>
+            <footer class="slds-card__footer"></footer>
+          </div> 
+           <!-- Start of field selector -->
+           <br/>
+           <apex:outputPanel id="bottomWrapper" layout="block" >
+            <apex:outputPanel rendered="{!NOT(ISBLANK(sourceApi))}" layout="none">
+            <div class="slds-card" >
+             <header class="slds-card__header slds-grid slds-theme--alt-inverse">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate" id="fieldHeader">
+                    <div class="slds-media__body"  >
+                        <h4 class="slds-text-heading--small slds-truncate">Which field on {!sourceObject} should we use as a source for your rollup?</h4>
+                    </div> 
+                </div>
+             </header>
+             <section class="slds-card__body">
+            <apex:outputText style="padding-left:20px;" value="Labels followed by a '>' indicate there are more fields available." /><br/> <br/>
+           <div class="slds-grid " style="padding-left:15px;">
+           <apex:outputPanel id="field1">
+           <apex:outputPanel rendered="{!NOT(ISBLANK(sourceApi))}"> 
+                
+                <div class="slds-col slds-col--padded" style="float:left;">
+                    
+                    <div >
+                        <c:Paginate pageController="{! pgCon }" renderedComponent="field1" />
+                    </div>
+            
+               
+
+                    <apex:outputPanel id="firstField">
+                        <apex:actionRegion >
+                            <apex:selectList size="8" value="{!sourceField1API}" id="sf1" style="margin-right:15px;">
+                                <apex:actionSupport event="onchange" action="{!refreshSource2}" reRender="sf2, field2, source, filter, saveCancelBtns" status="statusMessage"/> 
+                                <apex:selectOptions value="{! pgCon.PaginatedList }"/>
+                            </apex:selectList>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                    <apex:actionRegion >                
+                        <apex:actionFunction name="rerenderOnSelect" action="{! selectSourceField }" reRender="source, filter, saveCancelBtns">
+                            <apex:param name="field2SelectedItemHidden" assignTo="{! sourceField2API }" value="" />
+                        </apex:actionFunction>
+                    </apex:actionRegion>
+                    <apex:outputPanel id="field2">
+                        <apex:outputPanel rendered="{! AND(NOT(ISBLANK(sourceField1API)), sourceFields1FK)}">
+                            <select id="sf2" size="8" onchange="rerenderOnSelect( rh.j$(this).val() );">
+                                <apex:repeat value="{! sourceFields2 }" var="sourceField">
+                                    <option value="{! sourceField.value }" >
+                                        {! sourceField.label }
+                                    </option>
+                                </apex:repeat>
+                            </select>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+              </div> &nbsp; &nbsp;
+              <div class="slds-col slds-col--padded slds-text-body--small" style="float:right;">  
+                    <apex:outputPanel id="source">
+                    
+                    <apex:outputPanel rendered="{! NOT(ISBLANK(sourceField_c)) }"> 
+                        <!-- Source Field Selection Info Box -->
+                        
+                        <apex:outputPanel styleClass="slds-box" style="width:250px;float:left; margin-right:35px; background-color: white; word-wrap:break-word;">
+                            <apex:outputText value="You have selected:" styleClass="caption"/>
+                            <br/> 
+                            <br/>
+                            <apex:outputText value="{! SUBSTITUTE(sourceField_c, '.', ' > ') }" /> 
+                            <br/>
+                            <br/>
+                            <apex:outputText value="Type: {! sourceFieldType_c }"/><br />
+                            <apex:outputText value="to rollup into {!targetField_c}" />
+                        </apex:outputPanel>
+                        <!-- Rollup Type Selection -->
+                        <apex:outputPanel style="overflow-x:visible;float:left;" id="type"> 
+    
+                            <apex:outputText value="Select Type" />    
+                            <apex:actionRegion >
+                            <apex:selectRadio value="{!logic_c}" layout="pageDirection">
+                                <apex:actionSupport event="onchange" action="{!selectSourceField}" reRender="filter, DateField, saveCancelBtns, deduplicate" status="statusMessage"/>
+                                <apex:selectOption itemValue="CNT" itemLabel="Count" rendered="{! AND(IF(targetFieldType_c != 'REFERENCE', true, false), IF(targetFieldType_c != 'ID', true, false), IF(targetFieldType_c != 'BOOLEAN', true, false))}"/>
+                                <apex:selectOption itemValue="MAX" itemLabel="Maximum" rendered="{! AND(IF(targetFieldType_c != 'REFERENCE', true, false), IF(targetFieldType_c != 'ID', true, false), IF(sourceFieldType_c != 'TEXTAREA', true, false), IF(targetFieldType_c != 'BOOLEAN', true, false))}"/>
+                                <apex:selectOption itemValue="MIN" itemLabel="Minimum" rendered="{! AND(IF(targetFieldType_c != 'REFERENCE', true, false), IF(targetFieldType_c != 'ID', true, false), IF(sourceFieldType_c != 'TEXTAREA', true, false), IF(targetFieldType_c != 'BOOLEAN', true, false))}"/>
+                                <apex:selectOption itemValue="AVG" itemLabel="Average" rendered="{! AND(IF(sourceFieldType_c != 'DATE', true, false), IF(sourceFieldType_c != 'DATETIME', true, false),IF(targetFieldType_c != 'REFERENCE', true, false), IF(targetFieldType_c != 'ID', true, false), IF(targetFieldType_c != 'BOOLEAN', true, false))}" />
+                                <apex:selectOption itemValue="SUM" itemLabel="Sum" rendered="{! AND(IF(sourceFieldType_c != 'DATE', true, false), IF(sourceFieldType_c != 'DATETIME', true, false), IF(targetFieldType_c != 'REFERENCE', true, false), IF(targetFieldType_c != 'ID', true, false), IF(targetFieldType_c != 'BOOLEAN', true, false))}" />
+                                <apex:selectOption itemValue="CBX" itemLabel="Checkbox" rendered="{! IF(targetFieldType_c = 'BOOLEAN', true, false) }" />
+                                <apex:selectOption itemValue="TXT" itemLabel="Text Separated By:" rendered="{! OR(IF(targetFieldType_c = 'STRING', true, false),IF(targetFieldType_c = 'REFERENCE', true, false), IF(targetFieldType_c = 'ID', true, false))}"/>                                            
+                            </apex:selectRadio>
+                           </apex:actionRegion> 
+                            <apex:actionRegion >                               
+                            <apex:selectList id="delim" value="{!delim_c}" size="1" rendered="{! OR(IF(targetFieldType_c = 'STRING', true, false),IF(targetFieldType_c = 'REFERENCE', true, false), IF(targetFieldType_c = 'ID', true, false))}">
+                            <apex:actionsupport event="onchange" action="{! postVariable }" rerender="delim" />
+                                <apex:selectOption itemValue="SP" itemLabel="Space" />  
+                                <apex:selectOption itemValue="-" itemLabel="Hyphen (-)" />
+                                <apex:selectOption itemValue="SSP" itemLabel="Semicolon (;)" />
+                                <apex:selectOption itemValue="CSP" itemLabel="Comma (,)" />
+                                <apex:selectOption itemValue="/" itemLabel="Slash (/)"/>
+                                <apex:selectOption itemValue="CRLF" itemLabel="New Line" />
+                                <apex:selectOption itemValue="DBNL" itemLabel="Double New Line"/>
+                            </apex:selectList>
+                            </apex:actionRegion> 
+                        
+                        </apex:outputPanel>
+                       
+                    </apex:outputPanel> 
+                    </apex:outputpanel>               
+                </div>
+                
+            </apex:outputPanel>
+            </apex:outputPanel>
+            </div> <br/><br/>
+            <!-- Start of query preview -->
+            
+            <apex:outputPanel id="filter">
+            
+            <apex:outputPanel rendered="{! NOT(ISBLANK(logic_c)) }" >
+            
+            <script>
+               rh.j$(function() {
+                rh.j$( "#advSettings" ).accordion({ collapsible: true, active: 2});
+               });
+                
+                
+            </script>
+            
+                <apex:outputPanel >
+                <h5 style="padding-left:15px;"> Query Preview: </h5>
+                </apex:outputPanel> <br/>     
+                <apex:outputPanel id="preview"  style="word-wrap:break-word; white-space:normal; margin-bottom:10px; margin-left:15px; margin-right:15px;" 
+                styleClass="slds-box slds-box--small slds-theme--default slds-truncate" layout="block">
+                    {!queryString}
+                    
+               
+                
+                </apex:outputPanel>
+                
+                 <apex:outputPanel >
+                    <br/>
+                    <div class="slds-box slds-box--small slds-theme--info" style="word-wrap:break-word; white-space:normal; margin-left:15px; margin-right:15px;">
+                        In order to improve database request efficiency, please consider filtering on an indexed field to ensure that the query is as 
+                        <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_SOQL_VLSQ.htm" target="_blank">
+                            selective</a> as possible.  If you need more information / assistance regarding SOQL query selectivity, please visit our 
+                        <a href="{!URLFOR($Page.PS_helpPage)}" target="_blank">help page</a> or email <a href="mailto:support@passagetech.com"> our support team</a>.
+                    </div>
+                </apex:outputPanel>    
+                
+                <br/><br/>
+                     
+                <!-- Start of optional settings -->
+                                 
+                <apex:outputPanel >
+
+
+            <apex:actionRegion > 
+                 
+               <div class="row">
+               <div id="advSettings" > 
+               
+               <!-- Start of name and description -->
+               <h3>Name and Description</h3>
+               <div>
+                   <table class="slds-table slds-no-row-hover">     
+                        
+                        <tr>
+                            <td style="width:75px;">
+                                <apex:outputText value="Label:"/> &nbsp;
+                            </td>  
+                            <td>   
+                                <apex:inputText value="{!rollupLabel}" id="nameField" />                        
+                                <apex:actionSupport action="{! postVariable}" event="onchange" rerender=""/> 
+                            </td>
+                         </tr>   
+                        
+                         <tr>
+                        
+                            <td style="width:75px;">
+                                <apex:outputText value="Description:"/>&nbsp;
+                            </td>
+                            <td>    
+                                <apex:inputText maxlength="200" size="50" value="{!rollupDescription}" 
+                                    id="descriptionField" />                    
+                                <apex:actionSupport action="{! postVariable}" event="onchange" rerender=""/> 
+                            
+                            </td>
+                        </tr>
+                   </table>
+               </div>
+               
+               
+            
+                 <h3>Advanced Settings</h3>              
+                <div class="slds">
+                    <apex:outputpanel >                    
+                    
+                        <apex:outputpanel id="overwrite">
+                            <apex:inputCheckbox value="{!overwrite_c}" id="overwriteCheckbox" />                   
+                            <apex:actionsupport event="onchange" action="{! postVariable }" rerender="overwrite"/>   
+                        </apex:outputpanel>
+
+                        <apex:outputLabel for="overwriteCheckbox" value="Overwrite Existing Target Field Information"/>
+                        <p class="slds-text-body--small">If unchecked, Rollup Helper will not overwrite any field that contains a non-blank value.</p>
+
+
+                    </apex:outputpanel>
+
+                     <br/>
+                    
+                    <apex:outputpanel id="DateField" rendered="{!isAdvCurrency}">
+                        <br/>
+                        <apex:outputtext value="Select {!sourceObject} date field used for dated currency conversion." rendered="{!isAdvCurrency}"/>
+                        <br/>
+                        <apex:selectList size="1" value="{!conversionDate_c}" rendered="{!isAdvCurrency}">
+                          <apex:selectOptions value="{!dateFields}" />
+                        </apex:selectList>
+                                
+                    </apex:outputpanel>
+
+
+
+
+                    <!-- Code for deduplication checkbox -->
+                    <apex:outputPanel id="deduplicate" rendered="{!renderDedupSetting}">
+                        <apex:outputPanel >
+                            <apex:inputCheckbox value="{!dedup_flag_c}" id="dedupCheckbox" />
+                            <apex:actionsupport event="onchange" action="{! postVariable }" rerender="deduplicate" />
+                        </apex:outputPanel>
+
+                        <apex:outputLabel for="dedupCheckbox" value="Unique Values Only" />
+                        <p class="slds-text-body--small">
+                            Check to ensure that Rollup Helper does not add any string value to the rolled up text more than once.
+                        </p>
+                        <br />
+                    </apex:outputPanel>
+
+                    
+                    
+                    <!-- Code for escape checkbox -->
+                    <apex:outputpanel id="escape">
+                        <apex:outputPanel >
+                            <apex:inputCheckbox value="{!escapeSpecialCharacters_c}" id="escapeCheckbox" />                   
+                            <apex:actionsupport event="onchange" action="{! postVariable }" rerender="escape"/>   
+                        </apex:outputpanel>
+
+                        <apex:outputLabel for="escapeCheckbox" value="Escape Filter String Special Reserved Characters"/>
+                        <p class="slds-text-body--small">Advanced:  Use if you need to prevent Rollup Helper from escaping SOQL reserved characters (like ' or \)</p>
+                    </apex:outputpanel>     
+                    
+                    <br />
+                    
+                    <!-- Code for archived checkbox -->
+                    <apex:outputpanel id="archive">
+                        <apex:outputPanel >
+                            <apex:inputCheckbox value="{!queryArchive_c}" id="archiveCheckbox" />                   
+                            <apex:actionsupport event="onchange" action="{! postVariable }" rerender="archive"/>   
+                        </apex:outputpanel>
+
+                        <apex:outputLabel for="archiveCheckbox" value="Query Archived Records"/>
+                        <p class="slds-text-body--small">If checked, will roll up from both archived and non-archived source records.</p>
+                    </apex:outputpanel> 
+                    
+                 </div>
+                   
+              
+                
+               <h3>Custom Filter</h3>
+                <div class="slds-text-body--small">
+                    <apex:outputText value="Select Filter:" /> &nbsp; 
+                    <apex:selectList size="1" value="{! filterName }" >
+                        <apex:actionSupport action="{!buildFilterString}" event="onchange" reRender="filter_edit, modalPopup, preview"/>                                
+                        <apex:selectOptions value="{! filterNames }"/>  
+                    </apex:selectList>              
+                    
+                    <apex:outputPanel id="filter_edit">  
+                        <apex:outputPanel rendered="{! NOT(ISBLANK(filterName)) }">
+                            &nbsp;
+                            <apex:commandLink action="{!editFilter}" value="Edit" styleClass="slds-button slds-button--neutral slds-button--small slds-text-body--regular"/>
+                            <apex:outputText value=" | "/>
+                        </apex:outputPanel> 
+                        &nbsp;             
+                        <apex:commandLink styleClass="slds-button slds-button--neutral slds-button--small slds-text-body--regular" action="{! createFilter }" value="Create New Filter"/>
+                    </apex:outputPanel> 
+                 </div> 
+             </div> 
+             </div>
+             
+             </apex:actionRegion> 
+             
+                    <apex:outputText value=" "/>
+                    </apex:outputPanel>    
+                </apex:outputPanel>
+            </apex:outputPanel>
+                   
+             </section>  
+             <footer class="slds-card__footer">
+                 <apex:outputPanel id="saveCancelBtns">
+                    <hr />
+                 <center>
+                 <apex:commandbutton styleClass="slds-button slds-button--neutral" action="{!URLFOR($Page.PS_AllSettings)}" value="Cancel"/>
+                 <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!save}" value="Save" disabled="{!IsBlank(logic_c)}" />
+                 <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!runsave}" value="Save and Run" disabled="{!IsBlank(logic_c)}" rendered="{!not(and(activeRollupCount > 2, notpaid))}"/>  
+                 
+                 </center> 
+                    </apex:outputPanel>
+             </footer>
+                </div>
+            </apex:outputPanel>
+           </apex:outputPanel>        
+                
+    </apex:outputPanel>
+    
+    <!-- Modal Schedule Recommended -->
+    <div class="slds"> 
+    <div id='modalPopup' style="display:none">
+        <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading--medium">Schedule Recommended</h2>
+                    <button type="button" onclick='showModal(false, "modalPopup");' class="slds-button slds-button--icon-inverse slds-modal__close">
+                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                            <use xlink:href="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                        </svg>
+                    </button>
+                        
+                </div>
+                <div class="slds-modal__content">
+                    You have applied a filter with date-based criteria to the current rollup. To ensure that your rollup results
+                    are always accurate, please schedule the rollup to run regularly.  For more information or if you need further
+                    assistance, please contact <a href="mailto:support@passagetech.com">support@passagetech.com</a>.
+                </div>
+                <div class="slds-modal__footer">
+                    <div class="slds-x-small-buttons--horizontal">
+                        <apex:outputLink value="{! URLFOR('/apex/PS_Job?s=' + settingName)}" styleClass="slds-button slds-button--neutral slds-button--small slds-m-bottom--x-small">Save and Schedule</apex:outputLink>
+                        <button type="button" onclick='showModal(false, "modalPopup");' class="slds-button slds-button--neutral slds-button--small slds-m-bottom--x-small">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </div>
+    </div>
+    <!-- / Modal Schedule Recommended -->
+    
+    </div>
+    </apex:form>
+    
+    </html>   
+</apex:page>

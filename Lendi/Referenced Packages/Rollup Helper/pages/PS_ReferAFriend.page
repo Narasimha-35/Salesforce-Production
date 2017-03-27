@@ -1,0 +1,68 @@
+<apex:page controller="rh2.PS_ReferAFriend_Controller" standardStylesheets="false" sidebar="false" applyBodyTag="false" docType="html-5.0" tabstyle="PS_Rollup_Helper__tab" >
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <head>
+    	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    	<apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/modernizr-1.7.min.js') }" />
+    	<apex:stylesheet value="{! URLFOR($Resource.PT_Resources_v1, '/css/grid.css') }"/>
+    	<apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}"/>
+    </head>
+    
+    <style>
+    
+        [id$=heading] { padding-top:20px; padding-bottom:5px;}
+        .h_scroll {overflow-x:auto;}
+        .caption {font-size:smallest; padding-left:10px; padding-bottom:5px; padding-top:5px;}
+        .breadcrumb {font-size:small;}
+        
+        @media screen and (max-width: 1024px)
+        {
+        	width:
+        }
+        
+        
+        #progressbar { height: 10px; margin-left:50px; margin-top: 10px; }
+        
+    </style>
+    
+    <div class="PS_ReferAFriend_Controller">
+	    <div class="slds slds-p-around--xx-large slds-container--large slds-container--center" role="main">
+	    	<apex:form >
+				  <apex:outputPanel >	
+				  	<div class="slds-card">
+				  		<header class="slds-card__header slds-grid slds-theme--alt-inverse">
+				  			<div class="slds-media slds-media--center slds-has-flexi-truncate">
+				  				<div class="slds-media__body">
+				  					<h3 class="slds-text-heading--medium slds-truncate">Invite a friend to try Rollup Helper: </h3>
+				  				</div>
+				  			</div>
+				  		</header>
+				  	</div>
+				  	
+				  	<div class="slds-card">
+				  		<div class="slds-m-left--medium">
+					  		<apex:outputText style="padding-top:5px;" value="Email Address(es): "/> <br/>
+							<apex:inputTextArea value="{!unsplitEmails}" rows="3" style="width:75%;"/>
+							<br/>
+							<apex:outputText value="*Accepts up to 10 email addresses, separated by commas."/>
+					    </div>
+					    <footer class="slds-card__footer"></footer>	
+				  	</div>
+				  	<div class="slds-card">
+				  		<div class="slds-m-left--medium">
+					  		<apex:outputText style="padding-top:5px;" value="Body:"/>
+							<br/>
+							<apex:inputTextarea value="{!body}" rows="15" style="width:75%;"/>
+					  		
+				  		</div>
+				  		<footer class="slds-card__footer">
+				  			<Apex:commandButton action="{!send}" Value="Send Email" styleClass="slds-button slds-button--brand slds-m-around--small"/>
+				  		</footer>	
+				  	</div>
+				  	
+				  </apex:outputPanel>
+			</apex:form>  
+	    </div>
+	</div>
+	</html>
+</apex:page>

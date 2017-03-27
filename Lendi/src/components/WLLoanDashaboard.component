@@ -1,0 +1,282 @@
+<apex:component controller="wlLoanDashboardController" >
+<apex:attribute name="oppId" type="String" assignTo="{!MyOpportunityId}" description="Opportunity ID"/>
+<html >
+<style>
+    .displaynone{
+        display:none;
+     }
+    ul.cond_apprvl_list li:before{
+     float: left;
+     margin-top: 6px;
+     margin-right: 20px!important;;
+    }
+.lon_orng_text{ 
+font-size:16px;
+}
+.lon_orng_text h5,
+.lon_orng_text p{
+font-family: Arial, Gotham,"Helvetica Neue", Helvetica, sans-serif;
+font-weight: normal;
+font-size: 12px;
+color: #888888;
+line-height: 15px;
+padding-bottom: 8px;
+}
+.lon_orng_text h5,
+.cstm-row-dash.active .lon_orng_text h5{
+font-size:25px;
+font-weight:bold;
+}
+.nav-tabs>li{margin-bottom:-2px;}
+.nav-tabs>li a{font-size:15px;padding: 10px 38px 10px 25px;}
+.cstm_panel_body{
+border-top-left-radius:0px;
+}
+.cstm_nav_tabs_orange{border:none;}
+.cstm-row-dash.active .lon_orng_text h5{
+color:#f99406;
+}
+
+.lon_orng_text h5.gray-color{color:#888888;}
+.tab-content .cstm-row-dash:last-child{border-bottom:none;} 
+.dash_tab_hdng{padding-top:15px!important;}
+@media (max-width: 767px){
+.img-custom img{margin-bottom:20px;width:120px;}
+}
+
+@media (min-width: 768px){
+.img-custom img{margin-top:-3px; width:120px;}
+.dash_tab_hdng h3{padding-bottom:0px;color:#222222;}
+}
+
+.nopdding{padding:0px;}
+.cstm-row-dash{
+border-bottom: 1px #dddddd solid;
+display: inline-block;
+width: 100%;
+padding:22px 0px 12px 0px;
+}
+
+.pdbotm{padding-bottom:0px;}
+
+</style>
+<script>
+    var totalshownOpt;
+    $(document).ready(function()
+    {
+        $('.detailToggle').click(function()
+        {
+            if($(this).hasClass('cross_icon'))
+            {
+                $(this).removeClass('cross_icon');
+                $(this).addClass( 'accordian_icon' );
+                $(this).next().next().next().next().removeClass('in');
+            }
+            else
+            {
+                 $(this).removeClass('accordian_icon');
+                $(this).addClass( 'cross_icon' );
+                $(this).next().next().next().next().addClass('in');
+            }
+        });
+        
+        totalshownOpt = 0;
+        for(;totalshownOpt < 3; totalshownOpt++)
+        {
+            $('[id=prod'+ totalshownOpt +']').removeClass('displaynone');
+        }
+        
+        
+    });
+    
+    function viewall(){
+        var all = totalshownOpt;
+        for(;all < 5 ; all++)
+        {
+            $('[id=prod'+ all +']').removeClass('displaynone');
+        }
+    }
+    
+</script>
+<body>
+   <!-- <div class="tab-pane fade active in" id="tab1default"> -->
+   <!-- Application section starts here -->
+        <apex:outputpanel id="optLoanDashBoard" rendered="{!if(AND(IsApplication == true,lstWrapperProductNotApplication.size == 0),true,false)}">  
+            <hgroup class="dash_tab_hdng cstm-row-dash ">
+                <h3 class="col-md-12 col-xs-11 col-sm-11 pdbotm">{!$label['Loan_Dashboard_Appliaction_Taken']}</h3>
+            </hgroup>         
+            <apex:variable value="{!1}" var="Count"/> 
+            <apex:repeat value="{!lstWrapperProduct}" var="pvar">  
+                 <apex:outputpanel styleclass="cstm-row-dash active" rendered="{!Count == 1}">
+                    <div class="col-sm-4 mng-width">
+                        <apex:image value="{!pvar.strBankLogo}"  />
+                   </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>{!pvar.decRate}%</h5>
+                         <p>{!pvar.strInterestRatelbl} Rate</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>{!pvar.decComparisionRate}%</h5>
+                         <p>Comparison Rate</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!pvar.TotalFee}</h5>
+                         <p>Upfront Fees</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!pvar.decMonthlyPayment}</h5>
+                         <p>Estimated monthly payment</p>
+                     </div>              
+                </apex:outputpanel>
+
+                <apex:outputpanel styleclass="cstm-row-dash" rendered="{!Count < 5 && Count > 1}">
+                    <div class="col-sm-4 mng-width">
+                        <apex:image value="{!pvar.strBankLogo}"  />
+                   </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>{!pvar.decRate}%</h5>
+                         <p>{!pvar.strInterestRatelbl} Rate</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>{!pvar.decComparisionRate}%</h5>
+                         <p>Comparison Rate</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!pvar.TotalFee}</h5>
+                         <p>Upfront Fees</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!pvar.decMonthlyPayment}</h5>
+                         <p>Estimated monthly payment</p>
+                     </div>              
+                </apex:outputpanel>
+
+                <apex:outputpanel styleclass="row" rendered="{!Count == 5}">
+                    <div class="col-sm-4 mng-width">
+                        <apex:image value="{!pvar.strBankLogo}"  />
+                   </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>{!pvar.decRate}%</h5>
+                         <p>{!pvar.strInterestRatelbl} Rate</p>
+                        
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>{!pvar.decComparisionRate}%</h5>
+                         <p>Comparison Rate</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!pvar.TotalFee}</h5>
+                         <p>Upfront Fees</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!pvar.decMonthlyPayment}</h5>
+                         <p>Estimated monthly payment</p>
+                     </div>              
+                </apex:outputpanel>
+                <div class="clearfix"></div>
+                <apex:variable value="{!Count +1}" var="Count"/>
+            </apex:repeat>
+        </apex:outputPanel>
+        
+        <!-- Other than Application status section starts here-->
+        <apex:outputPanel rendered="{!!IsApplication}">
+            <hgroup class="dash_tab_hdng">
+                <h3 class="col-md-12 col-xs-11 col-sm-11">Your loan is now {!strDescription}</h3>
+                <h4 class="col-md-11">Please see the details of your approval below. Feel free to contact your mortgage expert with any questions, otherwise please complete the conditions of approval where applicable</h4>
+            </hgroup>
+            </apex:outputPanel>
+
+            
+            <apex:outputPanel rendered="{!if(DateConditionallyApproved <> null,true,false)}"><hgroup class="col-md-12 dat_condtnl"><h3 class="col-md-12">Date Conditionally Approved: </h3><h4 class="col-md-12">{!DateConditionallyApproved}</h4></hgroup></apex:outputPanel>
+            <apex:outputPanel rendered="{!if(DateFormallyApproved <> null,true,false)}"><hgroup class="col-md-12 dat_condtnl"><h3 class="col-md-12">Date Formally Approved: </h3><h4 class="col-md-12">{!DateFormallyApproved}</h4></hgroup></apex:outputPanel>
+            <apex:outputPanel rendered="{!if(DateDocsGenerated <> null,true,false)}"><hgroup class="col-md-12 dat_condtnl"><h3 class="col-md-12">Date Docs  Generated: </h3><h4 class="col-md-12">{!DateDocsGenerated}</h4></hgroup></apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!if(strConditionsOfApproval <> null,true,false)}">
+            <hgroup class="col-md-12 dat_condtnl">
+                <h3>Conditions of Approval:</h3>
+            </hgroup>
+            <ul class="cond_apprvl_list list-unstyled col-md-12">
+                <apex:outputtext value="{!strConditionsOfApproval}" escape="false"/>
+                <!--<li>House and Lot 10 hectares</li>
+                <li>ANZ Personal Loan 51234-8279 for $31,399 paid out</li>
+                <li>Shiella Williamson</li>-->
+            </ul>
+            <div class="clearfix"></div>
+            </apex:outputPanel>
+            <apex:outputPanel id="CurrentLoanpnlid" rendered="{!!IsApplication}">
+            </apex:outputPanel>
+            
+    <!----------------------------------Modified by Manish Bhasin on 05/04/16 ------------------------------------->
+    
+               <apex:outputPanel rendered="{!isCurrentLoanPanelDisplay}">
+                  <!--   <apex:repeat value="{!lstWrapperProductNotApplication}" var="currentLoan">  -->
+                                                                                                
+           
+            <apex:variable value="{!1}" var="Count"/> 
+     
+        <apex:repeat value="{!lstWrapperProductNotApplication}" var="currentLoan">
+                 <apex:outputpanel styleclass="cstm-row-dash active" rendered="{!Count == 1}">
+                    <div class="col-sm-4 mng-width">
+                        <apex:image value="{!currentLoan.strBankLogo}"  />
+                   </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>{!currentLoan.decRate}%</h5>
+                         <p>{!currentLoan.strInterestRatelbl} Rate</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>{!currentLoan.decComparisionRate}%</h5>
+                         <p>Comparison Rate</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!currentLoan.TotalFee}</h5>
+                         <p>Upfront Fees</p>
+                     </div>
+                     
+                     <div class="col-sm-2 lon_orng_text">
+                         <h5>${!currentLoan.decMonthlyPayment}</h5>
+                         <p>Estimated monthly payment</p>
+                     </div>    
+                              
+                </apex:outputpanel>
+         <!--   </apex:repeat>  -->
+            </apex:repeat>
+                </apex:outputPanel>
+        
+        
+        <!--<apex:outputpanel id="optLoanDashBoard" rendered="{!if(IsApplication == true,true,false)}"> 
+        <apex:variable value="{!0}" var="Count"/> 
+        <apex:repeat value="{!lstWrapperProduct}" var="pvar">  
+        <section class="dash_heading RecLoan displaynone" id="prod{!Count}" >
+     
+       
+        <div class="cstm_border_btm dash_row_10">&nbsp;</div>  
+            
+
+   
+        </section>
+          <apex:variable value="{!Count+1}" var="Count"/>  
+          </apex:repeat>
+          <a onclick="viewall();" class="col-md-12 col-xs-12 col-sm-12 dash_show_more" >Show More</a>
+        </apex:outputpanel>-->
+        
+   <!-- </div>   --> 
+   <!--first div section close-->
+
+</body>
+</html>
+</apex:component>

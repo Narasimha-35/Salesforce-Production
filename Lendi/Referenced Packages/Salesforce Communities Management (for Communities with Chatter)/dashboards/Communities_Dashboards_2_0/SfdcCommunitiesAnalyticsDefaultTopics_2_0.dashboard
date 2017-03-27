@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
+    <backgroundEndColor>#FFFFFF</backgroundEndColor>
+    <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
+    <backgroundStartColor>#FFFFFF</backgroundStartColor>
+    <dashboardType>SpecifiedUser</dashboardType>
+    <leftSection>
+        <columnSize>Medium</columnSize>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <header>Topic Metrics</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Topics</metricLabel>
+            <report>Communities_Reports_2_0/T_Metric_Topics_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Topics Added Last 30 Days</metricLabel>
+            <report>Communities_Reports_2_0/T_Metric_Topics_Added_30_Days_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <header>Topics</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/T_Top_10_Trending_Topics_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueDescending</sortBy>
+            <title>Top 10 Topics Talked About</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/T_Top_10_New_Topics_Added_30_Days_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueDescending</sortBy>
+            <title>Top 10 Topics Added Last 30 Days</title>
+        </components>
+    </leftSection>
+    <middleSection>
+        <columnSize>Medium</columnSize>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <header>Topic Assignment Metrics</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Assignments</metricLabel>
+            <report>Communities_Reports_2_0/T_Metric_Topics_Assignments_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Assignments Last 30 Days</metricLabel>
+            <report>Communities_Reports_2_0/T_Metric_Topics_Assignments_30_Days_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Bar</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>false</enableHover>
+            <expandOthers>false</expandOthers>
+            <header>Topics Assignments</header>
+            <legendPosition>Bottom</legendPosition>
+            <report>Communities_Reports_2_0/T_Topic_Assignments_By_Record_2_0</report>
+            <showPercentage>false</showPercentage>
+            <showPicturesOnCharts>false</showPicturesOnCharts>
+            <showValues>true</showValues>
+            <sortBy>RowValueDescending</sortBy>
+            <title>By Record Types</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/T_Top_10_Topics_By_Assignments_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueDescending</sortBy>
+            <title>Most Assigned</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/T_Top_10_Topics_By_Assignments_30_Days_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueDescending</sortBy>
+            <title>Most Assigned Last 30 Days</title>
+        </components>
+    </middleSection>
+    <rightSection>
+        <columnSize>Medium</columnSize>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <header>Topic Assigners</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/T_Top_10_Topic_Assigners_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueDescending</sortBy>
+            <title>Leaderboard</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/T_Top_10_Topic_Assigners_30_Days_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Last 30 Days</title>
+        </components>
+    </rightSection>
+    <runningUser>david@creditandfinance.com.au</runningUser>
+    <textColor>#000000</textColor>
+    <title>Topics 2.0</title>
+    <titleColor>#000000</titleColor>
+    <titleSize>12</titleSize>
+</Dashboard>

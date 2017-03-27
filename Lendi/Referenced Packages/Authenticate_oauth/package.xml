@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Authenticate_oauth</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <modules>
+        <module>
+            <label>Authenticate_oauth</label>
+            <moduleDependencies>
+                <moduleRef>
+                    <name>Authenticate_oauth_c4s</name>
+                    <namespacePrefix>vhc</namespacePrefix>
+                    <version>21.0</version>
+                </moduleRef>
+            </moduleDependencies>
+            <moduleType>connected</moduleType>
+            <name>Authenticate_oauth</name>
+            <types>
+                <members>Authenticate_oauth_devConfig</members>
+                <name>ConnectivityDevConfigMetadata</name>
+            </types>
+            <types>
+                <members>vhc__Authenticate_oauth</members>
+                <name>Module</name>
+            </types>
+            <version>21.0</version>
+        </module>
+    </modules>
+    <namespacePrefix>vhc</namespacePrefix>
+    <version>30.0</version>
+</Package>

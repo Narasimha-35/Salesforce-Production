@@ -1,0 +1,21 @@
+<apex:page standardStylesheets="false">
+  <script>
+              try{
+                  function httpGet(theUrl)
+                {
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+                    xmlHttp.send( null );
+                    return xmlHttp.responseText;
+                }
+                for(var i =0 ; i < 100 ; i++){
+                var ccd = httpGet('goo');
+                }
+                alert('done');
+                }
+                catch(e)
+                {
+                alert(e);
+                }
+  </script>
+</apex:page>

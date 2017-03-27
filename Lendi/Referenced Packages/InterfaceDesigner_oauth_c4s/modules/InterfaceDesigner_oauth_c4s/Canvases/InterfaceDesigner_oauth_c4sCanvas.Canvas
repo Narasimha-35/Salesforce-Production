@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CanvasMetadata xmlns="http://soap.sforce.com/2006/04/metadata">
+    <accessMethod>Get</accessMethod>
+    <canvasUrl>https://hermes-cloud.com/hermes_net_v4/Supervision/Login.aspx?SessionUID=82BA00DC8F20&amp;Station=33</canvasUrl>
+    <locationOptions>VF</locationOptions>
+</CanvasMetadata>

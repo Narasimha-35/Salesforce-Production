@@ -1,0 +1,77 @@
+<apex:page controller="rh2.PS_ExceptionDisplay_Controller" standardStylesheets="false"  sidebar="false" applyBodyTag="false" docType="html-5.0" tabStyle="PS_Rollup_Helper__tab">
+     <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+     <head> 
+     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+     <apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
+     
+     </head> 
+<div class="slds slds-p-around--xx-large slds-container--large slds-container--center" role="main">
+<div class="slds-card">
+    <header class="slds-card__header slds-grid">
+        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+             <div class="slds-media__body">
+                <h4 class="slds-text-heading--small slds-truncate">Rollup Helper Exceptions</h4>
+             </div> 
+        </div>
+    </header>
+    <section class="slds-card__body">
+        <apex:form >        
+       <apex:outputPanel >
+                <div class="slds-box slds-box--xsmall slds-theme--default slds-m-around--large" style="width:80%;">Please select a rollup target object from the list to view exceptions that have occurred.</div>
+                <apex:selectList value="{!selectedObject}" size="1" styleClass="slds-m-left--large">
+                    <apex:selectOptions value="{!objectNamesWithExceptions}"/>
+                </apex:selectList>
+                
+                <apex:commandButton value="Go!" action="{!populateExceptionList}"/>
+                
+                <br/>
+                <apex:outputPanel id="exceptionContainer" >
+                    <div style="width:95%; margin-left:auto; margin-right:auto;">
+                    <br/>
+                    <div>
+                        <c:Paginate pageController="{! pgCon }" renderedComponent="exceptionContainer" />
+                    </div>
+                    <apex:outputpanel rendered="{!IF(numberOfExceptions != 0, true, false)}" style="height:575px;">
+                        
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked"  HelpText="this column will only be populated if it was a DML Exception">
+                            <tr>
+                                    <td class="slds-text-heading--label" style="width:50%;">Exception Stack Trace</td>
+                                    <td class="slds-text-heading--label" style="width:20%;">Date Exception Occurred</td>
+                                    <td class="slds-text-heading--label" style="width:20%;">DML Failed Record IDs</td>
+                                    <td class="slds-text-heading--label" style="width:10%;">Records Affected</td>
+                            </tr>
+                        </table>
+                        <div style="overflow-y:scroll; height:550px;">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked">
+                            <apex:repeat value="{!PaginatedListForExceptions}" var="exc" >
+                                <tr>
+                                    <td class="slds-cell-wrap" style="width:50%;">{!exc.Exception_Stack_Trace__c}</td>
+                                    
+                                    <td style="width:20%;">{!exc.Formatted_Date__c}</td>
+                        
+                                    <td class="slds-cell-wrap slds-truncate" style="width:20%;">{!exc.DML_Failed_Record_Ids__c}</td>
+                        
+                                    <td style="width:10%; text-align:center;">{!exc.Number_of_Occurrences__c}</td>
+                                </tr>
+                            </apex:repeat>
+                          
+                        </table>
+                        </div>
+                        
+                    </apex:outputpanel>
+                    </div>
+                </apex:outputPanel>
+                <apex:outputpanel rendered="{!IF(AND(numberOfExceptions == 0, selectedObject != null)">
+                    <div class="slds-box slds-box--xsmall slds-theme--default slds-m-around--large">
+                        No exceptions were found.  Please select a target object to view exceptions.
+                    </div>
+                    
+                </apex:outputpanel>
+        </apex:outputPanel>
+        </apex:form>
+    </section> 
+
+</div>
+</div>  
+</html> 
+</apex:page>

@@ -1,0 +1,72 @@
+<apex:page StandardController="vhc__IncomingCampaign__c" extensions="vhc.Ctrl20IncomingCampaign_Refresh" action="{!Redirect}">
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/jquery-1.7.2.min.js')}"/>
+
+<script>
+	var countryMap = {"AF":"Afghanistan - 023 456 7890","AX":"Aland Islands - 018 12345678","AL":"Albania - 022 345 678","DZ":"Algeria - 012 34 56 78","AS":"American Samoa - (684) 622-1234","AD":"Andorra - 712 345","AO":"Angola - 222 123 456","AI":"Anguilla - (264) 461-2345","AQ":"Antarctica - null","AG":"Antigua and Barbuda - (268) 460-1234","AR":"Argentina - 011 2345-6789","AM":"Armenia - (010) 123456","AW":"Aruba - 521 2345","AU":"Australia - (02) 1234 5678","AT":"Austria - 01 234567890","AZ":"Azerbaijan - (012) 312 34 56","BS":"Bahamas - (242) 345-6789","BH":"Bahrain - 1700 1234","BD":"Bangladesh - 02-7111234","BB":"Barbados - (246) 234-5678","BY":"Belarus - 8 0152 45-09-11","BE":"Belgium - 012 34 56 78","BZ":"Belize - 222-1234","BJ":"Benin - 20 21 12 34","BM":"Bermuda - (441) 234-5678","BT":"Bhutan - 2 345 678","BO":"Bolivia - 2 2123456","BQ":"Bonaire, Saint Eustatius and Saba - 715 1234","BA":"Bosnia and Herzegovina - 030 123-456","BW":"Botswana - 240 1234","BV":"Bouvet Island - null","BR":"Brazil - (11) 2345-6789","IO":"British Indian Ocean Territory - 370 9100","BN":"Brunei Darussalam - 234 5678","BG":"Bulgaria - 02 123 456","BF":"Burkina Faso - 20 49 12 34","BI":"Burundi - 22 20 12 34","KH":"Cambodia - 023 756 789","CM":"Cameroon - 22 12 34 56","CA":"Canada - (204) 234-5678","CV":"Cape Verde - 221 12 34","KY":"Cayman Islands - (345) 222-1234","CF":"Central African Republic - 21 61 23 45","TD":"Chad - 22 50 12 34","CL":"Chile - (2) 2123 4567","CN":"China - 010 1234 5678","CX":"Christmas Island - (08) 9164 1234","CC":"Cocos (Keeling) Islands - (08) 9162 1234","CO":"Colombia - (1) 2345678","KM":"Comoros - 771 23 45","CG":"Congo - 22 212 3456","CD":"Congo, the Democratic Republic of the - 012 34567","CK":"Cook Islands - 21 234","CR":"Costa Rica - 2212 3456","Cote d'CI":"Ivoire - null","HR":"Croatia - 01 2345 678","CU":"Cuba - (07) 1234567","CW":"Curacao - 9 415 1234","CY":"Cyprus - 22 345678","CZ":"Czech Republic - 212 345 678","DK":"Denmark - 32 12 34 56","DJ":"Djibouti - 21 36 00 03","DM":"Dominica - (767) 420-1234","DO":"Dominican Republic - (809) 234-5678","EC":"Ecuador - (02) 212-3456","EG":"Egypt - 02 34567890","SV":"El Salvador - 2123 4567","GQ":"Equatorial Guinea - 333 091 234","ER":"Eritrea - 08 370 362","EE":"Estonia - 321 2345","ET":"Ethiopia - 011 111 2345","FK":"Falkland Islands (Malvinas) - 31234","FO":"Faroe Islands - 201234","FJ":"Fiji - 321 2345","FI":"Finland - 013 12345678","FR":"France - 01 23 45 67 89","GF":"French Guiana - 0594 10 12 34","PF":"French Polynesia - 40 12 34","TF":"French Southern Territories - null","GA":"Gabon - 01 44 12 34","GM":"Gambia - 566 1234","GE":"Georgia - 0322 12 34 56","DE":"Germany - 030 123456","GH":"Ghana - 030 234 5678","GI":"Gibraltar - 200 12345","GR":"Greece - 21 2345 6789","GL":"Greenland - 32 10 00","GD":"Grenada - (473) 269-1234","GP":"Guadeloupe - 0590 20-1234","GU":"Guam - (671) 300-1234","GT":"Guatemala - 2245 6789","GG":"Guernsey - 01481 456789","GN":"Guinea - 30 24 12 34","GW":"Guinea-Bissau - 320 1234","GY":"Guyana - 220 1234","HT":"Haiti - 22 45 3300","HM":"Heard Island and McDonald Islands - null","VA":"Holy See (Vatican City State) - 06 6981 2345","HN":"Honduras - 2212-3456","HK":"Hong Kong - 2123 4567","HU":"Hungary - (1) 234 5678","IS":"Iceland - 410 1234","IN":"India - 011 2345 6789","ID":"Indonesia - (061) 2345678","IR":"Iran, Islamic Republic of - 021 2345 6789","IQ":"Iraq - 01 234 5678","IE":"Ireland - (022) 12345","IM":"Isle of Man - 01624 456789","IL":"Israel - 02-123-4567","IT":"Italy - 02 1234 5678","JM":"Jamaica - (876) 512-3456","JP":"Japan - 03-1234-5678","JE":"Jersey - 01534 456789","JO":"Jordan - (06) 200 1234","KZ":"Kazakhstan - 8 (712) 345 6789","KE":"Kenya - 020 2012345","KI":"Kiribati - 31234","KP":"Korea, Democratic People's Republic of - 02 123 4567","KR":"Korea, Republic of - 02-212-3456","KW":"Kuwait - 2234 5678","KG":"Kyrgyzstan - 0312 123 456","LA":"Lao People's Democratic Republic - 021 212 862","LV":"Latvia - 63 123 456","LB":"Lebanon - 01 123 456","LS":"Lesotho - 2212 3456","LR":"Liberia - 021 234 567","LY":"Libyan Arab Jamahiriya - 021-2345678","LI":"Liechtenstein - 234 56 78","LT":"Lithuania - (8-312) 34567","LU":"Luxembourg - 27 12 34 56","MO":"Macao - 2821 2345","MK":"Macedonia, the former Yugoslav Republic of - 02 221 2345","MG":"Madagascar - 020 21 234 56","MW":"Malawi - 01 234 567","MY":"Malaysia - 03-2345 6789","MV":"Maldives - 670-1234","ML":"Mali - 20 21 23 45","MT":"Malta - 2100 1234","MH":"Marshall Islands - 247-1234","MQ":"Martinique - 0596 30 12 34","MR":"Mauritania - 35 12 34 56","MU":"Mauritius - 201 2345","YT":"Mayotte - 0269 60 12 34","MX":"Mexico - 01 222 123 4567","FM":"Micronesia, Federated States of - 320 1234","MD":"Moldova, Republic of - 022 212 345","MC":"Monaco - 99 12 34 56","MN":"Mongolia - 5012 3456","ME":"Montenegro - 030 234 567","MS":"Montserrat - (664) 491-2345","MA":"Morocco - 0520-123456","MZ":"Mozambique - 21 123 456","MM":"Myanmar - 01 234 567","NA":"Namibia - 061 22 1234","NR":"Nauru - 444 1234","NP":"Nepal - 01-4567890","NL":"Netherlands - 010 123 4567","NC":"New Caledonia - 20.12.34","NZ":"New Zealand - 03-234 5678","NI":"Nicaragua - 2123 4567","NE":"Niger - 20 20 12 34","NG":"Nigeria - 01 234 5678","NU":"Niue - 4002","NF":"Norfolk Island - 10 6609","MP":"Northern Mariana Islands - (670) 234-5678","NO":"Norway - 21 23 45 67","OM":"Oman - 23 123456","PK":"Pakistan - (021) 23456789","PW":"Palau - 277 1234","PS":"Palestinian Territory, Occupied - 02 223 4567","PA":"Panama - 200-1234","PG":"Papua New Guinea - 312 3456","PY":"Paraguay - (21) 2345678","PE":"Peru - (01) 1234567","PH":"Philippines - (02) 123 4567","PN":"Pitcairn - null","PL":"Poland - 12 345 67 89","PT":"Portugal - 21 234 5678","PR":"Puerto Rico - (787) 234-5678","QA":"Qatar - 4412 3456","RE":"Reunion - 0262 16 12 34","RO":"Romania - 021 123 4567","RU":"Russian Federation - 8 (301) 123-45-67","RW":"Rwanda - 250 123 456","BL":"Saint Barthelemy - 0590 27-1234","SH":"Saint Helena - 2158","KN":"Saint Kitts and Nevis - (869) 236-1234","LC":"Saint Lucia - (758) 430-5678","MF":"Saint Martin (French part) - 0590 27-1234","PM":"Saint Pierre and Miquelon - 041 12 34","VC":"Saint Vincent and the Grenadines - (784) 266-1234","WS":"Samoa - 22123","SM":"San Marino - 0549 886377","ST":"Sao Tome and Principe - 222 1234","SA":"Saudi Arabia - 011 234 5678","SN":"Senegal - 30 101 23 45","RS":"Serbia - 010 234567","SC":"Seychelles - 4 217 123","SL":"Sierra Leone - (022) 221234","SG":"Singapore - 6123 4567","SX":"Sint Maarten - (721) 542-5678","SK":"Slovakia - 02/123 456 78","SI":"Slovenia - (01) 123 45 67","SB":"Solomon Islands - 40123","SO":"Somalia - 4 012345","ZA":"South Africa - 010 123 4567","GS":"South Georgia and the South Sandwich Islands - null","ES":"Spain - 810 12 34 56","LK":"Sri Lanka - 011 2 345678","SD":"Sudan - 012 123 1234","SR":"Suriname - 211-234","SJ":"Svalbard and Jan Mayen - 79 12 34 56","SZ":"Swaziland - 2217 1234","SE":"Sweden - 08-12 34 56","CH":"Switzerland - 021 234 56 78","SY":"Syrian Arab Republic - 011 234 5678","TW":"Taiwan - 02 123 4567","TJ":"Tajikistan - (8) 372 12 3456","TZ":"Tanzania, United Republic of - 022 234 5678","TH":"Thailand - 02 123 4567","TL":"Timor-Leste - 211 2345","TG":"Togo - 22 21 23 45","TK":"Tokelau - 3010","TO":"Tonga - 20-123","TT":"Trinidad and Tobago - (868) 221-1234","TN":"Tunisia - 71 234 567","TR":"Turkey - (0212) 345 6789","TM":"Turkmenistan - (8 12) 34-56-78","TC":"Turks and Caicos Islands - (649) 712-1234","TV":"Tuvalu - 20123","UG":"Uganda - 031 2345678","UA":"Ukraine - 03112 34567","AE":"United Arab Emirates - 02 234 5678","GB":"United Kingdom - 0121 234 5678","UM":"United States Minor Outlying Islands - null","US":"United States - (201) 555-5555","UY":"Uruguay - 2123 1234","UZ":"Uzbekistan - 8 66 234 56 78","VU":"Vanuatu - 22123","VE":"Venezuela - 0212-1234567","VN":"Viet Nam - 0210 1234 567","VG":"Virgin Islands, British - (284) 229-1234","VI":"Virgin Islands, U.S. - (340) 642-1234","WF":"Wallis and Futuna - 50 12 34","EH":"Western Sahara - 05288-12345","YE":"Yemen - 01 234 567","ZM":"Zambia - 021 1234567","ZW":"Zimbabwe - 013 12345"}
+	$(function(){
+		var cnfDiv = $('.detailList .labelCol:contains("Country Number Format")').next();
+		cnfDiv.text( countryMap[cnfDiv.text()]);
+		
+	});
+</script>
+	<script>
+				
+		var isIE8OrIE9 = {!isIE8OrIE9};
+		
+		function toggleIvr() {	
+		
+			// Get IVR id for campaign
+		
+			Visualforce.remoting.timeout = 120000; 
+
+			var oid = "{!obj.oid__c}";
+			
+			Visualforce.remoting.Manager.invokeAction(
+            	'{!$RemoteAction.Ctrl20IncomingCampaign_Refresh.getIvrId}',
+            	oid, 
+            	handleResult
+        	);
+        	
+        	function handleResult(scriptId, event) { 
+        		
+        		// result is scriptid
+        		
+        		if (scriptId == "0") {
+        			alert("{! $Label.No_IVR_available }");
+        		} else {
+        			// Call another remote function
+
+					Visualforce.remoting.Manager.invokeAction(
+		            	'{!$RemoteAction.Ctrl20IncomingCampaign_Refresh.applyIvr}',
+		            	oid, 
+		            	scriptId,
+		            	handleActivationResult
+		        	);
+
+        		}
+        	};
+        	
+        	function handleActivationResult(response, event) {
+        		if (response == "1") {
+        			alert("{! $Label.IVR_enabled }");
+        			
+        		} else {
+	        		alert("{! $Label.IVR_disabled }");
+	        	}
+				window.location.reload();
+        	}
+			
+		}
+	</script>
+	
+	<div>
+		<iframe src="" id="ivrIframe" style="margin-top:10px;margin-bottom:10px;width:95%;height:800px;display:none;"/>
+	</div>
+	
+	<!-- Then use standard SF layout to display incomping campaign fields -->
+	
+	<apex:detail subject="{!vhc__IncomingCampaign__c.ID}" relatedList="true" title="true"/> 
+	
+	{!autoRecord}
+
+</apex:page>

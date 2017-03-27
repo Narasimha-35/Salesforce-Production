@@ -1,0 +1,71 @@
+<apex:component controller="acfFooter" > 
+    <style>
+        .april_foter_left img {
+            display: block;
+            margin-top: 0px;
+            width: auto;
+            height: auto;
+        }
+    </style>
+    <div class="container {!IF(pge_name != 'clickhome', 'container_cstm', '')}">
+        <article class="col-md-3 col-sm-12">
+           <div class="row">
+            <div class="row-fluid active april_foter_left">
+                <a>
+                <!----------------- WLACLA-165 CHANGES ---------------->
+                   <img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_footerlogo.png')}" alt="logo" />
+                <!----------------- WLACLA-165 CHANGES ---------------->
+                </a>
+                
+                <p class="mgtop10 col-md-12 col-xs-12 col-sm-12" style="margin-left: -15px;max-width:235px;">
+                     ACF loans is the easiest way to refinance your home loan online
+                </p>
+                <div class="clearfix"></div>
+                <ul class="april_social" style="margin-left:0px;">
+                <!--   <li class="fb_2"><a href="http://www.facebook.com/clickloans" class="fb_2">&nbsp;</a></li>
+                    <li class="fb_2"><a href="https://www.twitter.com/clickloans_au" class="tw_2">&nbsp;</a></li>
+                    <li class="fb_2"><a href="https://www.linkedin.com" class="link_2">&nbsp;</a></li>
+                     <li><a href="https://www.youtube.com" class="u_tube_2">&nbsp;</a></li>   -->
+                 
+                     
+                  <li class="fb_2"><a href="https://www.facebook.com/creditandfinance" class="fb_2">&nbsp;</a></li>
+                    <li class="fb_2"><a href="https://twitter.com/auscred" class="tw_2">&nbsp;</a></li>
+                    <li class="fb_2"><a href="https://www.linkedin.com/company/australian-credit-and-finance" class="link_2">&nbsp;</a></li>
+                     <li><a href="https://www.youtube.com/channel/UCAcnTDXGIkeTy8e2RgO3snw" class="u_tube_2">&nbsp;</a></li>
+                 </ul> 
+                 <div class="clearfix"></div>
+                 <p class="mgtop10 col-md-12 col-xs-12"  style="margin-left: -15px;">© Australian Credit and Finance</p>                 
+            </div>
+           </div>
+        </article><!--FIRST ARTICLE HERE LOGO CLOSE-->       
+        <article class="col-md-6 col-sm-12 april_foter_font_small">
+            <p><apex:outputText escape="false" value="{!cms_obj.acfDescription__c}"></apex:outputText></p>
+        </article>
+        <article class="col-md-3 col-sm-12 fot_apr_link">
+            <div class="row">
+                <h5>ACF Loans</h5>
+                <ul>
+                <!--<li><a href="{!strPagePreFix }wlaboutus">About Us</a></li>
+                    <li><a href="{!strPagePreFix }wlcontactus">Contact Us</a></li>
+                    <li><a href="{!strPagePreFix }wlFAQ">FAQ</a></li> -->
+                    
+                    <li><a href="http://creditandfinance.com.au/about/">About Us</a></li>
+                    <li><a href="http://creditandfinance.com.au/contact-us/">Contact Us</a></li>
+                    <li><a href="http://creditandfinance.com.au/privacy-policy/">Privacy Policy</a></li>
+                    <li><a href="http://creditandfinance.com.au/credit-guide/">Credit Guide</a></li>
+                    <!-- <apex:repeat value="{!lstFooterLinks}" var="objFooterLink">
+                        <li> <a href="/ACFWL/wlFooterLink?pid={!mapCMSpgid[objFooterLink.Id]}">{!objFooterLink.acfHeading__c}</a>
+                         <apex:commandlink value="{!objFooterLink.acfHeading__c}" action="{!redirectCommonFLpage}">
+                            <apex:param value="{!objFooterLink.id}" assignTo="{!selectedLinkId}" name="footerLink"/>
+                        </apex:commandlink>
+                        </li>
+                    </apex:repeat> -->
+                    <!--</apex:repeat>apex:repeat>
+                    <li><a href="#">privacy policy</a></li>
+                    <li><a href="#">website policy</a></li>
+                    <li><a href="#">feedback and complaints</a></li>-->                                                                                            
+                </ul>
+             </div>
+        </article>
+    </div><!--container close-->
+</apex:component>

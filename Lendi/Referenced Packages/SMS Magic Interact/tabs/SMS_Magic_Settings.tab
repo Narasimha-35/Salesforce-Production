@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>SMS Magic Setting Page - Allows you to Configure different object such as Template, Sender Id, Lookup etc.</description>
+    <label>SMS - Settings</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom20: Airplane</motif>
+    <page>SMSMagicConfig</page>
+</CustomTab>

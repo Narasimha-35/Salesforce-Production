@@ -1,0 +1,115 @@
+<apex:page docType="html-5.0" standardController="Account" extensions="ClickPreLoginQuestionController" sidebar="false">
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>  
+ <style>
+.pac-container {
+    background-color: #FFF;
+    z-index: 20;
+    position: fixed;
+    display: inline-block;
+    float: left;
+}
+.modal{
+    z-index: 20;   
+}
+.modal-backdrop{
+    z-index: 10;        
+}â
+</style>
+ <style>
+  .Processing
+     {
+         position: fixed;
+         background: url('/img/loading32.gif');
+         background-repeat: no-repeat;
+         background-position: center;
+         width: 100%;
+         height: 100%;
+         z-index: 10004;
+         left: 0%;
+         top: 0%;
+     }
+ </style>
+ <script>
+ function preloginQues()
+ {
+     PreLoginQuestion();
+ }
+ </script>
+    <apex:form title="Click Loans" style="font-size:15px;" id="frm">  
+      <apex:actionFunction action="{!PreLoginQuestion}" name="PreLoginQuestion" reRender="pgBlockId,pgmsg" status="statusProcessing"/>
+       <apex:actionStatus id="statusProcessing" startStyleClass="Processing"/>
+        <apex:pageBlock title="Click Loans">
+         <apex:pageMessages id="pgmsg"></apex:pageMessages>
+            <apex:pageblockSection >
+                <apex:selectList value="{!selectedCommunity}" size="1" label="Community" onchange="preloginQues();">
+                    <apex:selectOptions value="{!Community}"/>
+                 </apex:selectList> 
+           <!--      <apex:inputField value="{!objLead.Click_Loan_Type__c}" required="true">
+                     <apex:actionSupport event="onchange" action="{!PreLoginQuestion}" rerender="pgBlockId"/>    
+                </apex:inputField>  -->
+                <apex:selectList value="{!selectedLoanType}" size="1" label="Loan Type" onchange="preloginQues();">
+                    <apex:selectOptions value="{!LoanType}"/>
+                </apex:selectList>   
+            </apex:pageblockSection>   
+        </apex:pageBlock>
+        <apex:pageBlock title="PreLoginQuestion" id="pgBlockId" >
+        <center><span id="error" style="color: Red; display: none">* Input digits (0 - 9)</span></center>
+         <apex:pageBlockSection columns="2" id="pbs">    
+           <apex:repeat value="{!lstWrapperQuestion}" var="ques" id="rptId">
+            <apex:outputtext value="{!ques.objWrapQuestion.acf_Question__c}"/>  
+           <apex:outputPanel id="preloginPicklist" rendered="{!if(OR(ques.objWrapQuestion.acf_Type__c == 'Picklist',ques.objWrapQuestion.acf_Type__c == 'RadioButton',ques.objWrapQuestion.acf_Type__c == 'Checkbox',ques.objWrapQuestion.acf_Type__c == 'Button'),true,false)}">                               
+                      <apex:selectList value="{!ques.strWrapAnswer}" multiselect="false" size="1"> 
+                            <apex:selectOption itemValue="None" itemLabel="--None--"></apex:selectOption>                                             
+                            <apex:selectOptions value="{!ques.lstSelectOpt}"></apex:selectOptions>
+                      </apex:selectList>          
+           </apex:outputPanel> 
+           <apex:outputPanel id="preloginText" rendered="{!if(OR(ques.objWrapQuestion.acf_Type__c == 'Number',ques.objWrapQuestion.acf_Type__c == 'Currency',ques.objWrapQuestion.acf_Type__c == 'Percent'),true,false)}"> 
+                 <apex:input id="textId3" onkeypress="return IsNumeric(event);" value="{!ques.strWrapAnswer}" type="{!if(ques.objWrapQuestion.acf_Type__c == 'Number','tel','text')}">
+                   <script type="text/javascript">
+                     var specialKeys = new Array();
+                     specialKeys.push(8); //Backspace
+                     function IsNumeric(e) 
+                     {
+                        var keyCode = e.which ? e.which : e.keyCode
+                        var ret = ((keyCode >= 46 && keyCode <= 57) || specialKeys.indexOf(keyCode) != -1);
+                        document.getElementById("error").style.display = ret ? "none" : "inline";
+                        return ret;
+                     }
+                    </script>
+                  </apex:input> 
+           </apex:outputPanel>
+           <apex:outputPanel id="preloginText1" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Current_lender__c == false),true,false)}"> 
+                  <apex:inputText id="textId4" value="{!ques.strWrapAnswer}" styleClass="requiredBlock {!if(ques.objWrapQuestion.acf_Postal_Code__c == true,'addresspicker_map','')}">
+                  </apex:inputText>
+                  <div class="clsAddressList"></div>
+           </apex:outputPanel> 
+           
+           <apex:outputPanel id="preloginTextCurrnetLender" rendered="{!if(AND(ques.objWrapQuestion.acf_Type__c == 'Text',ques.objWrapQuestion.acf_Current_lender__c == true),true,false)}">                                       
+               <apex:selectList value="{!ques.strWrapAnswer}" multiselect="false" size="1" styleClass="requiredBlock">
+                   <apex:selectOptions value="{!BankNames}"></apex:selectOptions>
+               </apex:selectList>              
+           </apex:outputPanel>
+         </apex:repeat>
+         <script>
+                function loadMyScript() {
+                  var script = document.createElement('script');
+                  script.type = "text/javascript";
+                  script.src = "https://code.jquery.com/jquery-latest.min.js";
+                  document.body.appendChild(script);
+                }
+                
+                window.onload = loadMyScript;
+           </script> 
+               
+           <c:googlAPIComponent ></c:googlAPIComponent>
+                      
+       </apex:pageBlockSection> 
+       <apex:pageblockSection >
+           <apex:outputpanel rendered="{!if(lstWrapperQuestion.size > 0,true,false)}">
+                <apex:commandButton action="{!saveLead}" value="Save" style="color:black;margin-left:600px;" reRender="frm" status="statusProcessing"/>
+           </apex:outputpanel>
+       </apex:pageblockSection> 
+       </apex:pageBlock>
+</apex:form>
+</apex:page>

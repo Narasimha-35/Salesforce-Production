@@ -1,0 +1,85 @@
+<apex:page controller="AppointmentAllocationController" showHeader="false" sidebar="false" standardStyleSheets="false">
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+	</head>
+	<body>
+		<div class="container">
+			<h2>Appointment Details</h2>
+			<table class="col-md-6">
+				<tbody>
+					<tr>
+						<td>Reigon Name</td>
+						<td><apex:outputText value="{!appt.region__r.name}"></apex:outputText></td>
+					</tr>
+					<tr>
+						<td>Market Name</td>
+						<td><apex:outputText value="{!appt.market__r.name}"></apex:outputText></td>
+					</tr>
+					<tr>
+						<td>Appointment Date and Time</td>
+						<td><apex:outputText value=" {!appt.Appointment_Date_and_Time__c}"></apex:outputText></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<apex:form styleClass="container">
+			<div class="text-center">
+				<h2>Time Availability</h2>
+				<apex:commandButton value="Confirm" action="{!confirm}" styleClass="btn btn-success"/>
+				&nbsp;
+				<apex:commandButton value="Cancel" action="{!cancel}" styleClass="btn btn-warning"/>
+			</div>
+			<br/>
+			<div class="radio-tables">
+				<div class="col-md-4 text-center">
+					<apex:outputText value="{!displayDates[0]}" styleClass="{!displayToday[0]}"></apex:outputText>
+					<apex:selectRadio value="{!selections[0]}" layout="pageDirection" styleClass="table" borderVisible="false" onclick="selectTable( this )">
+						<apex:selectOptions value="{!options[0]}"/>
+					</apex:selectRadio>
+				</div>
+				<div class="col-md-4 text-center">
+					<apex:outputText value="{!displayDates[1]}" styleClass="{!displayToday[1]}"></apex:outputText>
+					<apex:selectRadio value="{!selections[1]}" layout="pageDirection" styleClass="table" borderVisible="false" onclick="selectTable( this )">
+						<apex:selectOptions value="{!options[1]}"/>
+					</apex:selectRadio>
+				</div>
+				<div class="col-md-4 text-center">
+					<apex:outputText value="{!displayDates[2]}" styleClass="{!displayToday[2]}"></apex:outputText>
+					<apex:selectRadio value="{!selections[2]}" layout="pageDirection" styleClass="table" borderVisible="false" onclick="selectTable( this )">
+						<apex:selectOptions value="{!options[2]}"/>
+					</apex:selectRadio>
+				</div>
+			</div>
+			<br/>
+			<div class="text-center">
+				<h2>Presales Notes:</h2>
+				<apex:inputTextarea value="{!appt.Pre_Sales_Notes__c}" cols="50" rows="5"/>
+			</div>
+			<br/>
+			<div class="text-center">
+				<apex:commandButton value="Confirm" action="{!confirm}" styleClass="btn btn-success"/>
+				&nbsp;
+				<apex:commandButton value="Cancel" action="{!cancel}" styleClass="btn btn-warning"/>
+			</div>
+		</apex:form>
+		<div>
+			<br/>
+			<br/>
+			<br/>
+		</div>
+		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<script>
+			function selectTable(element) {
+				for(var e of $( ".radio-tables" ).find( "input" )) {
+					if(e !== element) e.checked = false;
+				}
+			}
+
+			$( document ).ready(function() {
+				$( ".radio-tables" ).find( "label" ).css( "margin-left", "10px" );
+				$( ".today" ).append( "<span> (Today)</span>" ).css("background-color", "lightgreen");
+			});
+		</script>
+	</body>
+</apex:page>

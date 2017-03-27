@@ -1,0 +1,99 @@
+<apex:component controller="WLHeader" allowDML="true">
+<style>
+@media (max-width: 800px)
+{
+.header{min-height:70px;}
+.modal-backdrop{
+    z-index: 10;
+}
+}
+
+.displaynone
+{
+   display:none;
+}
+
+</style>
+<script>
+function closefun(){
+    $('#menu_section').addClass('displaynone'); 
+}
+</script>
+
+<section class="sb-slidebar" id="menu_section">
+<header class="header">
+      <div class="container">
+        <div class="row">
+             <apex:outputPanel rendered="{!pge_name == 'WLdashboard'}">
+                 <section class="col-xs-2 about_response menu_left">
+                   <span></span>
+                 </section>
+             </apex:outputPanel>
+            <h1 class="col-md-4 {!IF(pge_name == 'WLdashboard', 'col-xs-7', 'col-xs-8')} ">
+             <div class="logo {!IF(pge_name == 'WLdashboard', 'dashboard_border', '')} "><a><img src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_Logo.png')}" alt="WL Refi"/></a></div>
+            </h1><!--col-md-4 close-->
+            <section class="col-md-8 {!IF(pge_name == 'WLdashboard', 'col-xs-2', 'col-xs-4')} ">
+                <a class="responsive-menu" href="#" id="responsiveClose">&nbsp;</a>   
+            </section>
+        </div>
+        </div>
+</header>
+     
+       <apex:outputPanel rendered="{!pge_name != 'WLdashboard'}" >
+           <ul class="sub_menu-response">
+               <li><a href="/ACFWL/WLaboutus">About Us</a></li>
+               <li><a href="/ACFWL/WLcontactus">Contact Us</a></li>
+               <li><a href="/ACFWL/WLFAQ">FAQ</a></li>
+               <li><apex:outputpanel rendered="{!pge_name != 'WLhome'}" ><a href="/ACFWL/WLhome">Home</a></apex:outputpanel></li>
+               <li><apex:outputpanel rendered="{!pge_name != 'WLhome'}" >
+                       <apex:outputpanel rendered="{!pge_name != 'WLpreloginquestions' && pge_name != 'WLpostloginquestionnaires' }" >
+                           <a href="#myModal3" data-toggle="modal" id="talktohumanId" onclick="closefun();">Talk to a Human</a>
+                       </apex:outputpanel>
+                       <apex:outputPanel rendered="{!pge_name == 'WLpreloginquestions' || pge_name == 'WLpostloginquestionnaires'}">
+                           <a href="#" class="mobsupport">Talk to a Human</a>
+                       </apex:outputpanel>
+                   </apex:outputPanel>
+                   <apex:outputpanel rendered="{!pge_name == 'WLhome'}" ><a href="#myModal3" data-toggle="modal" id="talktohumanId"  onclick="closefun();">Talk to a Human</a></apex:outputpanel>
+               </li>
+                  
+                   <apex:repeat value="{!lstFooterLinks}" var="objFooterLink">
+                        <li> <a href="/ACFWL/WLFooterLink?pid={!mapCMSpgid[objFooterLink.Id]}">{!objFooterLink.acfHeading__c}</a></li>
+                   </apex:repeat>
+                   <li>
+                       <apex:outputpanel rendered="{!pge_name != 'WLhome'}">
+                           <apex:outputpanel rendered="{!isLoggedIn == false && pge_name != 'WLpreliminaryquote' && pge_name != 'WLpreloginquestions'}">  <a href="#myModal" data-toggle="modal" class="sign_in" id="memberLoginId" onclick="closefun();">Sign In</a> </apex:outputpanel>
+                           <apex:outputpanel rendered="{!isLoggedIn == true}">  <a href="/ACFWL/secur/logout.jsp" class="sign_in">Sign Out</a> </apex:outputpanel>
+                       </apex:outputpanel>
+                       <apex:outputpanel rendered="{!pge_name == 'WLhome'}">
+                           <apex:outputpanel rendered="{!isLoggedIn == false && pge_name != 'WLpreliminaryquote' && pge_name != 'WLpreloginquestions'}">  <a href="#myModal" data-toggle="modal" class="sign_in" id="memberLoginId" onclick="closefun();">Sign In</a> </apex:outputpanel>
+                           <apex:outputpanel rendered="{!isLoggedIn == true}">  <a href="/ACFWL/secur/logout.jsp" class="sign_in" >Sign Out</a> </apex:outputpanel>
+                       </apex:outputpanel>
+                   </li>
+                   
+              </ul>
+       </apex:outputPanel>   
+     
+       
+       <apex:outputPanel rendered="{!pge_name == 'WLdashboard'}" >
+           <ul class="sub_menu-response">
+           
+               <li><a href="/ACFWL/WLaboutus">About Us</a></li>
+               <li><a href="/ACFWL/WLcontactus">Contact Us</a></li>
+               <li><a href="/ACFWL/WLFAQ">FAQ</a></li>
+               <li><apex:outputpanel rendered="{!pge_name != 'WLhome'}" ><a href="/ACFWL/WLhome">Home</a></apex:outputpanel></li>
+               <li><a href="#myModal3" data-toggle="modal" id="talktohumanId" onclick="closefun();">Talk to a Human</a></li>
+               <apex:repeat value="{!lstFooterLinks}" var="objFooterLink">
+                        <li> <a href="/ACFWL/WLFooterLink?pid={!mapCMSpgid[objFooterLink.Id]}">{!objFooterLink.acfHeading__c}</a></li>
+               </apex:repeat>
+               <li><a href="/ACFWL/WLEditProfile">Edit Profile</a></li>
+                   <li>
+                       <apex:outputpanel rendered="{!isLoggedIn == false}"> <a href="#myModal" data-toggle="modal" class="sign_in" id="memberLoginId" onclick="closefun();">Sign In</a> </apex:outputpanel>
+                       <apex:outputpanel rendered="{!isLoggedIn == true}"> <a href="/ACFWL/secur/logout.jsp" class="sign_in">Sign Out</a> </apex:outputpanel>
+                   </li>
+           </ul>
+       </apex:outputPanel>
+                <footer>
+                  <div class="res_footer" id="menu_close">Close</div>
+                </footer>        
+    </section>
+</apex:component>

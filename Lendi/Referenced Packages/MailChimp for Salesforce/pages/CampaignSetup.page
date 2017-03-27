@@ -1,0 +1,341 @@
+<apex:page sidebar="false" standardController="MC4SF__MC_Campaign__c" extensions="MC4SF.CampaignSetupController">
+
+<link href="{!URLFOR($Resource.MC4SF__Assets, '/css/wizard.css')}" rel="stylesheet" type="text/css"/>
+<apex:stylesheet value="{!URLFOR($Resource.MC4SF__Assets, 'css/introjs.min.css')}"/>
+<style>
+.introjs-tooltip {
+	max-width: 425px;
+	width: 425px;
+}
+
+.introjs-tooltipbuttons {
+	text-align: center;
+}
+</style>
+
+
+<apex:sectionHeader title="MailChimp Campaign" subtitle="New MailChimp Campaign"/>
+
+<apex:pageMessages />
+
+<apex:form >
+<apex:inputHidden id="googleAnalyticsTag" value="{!mcCampaign.MC4SF__Google_Analytics_Tag__c}"/>
+<apex:inputHidden id="clickTaleTag" value="{!mcCampaign.MC4SF__ClickTale_Tag__c}"/>
+<apex:inputHidden id="goooalTag" value="{!mcCampaign.MC4SF__Goooal_Tag__c}"/>
+<apex:actionfunction name="recipients" action="{!recipients}"/>
+<apex:actionfunction name="content" action="{!content}"/>
+<apex:actionfunction name="plainText" action="{!plainText}"/>
+<apex:actionfunction name="confirm" action="{!confirm}"/>
+
+<apex:pageBlock title="Step 2: Enter Campaign Information">
+
+	<apex:pageBlockSection columns="2">
+		<apex:inputField styleClass="introStep1" value="{!mcCampaign.Name}" required="true"/>
+		<apex:pageBlockSectionItem helptext="Include the recipient's name in the message using merge tags to make it more personal and help avoid spam filters. Example: *|FNAME|* *|LNAME|* will show 'To: Bob Smith' in the email instead of 'To: bob@example.com'. This is more personal and may help avoid spam filters.">
+			<apex:outputLabel value="Personalize the To: Field" for="personalizeToField"/>
+			<apex:outputPanel >
+                <apex:inputText value="{!mcCampaign.MC4SF__To_Name__c}"/>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Email Subject" for="subject"/>
+			<apex:outputPanel layout="block" styleClass="requiredInput">
+                <div class="requiredBlock"></div>
+                <apex:inputText styleClass="introStep2" id="subject" value="{!mcCampaign.MC4SF__Subject__c}" required="true"/>
+                <span class="remainingCharacters" style="font-family: Arial; font-size: 11px; color: #666;">{!150 - LEN(mcCampaign.MC4SF__Subject__c)} characters remaining</span>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:pageBlockSectionItem />
+		
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="From Name" for="fromName"/>
+			<apex:outputPanel layout="block" styleClass="requiredInput">
+                <div class="requiredBlock"></div>
+                <apex:inputText styleClass="introStep3" id="fromName" value="{!mcCampaign.MC4SF__From_Name__c}" required="true"/>
+                <span class="remainingCharacters" style="font-family: Arial; font-size: 11px; color: #666;">{!100 - LEN(mcCampaign.MC4SF__From_Name__c)} characters remaining</span>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:pageBlockSectionItem />
+		
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Reply-to Email Address" for="fromEmail"/>
+			<apex:outputPanel layout="block" styleClass="requiredInput">
+                <div class="requiredBlock"></div>
+                <apex:inputText styleClass="introStep4" id="fromEmail" value="{!mcCampaign.MC4SF__From_Email__c}" required="true"/>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:pageBlockSectionItem />
+	</apex:pageBlockSection>
+	
+	<apex:pageBlockSection columns="2" title="Tracking" id="introStep6">
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Track Opens" for="opensTracked"/>
+			<apex:outputPanel >
+				<apex:inputField id="opensTracked" value="{!mcCampaign.MC4SF__Opens_Tracked__c}"/>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Google Analytics Link Tracking" for="googleAnalytics"/>
+			<apex:outputPanel >
+                <apex:inputField id="googleAnalytics" value="{!mcCampaign.MC4SF__Google_Analytics__c}"/>
+                <apex:outputPanel layout="none" rendered="{!mcCampaign.MC4SF__Google_Analytics__c}">
+                	<input id="googleAnalyticsTag" type="text" value="{!mcCampaign.MC4SF__Google_Analytics_Tag__c}"/>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!NOT(mcCampaign.MC4SF__Google_Analytics__c)}">
+                	<input id="googleAnalyticsTag" type="text" disabled="disabled"/>
+                </apex:outputPanel>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Track Clicks" for="htmlClicksTracked"/>
+			<apex:outputPanel >
+				<apex:inputField id="htmlClicksTracked" value="{!mcCampaign.MC4SF__HTML_Clicks_Tracked__c}"/>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="ClickTale Link Tracking" for="clickTale"/>
+			<apex:outputPanel >
+                <apex:inputField id="clickTale" value="{!mcCampaign.MC4SF__ClickTale__c}"/>
+                <apex:outputPanel layout="none" rendered="{!mcCampaign.MC4SF__ClickTale__c}">
+                	<input id="clickTaleTag" type="text" value="{!mcCampaign.MC4SF__ClickTale_Tag__c}"/>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!NOT(mcCampaign.MC4SF__ClickTale__c)}">
+                	<input id="clickTaleTag" type="text" disabled="disabled"/>
+                </apex:outputPanel>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Track Plain-Text Clicks" for="textClicksTracked"/>
+			<apex:outputPanel >
+                <apex:inputField id="textClicksTracked" value="{!mcCampaign.MC4SF__Text_Clicks_Tracked__c}"/>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Goal Link Tracking" for="goooal"/>
+			<apex:outputPanel >
+                <apex:inputField id="goooal" value="{!mcCampaign.MC4SF__Goooal__c}"/>
+                <apex:outputPanel layout="none" rendered="{!mcCampaign.MC4SF__Goooal__c}">
+                	<input id="goooalTag" type="text" value="{!mcCampaign.MC4SF__Goooal_Tag__c}"/>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!NOT(mcCampaign.MC4SF__Goooal__c)}">
+                	<input id="goooalTag" type="text" disabled="disabled"/>
+                </apex:outputPanel>
+            </apex:outputPanel>			
+		</apex:pageBlockSectionItem>
+		
+		<apex:pageBlockSectionItem / >
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Ecommerce360 Link Tracking" for="ecomm360"/>
+            <apex:outputPanel >
+                <apex:inputField id="ecomm360" value="{!mcCampaign.MC4SF__Ecomm360__c}"/>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+	</apex:pageBlockSection>
+	
+	<apex:pageBlockSection columns="2" title="More Options">
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Auto-Convert Video" for="autoConvertVideo"/>
+			<apex:outputPanel >
+                <apex:inputField styleClass="introStep7" id="autoConvertVideo" value="{!mcCampaign.MC4SF__Auto_Convert_Video__c}"/>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Authenticate Campaign" for="authenticate"/>
+			<apex:outputPanel >
+                <apex:inputField styleClass="introStep8" id="authenticate" value="{!mcCampaign.MC4SF__Authenticate__c}"/>
+            </apex:outputPanel>
+		</apex:pageBlockSectionItem>
+	</apex:pageBlockSection>
+
+</apex:pageBlock>
+
+</apex:form>
+
+<div id="footer">
+	<a class="back-button" href="#" onclick="save(); recipients(); return false;"><span class="freddicon laquo"></span>Back</a>
+
+	<apex:outputPanel layout="none" rendered="{!BEGINS(mcCampaign.MC4SF__MailChimp_ID__c, '-')}">
+		<ul>
+			<li><a href="#" onclick="save(); recipients(); return false;">Recipients</a></li>
+			<li class="current"><a href="#" onclick="return false;">Setup</a></li>
+			<li><a href="#" onclick="return false;">Content</a></li>
+			<li><a href="#" onclick="return false;">Plain-Text</a></li>
+			<li><a href="#" onclick="return false;">Confirm</a></li>
+		</ul>
+	</apex:outputPanel>
+	
+	<apex:outputPanel layout="none" rendered="{!NOT(BEGINS(mcCampaign.MC4SF__MailChimp_ID__c, '-'))}">
+		<ul>
+			<li><a href="#" onclick="save(); recipients(); return false;">Recipients</a></li>
+			<li class="current"><a href="#" onclick="return false;">Setup</a></li>
+			<li><a href="#" onclick="save(); content(); return false;">Content</a></li>
+			<li><a href="#" onclick="save(); plainText(); return false;">Plain-Text</a></li>
+			<li><a href="#" onclick="save(); confirm(); return false;">Confirm</a></li>
+		</ul>
+	</apex:outputPanel>
+	
+	<a class="next-button" href="#" onclick="save(); content(); return false;">Next<span class="freddicon raquo on-right"></span></a>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="{!URLFOR($Resource.Assets, '/js/intro.min.js')}"></script>
+<script>
+	$(function() {
+		
+		$('input[id$="subject"]').keyup(function() {
+			var remaining = 150 - $(this).val().length;
+			$(this).siblings('.remainingCharacters').html(remaining + ' character' + (remaining == 1 || remaining == -1 ? '' : 's') + ' remaining');
+			
+			if (remaining < 0) {
+				$(this).siblings('.remainingCharacters').css('color', '#e85c41');
+			} else {
+				$(this).siblings('.remainingCharacters').css('color', '#666');
+			}
+		});
+		
+		$('input[id$="fromName"]').keyup(function() {
+			var remaining = 100 - $(this).val().length;
+			$(this).siblings('.remainingCharacters').html(remaining + ' character' + (remaining == 1 || remaining == -1 ? '' : 's') + ' remaining');
+			
+			if (remaining < 0) {
+				$(this).siblings('.remainingCharacters').css('color', '#e85c41');
+			} else {
+				$(this).siblings('.remainingCharacters').css('color', '#666');
+			}
+		});
+		
+		$('input[id$="googleAnalytics"]').click(function() {
+			var checked = $(this).is(':checked');
+
+			$('#googleAnalyticsTag').attr('disabled', !checked);
+			if (!checked) {
+				$('#googleAnalyticsTag').val('');
+			}
+		});
+		
+		$('input[id$="clickTale"]').click(function() {
+			var checked = $(this).is(':checked');
+
+			$('#clickTaleTag').attr('disabled', !checked);
+			if (!checked) {
+				$('#clickTaleTag').val('');
+			}
+		});
+
+		$('input[id$="goooal"]').click(function() {
+			var checked = $(this).is(':checked');
+
+			$('#goooalTag').attr('disabled', !checked);
+			if (!checked) {
+				$('#goooalTag').val('');
+			}
+		});
+		
+		if ({!IF(dontShowTour, 'false', 'true')}) {
+        	showTour();
+        }
+	
+	});
+	
+	function save() {
+		if ($('input[id$="googleAnalytics"]').is(':checked')) {
+			$('input[id$="googleAnalyticsTag"]').val($('#googleAnalyticsTag').val());
+		} else {
+			$('input[id$="googleAnalyticsTag"]').val('');
+		}
+		
+		if ($('input[id$="clickTale"]').is(':checked')) {
+			$('input[id$="clickTaleTag"]').val($('#clickTaleTag').val());
+		} else {
+			$('input[id$="clickTaleTag"]').val('');
+		}
+		
+		if ($('input[id$="goooal"]').is(':checked')) {
+			$('input[id$="goooalTag"]').val($('#goooalTag').val());
+		} else {
+			$('input[id$="goooalTag"]').val('');
+		}
+	}
+
+	function showTour() {
+    	var steps = [];
+
+		steps.push(
+			{
+				element: jQuery('.introStep1')[0],
+				intro: '<b>MC CAMPAIGN TITLE</b><br/><br/>The "MC Campaign Title" field contains the campaign name. The campaign name will not be seen by the recipients.',
+				position: 'right'
+			}
+		);
+		
+		steps.push(
+			{
+				element: jQuery('.introStep2')[0],
+				intro: '<b>EMAIL SUBJECT</b><br/><br/>The "Email Subject" field contains the campaign subject line.',
+				position: 'right'
+			}
+		);
+		
+		steps.push(
+			{
+				element: jQuery('.introStep3')[0],
+				intro: '<b>FROM NAME</b><br/><br/>The "From Name" field contains the from name for the campaign. This is the name that recipients will see when they receive the campaign.',
+				position: 'right'
+			}
+		);
+		
+		steps.push(
+			{
+				element: jQuery('.introStep4')[0],
+				intro: '<b>REPLY-TO EMAIL ADDRESS</b><br/><br/>The "Reply-to Email Address" field contains the email address for the campaign. This is the email address that recipients will see when they receive the campaign and the address that they will email if they reply to the campaign.',
+				position: 'right'
+			}
+		);
+		
+		steps.push(
+			{
+				element: jQuery('.introStep5')[0],
+				intro: '<b>PERSONALIZE THE TO: FIELD</b><br/><br/>This option can be enabled in order to display the recipient\'s name in the "To:" field of the campaign (instead of using their email address). Using this feature personalizes the email and can help to avoid spam filters.',
+				position: 'bottom-left-aligned'
+			}
+		);
+		
+		steps.push(
+			{
+				element: jQuery('div[id$="introStep6"]')[0],
+				intro: '<b>TRACKING</b><br/><br/>Use the checkboxes to enable or disable tracking options for the campaign.',
+				position: 'top'
+			}
+		);
+		
+		steps.push(
+			{
+				element: jQuery('.introStep7')[0],
+				intro: '<b>AUTO-CONVERT VIDEO</b><br/><br/>Enable the "Auto-Convert Video" checkbox in order to scan the campaign content for embedded video and convert that video into an email-friendly screenshot linked to the video URL.<br/><br/>About Auto-Convert Video: <a href="http://eepurl.com/ioV3E" target="_blank">http://eepurl.com/ioV3E</a>',
+				position: 'right'
+			}
+		);
+		
+		steps.push(
+			{
+				element: jQuery('.introStep8')[0],
+				intro: '<b>AUTHENTICATE CAMPAIGN</b><br/><br/>Use the "Authenticate Campaign" checkbox in order to enable MailChimp authentication. MailChimp authentication is enabled by default.<br/><br/>Authentication provides a trackable identifier, which indicates to receiving email servers that the email is from a legitimate sender.<br/><br/>MailChimp Authentication: <a href="http://eepurl.com/hcpD" target="_blank">http://eepurl.com/hcpD</a>',
+				position: 'left'
+			}
+		);
+    
+    	introJs().setOption('steps', steps).start();
+    	
+    	jQuery('.introjs-tooltipbuttons').after('<div style="text-align: center; font-size: 11px; color: #666; margin-top: 10px;"><input id="dontShowCheckbox" type="checkbox" style="vertical-align: middle;" {!IF(dontShowTour, 'checked="checked"', '')}/>Don\'t show this again</div>');
+		
+		jQuery('#dontShowCheckbox').click(function() {
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CampaignSetupController.setDontShowTour}', jQuery(this).is(':checked'), function(result, event) {
+			});
+		});
+    }
+</script>
+
+</apex:page>

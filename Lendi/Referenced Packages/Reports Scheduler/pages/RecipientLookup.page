@@ -1,0 +1,302 @@
+<apex:page sidebar="false" id="pg" showHeader="false" controller="CRMG_RS.RecipientLookup" action="{!DoSearchAll}">
+ 
+ <apex:form id="frm">
+ 
+ <apex:inputHidden id="hdnEmails" value="{!SelectedEmails}" />
+   
+     
+<apex:pageBlock >
+ <b>Keyword</b>&nbsp;<apex:inputText value="{!Keyword}" />&nbsp;
+    <apex:commandButton value="Search External Recipient" action="{!DoSearchRecipient}" onclick="fncPreSelect();" />&nbsp;     
+        <apex:commandButton value="Search Contact" action="{!DoSearchContact}" onclick="fncPreSelect();" />&nbsp;     
+    <apex:commandButton value="Search User" action="{!DoSearchUser}" onclick="fncPreSelect();" />
+ 
+     
+</apex:pageBlock>
+
+<apex:outputText style="color:blue;" value="Selected: {!SelectedEmails}" rendered="{!IF(SelectedEmails != null && SelectedEmails != '', true, false)}" />
+ 
+		 <apex:pageBlock title="External Recipients">
+ 
+		 <apex:pageBlockButtons location="top" >
+		  
+		  <apex:commandButton value="Select" onclick=" fncSelect(); return false;" rendered="{!IF(listRecipient.size > 0 || Contacts.size > 0 || Users.size > 0, true, false)}" />
+		  <apex:commandButton value="Close" onclick="window.close(); return false;" />
+		  
+		 </apex:pageBlockButtons>
+		 
+		 <div style="height:150px;width:100%;overflow:auto;">  
+		 
+		 <apex:pageBlockTable value="{!listRecipient}" var="r"  >
+		 
+		 <apex:column >
+		   <apex:facet name="header">
+		   &nbsp;
+		   </apex:facet>
+		   <input type="checkbox" id="{!r.Id}" />
+		   <input type="hidden" value="{!JSENCODE(r.Recipient_Email__c)}" id="hdn_{!r.Id}" />
+		 </apex:column>
+		 
+		 <apex:column >
+		   <apex:facet name="header">
+		    Name
+		   </apex:facet>
+		   <apex:outputField value="{!r.Name}" />
+		 </apex:column>
+		 
+		  <apex:column >
+		   <apex:facet name="header">
+		   Email
+		   </apex:facet>
+		   <apex:outputField value="{!r.CRMG_RS__Recipient_Email__c}" />
+		 </apex:column>
+		 
+		 </apex:pageBlockTable>
+		 </div>
+		 
+		 </apex:pageBlock>
+ 
+ 	<apex:pageBlock title="Contacts">
+     
+   	<div style="height:150px;width:100%;overflow:auto;">    
+            <apex:pageBlockTable value="{!Contacts}" var="con">
+                <apex:column >
+				   <apex:facet name="header">
+				   &nbsp;
+				   </apex:facet>
+				   <input type="checkbox" id="{!con.Id}" />
+				   <input type="hidden" value="{!JSENCODE(con.Email)}" id="hdn_{!con.Id}" />
+				 </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Name</apex:facet>
+                    <apex:outputText value="{!con.Name}"/>
+                    <apex:inputHidden value="{!con.Email}"/>
+                </apex:column>
+           
+                <apex:column >
+                    <apex:facet name="header">Email</apex:facet>
+                    <apex:outputText value="{!con.Email}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+            </div>
+            
+        </apex:pageBlock>
+        
+         <apex:pageBlock title="Users">
+           
+            <apex:pageBlockButtons location="bottom">
+               <apex:commandButton value="Select" onclick=" fncSelect(); return false;" rendered="{!IF(listRecipient.size > 0 || Contacts.size > 0 || Users.size > 0, true, false)}" />
+  				<apex:commandButton value="Close" onclick="window.close(); return false;" />
+            </apex:pageBlockButtons>
+            
+            <div style="height:150px;width:100%;overflow:auto;">    
+            <apex:pageBlockTable value="{!Users}" var="user">
+                <apex:column >
+				   <apex:facet name="header">
+				   &nbsp;
+				   </apex:facet>
+				   <input type="checkbox" id="{!user.Id}" />
+				   <input type="hidden" value="{!JSENCODE(user.Email)}" id="hdn_{!user.Id}" />
+				 </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Name</apex:facet>
+                    <apex:outputText value="{!user.Name}"/>
+                    <apex:inputHidden value="{!user.Email}"/>
+                </apex:column>
+           
+                <apex:column >
+                    <apex:facet name="header">Email</apex:facet>
+                    <apex:outputText value="{!user.Email}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+            </div>
+            
+        </apex:pageBlock>
+        
+        
+ 
+ <script>
+ 
+   function fncSelect(){
+     
+     try{
+     
+	     var strEmail = '';
+	     
+	     <apex:repeat value="{!listRecipient}" var="r">
+	      
+	      if(document.getElementById('{!r.Id}') ){
+	      	
+	      	if(document.getElementById('{!r.Id}').checked ){
+	      	   
+	      	   if(document.getElementById('hdn_{!r.Id}') ){
+	      	   		
+	      	   		if(strEmail != ''){
+	      	   		  strEmail = strEmail + ';';
+	      	   		}
+	      	   		
+	      	   		strEmail = strEmail + document.getElementById('hdn_{!r.Id}').value;
+	      	   }
+	      	   
+	      	}
+	      	
+	      }
+	      
+	     </apex:repeat>
+	     
+	     
+	     <apex:repeat value="{!Contacts}" var="r">
+	      
+	      if(document.getElementById('{!r.Id}') ){
+	      	
+	      	if(document.getElementById('{!r.Id}').checked ){
+	      	   
+	      	   if(document.getElementById('hdn_{!r.Id}') ){
+	      	   		
+	      	   		if(strEmail != ''){
+	      	   		  strEmail = strEmail + ';';
+	      	   		}
+	      	   		
+	      	   		strEmail = strEmail + document.getElementById('hdn_{!r.Id}').value;
+	      	   }
+	      	   
+	      	}
+	      	
+	      }
+	      
+	     </apex:repeat>
+	     
+	     
+	     <apex:repeat value="{!Users}" var="r">
+	      
+	      if(document.getElementById('{!r.Id}') ){
+	      	
+	      	if(document.getElementById('{!r.Id}').checked ){
+	      	   
+	      	   if(document.getElementById('hdn_{!r.Id}') ){
+	      	   		
+	      	   		if(strEmail != ''){
+	      	   		  strEmail = strEmail + ';';
+	      	   		}
+	      	   		
+	      	   		strEmail = strEmail + document.getElementById('hdn_{!r.Id}').value;
+	      	   }
+	      	   
+	      	}
+	      	
+	      }
+	      
+	     </apex:repeat>
+	     
+	     var preSelectEmails = document.getElementById('pg:frm:hdnEmails').value;
+	      if(preSelectEmails != null && preSelectEmails != ''){
+           	strEmail = preSelectEmails  + ';' + strEmail;
+           }
+	     
+	     if(window.opener.document.getElementById('{!JSENCODE(fieldNameId)}')){
+	     	
+	     	window.opener.document.getElementById('{!JSENCODE(fieldNameId)}').value = strEmail;  //escape(strEmail); 
+	     }
+	     
+	     window.close();
+     
+     }
+     catch(e){
+       alert(e);
+     }
+   }
+   
+   
+   function fncPreSelect(){
+     
+     try{
+     
+	     var strEmail = '';
+	     
+	     <apex:repeat value="{!listRecipient}" var="r">
+	      
+	      if(document.getElementById('{!r.Id}') ){
+	      	
+	      	if(document.getElementById('{!r.Id}').checked ){
+	      	   
+	      	   if(document.getElementById('hdn_{!r.Id}') ){
+	      	   		
+	      	   		if(strEmail != ''){
+	      	   		  strEmail = strEmail + ';';
+	      	   		}
+	      	   		
+	      	   		strEmail = strEmail + document.getElementById('hdn_{!r.Id}').value;
+	      	   }
+	      	   
+	      	}
+	      	
+	      }
+	      
+	     </apex:repeat>
+	     
+	     
+	     <apex:repeat value="{!Contacts}" var="r">
+	      
+	      if(document.getElementById('{!r.Id}') ){
+	      	
+	      	if(document.getElementById('{!r.Id}').checked ){
+	      	   
+	      	   if(document.getElementById('hdn_{!r.Id}') ){
+	      	   		
+	      	   		if(strEmail != ''){
+	      	   		  strEmail = strEmail + ';';
+	      	   		}
+	      	   		
+	      	   		strEmail = strEmail + document.getElementById('hdn_{!r.Id}').value;
+	      	   }
+	      	   
+	      	}
+	      	
+	      }
+	      
+	     </apex:repeat>
+	     
+	     
+	     <apex:repeat value="{!Users}" var="r">
+	      
+	      if(document.getElementById('{!r.Id}') ){
+	      	
+	      	if(document.getElementById('{!r.Id}').checked ){
+	      	   
+	      	   if(document.getElementById('hdn_{!r.Id}') ){
+	      	   		
+	      	   		if(strEmail != ''){
+	      	   		  strEmail = strEmail + ';';
+	      	   		}
+	      	   		
+	      	   		strEmail = strEmail + document.getElementById('hdn_{!r.Id}').value;
+	      	   }
+	      	   
+	      	}
+	      	
+	      }
+	      
+	     </apex:repeat>
+	     
+	     
+	      var preSelectEmails = document.getElementById('pg:frm:hdnEmails').value;
+	      if( preSelectEmails != null && preSelectEmails != ''  && strEmail != null && strEmail != ''){
+           	 preSelectEmails = preSelectEmails + ';' + strEmail;
+           }
+           else if(strEmail != null && strEmail != ''){
+           	 preSelectEmails = strEmail;
+           } 
+           document.getElementById('pg:frm:hdnEmails').value = preSelectEmails;
+             
+     
+     }
+     catch(e){
+       alert(e);
+     }
+   }
+   
+ </script>
+ 
+ </apex:form>
+ 
+</apex:page>

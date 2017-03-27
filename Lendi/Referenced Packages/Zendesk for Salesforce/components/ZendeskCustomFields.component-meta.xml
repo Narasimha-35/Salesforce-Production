@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexComponent xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>30.0</apiVersion>
+    <description>This component is used on the &quot;Zendesk&quot; tab 3x and is responsible for the creation of ZendeskCustomField__c records.  This component is found in each object configuration section for Accounts, Contacts, and Leads.</description>
+    <label>ZendeskCustomFields</label>
+</ApexComponent>

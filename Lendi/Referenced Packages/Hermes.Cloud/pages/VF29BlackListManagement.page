@@ -1,0 +1,69 @@
+<apex:page controller="vhc.Ctrl29BlackListManagement" tabStyle="vhc__Customer__c" action="{!checkOauth}">
+    <script language="javascript" src="{!URLFOR($Resource.SWFUpload, '/swfupload/handlers.js')}"></script>
+    <script language="javascript" src="{!URLFOR($Resource.SWFUpload, '/swfupload/swfupload/swfupload.js')}"></script>
+
+
+
+    <apex:sectionHeader title="{!$Label.DNC_DNCListManagement}" subtitle="{!CompanyName}" /> <!-- {!CompanyName} -->
+    <apex:pagemessages escape="false" />
+    <apex:form enctype="multipart/form-data">
+        
+        <apex:actionFunction name="endImport" action="{!endImport}" status="myStatus"/>
+        <apex:pageBlock id="noStylePageBlock">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{!ResetBlacklist}" value="{!$Label.DNC_Reset_DNCList}" />
+                <apex:commandButton action="{!ApplyBlacklistToExistingCallFiles}" value="{!$Label.DNC_ApplyToCallFile}" />
+                <apex:commandButton action="{!enableImport}" value="{!$Label.DNC_Import}" disabled="{!IsImporting}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Import a csv file" id="blacklistImport" rendered="{!IsImporting}">
+                
+            <script type="text/javascript">
+                
+                document.addEventListener('DOMContentLoaded', function(){
+                    var uploadFrame = document.getElementById('myUploadIFrame');
+                	uploadFrame.contentWindow.document.body.innerHTML=
+                        '<form style="margin:0;" enctype="multipart/form-data" action="{!wsUrl}{!UploadId}" method="POST"> \
+                                <input type="file" name="myfile"/> \
+                                <input type="submit"/> \
+                            </form>';
+                	uploadFrame.addEventListener('load',function(){
+                        
+                        uploadFrame.parentNode.removeChild(uploadFrame);
+                        document.getElementById('uploadContainer').innerHTML='Please Wait';
+                        endImport();//document.getElementById('uploadContainer').innerHTML='Congratulations, your blacklist is uploaded';
+                    });
+                });
+            </script>
+                
+                              
+                <div id="uploadContainer">
+                    <iframe style="border:0px;height: 70px;" src="about:blank" id="myUploadIFrame"></iframe>
+                </div>
+                
+                
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="{!$Label.DNC_DNCListInfo}" id="blacklistInfos" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputtext value="{!$Label.DNC_NbOfItems}"/>
+                    <apex:outputtext value="{!blacklist.numberOfItems}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputtext value="{!$Label.DNC_LastUpdate}"/>
+                    <apex:outputtext value="{!blacklist.lastUpdate}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputtext value="{!$Label.DNC_LastApplicationDate}"/>
+                    <apex:outputtext value="{!blacklist.lastApply}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            
+
+            
+        </apex:pageBlock>
+        
+       
+    </apex:form>
+</apex:page>

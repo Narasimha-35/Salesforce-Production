@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <content>VF07Group</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <content>VF07Group</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>VF07Group</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>VF07Group</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>VF14Training</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>The creation of agent groups enables the user to define rights and privileges for several agents at a time.</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>AgentControlRight__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Is Agent</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AutoHangup__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The agent will be disconnected from the ACD between calls.</inlineHelpText>
+        <label>Hangup After Call</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AutoReady__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Agent is automatically in « Ready » status when
+connecting to the application or after having qualified the last call (if a call qualification is required ). No need to click on ready.</inlineHelpText>
+        <label>Automatically Ready</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>BlindTransferRight__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Agent can transfer a call internally or externally without checking the destination.</inlineHelpText>
+        <label>Blind Transfer</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Customer__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Company Name</label>
+        <referenceTo>Customer__c</referenceTo>
+        <relationshipLabel>Agent Groups</relationshipLabel>
+        <relationshipName>Agent_Groups</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Group_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Group Id</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HangupRight__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Specify if the agent can voluntarily end a call.</inlineHelpText>
+        <label>Hangup</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ManagerRight__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Agent has Supervisor rights and has access to the Supervision Screen.</inlineHelpText>
+        <label>Is Supervisor</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ManualCallRight__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Agent has the right to manually contact clients through manual campaigns.</inlineHelpText>
+        <label>Manual Call</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Oid__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Oid</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Agent Group</label>
+    <nameField>
+        <label>Agent Group Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Agent Groups</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>Apply_Appli_to_agents</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Apply Programs</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/apex.js&quot;)}
+var res = sforce.apex.execute(&quot;vhc/Ctrl07Group_ApplySettings&quot;,&quot;ApplyAppliOnAgents&quot;, {customerOid:&quot;{!Customer__c.Oid__c}&quot;, agentGroupID:&quot;{!Agent_Group__c.Group_Id__c}&quot;, agentGroupSfID:&quot;{!Agent_Group__c.Id}&quot;}); 
+
+if(res == &apos;true&apos;)
+       window.alert(&quot;{!$Label.Apply_Settings_Success}&quot; );
+else
+       window.alert(&quot;{!$Label.Apply_Settings_Failed}&quot; );</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Apply_Assignment_to_agents</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Apply Queue and Outbound</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/apex.js&quot;)}
+var res = sforce.apex.execute(&quot;vhc/Ctrl07Group_ApplySettings&quot;,&quot;ApplyProfileOnAgents&quot;, {customerOid:&quot;{!Customer__c.Oid__c}&quot;, agentGroupID:&quot;{!Agent_Group__c.Group_Id__c}&quot;, agentGroupSfID:&quot;{! Agent_Group__c.Id }&quot;}); 
+
+if(res == &apos;true&apos;)
+       window.alert(&quot;{!$Label.Apply_Settings_Success}&quot; );
+else
+       window.alert(&quot;{!$Label.Apply_Settings_Failed}&quot; );</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Apply_Rights_to_agents</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Apply Phone Rights</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/apex.js&quot;)}
+var res = sforce.apex.execute(&quot;vhc/Ctrl07Group_ApplySettings&quot;,&quot;ApplyRightsOnAgents&quot;, {customerOid:&quot;{!Customer__c.Oid__c}&quot;, agentGroupID:&quot;{!Agent_Group__c.Group_Id__c}&quot;, agentGroupSfID:&quot;{! Agent_Group__c.Id }&quot;});
+
+if(res == &apos;true&apos;)
+       window.alert(&quot;{!$Label.Apply_Settings_Success}&quot; );
+else
+       window.alert(&quot;{!$Label.Apply_Settings_Failed}&quot; );</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Apply_Skills_to_agents</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Apply Skills</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/apex.js&quot;)}
+var res = sforce.apex.execute(&quot;vhc/Ctrl07Group_ApplySettings&quot;,&quot;ApplySkillsOnAgents&quot;, {customerOid:&quot;{!Customer__c.Oid__c}&quot;, agentGroupID:&quot;{!Agent_Group__c.Group_Id__c}&quot;, agentGroupSfID:&quot;{!Agent_Group__c.Id}&quot;});
+
+if(res == &apos;true&apos;)
+       window.alert(&quot;{!$Label.Apply_Settings_Success}&quot; );
+else
+       window.alert(&quot;{!$Label.Apply_Settings_Failed}&quot; );</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Apply_Telephony_to_agents</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Apply Telephony Options</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/apex.js&quot;)}
+var res = sforce.apex.execute(&quot;vhc/Ctrl07Group_ApplySettings&quot;,&quot;ApplyTelephonyOnAgents&quot;, {customerOid:&quot;{!Customer__c.Oid__c}&quot;, agentGroupID:&quot;{!Agent_Group__c.Group_Id__c}&quot;, agentGroupSfID:&quot;{!Agent_Group__c.Id}&quot;});
+
+if(res == &apos;true&apos;)
+       window.alert(&quot;{!$Label.Apply_Settings_Success}&quot; );
+else
+       window.alert(&quot;{!$Label.Apply_Settings_Failed}&quot; );</url>
+    </webLinks>
+</CustomObject>

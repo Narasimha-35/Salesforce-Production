@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Select a value here when the scheduled recipient is a Contact on an Account. If you enter a value here, the email address will auto populate. Other than the Recipient Name above, you will not need to update any further fields if you enter a value here.</inlineHelpText>
+        <label>Contact</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>Contact must have a valid email address</errorMessage>
+            <filterItems>
+                <field>Contact.Email</field>
+                <operation>notEqual</operation>
+                <value></value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>External Recipients</relationshipLabel>
+        <relationshipName>Recipients</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Email__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This field is auto-populated when your External Recipient is a SF User or Contact. If you External Recipient is not located in SF as User or Contact, you must manually populate this field.</inlineHelpText>
+        <label>Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Recipient_Email__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF( User__c  != null,  User__r.Email , IF( Contact__c != null,  Contact__r.Email , Email__c))</formula>
+        <inlineHelpText>This field will auto populate if you select either the User or Contact field above.  If your Recipient is not a User or Contact, this field will remain blank and you will not need to update any further fields if you manually enter an email address above.</inlineHelpText>
+        <label>Recipient Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>In Process</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Select a value here when the scheduled recipient is a licensed Salesforce User. if you enter a value here, the email address will auto populate. Other than the Recipient Name above, you will not need to update any further fields if you enter a value here.</inlineHelpText>
+        <label>User</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>User must have valid email address.</errorMessage>
+            <filterItems>
+                <field>User.Email</field>
+                <operation>notEqual</operation>
+                <value></value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Recipients</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>External Recipient</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Email__c</columns>
+        <columns>Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Recipient Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>External Recipients</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Email__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Email_Validation</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF( User__c == null &amp;&amp;  Contact__c == null &amp;&amp;  Email__c == null, true, false)</errorConditionFormula>
+        <errorDisplayField>Email__c</errorDisplayField>
+        <errorMessage>Either Email or User or Contact is required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Email_Validation_Select_One</fullName>
+        <active>false</active>
+        <errorConditionFormula>IF( (User__c != null &amp;&amp; Contact__c != null &amp;&amp; Email__c != null) ||  (User__c != null &amp;&amp; Contact__c != null ) ||  (User__c != null &amp;&amp; Email__c != null) ||  ( Contact__c != null &amp;&amp; Email__c != null), true, false)</errorConditionFormula>
+        <errorMessage>Select only 1 of the following values: Email or User or Contact</errorMessage>
+    </validationRules>
+</CustomObject>

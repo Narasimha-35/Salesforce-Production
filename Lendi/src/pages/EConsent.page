@@ -1,0 +1,114 @@
+<apex:page controller="acfIConsentController" applyHTMLTag="false" showHeader="false" sidebar="false">
+     <link rendered = "{!acfCommunity}" REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
+      <link rendered = "{!!acfCommunity}" REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.clickfavicon)}" type="image/x-icon"/>
+<style>
+.mainScreen{
+        width: 49%;
+    margin: auto;
+    font-size: 15px;
+    padding: 2px 36px;
+    text-align: justify;
+    line-height: 1.8em;
+    background-color: #fff;
+    border-radius: 9px;
+    margin-top: 14px;
+    border: 1px #dddddd solid;
+    padding-bottom: 60px;
+    min-height: 300px;
+
+
+}
+.cnsnt_button{
+      font-size: 20px !important;
+    color: rgb(255, 255, 255) !important;
+    background: rgb(42, 142, 204) none repeat scroll 0% 0% !important;
+    padding: 10px !important;
+    margin-left: 40% !important;
+}
+
+.cnsnt_button2{
+    font-size: 20px !important;
+    //color: rgb(255, 255, 255) !important;
+    background: rgb(42, 142, 204) none repeat scroll 0% 0% !important;
+    padding: 10px !important;
+    margin-left: 40% !important;
+    background-color: #f98b02 !important;
+    
+}
+
+.main_heading{
+         color: #1f8acb;
+    width: 100%;
+    margin-bottom: 14px;
+    font-size: 41px;
+    font-weight: inherit;
+    text-align: center;
+    line-height: 1em;
+    padding-left:35% !important;  
+}
+
+.main_heading1{
+    color: #f98b02 !important; 
+    width: 100%;
+    margin-bottom: 14px;
+    font-size: 41px;
+    font-weight: inherit;
+    text-align: center;
+    line-height: 1em;
+    padding-left:35% !important;
+}
+
+.success_heading{
+     color: #1f8acb;
+    width: 100%;
+    margin-bottom: 14px;
+    font-size: 41px;
+    font-weight: inherit;
+    text-align: center;
+    line-height: 1em;
+}
+body{
+
+background-color:#F5F5F5;
+}
+</style>
+<body>
+<apex:messages />
+
+<apex:outputPanel layout="block" id="mainScreen" styleClass="mainScreen">
+        
+        <apex:outputPanel id="consentForm" rendered="{!if(isSubmited=false && isExpired=false,true,false)}" layout="block" style="width:100%;" >
+        <p><apex:outputLabel styleclass="main_heading" value="E Consent" rendered="{!!acfCommunity}"></apex:outputLabel></p> 
+        <p><apex:outputLabel styleclass="main_heading1" value="E Consent" rendered="{!acfCommunity}"></apex:outputLabel></p>
+       
+            By submitting your personal information, you consent to Click Loans dealing with any information you provide in accordance with our privacy policy, which contains information about how we treat your personal information and how you may access and correct your personal information, how you may complain and how you may contact the credit reporting body we use. Our policy also tells you what happens if you fail to meet your repayments or commit a serious credit infringement, what happens if you believe you may have been a victim of fraud, and other notifiable matters. Click Loans may exchange your personal information with Veda for the purposes of obtaining a credit report about you to assess your application for finance and assess your creditworthiness. If you do not consent to our use of your information, we may not be able to proceed with your application.     
+            By clicking 'I Consent', I consent to receiving notices and other documents from you by email to my address provided, and understand that if I give this consent: a) you may no longer send me paper copies of notices and other documents; b) I should regularly check my email address for documents; and c) I may withdraw my consent to receiving documents by email at any time. 
+            I confirm that I have the facilities to print any notice or document you send me by email, if desired.
+            <br/>
+        <apex:form >
+        
+        <apex:commandButton action="{!updateConsentScreen}" reRender="mainScreen" styleClass="cnsnt_button" value="I Consent" status="counterStatus" rendered="{!!acfCommunity}"/><br/>
+        <apex:commandButton action="{!updateConsentScreen}" reRender="mainScreen" styleClass="cnsnt_button2" value="I Consent" status="counterStatus" rendered="{!acfCommunity}"/><br/>
+        <apex:actionstatus id="counterStatus" starttext="verifying">
+          <apex:facet name="start">
+              <apex:image url="{!$Resource.LoadingImg}" height="35" width="35" styleClass="preloader"/> 
+              
+          </apex:facet>
+        </apex:actionStatus>
+    </apex:form>
+    </apex:outputPanel>
+        
+    <apex:outputPanel id="thankyouForm" rendered="{!if(isSubmited=true && isExpired=false,true,false)}">
+    
+    <p class="success_heading">{!$Label.EConsent_Success}</p>
+    
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!isExpired}">
+    
+    <p class="success_heading">This link has been expired.</p>
+    
+    </apex:outputPanel>
+</apex:outputPanel>
+
+</body>
+</apex:page>

@@ -1,0 +1,29 @@
+<apex:page standardController="MC4SF__MC_Query__c" extensions="MC4SF.QueryNameController" action="{!initPage}">
+
+<apex:sectionHeader title="MC Query" subtitle="{!MC4SF__MC_Query__c.Name}"/>
+
+<apex:pageMessages />
+
+<apex:form >
+
+<apex:pageBlock title="Step 4: Name{!IF(isMailChimpAdmin, ' & Schedule', '')}">
+	<apex:pageBlockButtons location="both">
+		<apex:commandButton value="Cancel" action="{!cancel}"/>
+		<apex:commandButton value="Previous Step" action="{!previousStep}"/>
+		<apex:commandButton value="Save" action="{!save}"/>
+		<apex:commandButton value="Save & Run" action="{!saveAndRun}"/>
+	</apex:pageBlockButtons>
+
+	Use the default name or set your own query name.
+	<apex:outputPanel layout="none" rendered="{!isMailChimpAdmin}">Choose to schedule your query to run every day or now.</apex:outputPanel>
+	<br/><br/>
+
+	<apex:pageBlockSection title="Query Details" columns="1">
+		<apex:inputField value="{!mcQuery.Name}" required="true" style="width: 300px;"/>
+		<apex:inputField value="{!mcQuery.MC4SF__Run_Daily_At__c}" rendered="{!isMailChimpAdmin}"/>
+	</apex:pageBlockSection>
+</apex:pageBlock>
+
+</apex:form>
+
+</apex:page>

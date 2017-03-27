@@ -1,0 +1,259 @@
+<apex:page standardController="vhc__Agent__c" recordSetVar="Agent" extensions="vhc.Ctrl03AgentBulkAdd">
+    		
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/jquery-1.7.2.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI, '/js/cti/jquery-ui-1.8.21.custom.min.js')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.vhc__Selectize, '/selectize.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.vhc__Selectize, '/selectize.css')}" />
+
+<style>
+		.selectize-control.vhc::before {
+			-moz-transition: opacity 0.2s;
+			-webkit-transition: opacity 0.2s;
+			transition: opacity 0.2s;
+			content: ' ';
+			z-index: 2;
+			position: absolute;
+			display: block;
+			top: 50%;
+			right: 34px;
+			width: 16px;
+			height: 16px;
+			margin: -8px 0 0 0;
+			background:url('{!URLFOR($Resource.Selectize, '/images/spinner.gif')}');
+			background-size: 16px 16px;
+			opacity: 0.0;
+		}
+		
+		.selectize-control.vhc.loading::before {
+			opacity: 0.4;
+		}
+		
+</style>
+
+	<div style="margin-top:12px;">
+
+		<apex:pageMessages /> 
+				
+		<apex:form style="margin-top:12px;">
+		
+			 <apex:pageBlock title="{!$Label.bulkCreateAgents}" >
+
+			 	<!-- Page blocks buttons -->
+			 
+			 	<apex:pageBlockButtons >
+	            	<apex:commandButton id="doCreateAgents" value="Create Agents" action="{!doCreateAgents}"/>
+	            	<apex:commandButton id="cancelButton" 	value="Cancel" action="{!doCancel}"/>
+	        	</apex:pageBlockButtons>	
+	        	
+	        	<!-- Multiple user select page block section / Using selectize plugin -->
+	        	
+	        	<apex:pageBlockSection title="Users Select">
+					<select onchange="refreshCsv();" multiple="true" id="select-user" class="vhc" style="width:400px;"/>
+	        	</apex:pageBlockSection>
+	        	
+	            <!-- Personal Data page block section-->
+	            
+	            <apex:pageBlockSection title="{!$Label.Personal_Data}">
+	                <apex:pageBlockSectionItem >
+			           	{!$ObjectType.vhc__Agent__c.fields.vhc__Agent_Group__c.label}
+			           	<apex:selectList value="{!selectedGroupId}" size="1" style="width:120px;">
+						   	<apex:selectOptions value="{!AgentGroupList}"/>
+						</apex:selectList> 
+					</apex:pageBlockSectionItem>
+	        	</apex:pageBlockSection>
+
+	            <!-- Telephony Options -->
+	             
+				<apex:pageBlockSection title="{!$Label.Telephony_Options}">
+					<apex:pageBlockSectionItem >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__AutoHangup__c.label} 
+						<apex:inputCheckbox label="test" value="{!autoHangup}"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__AutoReady__c.label} 
+						<apex:inputCheckbox value="{!autoReady}"/>
+					</apex:pageBlockSectionItem>
+	        	</apex:pageBlockSection>
+
+	            <!-- Allowed Programs -->
+	             
+				<apex:pageBlockSection id="allowedPrograms" title="{!$Label.Allowed_Programs}">  
+					<apex:pageBlockSectionItem >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__AgentControlRight__c.label} 
+						<apex:inputCheckbox selected="true" disabled="true" value="{!agentControlRight}"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem id="item0" >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__ManagerRight__c.label} 
+						<apex:inputCheckbox id="managerRight" value="{!managerRight}" onchange="refreshSupervisionRightsPanel();"/>
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+			
+	            <!-- Phone Rights Page Block Section -->
+	            
+	            <apex:pageBlockSection title="{!$Label.Phone_Rights}">
+					<apex:pageBlockSectionItem >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__HangupRight__c.label} 
+						<apex:inputCheckbox value="{!hangupRight}"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__ManualCallRight__c.label} 
+						<apex:inputCheckbox value="{!manualCallRight}"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__BlindTransferRight__c.label} 
+						<apex:inputCheckbox value="{!blindTransferRight}"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__RecordRight__c.label} 
+						<apex:inputCheckbox value="{!recordRight}"/>
+					</apex:pageBlockSectionItem>
+	            </apex:pageBlockSection>
+				
+				<!-- Supervision Rights -->
+					
+	            <apex:pageBlockSection id="Supervision_Rights" title="Supervision Rights">	
+	            	                  
+					<apex:pageBlockSectionItem id="item1" >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__PlayRecordedFilesRight__c.label} 
+						<apex:inputCheckbox onchange="refreshSupervisionRightsPanel();" id="playRecordedFilesRight" value="{!playRecordedFilesRight}"/>
+					</apex:pageBlockSectionItem>
+					
+					<apex:pageBlockSectionItem id="item2"  >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__DownloadRecordedFilesRight__c.label} 
+						<apex:inputCheckbox id="downloadRecordedFilesRight" value="{!downloadRecordedFilesRight}"/>
+					</apex:pageBlockSectionItem>
+				
+					<apex:pageBlockSectionItem id="item3"  >
+						{!$ObjectType.vhc__Agent__c.fields.vhc__DeleteRecordedFilesRight__c.label} 
+						<apex:inputCheckbox id="deleteRecordedFilesRight" value="{!deleteRecordedFilesRight}"/>
+					</apex:pageBlockSectionItem>
+	 			
+	 			</apex:pageBlockSection>
+	 			
+	 			<script>
+				function getInputManagerRight() {
+					return document.getElementById('{!$Component.allowedPrograms.item0.managerRight}');
+				}
+				</script>
+					 			
+				<script>
+				function getSupervisionRightBlockSection() {
+					return document.getElementById('{!$Component.Supervision_Rights}');
+				}
+				</script>
+				
+				<script>
+				function getInputPlayRecordedFilesRight() {
+					return document.getElementById('{!$Component.Supervision_Rights.item1.playRecordedFilesRight}');
+				}
+				</script>
+				
+				<script>
+				function getDownloadRecordedFilesRight() {
+					return document.getElementById('{!$Component.Supervision_Rights.item2.downloadRecordedFilesRight}');
+				}
+				</script>
+				
+				<script>
+				function getDeleteRecordedFilesRight() {
+					return document.getElementById('{!$Component.Supervision_Rights.item3.deleteRecordedFilesRight}');
+				}
+				</script>
+				
+				<script>
+				
+				function refreshSupervisionRightsPanel() {
+					
+					if ( getInputManagerRight().checked ) {
+						getInputPlayRecordedFilesRight().disabled = false;
+					
+						if (getInputPlayRecordedFilesRight().checked) {
+							getDownloadRecordedFilesRight().disabled = false;
+							getDeleteRecordedFilesRight().disabled = false;
+						} else {
+							getDownloadRecordedFilesRight().disabled = true;
+							getDeleteRecordedFilesRight().disabled = true;
+							getDownloadRecordedFilesRight().checked = false;
+							getDeleteRecordedFilesRight().checked = false;
+						}
+					} else {
+						
+						// Disable supervision recording rights
+						
+						getInputPlayRecordedFilesRight().disabled = true;
+						getDownloadRecordedFilesRight().disabled = true;
+						getDeleteRecordedFilesRight().disabled = true;
+						
+						// Force supervision recording rights to false
+						
+						getInputPlayRecordedFilesRight().checked = false;
+						getDownloadRecordedFilesRight().checked = false;
+						getDeleteRecordedFilesRight().checked = false;
+					}
+				}
+				
+				refreshSupervisionRightsPanel();
+				
+				</script>
+
+				<!------------------ Hidden input field to get user id selected  -------------->
+	        	
+	        	<div style="display:none">
+					<apex:pageBlockSection title="Debug">
+						Debug : <apex:inputText value="{!selectedUsersIdCSV}" id="selectedUsersIdCSV"/>
+						
+						<script>
+						function getInputText() {
+							return document.getElementById('{!$Component.selectedUsersIdCSV}');
+						}
+						</script>
+						
+					</apex:pageBlockSection>
+				</div>
+
+			 </apex:pageBlock>
+		</apex:form>
+		
+    <script>
+    
+	 mySelectize = $('#select-user').selectize(
+		{
+		    valueField: 'Id',
+		    labelField: 'SearchKey',
+		    searchField: 'SearchKey',
+			create: false,
+			sortField: 'LastName',
+			options: [],
+
+			load: function(query, callback) {
+			
+				if (!query.length) { 
+					return callback();
+				} else {
+		            vhc.Ctrl03AgentBulkAdd.getSomeUsers( query, function(result, event ) {
+			                if(event.status) {
+			                	for (var i=0; i < result.length ;i++) {
+			                		result[i].SearchKey = result[i].FirstName + ' ' + result[i].LastName;
+			                	}
+			                	callback( result );
+			                }
+			            }
+		            );
+		        }
+			}
+		}
+	);
+	
+	// Construct list of selected user id as csv string (comma separated)
+	
+	function refreshCsv() {
+		var selectize = mySelectize[0].selectize;
+		getInputText().value = selectize.getValue();
+	}
+	
+	</script>
+	
+	</div>
+	
+</apex:page>

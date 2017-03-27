@@ -1,0 +1,2 @@
+<apex:page standardcontroller="Zendesk__Zendesk_Ticket__c" extensions="Zendesk.RedirectToZendeskSetting" action="{!redirectPage}">
+</apex:page>

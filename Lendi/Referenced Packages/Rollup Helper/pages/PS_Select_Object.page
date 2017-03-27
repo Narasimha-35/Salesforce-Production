@@ -1,0 +1,178 @@
+<apex:page controller="rh2.PS_Manage_Trigger_Controller" sidebar="false"  applyBodyTag="false" docType="html-5.0" >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	
+	<head> 
+    	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>   
+     	<apex:includeScript value="//code.jquery.com/jquery-1.11.3.min.js"/>
+    	<apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />    
+     </head>
+     
+     <script>
+     //Verify namespace is ready
+        var rh = rh || {};
+        var overwriteFlag;
+                
+        rh.j$ = jQuery.noConflict();
+        rh.j$(document).ready(function() {
+            if({!MetadataConnectionWarning} && {! !notPaid })
+
+            {
+            	createRemoteSite();
+            }
+        });
+	
+		function createRemoteSite()
+		{
+			// Disable button 
+			// Calls the Metdata API from JavaScript to create the Remote Site Setting to permit Apex callouts
+			var binding = new XMLHttpRequest();
+			var request = 
+				'<?xml version="1.0" encoding="utf-8"?>' + 
+				'<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'+
+					'<env:Header>' + 
+						'<urn:SessionHeader xmlns:urn="http://soap.sforce.com/2006/04/metadata">' + 
+							'<urn:sessionId>{!$Api.Session_ID}</urn:sessionId>' + 
+						'</urn:SessionHeader>' + 
+					'</env:Header>' + 
+					'<env:Body>' +
+						'<createMetadata xmlns="http://soap.sforce.com/2006/04/metadata">' + 
+							'<metadata xsi:type="RemoteSiteSetting">' + 
+								'<fullName>{!rssNameString}</fullName>' +  + 
+								'<disableProtocolSecurity>false</disableProtocolSecurity>' + 
+								'<isActive>true</isActive>' + 
+								'<url>https://{!Host}</url>' +
+							'</metadata>' +
+						'</createMetadata>' +
+					'</env:Body>' + 
+				'</env:Envelope>';
+			binding.open('POST', 'https://{!JSENCODE(Host)}/services/Soap/m/28.0');
+			binding.setRequestHeader('SOAPAction','""');
+			binding.setRequestHeader('Content-Type', 'text/xml');
+			binding.onreadystatechange = 
+				function() { 
+					if(this.readyState==4) {
+						var parser = new DOMParser();
+						var doc  = parser.parseFromString(this.response, 'application/xml');
+						var errors = doc.getElementsByTagName('errors');
+						var messageText = '';
+						
+						console.log('response = ', this.response);
+                    	console.log('status = ', this.status);
+                    	console.log('statusText = ', this.statusText);
+                    	
+						for(var errorIdx = 0; errorIdx < errors.length; errorIdx++)
+							messageText+= errors.item(errorIdx).getElementsByTagName('message').item(0).innerHTML + '\n';
+							
+						console.log('messageTxt = ', messageTxt);	
+					} 
+				}
+				binding.send(request);
+			
+		}
+     </script>
+     
+     <style>
+        .checkmark2 {
+            background-image: url({!URLFOR($Resource.PT_Resources_v1, 'images/checkmark.png')});
+            margin-left: 6px;
+            width: 12px;
+            height: 12px;
+        }
+     </style>
+     
+     <body>
+	 <div class="slds slds-p-around--xx-large slds-container--large slds-container--center slds-grid slds-grid--frame" role="main"> 	  
+	  	<apex:form >
+	 	<apex:outputPanel rendered="{!rhxInstalled}">
+  			<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+    			<div class="slds-modal__container">
+      				<div class="slds-modal__header">
+       					<h2 class="slds-text-heading--medium">Paid Feature Only!</h2>
+      				</div>
+      				<div class="slds-modal__content">
+        				<div align="center">          
+        					Upgrade needed to enable real-time rollups,	
+        					<br/><br/>
+          					please
+	            			<a href="http://www.passagetechnology.com/rollup-helper-order" target="new">upgrade</a> 
+	           				Rollup Helper!
+	           				<br/><br/>
+	           				Like Rollup Helper?
+	           				<a href="https://appexchange.salesforce.com/listingDetail?listingId=a0N30000009i3UpEAI&tab=r" target="new">
+	           					Give us a review!
+	           				</a>
+	            			<br/>
+	            			<apex:outputLink style="margin-left:92px;padding-right:8px;" target="new" 
+	            			value="http://www.passagetechnology.com/rollup-helper-order"/>             	   
+        				</div>
+     				</div>
+      				<div class="slds-modal__footer">		
+						<button type="button" onclick="window.open('{!URLFOR($Page.PS_AllSettings)}', '_self')"
+               				class="slds-button slds-button--neutral">Close</button>   			
+        				<button class="slds-button slds-button--neutral slds-button--brand"  
+	            			onClick="window.open('http://www.passagetechnology.com/rollup-helper-order');">Upgrade Rollup Helper!</button>
+      				</div>
+    			</div>
+  			</div>
+  			<div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+		</apex:outputPanel>		
+		</apex:form>
+
+    	<div class="slds-card slds-card--empty">
+  			<header class="slds-card__header slds-grid grid--flex-spread">
+   		  		<nav role="navigation">
+        			<ol class="slds-breadcrumb slds-list--horizontal">
+                		<li class="slds-list__item slds-text-heading--label"><a href="{!URLFOR($Page.PS_AllSettings)}">All Rollup Settings</a></li>
+             		</ol>
+        		</nav>
+  			</header>
+		</div>
+	   	<apex:form >
+     	<div class="slds-card slds-m-vertical--medium">
+     		<header class="slds-card__header slds-grid">
+     			<div class="slds-media__body">
+                	<h3 class="slds-text-heading--small slds-truncate">Select Source Object to Enable/Disable Real-time Updating</h3>
+              	</div>
+     		</header>
+     		<body>
+     		<section class="slds-card__body slds-grid">
+     			<div class="slds-scrollable--y" style="width:95%;  margin-left:auto; margin-right:auto;" >
+            		<table class="slds-table slds-table--bordered slds-max-medium-table--stacked slds-col slds-shrink">
+              			<thead>
+              				<tr style="width:100%;">
+	                			<th class="slds-text-heading--label slds-cell-shrink" scope="col">Action</th>
+	                			<th class="slds-text-heading--label slds-is-sortable slds-cell-shrink hidecol" scope="col">Realtime?</th>
+	                  			<th class="slds-text-heading--label slds-is-sortable hidecol" scope="col">Label</th>
+	                  			<th class="slds-text-heading--label slds-is-sortable" scope="col">API Name</th> 
+	                  		</tr>
+	                  	</thead>
+	                  	<tbody>
+                			<apex:repeat value="{! masterObjects }" var="item">
+                				<tr>
+                					<td data-label="Action">
+                						<apex:commandLink value="Select" action="{!doSelectMasterObject}" rerender="error, table">
+                               				<apex:param name="masterAPI" value="{!item.rh2__Object__c}" assignTo="{!deployObjectName}"/>
+                           				</apex:commandLink>
+                           			</td>
+                           			<td>
+                           				<apex:image value="{!URLFOR($Resource.rh2__PT_Resources_v1, 'images/s.gif')}" styleClass="checkmark2" rendered="{!item.rh2__Real_Time__c}" id="checkmark2"/>	
+                           			</td>
+                           			<td>
+                           				{!item.Label__c}
+                           			</td>
+                           			<td>
+                           				{!item.rh2__Object__c}
+                           			</td>               		
+                           		</tr>
+                			</apex:repeat>
+                		</tbody>
+	            	</table>
+	       		</div>
+	   		</section>
+     		</body>
+     	</div>
+     </apex:form>
+     </div>     
+     </body>
+</html>
+</apex:page>

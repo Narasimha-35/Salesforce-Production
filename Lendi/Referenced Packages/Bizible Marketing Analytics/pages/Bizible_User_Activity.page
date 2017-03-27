@@ -1,0 +1,35 @@
+<apex:page sidebar="false" standardController="Lead" extensions="bizible.UserActivityControllerExt">
+    <script type="text/javascript">
+        function resizeIframe() {
+            var frameHeight = window.innerHeight;
+            var iframeElement = document.getElementById("BizibleLeadActivity");
+            iframeElement.height = frameHeight;
+        }
+        function AttachDocumentReady(onDocumentReady) {
+            var a = document;
+            if(a.readyState == "complete" || (a.addEventListener && a.readyState == "loaded")) {
+                onDocumentReady();
+            } else {
+                if(window.addEventListener) {
+                    window.addEventListener("load", function () {
+                        onDocumentReady();
+                    }, true);
+                } else {
+                    if(window.attachEvent) {
+                        window.attachEvent("onload", function () {
+                            onDocumentReady();
+                        });
+                    }
+                }
+            }
+        }
+        AttachDocumentReady(resizeIframe);      
+    </script>
+    <apex:outputPanel rendered="{!ShouldRender == false}">
+          <h2>No Tracking Data</h2>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!ShouldRender == true}">
+        <apex:iframe id="BizibleLeadActivity" src="{!UserActivityQuery}" scrolling="true">
+        </apex:iframe>
+    </apex:outputPanel>
+</apex:page>

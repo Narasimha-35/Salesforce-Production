@@ -1,0 +1,29 @@
+<apex:page standardController="vhc__Campaign_Member__c">
+<apex:sectionHeader title="{!$ObjectType.vhc__Campaign_Member__c.label}" subtitle="{!vhc__Campaign_Member__c.name}"/>
+<apex:form >
+<apex:pageBlock title="{!$ObjectType.vhc__Campaign_Member__c.label} Detail" mode="edit">
+ 
+	
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Save"/>
+                <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2">
+            <apex:outputField value="{!vhc__Campaign_Member__c.Name}"/>
+            <apex:outputField value="{!vhc__Campaign_Member__c.vhc__Campaign__c}"/>
+            
+            <apex:outputField value="{!vhc__Campaign_Member__c.vhc__Status__c}"/>
+            <apex:outputField value="{!vhc__Campaign_Member__c.vhc__Blacklisted__c}"/>
+            
+            <apex:outputField value="{!vhc__Campaign_Member__c.vhc__Contact__c}"/>
+            <apex:outputField value="{!vhc__Campaign_Member__c.vhc__Lead__c}"/>
+            <apex:outputField value="{!vhc__Campaign_Member__c.vhc__Opportunity__c}"/>
+            <apex:outputField value="{!vhc__Campaign_Member__c.vhc__Account__c}"/>
+            
+            <apex:inputField value="{!vhc__Campaign_Member__c.vhc__Priority__c}"/>
+            
+            </apex:pageBlockSection>
+</apex:pageBlock>	
+	</apex:form>
+
+</apex:page>

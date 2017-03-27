@@ -1,0 +1,207 @@
+<apex:page StandardController="vhc__Customer__c" extensions="vhc.Ctrl02Site" action="{!init}">
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.WS_Ressource, 'CSS/slide_competence.css')}" /> 
+<apex:includeScript value="{!$Resource.vhc__JQuery}"/>
+
+<script>
+    $(document).ready(function() {
+        CheckPhoneDisplay();
+    });
+
+    $(function($) {
+        CheckRegion();
+        
+        $(".save_button").click(function() {
+            var myVal = $(".phone_specific input").val(); 
+            var res = '';
+            
+            for (var i = 0; i < myVal.length; i++) {
+              if((!isNaN(myVal[i]) && myVal[i] != ' ') || (i==0 && myVal[i] == '+'))
+                res += myVal[i];
+            }
+            
+            $(".phone_specific input").val(res);
+        });
+                             
+        $('.phone_display').change(function() {
+            CheckPhoneDisplay();
+        });
+        
+        $('.country_select').change(function() {
+            CheckRegion();
+        });
+        
+        $('.region_select').change(function() {
+            ChangeRegion();
+        });
+        
+        $('.maxInbound').change(function() {
+             var maximum = parseInt('{!JsEncode(MaximumLines)}');
+             var inbound = parseInt($('.maxInbound').val());
+             var outbound = maximum - inbound;
+             $('.maxOutbound').text(outbound);
+             $('.maxOutbound_input').val(outbound);
+             
+        });
+    
+        $('.maxInboundLines_slider').bind( "slide", function(event, ui) {
+            var maxLines = parseInt('{!MaximumLines}');
+            var availableLines = maxLines - ui.value;
+            $('.maxOutboundLines_input').val(availableLines);
+            $('.maxOutboundLines_slider').slider("value", [availableLines]);
+        });
+        
+        $('.maxInboundLines_slider').bind( "slidechange", function(event, ui) {
+            var maxLines = parseInt('{!JsEncode(MaximumLines)}');
+            var availableLines = maxLines - ui.value;
+            $('.maxOutboundLines_input').val(availableLines);
+            $('.maxOutboundLines_slider').slider("value", [availableLines]);
+        });
+        
+        $('.maxOutboundLines_slider').bind( "slide", function(event, ui) {
+            var maxLines = parseInt('{!JsEncode(MaximumLines)}');
+            var availableLines = maxLines - ui.value;
+            $('.maxInboundLines_input').val(availableLines);
+            $('.maxInboundLines_slider').slider("value", [availableLines]);
+        });
+        
+        $('.maxOutboundLines_slider').bind( "slidechange", function(event, ui) {
+            var maxLines = parseInt('{!JsEncode(MaximumLines)}');
+            var availableLines = maxLines - ui.value;
+            $('.maxInboundLines_input').val(availableLines);
+            $('.maxinboundLines_slider').slider("value", [availableLines]);
+        });
+        
+        
+    });
+        
+    function CheckPhoneDisplay()
+    {
+        var selectedIndex = $('option:selected', '.phone_display').index();
+        var selectedValue = $('option:selected', '.phone_display').val();
+        
+        if (selectedValue == "A Specific Phone Number") 
+            {
+                $('.phone_specific').show();
+            }
+            else
+            {
+                $('.phone_specific input').val('');
+                $('.phone_specific').hide(); 
+            }
+    }
+    
+    function CheckRegion()
+    {
+        $('.region_option').hide();
+        var country = $('.country_select').val();
+        $('.' + country).show();
+        ChangeRegion();
+    }
+    
+    function ChangeRegion()
+    {
+        var region = $('.region_select').val();
+        if(region == '---')
+            region="";
+        $('.selected_region').val(region);
+    }
+    
+    // Force download of XML Adapter then go to Setup | Customize | Call Centers standard page
+    
+    function DownloadAndGoToCallCenterSetup() {
+        window.location.href = '/apex/vhc__VF12CallCenterAdapter';
+        setTimeout("window.location.href = '/04v'", 2000);
+    }
+    
+</script>
+
+<style>
+    .label_style
+    {
+        vertical-align: inherit !important; 
+    }
+</style>
+
+
+<apex:sectionHeader title="{!$Label.New_Site}" subtitle="{!$Label.Site_Edit}" rendered="{!obj.id==null}"/>
+<apex:sectionHeader title="{!$Label.Site_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+<apex:outputText value="{!$Label.Site_Description}" rendered="{!ISValid}"/>
+
+<apex:pageMessages escape="false"/>
+
+<br/>&nbsp;
+    <apex:form id="myForm" rendered="{!ISValid}" styleClass="vf02Site">
+        <apex:inputText value="{!obj.vhc__Region__c}" styleClass="selected_region" rendered="false"/>
+        <apex:pageBlock title="{!$Label.Site_Edit}" mode="edit">
+            
+            <apex:pageBlockButtons > 
+                <!--  <apex:commandButton onclick="alert('test');" value="Test"/> -->
+                <apex:commandButton action="{!Save}" value="{!$Label.Save}" styleclass="save_button"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/> 
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="{!$Label.Informations}">
+
+                <!-- if only one entry in list the option to choose backend server is not displayed  :    -->
+                <!-- controller uses automatically the only element in list to set BackEndServerUrl value -->
+                
+                <apex:pageBlockSectionItem rendered="{! AND(obj.id==null , AvailableBackendServer.size > 1 ) }">
+                    Backend server
+                    <apex:selectList value="{!BackEndServerUrl}" multiselect="false" required="true">
+                        <apex:selectOptions value="{!AvailableBackendServer}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+            
+                <apex:inputField value="{!obj.name}"                required="true"/>
+                <apex:inputField value="{!obj.vhc__ManagerTel__c}"       required="true"/>
+                <apex:inputField value="{!obj.vhc__Manager_name__c}"     required="true"/>
+                <apex:inputField value="{!obj.vhc__Manager_email__c}"    required="true"/>
+                
+                <apex:pageBlockSectionItem rendered="{! (obj.id==null ) }">
+                    {!$ObjectType.vhc__Customer__c.fields.vhc__Country__c.label}  
+                    <apex:selectList value="{!obj.vhc__Country__c}" size="1" required="true" styleClass="country_select">
+                        <apex:selectOptions value="{!AvailableCountry}"/>
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!obj.id==null}">
+                    {!$ObjectType.vhc__Customer__c.fields.vhc__Region__c.label}  
+                    <apex:outputpanel >
+                        <select class="region_select">
+                            <option>---</option>
+                            <apex:repeat value="{!CountryList}" var="country">
+                                <apex:repeat value="{!RegionMap[country]}" var="region">
+                                    <option class="{!country} region_option">{!region}</option>
+                                </apex:repeat>
+                            </apex:repeat>
+                        </select>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Parameter}">
+                <apex:pageBlockSectionItem labelstyleclass="label_style">
+                        {!$ObjectType.vhc__Customer__c.fields.vhc__maxInboundLines__c.label}
+                       <c:Slide_Bar result="{!obj.vhc__maxInboundLines__c}" min="0" max="{!MaximumLines}" objID="maxInboundLines"/> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem labelstyleclass="label_style">
+                        {!$ObjectType.vhc__Customer__c.fields.vhc__maxOutboundLines__c.label}
+                       <c:Slide_Bar result="{!obj.vhc__maxOutboundLines__c}" min="0" max="{!MaximumLines}" objID="maxOutboundLines"/> 
+                </apex:pageBlockSectionItem>
+                <apex:outputField value="{!obj.vhc__didCount__c}"/>
+                <apex:outputField value="{!obj.vhc__maxAgents__c}"/>
+                <apex:outputField value="{!obj.vhc__maxQueues__c}"/>
+                <apex:outputField value="{!obj.vhc__maxStartedOutboundCampaigns__c}"/> 
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Telephony}" columns="2">
+                <apex:inputField value="{!obj.vhc__ForcePhoneDisplay__c}" required="true" StyleClass="phone_display"/>
+                <apex:pageBlockSectionItem labelStyleClass="phone_specific" dataStyleClass="phone_specific phone_specific_data">
+                    {!$ObjectType.vhc__Customer__c.fields.vhc__DefaultPhoneNumber__c.label}
+                    <apex:inputText value="{!obj.vhc__DefaultPhoneNumber__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+ 
+</apex:page>

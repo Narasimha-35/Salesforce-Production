@@ -1,0 +1,6 @@
+<apex:page standardController="smagicinteract__smsMagic__c">
+
+<apex:pageBlock title="Error" >
+	 You can not edit this message, Since you have already sent this message..!!  
+</apex:pageBlock>
+</apex:page>

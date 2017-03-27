@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>CallFile__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>CallFile</label>
+        <referenceTo>Campaign__c</referenceTo>
+        <relationshipLabel>Accounts</relationshipLabel>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>TimeZone__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>TimeZone</label>
+        <picklist>
+            <picklistValues>
+                <fullName>(UTC-12:00) International Date Line West</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-11:00) Coordinated Universal Time-11</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-10:00) Hawaii</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-09:00) Alaska</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-08:00) Baja California</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-08:00) Pacific Time (US &amp; Canada)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-07:00) Arizona</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-07:00) Chihuahua, La Paz, Mazatlan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-07:00) Mountain Time (US &amp; Canada)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-06:00) Central America</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-06:00) Central Time (US &amp; Canada)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-06:00) Guadalajara, Mexico City, Monterrey</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-06:00) Saskatchewan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-05:00) Bogota, Lima, Quito</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-05:00) Eastern Time (US &amp; Canada)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-05:00) Indiana (East)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-04:30) Caracas</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-04:00) Asuncion</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-04:00) Atlantic Time (Canada)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-04:00) Cuiaba</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-04:00) Georgetown, La Paz, Manaus, San Juan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-04:00) Santiago</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-03:30) Newfoundland</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-03:00) Brasilia</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-03:00) Buenos Aires</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-03:00) Cayenne, Fortaleza</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-03:00) Greenland</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-03:00) Montevideo</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-03:00) Salvador</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-02:00) Coordinated Universal Time-02</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-02:00) Mid-Atlantic</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-01:00) Azores</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC-01:00) Cape Verde Is.</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC) Casablanca</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC) Coordinated Universal Time</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC) Dublin, Edinburgh, Lisbon, London</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC) Monrovia, Reykjavik</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+01:00) Brussels, Copenhagen, Madrid, Paris</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+01:00) Sarajevo, Skopje, Warsaw, Zagreb</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+01:00) West Central Africa</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+01:00) Windhoek</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+02:00) Athens, Bucharest</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+02:00) Beirut</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+02:00) Cairo</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+02:00) Damascus</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+02:00) E. Europe</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+02:00) Harare, Pretoria</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+02:00) Istanbul</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+02:00) Jerusalem</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+03:00) Amman</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+03:00) Nairobi</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+03:00) Baghdad</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+03:00) Kaliningrad, Minsk</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+03:00) Kuwait, Riyadh</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+03:30) Tehran</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+04:00) Abu Dhabi, Muscat</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+04:00) Baku</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+04:00) Moscow, St. Petersburg, Volgograd</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+04:00) Port Louis</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+04:00) Tbilisi</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+04:00) Yerevan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+04:30) Kabul</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+05:00) Islamabad, Karachi</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+05:00) Tashkent</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+05:30) Sri Jayawardenepura</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+05:45) Kathmandu</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+06:00) Astana</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+06:00) Dhaka</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+06:00) Ekaterinburg</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+06:30) Yangon (Rangoon)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+07:00) Bangkok, Hanoi, Jakarta</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+07:00) Novosibirsk</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+08:00) Krasnoyarsk</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+08:00) Kuala Lumpur, Singapore</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+08:00) Perth</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+08:00) Taipei</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+08:00) Ulaanbaatar</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+09:00) Irkutsk</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+09:00) Osaka, Sapporo, Tokyo</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+09:00) Seoul</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+09:30) Adelaide</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+09:30) Darwin</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+10:00) Brisbane</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+10:00) Canberra, Melbourne, Sydney</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+10:00) Guam, Port Moresby</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+10:00) Hobart</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+10:00) Yakutsk</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+11:00) Solomon Is., New Caledonia</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+11:00) Vladivostok</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+12:00) Auckland, Wellington</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+12:00) Coordinated Universal Time+12</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+12:00) Fiji</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+12:00) Magadan</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+12:00) Petropavlovsk-Kamchatsky - Old</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+13:00) Nuku&apos;alofa</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>(UTC+13:00) Samoa</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+</CustomObject>

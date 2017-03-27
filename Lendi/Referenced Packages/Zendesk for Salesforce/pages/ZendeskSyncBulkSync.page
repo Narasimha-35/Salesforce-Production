@@ -1,0 +1,7 @@
+<apex:page readOnly="false">
+	<apex:sectionHeader subtitle="Zendesk Bulk Sync" title="Org/User" />
+    <apex:pageMessages />
+    <apex:form >
+        <c:ZendeskOrgUserSyncingTabbed id="ComponentTabbed" />
+    </apex:form>
+</apex:page>

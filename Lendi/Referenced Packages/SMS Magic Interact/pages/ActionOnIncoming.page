@@ -1,0 +1,52 @@
+<apex:page standardController="smagicinteract__lookup_config__c" extensions="smagicinteract.lookupConfigExtension" tabStyle="SMS_Magic_Settings__tab">
+
+<apex:form >
+<apex:pageMessages />
+<apex:pageBlock id="main" title="Create new action on incoming SMS" helpTitle="Help For this Page?" helpUrl="" >
+	<apex:pageBlockSection id="pageBlockSection"  title="Set New Action Configuration" collapsible="false" />
+		<br /><br />
+		<apex:outputPanel id="nameField">
+			<table >
+				<tr>
+					<td>
+						<apex:outputLabel styleClass="labelCol" value="Name" for="lookupConfigName"/> :
+					</td>
+					<td style="padding-left:10px;"> 
+						<apex:inputField id="lookupConfigName" value="{!lookupConfigObject.Name}" required="true"/>
+					</td>
+				</tr>
+			</table>
+		</apex:outputPanel>
+		<table><tr><td>	
+		<apex:outputPanel id="step1" styleClass="labelCol" style="padding-left:50px;"><br/>
+			When Incoming SMS is received in your org, You can configure following actions,<br/><br/>
+			Action 1: If sender's mobile number is already stored in some Object's Record : <br/>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			(e.g. Existing contact sends you sms, you can create case or task using that sms automatically)
+		</apex:outputPanel><br /><br />
+		<apex:selectRadio id="lookupFound" value="{!lookupConfigObject.smagicinteract__lookupFound__c}" layout="pageDirection" style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: left; font-size: 91%; ">
+	    	<apex:selectOption itemValue="" itemLabel="Do Nothing" />
+	    	<apex:selectOption itemValue="Case" itemLabel="Create Case" />
+	        <apex:selectOption itemValue="Opportunity" itemLabel="Create Opportunity" />
+	        <apex:selectOption itemValue="Task" itemLabel="Create Task" />
+	    </apex:selectRadio><br />
+	    </td></tr></table>
+	    
+	    <table><tr><td>
+	    <apex:outputPanel id="step2" styleClass="labelCol"><br/>
+			Action 2 : If sender's mobile number is unknown :
+		</apex:outputPanel><br /><br />
+	    <apex:selectRadio id="lookupNotFound" value="{!lookupConfigObject.smagicinteract__lookupNotFound__c}" layout="pageDirection" style="color: #4A4A56; padding-top: 5px; padding-bottom: 5px; padding-left: 2px; text-align: left; font-size: 91%; ">
+	    	<apex:selectOption itemValue="" itemLabel="Do Nothing" />
+	    	<apex:selectOption itemValue="Contact" itemLabel="Create Contact" />
+	        <apex:selectOption itemValue="Lead" itemLabel="Create Lead" />
+	    </apex:selectRadio><br />
+	    </td></tr></table>
+    <apex:pageBlockButtons location="bottom" >
+	    <apex:commandButton action="{!save}" value="Save" title="Save"/>
+	    <apex:commandButton action="{!cancel}" value="Cancel" title="Cancel"/>
+	</apex:pageBlockButtons>
+
+</apex:pageBlock>
+</apex:form>
+</apex:page>

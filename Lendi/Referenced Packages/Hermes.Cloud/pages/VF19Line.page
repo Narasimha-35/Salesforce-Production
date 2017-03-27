@@ -1,0 +1,45 @@
+<apex:page StandardController="vhc__Line__c" extensions="vhc.Ctrl19Line" action="{!init}">
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.WS_Ressource, 'CSS/slide_competence.css')}" /> 
+
+<Style>
+.vf19Line .delay_slider,
+.vf19Line .level_slider  
+	{
+		top: 5px;
+		margin: 0 0 10px;
+	}
+</Style>
+
+<apex:sectionHeader title="{!$Label.New_Line}" subtitle="{!$Label.Line_Edit}" rendered="{!obj.id==null}"/>
+<apex:sectionHeader title="{!$Label.Line_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+<apex:outputText value="{!$Label.Line_Description}" rendered="{!ISValid}"/>
+<apex:pageMessages />  
+<br/>&nbsp;
+    <apex:form id="myForm" rendered="{!AND(ISValid , IsValidQueues)}" styleClass="vf19Line">
+        <apex:pageBlock title="{!$Label.Line_Edit}" mode="edit">
+            <apex:pageBlockButtons > 
+                <apex:commandButton action="{!Save}" value="{!$Label.Save}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/> 
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.Informations}">
+            	<apex:outputField value="{!obj.vhc__Agent__c}" rendered="{!IsAgent}"/>
+            	<apex:outputField value="{!obj.vhc__Agent_Group__c}" rendered="{!NOT(IsAgent)}"/>
+            	 <apex:pageBlockSectionItem rendered="{!obj.ID == null}">
+		           	{!$ObjectType.vhc__Line__c.fields.vhc__Queue__c.label}
+			        <apex:selectList value="{!obj.vhc__Queue__c}" size="1" required="true">
+					  	<apex:selectOptions value="{!AvailableQueues}"/>
+					</apex:selectList> 
+				</apex:pageBlockSectionItem>
+				<apex:outputField value="{!obj.vhc__Queue__c}"  rendered="{!obj.ID != null}"/>
+				<apex:pageBlockSectionItem labelstyleclass="label_style">
+			          	{!$ObjectType.vhc__Line__c.fields.vhc__Delay__c.label}
+				       <c:Slide_Bar result="{!obj.vhc__Delay__c}" min="0" max="999" objID="delay"/> 
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem labelstyleclass="label_style">
+			          	{!$ObjectType.vhc__Line__c.fields.vhc__Level__c.label}
+				       <c:Slide_Bar result="{!obj.vhc__Level__c}" min="0" max="100" objID="level"/> 
+				</apex:pageBlockSectionItem>
+            </apex:pageBlockSection> 
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,1182 @@
+<apex:page showheader="false" controller="vhc.Ctrl01CTI">
+<body>
+<script type="text/javascript">
+	var ie11 = navigator.appVersion.indexOf("rv:11.0") > 0;
+	var ie10 = false;//ie11 || navigator.appVersion.indexOf("MSIE 10") > 0;
+	var ie9 = navigator.appVersion.indexOf("MSIE 9.0") > 0;
+	var sipErrors = {!JSONSipErrors};
+	var dynamicLabels = {!JSONDynamicLabels};
+	var uniquePageId = Math.random();
+	var lastStorageCheck = new Date().getTime();
+	var popupIsOpen = false;
+	var isInConsole;
+	var storageWatcherStop=false;
+	var isRunning=false;
+	
+	var storageHandler = function(e){
+		var evt = e || event;
+		if(evt.key!='vhc_popup_last_keepalive'){
+			var obj = null;
+			if(evt.newValue){
+			
+				switch (evt.key){
+					case 'vhc_popup_ui_request' :
+						var func = evt.newValue.split(/;(.+)?/);
+						CTI_BL[func[0]](func[1]?JSON.parse(func[1]):null);
+						break;
+					case 'vhc_blAction':
+						var func = evt.newValue.split(/;(.+)?/);
+						CTI_BL[func[0]].defer(func[1]?JSON.parse(func[1].split('¤¤¤')[0]):null);
+						break;
+					case 'vhc_uiAction':
+						var func = evt.newValue.split(/;(.+)?/);
+						CTI_UI[func[0]](func[1]?JSON.parse(func[1].split('¤¤¤')[0]):null);
+						break;
+					
+					case 'vhc_blinfoCallA':
+						CTI_BL.infoCallA = JSON.parse(evt.newValue);
+						break;
+					case 'vhc_blinfoCallB':
+						CTI_BL.infoCallB = JSON.parse(evt.newValue);  
+						break;
+					case 'vhc_blStatusAttribute':
+						var attr = JSON.parse(evt.newValue.split('¤¤¤')[0]);
+						for(var k in attr){
+							CTI_BL.status[k] = attr[k];  
+						}
+						break;
+					case 'vhc_blStatus':
+						CTI_BL.status = JSON.parse(evt.newValue);
+						CTI_BL.status.nextAction.perform = function () { 
+							this.action && this.action (); this.action = false; 
+							nextActions[this.actionString] && nextActions[this.actionString](); this.actionString=undefined;
+						}
+						break;
+					case 'vhc_timerA':
+						CTI_UI.$ ('#time_call_A').html (evt.newValue);
+						break;
+					case 'vhc_timerB':
+						CTI_UI.$ ('#time_call_B').html (evt.newValue);
+						break;
+					case 'vhc_removeFocus':
+						if(evt.newValue != focusRandom)
+							isFocused = false;
+						break;							      			
+					default:
+						break;
+					
+				}
+			}
+		}
+	}
+	var Labels = {
+		MANUAL_CAMPAIGN : '{!$Label.Manual_Campaign}',
+		INTERNAL_CALL   : '{!$Label.Internal_call}'
+	}
+</script>
+<script src="/soap/ajax/15.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/15.0/apex.js" 		type="text/javascript"></script>     
+
+<script type="text/javascript">sforce.connection.sessionId = "{!$Api.Session_ID}";</script>
+        
+<apex:includeScript value="/support/api/31.0/interaction.js" />
+
+<script type="text/javascript">
+window.onbeforeunload = function () {
+	if(isInConsole){
+		localStorage.clear();
+	}
+};
+var focusRandom = Math.random();
+var isFocused = true;
+sendToStorage('vhc_removeFocus',focusRandom);
+
+sforce.interaction.onFocus(function(){
+	isFocused = true;
+	
+	sendToStorage('vhc_removeFocus',focusRandom);
+});
+
+
+
+var CTIKeepalive= function(){
+	window.sendToStorage("vhc_CTI_last_keepalive",new Date().getTime());
+}
+var isOpen = setInterval(CTIKeepalive,1000);
+
+</script>
+
+
+<!-- Embedded ActiveX Softphone JS management  -->
+
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_ActiveX.js')}"  />    
+
+<!-- Specific Hermes Cloud JS libraries -->
+ 
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/flashProxy_Constants.js')}"      />
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/tools.js')}"      />
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_UI_Labels.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_UI.js')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_UI_States.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_BL.js')}"     /> 
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_BL_Buttons.js')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_BL.js')}"     /> 
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/CTI_BL_Buttons.js')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/flashProxy.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/SF_Proxy.js')}"   />
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/dtmfPanel.js')}"   />
+
+<!-- Common with hermes.net JS libraries -->
+
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/flash/swfobject.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/Toolbar.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/AgentLink.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/AgentButton.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/CallInformation.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/CallStatus.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/CallStatusGroup.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/PauseCode.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/CallInformation.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/Accessories.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/Status.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/SearchModeInformation.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/ProxySupport.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/libphonenumber.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/StringUtility.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/hermes/AgentLinkWebSocket.js')}"/>
+<script type="text/javascript">
+var campaigns = {!CampaignWithNumberFormats};
+if(campaigns["Manual Campaign"]){
+	campaigns["Campagne Manuelle"]=campaigns["Manual Campaign"];
+} else if (campaigns["Campagne Manuelle"]){
+	campaigns["Manual Campaign"]=campaigns["Campagne Manuelle"];
+}
+
+</script>
+<!-- IE conditional comment. start -->
+
+<apex:outputText value="<" escape="false" />!--[if IE]<apex:outputText value=">" escape="false" />
+        
+         <script type="text/javascript" src="{!URLFOR($Resource.CTI3, '/js/cti/IE_Related.js')}"></script>
+         <!-- <script type="text/javascript" src="https://dl.dropbox.com/u/2269009/vocalcom/vhc__CTI/js/cti/IE_Related.js"></script>  -->
+         
+        <style type="text/css">
+            .fixIEbuttonVerticalAlignment {
+                position:relative;
+                top:-1px;
+            }
+            
+            .fixIEinputLineHeight{
+                line-height:24px;
+            }
+        </style>
+<apex:outputText value="<" escape="false" />![endif]--<apex:outputText value=">" escape="false" />
+    
+<!-- IE conditional comment. end -->
+
+    <!-- Main CSS stylesheet for CTI -->
+
+    <link rel="stylesheet" href="{!URLFOR($Resource.CTI3, '/css/style.css')}" type="text/css"/>
+ 
+    <apex:stylesheet value="{!URLFOR($Resource.vhc__CTI3, '/css/ui-lightness/jquery-ui-1.8.21.custom.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.vhc__CTI3, '/css/ui-lightness/jquery-ui.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.vhc__CTI3, '/css/website.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.vhc__CTI3, '/css/reset.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.vhc__CTI3, '/css/text.css')}"/>
+    
+    <apex:stylesheet value="{!URLFOR($Resource.vhc__CTI3, '/css/bubbletip/bubbletip.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.vhc__CTI3, '/css/bubbletip/bubbletip-IE.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.vhc__CTI3, '/css/dtmfPanel.css')}"/>
+
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/jquery-1.7.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/jquery-ui-1.8.21.custom.min.js')}"/>
+
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/html5placeholder.jquery.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/jquery.tinyscrollbar.min.js')}"/>
+
+    <apex:stylesheet value="{!URLFOR($Resource.vhc__CTI3, '/css/jquery-ui-timepicker-addon.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/jquery-ui-sliderAccess.js')}"       />
+    <apex:includeScript value="{!URLFOR($Resource.vhc__CTI3, '/js/cti/jquery-ui-timepicker-addon.js')}"   />
+    
+    <style type="text/css">
+        #Flash { position: absolute; overflow:hidden; left: -200000px; }
+        .time_call { float: right; }
+        
+/*        .lists #ageJsEncode(nt-result ul li.agentName .blindTransfer_agent { right: 30px; }*/ /* TODO GAD!!! */
+        .lists #agent-result ul li.agentName .blindTransfer_agent .ico { /* TODO GAD!!! */
+            background: url({!URLFOR($Resource.CTI3, '/img/icons-sprite.png')}) scroll no-repeat -189px -4px;
+            width: 25px;
+        }
+        
+        .console_vc #qualification-panel button#Bt2 {
+            /*background: url({!URLFOR($Resource.CTI3, '/img/btn-sprite.jpg')}) scroll repeat-x left -40px;
+            border: 1 px solid #8DC117;
+            float: left;
+            margin: 0;*/
+            height: 22px;
+        }        
+    </style>
+
+	<script type="text/javascript"> var activexSupported = false; </script>
+	<script type="text/javascript"> var activexSupported = isActiveXSupportedOnCurrentBrowser() ; </script>
+	
+<!-- IE conditional comment. Render following ONLY in IE (any version). start -->
+
+<!--     <apex:outputText value="<" escape="false" />!--[if IE]<apex:outputText value=">" escape="false" />
+-->
+    
+          <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.CTI, '/css/ie9.css')}" /> 
+          <script type="text/javascript"> //var activexSupported = true; </script>
+          
+
+        <script type="text/javascript">
+            var createActiveXObjects = function (wraperElement) {
+                if (! wraperElement)
+                    return;
+                    
+                if (wraperElement.ownerDocument.getElementById ('Configurator'))
+                    return;
+
+                var configuratorDiv = document.createElement('div');
+                configuratorDiv.innerHTML = '<OBJECT id="Configurator" language="vbscript" align="middle" style="position: absolute; overflow:hidden; left: -200000px;" ' +
+                    'classid="clsid:0FCE1162-5E04-40FB-9C99-5AF3919CB41E" VIEWASTEXT=""' +
+                    'CODEBASE="{!URLFOR($Resource.ActiveX, 'HnetConfigurator.cab')}#version=5,0,0,0">' +
+                        '<PARAM NAME="_Version" VALUE="65536"/> ' +
+                        '<PARAM NAME="_ExtentX" VALUE="0"/> ' +
+                        '<PARAM NAME="_ExtentY" VALUE="0"/> ' +
+                        '<PARAM NAME="_StockProps" VALUE="0"/> ' +
+                    '</OBJECT>' +
+                    '<OBJECT id="SoftPhone" language="vbscript" align="middle" style="position: absolute; overflow:hidden; left: -200000px;" ' +
+                    'classid="clsid:12C3C2B3-CA8E-4471-8BBC-38D8AD043657" VIEWASTEXT=""' +
+                    'CODEBASE="{!URLFOR($Resource.ActiveX, 'VocalcomSoftPhone.CAB')}#version=4,3,0,0">' +
+                        '<PARAM NAME="_Version" VALUE="65536"/> ' +
+                        '<PARAM NAME="_ExtentX" VALUE="0"/> ' +
+                        '<PARAM NAME="_ExtentY" VALUE="0"/> ' +
+                        '<PARAM NAME="_StockProps" VALUE="0"/> ' +
+                    '</OBJECT>';
+                wraperElement.appendChild(configuratorDiv);
+            };
+            
+            var createActiveXObjects64 = function (wraperElement) {
+            
+                if (! wraperElement)
+                    return;
+                    
+                if (wraperElement.ownerDocument.getElementById ('Configurator'))
+                    return;
+
+                var configuratorDiv = document.createElement('div');
+                configuratorDiv.innerHTML = '<OBJECT id="Configurator" language="vbscript" align="middle" style="position: absolute; overflow:hidden; left: -200000px;" ' +
+                    'classid="clsid:0FCE1162-5E04-40FB-9C99-5AF3919CB41E" VIEWASTEXT=""' +
+                    'CODEBASE="{!URLFOR($Resource.ActiveX64, 'HnetConfigurator_x64.cab')}#version=5,0,0,0">' +
+                        '<PARAM NAME="_Version" VALUE="65536"/> ' +
+                        '<PARAM NAME="_ExtentX" VALUE="0"/> ' +
+                        '<PARAM NAME="_ExtentY" VALUE="0"/> ' +
+                        '<PARAM NAME="_StockProps" VALUE="0"/> ' +
+                    '</OBJECT>' +
+                    '<OBJECT id="SoftPhone" language="vbscript" align="middle" style="position: absolute; overflow:hidden; left: -200000px;" ' +
+                    'classid="clsid:12C3C2B3-CA8E-4471-8BBC-38D8AD043657" VIEWASTEXT=""' +
+                    'CODEBASE="{!URLFOR($Resource.ActiveX64, 'VocalcomSoftPhone_x64.CAB')}#version=4,3,0,0">' +
+                        '<PARAM NAME="_Version" VALUE="65536"/> ' +
+                        '<PARAM NAME="_ExtentX" VALUE="0"/> ' +
+                        '<PARAM NAME="_ExtentY" VALUE="0"/> ' +
+                        '<PARAM NAME="_StockProps" VALUE="0"/> ' +
+                    '</OBJECT>';
+                wraperElement.appendChild(configuratorDiv);
+            };
+
+        </script>
+
+<!-- 
+    <apex:outputText value="<" escape="false" />![endif]--<apex:outputText value=">" escape="false" />
+-->
+
+<!-- IE conditional comment. end -->
+
+    <div id="Flash"></div>
+    
+    <script type="text/javascript">
+        var agentPermissions = window.agentPermissions || {};
+        agentPermissions.manualCall = {!ManualCall};
+        
+ 		sendToStorage('vhc_agentPermissions',JSON.stringify(agentPermissions));
+        var leadIsCreateable = {!LeadIsCreateable};
+    
+        var objTypes = {
+            '{! JsEncode($ObjectType.Lead.keyPrefix)    }' : '{! JsEncode($ObjectType.Lead.Label)    }',
+            '{! JsEncode($ObjectType.Contact.keyPrefix) }' : '{! JsEncode($ObjectType.Contact.Label) }'
+        };
+        
+        var CTI_UI = window.CTI_UI || {};
+        CTI_UI.Labels = CTI_UI.Labels || {};
+        CTI_UI.Labels.buttons = CTI_UI.Labels.buttons || {};
+        
+        CTI_UI.Labels.buttons.Bt0  = [ undefined, '{!JsEncode($Label.Login)}', '{!JsEncode($Label.Logout)}' ];
+        CTI_UI.Labels.buttons.Bt1  = [ undefined, '{!JsEncode($Label.CTI_Ready)}', '{!JsEncode($Label.Pause)}' ];
+        CTI_UI.Labels.buttons.Bt2  = [ undefined, '{!JsEncode($Label.Extension)}', '{!JsEncode($Label.Pause)}' ];
+        CTI_UI.Labels.buttons.Bt3  = [ undefined, '{!JsEncode($Label.Call)}', '{!JsEncode($Label.Consultant)}', '{!JsEncode($Label.Redial)}' ];
+        CTI_UI.Labels.buttons.Bt4  = [ undefined, '{!JsEncode($Label.Hold)}', '{!JsEncode($Label.Back_to_call)}', '{!JsEncode($Label.Exchange)}' ];
+        CTI_UI.Labels.buttons.Bt5  = [ undefined, '{!JsEncode($Label.Transfer)}', '{!JsEncode($Label.Blind_Transfer)}' ];
+        CTI_UI.Labels.buttons.Bt6  = [ undefined, '{!JsEncode($Label.Conference)}' ];
+        CTI_UI.Labels.buttons.Bt8  = [ undefined, '{!JsEncode($Label.End)}', '{!JsEncode($Label.End)}' ];
+        CTI_UI.Labels.buttons.Bt13 = [ undefined, '{!JsEncode($Label.Qualify)}', '{!JsEncode($Label.Cancel_search)}' ];
+        CTI_UI.Labels.buttons.Bt15 = [ undefined, '{!JsEncode($Label.Search)}' ];
+        CTI_UI.Labels.buttons.Bt16 = [ undefined, '{!JsEncode($Label.Internal_call)}', '{!JsEncode($Label.Consultant)}' ];
+        
+        // not in use
+        CTI_UI.Labels.buttons.Bt7  = ['','','','']; CTI_UI.Labels.buttons.Bt9  = ['','','','']; CTI_UI.Labels.buttons.Bt10 = ['','','','']; 
+        CTI_UI.Labels.buttons.Bt11 = ['','','','']; CTI_UI.Labels.buttons.Bt12 = ['','','','']; CTI_UI.Labels.buttons.Bt14 = ['','','',''];
+        
+        CTI_UI.Labels.buttons.noCaption = '---'; // button disabled
+        
+        CTI_UI.Labels.CALL     = '{!JsEncode($Label.Call_Text)}';
+        CTI_UI.Labels.DUALCALL = '{!JsEncode($Label.Dual_call)}';
+        CTI_UI.Labels.CALLSTATUS = '{!JsEncode($Label.Call_Status_CTI)}';
+        CTI_UI.Labels.NONE = '{!JsEncode($Label.None)}';
+        
+        CTI_UI.Labels.MANUAL_CAMPAIGN = '{!JsEncode($Label.Manual_Campaign)}';
+        
+        // Black list
+        
+        CTI_UI.Labels.BLACKLIST_FORBIDDEN = '{!JsEncode($Label.BlackList_Forbidden)}';
+    
+        var $j = jQuery.noConflict ();
+        CTI_UI.$ = $j;
+        var flashFrame; 
+        
+
+        $j ('input[placeholder]').placeholder ();
+
+        var loadAgentList = function () {
+            CTI_UI.getAgentList ();
+            loadAgentList.defer ([], 15*1000);
+        }
+
+        var loadRecentCallList = function () {
+            vhc.Ctrl01CTI.jsonGetLastRecentCalls (CTI_UI.setRecentCallList, err, { escape : false });
+            loadRecentCallList.defer ([], 60*1000);
+        }
+		
+		
+		ctrlProxy = {
+	        createnewcallWithStatId : '{!JsEncode($RemoteAction.Ctrl01CTI.createnewcallWithStatId)}', 
+	        updateCallfinish     : '{!JsEncode($RemoteAction.Ctrl01CTI.updateCallfinish)}',
+	        searchForCaller      : '{!JsEncode($RemoteAction.Ctrl01CTI.searchForCaller)}', 
+	        updateQualification  : '{!JsEncode($RemoteAction.Ctrl01CTI.updateQualification)}',
+       		addToDNCL 			 : '{!JsEncode($RemoteAction.Ctrl01CTI.addToDNCL)}', 
+	        getAgentList         : '{!JsEncode($RemoteAction.Ctrl01CTI.getAgentList)}',
+	        getAgentByCode       : '{!JsEncode($RemoteAction.Ctrl01CTI.getAgentByCode)}',
+	        getSIPinfo           : '{!JsEncode($RemoteAction.Ctrl01CTI.getSIPinfo)}',
+	        isManualCallAllowedByBlacklistForNumber : '{!JsEncode($RemoteAction.Ctrl01CTI.isManualCallAllowedByBlacklistForNumber)}',
+	        keepAlive 			 : '{!JsEncode($RemoteAction.Ctrl01CTI.getLastRecentCalls)}',
+        	getDateTimeGMT		 :	'{!JsEncode($RemoteAction.Ctrl01CTI.getDateTimeGMT)}'
+	    };
+		
+        var isInConsole_callback = function (response) {
+
+            isInConsole = response.result;
+            var wasAlreadyOpened = false;
+            if (!isInConsole ) {            
+                //try {   
+                    // Before frm cti was in an iframe
+					var lastPopupKeepAlive = new Date(parseInt(getFromStorage('vhc_popup_last_keepalive')));
+					if((new Date().getTime() - lastPopupKeepAlive.getTime())/1000 < 10){
+						wasAlreadyOpened=true;
+						popupIsOpen = wasAlreadyOpened;
+						
+					} else {
+						localStorage.clear();
+						
+						// REINIT BL
+						CTI_BL.status = {
+							connected        : false,
+							logged           : false,
+							currentId        : '',
+							ext              : false,
+							onHold           : CTI_BL.HOLD_STATUS.NO,
+							callStatus       : CTI_BL.CALL_STATUS.NO,
+							isSetPause       : false, //TODO refresh
+							isCallTransfered : false,
+							isClickToDial    : false, //TODO depricated. use callStatus with START_CLICK_TO_DIAL
+							isSIP            : false,
+							creatingNewRecipient : CTI_BL.CREATE_NEW.NO,
+							currentPage      : false,
+							nextAction       : { action : false, perform : function () { this.action && this.action (); this.action = false; } }
+						};
+						CTI_BL.infoCallA = {
+							caller      : "", //Last tel number dialed or received
+							searchResult: "", //number of results in SF found for number (0,1,2+)
+							campaign    : "", //Last campaign on which there is call
+							indice      : undefined,  //Last indice called
+							sfCallData  : false, //info from SF click to dial
+							sfMultipleSearchResult : [],
+							selectedCaller : -1,
+							isAgent     : undefined,
+							timer       : {},
+							callObj     : false
+						};
+						CTI_BL.infoCallB = {
+							caller      : "", //Last tel number dialed or received
+							campaign    : "", //Last campaign on which there is call
+							indice      : 0,  //Last indice called
+							sfCallData  : "",
+							isAgent     : undefined,
+							timer       : {}
+						};
+						
+						//Open popup
+						window.open("/apex/VF01Flash3","THISISMYTITLE","width=300,height=100,resizable=yes",true);
+						
+						var tried = 0;
+						var popLoadedInterval = setInterval(function(){
+							if(JSON.parse(localStorage.getItem('vhc_flashPopupLoaded') || 'false')==true){
+								/*
+								$j ("#tabs").tabs ({
+					                selected : CTI_UI.bl.ui_status.tab,
+					                show : function (event, ui) {
+					                    CTI_UI.bl.ui_status.tab = ui.index; // the better way is to use coockies, but plugins.jquery.com has gone :(
+					
+					                    switch (ui.index) {
+					                        //case 1: CTI_UI.getAgentList (); break; // agentTab
+					                        //case 1: loadAgentList (); break; // agentTab
+					                        case 1: break; // agentTab
+					                        case 2: loadRecentCallList  (); break; // recentCallTab
+					                    }
+					                    
+					                    CTI_UI.updateSFSize ();
+					                }
+					            });
+					            */
+					            popupIsOpen = true;
+					            clearInterval(popLoadedInterval);
+					        } else {
+					        	if(ie9){
+						        	tried++;
+						        	if(tried>20){
+						        		location.reload();
+						        	}
+					        	}
+					        }
+						},500);
+						
+						window.sendToStorage("vhc_popup_last_keepalive",new Date().getTime());
+	                /*} catch (e) {
+	                    
+	                    var txt="VF01CTI - ";
+	                    txt="There was an error on this page.\n\n";
+	                    txt+="Error description: " + err.message + "\n\n";
+	                    txt+="Click OK to continue.\n\n";
+	                    if(typeof(console) !== 'undefined' && console != null) {
+	                        console.log(txt);
+	                    }
+	                }*/
+	            }
+	            
+	            
+	            var isOpenPopupInterval = setInterval(function(){
+					if(!getFromStorage('vhc_popup_last_keepalive')){
+						$j('.modal-popup').addClass('dn');
+						$j ('#error-panel').removeClass('dn');
+						$j ('#error-panel').show();
+               			$j ('#error-panel-text').text('The communication popup is closed. Please reload the page to be able to use cti.');
+               			$j ('.console_vc').hide();
+               			CTI_BL.sf.disableClickToDial ();
+               			
+               			clearInterval(isOpenPopupInterval);
+               			
+               			// STOP LISTENING
+               			window.removeEventListener('storage',storageHandler);
+               			storageWatcherStop = true;
+               			
+					} else {
+						var lastPopupKeepAlive = new Date(parseInt(getFromStorage('vhc_popup_last_keepalive')));
+						if((new Date().getTime() - lastPopupKeepAlive.getTime())/1000 > ((ie9 || ie10 || ie11)?90:5)){
+							$j('.modal-popup').addClass('dn');
+							$j ('#error-panel').removeClass('dn');
+							$j ('#error-panel').show();
+	               			$j ('#error-panel-text').text('The communication popup is closed. Please reload the page to be able to use cti.');
+	               			$j ('.console_vc').hide();
+	               			CTI_BL.sf.disableClickToDial ();
+	               			clearInterval(isOpenPopupInterval);
+	               			
+	               			//STOP LISTENING
+	               			window.removeEventListener('storage',storageHandler);
+	               			storageWatcherStop = true;
+						}
+					}
+				},1000);
+						
+	            
+	            CTI_BL.ui = CTI_UI;
+	            CTI_BL.sp = CTI_SP;
+	            CTI_BL.sf=SF_Proxy;
+	            SF_Proxy.bl = CTI_BL;
+	            CTI_BL.sf.interaction = sforce.interaction;
+	            CTI_UI.bl = CTI_BL;
+	            
+	            $j ("#tabs").tabs ({
+	                selected : CTI_UI.bl.ui_status.tab,
+	                show : function (event, ui) {
+	                    CTI_UI.bl.ui_status.tab = ui.index; // the better way is to use coockies, but plugins.jquery.com has gone :(
+	
+	                    switch (ui.index) {
+	                        //case 1: CTI_UI.getAgentList (); break; // agentTab
+	                        //case 1: loadAgentList (); break; // agentTab
+	                        case 1: break; // agentTab
+	                        case 2: loadRecentCallList  (); break; // recentCallTab
+	                    }
+	                    
+	                    CTI_UI.updateSFSize ();
+	                }
+	            });
+	            
+	            document.querySelector('#dtmfContainer #dtmfTitle a').addEventListener('click',function(){
+	            	var panel = this.parentNode.parentNode.querySelector('#dtmfPanel');
+	            	if(panel){
+	            		panel.parentNode.removeChild(panel);
+	            	} else {
+	            		panel = new dtmfPanel(function(val){
+	            			CTI_BL.PlayDTMF(val);
+	            		},'clear').panel
+	            		panel.style.position='absolute';
+	            		panel.style.left= 'calc(50% - 37px)';
+						panel.style.zIndex= 1;
+	            		this.parentNode.parentNode.appendChild(panel);
+	            	}
+	            });
+	            
+	            
+	            
+	            
+	            CTI_BL.flash={};
+	            CTI_BL.flash.timerA = new Timer('timerA');
+                CTI_BL.flash.timerB = new Timer('timerB');
+	            CTI_BL.flash.timerA.writeTimerFunction = CTI_BL.ui.wirteTimerA;
+                CTI_BL.flash.timerB.writeTimerFunction = CTI_BL.ui.wirteTimerB;
+                    
+                if(wasAlreadyOpened){
+                	
+                	$j('#error-panel').addClass('dn');
+                	$j('#connect-panel').addClass('dn');
+                	if(JSON.parse(getFromStorage('vhc_Connected'))==true){
+                		$j('#connect-panel').addClass('dn');
+                		CTI_BL.status.connected=true;
+                		if(JSON.parse(getFromStorage('vhc_LoggedIn'))==true){
+                			
+	                		$j('#console_vc').show();	
+	                	}
+                	}
+
+                	
+                	CTI_BL.init();
+                	
+                }
+                
+            
+                
+                if(!ie11 /*&& !ie10*/ && !ie9){       
+					window.addEventListener('storage',storageHandler);
+				} else {
+					
+					
+					// JUST IN CASE
+					
+					try{
+						if(localStorage.getItem('vhc_blinfoCallA')){
+							CTI_BL.infoCallA = JSON.parse(localStorage.getItem('vhc_blinfoCallA'));
+						}
+					} catch(e){}
+					try{
+						if(localStorage.getItem('vhc_blinfoCallB')){
+							CTI_BL.infoCallB = JSON.parse(localStorage.getItem('vhc_blinfoCallB'));
+						}
+					} catch(e){}
+					
+					try{
+						if(localStorage.getItem('vhc_blStatusForInit')){
+							CTI_BL.status = JSON.parse(localStorage.getItem('vhc_blStatusForInit'));
+							CTI_BL.status.nextAction = CTI_BL.status.nextAction || {}; 
+	          				CTI_BL.status.nextAction.perform = function () { 
+								this.action && this.action (); this.action = false; 
+								nextActions[this.actionString] && nextActions[this.actionString](); this.actionString=undefined;
+							}
+						}
+					} catch(e){}
+					
+					storageWatcherFct();
+					setInterval(function(){
+						/*********************************/
+						/* ADDITIONNAL REFRESH ***********/
+						/*********************************/
+						
+						CTI_UI.updateButtons({button:JSON.parse(localStorage.getItem('vhc_buttons'))}, true);
+					},1000);
+				}
+            } else {
+            	localStorage.clear();
+            	sendToStorage('vhc_agentPermissions',JSON.stringify(agentPermissions));
+            	window.onbeforeunload = function () {
+            		
+			        //localStorage.clear();
+			    }
+			    
+                if(window.WebSocket && !{!forceFlashMode}){
+		    		flashProxy.CreateWebSocket({!CustomerId});
+		    	} else {
+			    	var so = new SWFObject("{!URLFOR($Resource.CTI3, '/flash/AgentLink.swf')}", "AgentLink", "100", "30", "9", "");
+			        so.write(document.getElementById("Flash"));
+			        flashProxy.CreateFlash (so);
+		    	}
+		    	
+		    	
+		    	
+                flashFrame = window;
+                flashFrame.ctiFrame = window;
+                
+                flashFrame.ctrlProxy = {
+                    createnewcallWithStatId : '{!JsEncode($RemoteAction.Ctrl01CTI.createnewcallWithStatId)}',
+                    updateCallfinish     : '{!JsEncode($RemoteAction.Ctrl01CTI.updateCallfinish)}',
+                    searchForCaller      : '{!JsEncode($RemoteAction.Ctrl01CTI.searchForCaller)}',
+                    updateQualification  : '{!JsEncode($RemoteAction.Ctrl01CTI.updateQualification)}',
+                    getAgentList         : '{!JsEncode($RemoteAction.Ctrl01CTI.getAgentList)}',
+                    getAgentByCode       : '{!JsEncode($RemoteAction.Ctrl01CTI.getAgentByCode)}',
+                    getSIPinfo           : '{!JsEncode($RemoteAction.Ctrl01CTI.getSIPinfo)}',
+                    isManualCallAllowedByBlacklistForNumber : '{!JsEncode($RemoteAction.Ctrl01CTI.isManualCallAllowedByBlacklistForNumber)}',
+                    keepAlive 			 : '{!JsEncode($RemoteAction.Ctrl01CTI.getLastRecentCalls)}',
+                    getDateTimeGMT		 :	'{!JsEncode($RemoteAction.Ctrl01CTI.getDateTimeGMT)}'
+                };
+
+                //flashProxy.CreateFlash (so);        
+                flashFrame.agentlink_toolbar = flashProxy.agentlink_toolbar;
+                
+                CTI_BL.flash = flashProxy;
+                CTI_BL.sf = SF_Proxy;
+                CTI_BL.sp = CTI_SP;
+                CTI_BL.sf.bl = CTI_BL.flash.bl = CTI_BL;
+        
+                CTI_BL.flash.timerA = new Timer('timerA');
+                CTI_BL.flash.timerB = new Timer('timerB');
+
+                flashFrame.registerAll = function (cti_fr, sforceInteraction) {
+                    ctiFrame = cti_fr;
+                    
+                    CTI_BL.ui = ctiFrame.CTI_UI;
+                    CTI_BL.ui.bl = CTI_BL;
+            
+                    CTI_BL.sf.interaction = sforceInteraction;
+                    
+                    CTI_BL.flash.timerA.writeTimerFunction = CTI_BL.ui.wirteTimerA;
+                    CTI_BL.flash.timerB.writeTimerFunction = CTI_BL.ui.wirteTimerB;
+            
+                    CTI_BL.connect ('{!JsEncode(ProxyAddress)}');
+                }
+            }
+
+            // Display message in UI if flash is not loaded
+            // (undefined test is needed for IE8 support)
+    
+            if ( !flashFrame || (typeof(flashFrame) == "undefined") ) {
+            /*var lastPopupKeepAlive = new Date(parseInt(getFromStorage('vhc_popup_last_keepalive')));
+			if((new Date().getTime() - lastPopupKeepAlive.getTime())/1000 > 5){*/
+            /*    $j ('.console_vc').hide();
+                $j ('#error-panel').removeClass('dn');
+                $j ('#error-panel-text').text('{!JsEncode($Label.Error_No_flash)}');
+                return;*/
+            } 
+            /*else {
+            	$j ('.console_vc').show();
+            	
+            	var func = getFromStorage('vhc_blAction').split(/;(.+)?/);
+				CTI_BL[func[0]].defer(func[1]);
+            }*/
+
+            // Display message in UI if no hermes cloud agent is defined for the salesforce user
+
+            if (! {!agentFound}) {
+                $j ('.console_vc').hide ();
+                $j ('#error-panel').removeClass ('dn');
+                $j ('#error-panel-text').text ('{!JsEncode($Label.Error_No_Agent)}');
+                return;
+            }
+    		
+			if(isInConsole){
+	    		try{
+	            	flashFrame.registerAll (window, sforce.interaction);
+	            
+		            if ({!ie64} == false ) {
+		          		window.createActiveXObjects && createActiveXObjects (document.body);
+		          	} else {
+		          		window.createActiveXObjects64 && createActiveXObjects64 (document.body);
+		          	}
+	            }catch(e){
+            		if(typeof(console) !== 'undefined' && console != null) {
+                        console.log(e);
+                    }
+
+	            }
+	        }
+            
+            
+            if(!isInConsole){
+	            setTimeout(function(){
+	            	loadAgentList();
+		            CTI_UI.bl.init ({ ready : {!AutoReady} });
+		        
+		        
+		        
+		            $j ("#tabs").tabs ({
+		                selected : CTI_UI.bl.ui_status.tab,
+		                show : function (event, ui) {
+		                    CTI_UI.bl.ui_status.tab = ui.index; // the better way is to use coockies, but plugins.jquery.com has gone :(
+		
+		                    switch (ui.index) {
+		                        //case 1: CTI_UI.getAgentList (); break; // agentTab
+		                        //case 1: loadAgentList (); break; // agentTab
+		                        case 1:  $j ('#scrollbar1').tinyscrollbar ();break; // agentTab
+		                        case 2: loadRecentCallList  (); break; // recentCallTab
+		                    }
+		                    
+		                    CTI_UI.updateSFSize ();
+		                }
+		            });
+		            
+		            $j ('#InputCallLineA').val (CTI_UI.bl.ui_status.InputCallLineA);
+		            $j ('#InputCallLineB').val (CTI_UI.bl.ui_status.InputCallLineB);
+	            },3000);
+            } else {
+            	CTI_UI.bl.init ({ ready : {!AutoReady} });
+        
+	            $j ("#tabs").tabs ({
+	                selected : CTI_UI.bl.ui_status.tab,
+	                show : function (event, ui) {
+	                    CTI_UI.bl.ui_status.tab = ui.index; // the better way is to use coockies, but plugins.jquery.com has gone :(
+
+	                    switch (ui.index) {
+	                        //case 1: CTI_UI.getAgentList (); break; // agentTab
+	                        //case 1: loadAgentList (); break; // agentTab
+	                        case 1:  $j ('#scrollbar1').tinyscrollbar ();break; // agentTab
+	                        case 2: loadRecentCallList  (); break; // recentCallTab
+	                    }
+	                    
+	                    CTI_UI.updateSFSize ();
+	                }
+	            });
+	            loadAgentList();
+	            $j ('#InputCallLineA').val (CTI_UI.bl.ui_status.InputCallLineA);
+	            $j ('#InputCallLineB').val (CTI_UI.bl.ui_status.InputCallLineB);
+            }
+        };
+        
+        $j (function () {
+        
+            // window.opener.sforce.interaction.isInConsole( isInConsole_callback);
+			sforce.interaction.isInConsole( isInConsole_callback);
+
+            $j ("#station_number").keyup (function (e) {
+                if (e.which === 13) {
+                    e.preventDefault ();
+                    $j ("#cti_btnLogin").click ();
+                  }  
+            });     
+                                
+            $j ('#agentListSearch').keyup (function (event) {
+            	if(!this.value){
+            		$j ('.agent_line').each (function (k, v) {
+            			$j (v).show ();
+            		});
+            	} else {
+	                var term = new RegExp (this.value, 'i')
+	                $j ('.agent_line').each (function (k, v) {
+	                    if (term.test ($j (v).text ()))
+	                        $j (v).show ();
+	                    else
+	                        $j (v).hide ();
+	                });
+                }
+            });
+            
+            $j ('#InputCallLineA').keyup (function (e) { CTI_UI.bl.ui_status.InputCallLineA = tidyPhoneNumber (this.value); });
+            $j ('#InputCallLineB').keyup (function (e) { CTI_UI.bl.ui_status.InputCallLineB = tidyPhoneNumber (this.value); });
+        
+            $j (window).unload (function () { CTI_UI.bl && CTI_UI.bl.sf && CTI_UI.bl.sf.disableClickToDial && CTI_UI.bl.sf.disableClickToDial (); });
+                        
+            $j ('#scrollbar1').tinyscrollbar ();
+            $j ('#scrollbar2').tinyscrollbar ();
+            $j ('#reminderTimeDate').datetimepicker ({
+            	showTimezone:true,
+            	timeFormat: 'HH:mm z',
+	            timezone: '{!userTimezone}',
+	            defaultTimezone:'{!userTimezone}',
+				timezoneList: {!listTimeZones}
+            });
+        });
+    </script>
+
+    <style type="text/css"> 
+        .modal-popup { z-index: 10;  position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+        body{
+            background-color:  #EAEBEF!important;
+            overflow: hidden !important;
+        }
+        #mulipleSearchCallerResult select { width: 160px }
+    </style>
+
+    <div id="error-panel" class="modal-popup dn">
+        <div id="error-panel-text"></div>
+    </div>
+
+    <div id="connect-panel" class="modal-popup" style="display:none">
+        <span id="connect-panel-text" class="connect">{!HtmlEncode($Label.Connecting)} ...</span>
+    </div>
+
+    <!--  ********************************************************************* -->
+    <!--  *                            Login Panel                            * -->
+    <!--  ********************************************************************* -->
+    
+    <script type="text/javascript">
+    
+    /**
+    * Submit the extension login form
+    */
+    function doLogin() {
+        if ( $j ('#station_number').val().length > 0 ) { 
+            if ( jQuery.isNumeric(  $j('#station_number').val() )) {
+                CTI_UI.Bt0Click ('{!JsInHtmlEncode(UserName)}', '{!JsInHtmlEncode(Password)}', $j ('#station_number').val ());
+            } else {
+                CTI_UI.$('#cti-login-messages').html('{!JsInHtmlEncode($Label.StationNumeric)}');
+                CTI_UI.$('#cti-login-messages').show();
+                CTI_UI.updateSFSize ();
+            }
+        } else {
+            CTI_UI.$('#cti-login-messages').html('{!JsInHtmlEncode($Label.StationMandatory)}');
+            CTI_UI.$('#cti-login-messages').show();
+            CTI_UI.updateSFSize ();
+        }
+    }
+    </script>
+    
+    <div id="login-panel" style="display: none;" class="modal-popup">
+        
+        <div class="help" >
+            <a style="text-decoration: none;left: 10px;" href="https://hermes-cloud.com/docs/pdf/Hermes%20Cloud%20Agent%20&%20Supervision%20Guide%201.0.pdf" target="_blank"> </a>
+        </div>
+        
+        <h4 class="label"><span class="log_in"> </span><b>{!$Label.Login_text}:</b></h4>
+        
+        <div class="fields_log">
+        
+            <span class="label">{!$Label.Station_number}:</span>
+            <div style="height:30px;border:0px solid red;margin:0px;padding:0px;"> 
+                <span class="user_nbr" >
+                    <input class="fixIEinputLineHeight" style="width:35px;" id="station_number"  name="station_number" value="{!Station}"  />
+                </span>
+                <span class="login">
+                    
+                    <button class="fixIEbuttonVerticalAlignment" id="cti_btnLogin" onclick="doLogin()">
+                        {!$Label.Login_text}
+                    </button>
+ 
+                    <span class="load_click" style="display: none;"> </span>
+                </span>
+            </div>
+        </div>
+            
+        <div id="cti-login-messages" class="alert_msg" style="display: none;"></div>
+    </div>
+
+    <div class="console_vc" style="display: none;">
+        <div class="logo_h"> </div>
+        <div class="act_btn">
+            <span class="wrapup">
+                <a id="Bt2" title="Wrapup" class="" href="javascript:void(0)" onclick="CTI_UI.Bt2Click ()" style=""> </a>
+            </span>
+    
+            <span class="status">
+                <a href="javascript:void(0)" id="Bt1" onclick="CTI_UI.Bt1Click()"><span class=""><b>{!$Label.Ready_Text}</b></span></a>
+            </span>
+            
+            <span class="logout">
+                <a href="javascript:void(0)" id="Bt0" onclick="CTI_UI.Bt0Click()"><span class=""><b>{!$Label.Logout_Text}</b></span></a>
+            </span>
+        </div>
+        <div class="clearer"> </div>
+        
+        <div class="act_status">
+            <div class="block_label">
+                <span class="log">
+                    <span id="AgtState"> --- </span>
+                </span>
+            </div>
+
+    <!--  ********************************************************************* -->
+    <!--  *                     SIP embedded Panel                            * -->
+    <!--  ********************************************************************* -->
+
+<!-- IE conditional comment. start -->
+
+    <!-- <apex:outputText value="<" escape="false" />!--[if IE]<apex:outputText value=">" escape="false" /> -->
+            <div id="sip-panel" class="sip ie" style="display:none">
+                <span class="headset"> </span>
+                <span id="status_sip" title="SIP is disconnected" class="status_sip disconnected_sip"> </span>
+            </div>
+    <!-- <apex:outputText value="<" escape="false" />![endif]--<apex:outputText value=">" escape="false" /> -->
+
+<!-- IE conditional comment. end -->
+
+            <div class="clearer"> </div>
+            <div class="QueuesStatus" style="text-align:center;font-size: 11px;color: #5b5b5b;margin-top: 10px;">
+            	<span>{!$Label.QueueState}</span> 
+            	<table class="QSTable" cellspacing="0">
+					<tr>
+						<td title="{!$Label.Personal}">{!$Label.Pers}</td>
+						<td title="{!$Label.Primary}">{!$Label.Prim}</td>
+						<td title="{!$Label.Secondary}">{!$Label.Sec}</td>
+					</tr>
+					<tr>
+						<td title="{!$Label.Personal}"><span class="QueueState Personnal">0</span></td>
+						<td title="{!$Label.Primary}"><span  class="QueueState Primary">0</span></td>
+						<td title="{!$Label.Secondary}"><span class="QueueState Secondary">0</span></td>
+					</tr>
+				</table>
+            </div>
+        </div>
+    
+        <div id="pause-panel" class="state-tab dn">
+            <div id="pause-buttons">
+                <select id="ComboPauses"></select>
+                <button id="set-pause-code" onclick="CTI_UI.setPauseCode ($j ('#ComboPauses').val ())">{!$Label.Pause_Button}</button>
+            </div>
+        </div>
+        
+        <div id="message-panel" class="state-tab dn">
+            <div id="message-panel-title"></div>
+            <div id="message-panel-body"></div>
+    		<!-- TODO: close button -->
+        </div>
+
+      <div class="tab_nav" id="tabs">
+        <ul class="nav">
+          <li class="first"><a href="#tabs-1" id="callTab">{!$Label.Call_tab}</a></li>
+          <li><a id="agentTab" href="#tabs-2">{!$Label.Agent_Tab}</a></li>
+          <li class="last"><a href="#tabs-3" id="recentCallTab">{!$Label.Recent_Tab}</a></li>
+        </ul>
+        <div class="call" id="tabs-1">
+          <div class="call_forrm">
+          		<div id="dtmfContainer" class="dn" style="text-align: center;position:absolute;left:calc(50% - 7px)">
+          			<div id="dtmfTitle"><a href="#" style="font-size: 10px;background-color: white;border: 1px solid lightgray;text-decoration: none;">DTMF</a></div>
+          			
+          		</div>
+                <div id="first_nbr">
+                  <span class="loader dn"> </span>
+                  <div class="qualify dn" id="open-qualify" title="Open Qualify panel" onclick="CTI_UI.showQualificationPanel (CTI_UI.PANEL_STATUS.OPEN);">
+                  
+                  </div>
+                  
+                  <!-- Bt7Panel for voicemail UI -->
+                  
+                  <div id="Bt7Panel" class="dn">
+                    <a id="Bt7PlayPause" class="Bt7Button" style="margin-left:20px" href="javascript:void(0)">&nbsp;</a>&nbsp;<a id="Bt7Stop" class="Bt7Button" href="javascript:void(0)">&nbsp;</a> <span id="Bt7Timer">00:00:00</span>
+                    <div id="Bt7Slider"></div>
+                  </div>
+                  
+                  <!-- Bt7PanelRecord for record UI -->
+                  
+                  <div id="Bt7PanelRecord" class="dn">
+                  	<a id="Bt7StartRecord" 	class="Bt7Button" title="{!$Label.RecordStart}" href="javascript:CTI_UI.Bt7StartRecord();">&nbsp;</a>
+                  	<a id="Bt7StopRecord" 	class="Bt7Button" title="{!$Label.RecordStop}" 	href="javascript:CTI_UI.Bt7StopRecord();">&nbsp;</a>
+                  </div>
+                  
+                  <!-- Timer A -->
+                  
+                  <span id="time_call_A" class="time_call"></span>
+                  <div class="clearer"> </div>
+                  <span class="user_number"><input id="InputCallLineA" name="InputCallLineA" type="text" placeholder="{!$Label.Call_Text}" /></span>
+                  <div class="on_call dn">
+                    <ul>
+                        <li><span class="campaignName"></span></li>
+                        <li id="noShearchCallerResult" class="ShearchCallerResult dn">
+                            <span class="create_lead" style="display:{!if(showCreateLeadButton,"block","none")};">
+                            	<a id="create_lead" href="javascript:void(0)" onclick="CTI_UI.createNewLead()"><span></span><b>Create New Lead</b></a>
+                            </span>
+                            <span class="create_contact" style="display:{!if(showCreateContactButton,"block","none")};">
+                            	<a id="create_contact" href="javascript:void(0)" onclick="CTI_UI.createNewContact()"><span></span><b>Create New Contact</b></a>
+                            </span>
+                        	<span class="create_opportunity" style="display:{!if(showCreateOpportunityButton,"block","none")};">
+                        		<a id="create_opportunity" href="javascript:void(0)" onclick="CTI_UI.createNewOpportunity()"><span></span><b>Create New Opportunity</b></a>
+                        	</span> 
+                        	<span class="create_case" style="display:{!if(showCreateCaseButton,"block","none")};">
+                        		<a id="create_case" href="javascript:void(0)" onclick="CTI_UI.createNewCase()"><span></span><b>Create New Case</b></a>
+                        	</span>
+                        	<span class="create_account" style="display:{!if(showCreateAccountButton,"block","none")};">
+                        		<a id="create_account" href="javascript:void(0)" onclick="CTI_UI.createNewAccount()"><span></span><b>Create New Account</b></a>
+                        	</span>  
+                        </li>
+                        <li id="singleSearchCallerResult" class="ShearchCallerResult dn">
+                            <span class="name_call">
+                                <a href="javascript:void(0)" onclick="CTI_UI.gotoCaller ()">
+                                    <span></span>
+                               <!-- <b style="width: 150px;height: 15px;overflow: hidden;text-overflow: ellipsis;display: block;"></b> -->
+                                    <b class="clearfix" style="overflow: hidden; text-overflow: ellipsis; height: 15px;  display: block; width: 143px;padding-left: 12px; float: left;"></b>
+                                </a>
+                            </span>
+                        </li>
+                        <li id="mulipleSearchCallerResult" class="ShearchCallerResult dn">
+                            <select onchange="CTI_UI.callerChangeSelected ($j (this).val ())">
+                                <option value="-1">Select</option>
+                            </select><br />
+                            <a class="caller-set" href="javascript:void(0)" onclick="CTI_UI.callerSet ()"><span class="icon"></span><b>Set</b></a>
+                            <a class="caller-details" href="javascript:void(0)" onclick="CTI_UI.callerDetails ()"><span class="icon"></span><b>Details</b></a>
+                        </li>
+                        <li>
+                            <span class="number_call"></span>
+                        </li>
+                    </ul>
+                    <div class="clearer"> </div>                <div class="close-qualify" title="Close Qualify panel" onclick="CTI_UI.showQualificationPanel (CTI_UI.PANEL_STATUS.FOLDED);"> </div>
+                    
+                  </div>
+                  <div class="btn_actions">
+                       <span class="btn_gnrl">
+                            <a id="Bt4_lineA" class="dn" onclick="CTI_UI.Bt4Click()" href="javascript:void(0)"><span class="hold"><b>hold</b> </span></a><!-- Hold/Retrieve/Alternate -->
+                       </span>
+                       <div class="clearer"> </div>
+                   </div>
+                   <div class="call_btn">
+                       <a href="javascript:void(0)" class="call" id="MakeCallLineA" onclick="CTI_UI.MakeCallLineA ($j ('#InputCallLineA').val ());return false;" >
+                           <span class="ico-call"> </span>
+                           <span class="caller"><b>{!$Label.Call_Text}</b> </span>
+                       </a>
+                        <a href="javascript:void(0)" class="hang dn" id="Bt8_lineA" onclick="CTI_UI.Bt8Click({line : 1});return false;">
+                           <span class="ico-hangup"> </span>
+                           <span class="hangup"><b>{!$Label.End_Text}</b> </span>
+                       </a><!-- Hangup/Cancel -->
+                   </div>
+                </div>
+                <div class="clearer"> </div>
+                <div id="incoming_nbr" class="incoming_call dn">
+                    <div class="content_infos">
+                        <h5 class="status_incoming"><span class="inc-ico"> </span> <label>{!$Label.Incoming_Call}</label><span class="clearer"> </span></h5>
+                        <span class="campaignName"></span>
+                        <span class="user_label"><label id="name_caller"> </label> </span>
+                        <span class="user_number"><label id="number_caller"></label> </span>
+                
+                    </div>
+                </div>
+                <div class="clearer"> </div>
+                <div id="second_nbr" class="dn clearfix" style="margin-top: 10px;">
+                  <span class="loader dn"> </span>
+                  <span id="time_call_B" class="time_call"></span>
+                  <div class="clearer"> </div>
+                  <span class="user_number"><input name="InputCallLineB" type="text" id="InputCallLineB" placeholder="{!$Label.Dual_call}" /></span>
+                  <div class="on_call dn">
+                    <ul>
+                        <li>
+                            <span class="number_call"></span>
+                        </li>
+                    </ul>
+                    <div class="clearer"> </div>
+                  </div>
+                  <div class="btn_actions">
+                       <span class="btn_gnrl">
+                            <a id="Bt5_blind_transfer" onclick="CTI_UI.Bt5Click ($j ('#InputCallLineB').val ())" href="javascript:void(0)"><span class="blind_transfert"><b>blind transfert</b> </span></a><!-- Hold/Retrieve/Alternate --> 
+                       </span>
+                       <div class="clearer"> </div>
+                  </div>
+                  <div class="call_btn">
+                       <a href="javascript:void(0)" class="call" id="MakeCallLineB" onclick="CTI_UI.MakeCallLineB ($j ('#InputCallLineB').val ())" >
+                           <span class="ico-call"> </span>
+                           <span class="caller"><b>{!$Label.Call_Text}</b> </span>
+                       </a><!--CALL -->
+                       <a href="javascript:void(0)" class="hang dn" id="Bt8_lineB" onclick="CTI_UI.Bt8Click({line : 2})">
+                           <span class="ico-hangup"> </span>
+                           <span class="hangup"><b>{!$Label.End_Text}</b> </span>
+                       </a><!-- Hangup/Cancel -->
+                   </div>
+                  
+                </div>
+                
+                <div class="clearer"> </div>
+                <div class="act_call_btn" style="padding: 8px 0px 0px ! important;">
+                    <ul >
+                        <li> 
+                            <a class="transfert" title="{!JsEncode($Label.Transfer)}" href="javascript:void(0)" id="Bt5_transfer" onclick="CTI_UI.Bt5Click ($j ('#InputCallLineB').val ())"><span class="transfert"><b>---</b> </span> </a><!-- BlindTransfer/Transfer -->
+                        </li>
+                        <li>
+                            <a class="conf"  title="{!JsEncode($Label.Conference)}" href="javascript:void(0)" id="Bt6" onclick="CTI_UI.Bt6Click()"><span class="conf"><b>---</b> </span> </a><br /> <!-- Conference -->
+                        </li>
+                        <li>
+                            <a class="switch"  title="{!JsEncode($Label.Exchange)}" href="javascript:void(0)" id="Bt4_switch" onclick="CTI_UI.switchBtnClick()"><span class="switch"><b>---</b> </span> </a><br /> <!-- switch -->
+                        </li>
+                    </ul>
+                 </div>
+                 <div class="clearer"> </div>
+          </div>
+
+            <div id="qualification-panel" class="state-tab dn" style="border:0 none !important;">
+                <div id="qualif-comment-label-id">{!$Label.Qualification_Comment}</div>
+                <div class="close-qualify" title="Close Qualify panel" onclick="CTI_UI.showQualificationPanel (CTI_UI.PANEL_STATUS.FOLDED);"> </div>
+                
+                <div class="clearer"> </div>
+                
+                <select id="qualif-id" onchange="CTI_UI.onSelectGroupChange (this.value);"></select>
+                <select id="sub-qualif-id" disabled="disabled"></select>
+
+                <input type="text" name="reminderTimeDate" value="" id="reminderTimeDate" disabled="disabled" />
+                
+                <textarea id="qualif-comment-id" rows="" cols="" maxlength="255"></textarea>
+                
+                <div class="clearer"> </div>
+                <div>
+                    <button id="set-qualification" onclick="CTI_UI.sendQualification ()">{!$Label.Qualification_Button}</button>
+                </div>
+                
+                <div class="clearer"> </div>
+            </div>
+
+        </div>
+        <div class="agent lists "  id="tabs-2"> 
+            <div>
+            <span class="user_label"><label>{!$Label.Search_agent}: </label></span>
+            <span class="user_number">
+                <input type="text" id="agentListSearch" value="" />
+            </span>
+                <!--<br/>
+                Same group: <input type="checkbox" id="sgSearch"/>
+            --></div>
+            <div id="scrollbar1">
+                <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+                <div class="viewport">
+                    <div id="agent-result" class="overview"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recent lists" id="tabs-3">
+            <div id="scrollbar2">
+                <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+                <div class="viewport">
+                    <div id="recentList" class="overview">
+<!--    <ul id="recentList-template">  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+      </div>
+     
+    </div>
+    
+<!--    <script type="text/javascript">-->
+<!--        $j (function() {-->
+<!--            $j ('.transfert').bubbletip ($j ('#transfert_tooltip'));-->
+<!--            $j ('.conf').bubbletip ($j ('#conf_tooltip'));-->
+<!--            $j ('.switch').bubbletip ($j ('#switch_tooltip'));-->
+<!--        });-->
+<!--    </script>-->
+     <div class="help">
+        <a style="text-decoration: none;left: 3px;" href="https://hermes-cloud.com/docs/pdf/Hermes%20Cloud%20Agent%20&%20Supervision%20Guide%201.0.pdf" target="_blank"> </a>
+<!-- reload frame button url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBggGBQkIBwgKCQkKDRYODQwMDRoTFBAWHxwhIB8cHh4jJzIqIyUvJR4eKzssLzM1ODg4ISo9QTw2QTI3ODUBCQoKBQUFDQUFDSkYEhgpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKf/AABEIAB4AHgMBIgACEQEDEQH/xAAYAAEBAQEBAAAAAAAAAAAAAAAFBgcEA//EACkQAAEDAwMDAwUBAAAAAAAAAAECAwQFERIABjEhYXFBUZFEgYOxwiL/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A2uXJRDiOPuAlKBew5PsB51GVE7knkvlmSy1ylts42HgdTpLce5ZdJqQjsNMLRgF3cSSb3Pse2uOJu+qS3CA1DQhAyccUhWKB7n/WgOpO55tOkpD7rj7F7LQ4bkeCeDqsoVcNamTcE4sM4BsHk3yuT8DURWqgip1NchtpLYIA6C2VvU9zqg2B9f8Aj/rQeO64EiobiwjNlZTHCj250TRa0/Q5SlISFoX0cbV0vb9HWkltBUVYjI8m2jJ23YM50uPR0ZnlSSUk+bc6A1G9RLUlmFBcXIcNkhShjf7emqVu+CQpQUq3Uj1Oj4NDi0+5jNIQTyrqT8nXehvAnre+g//Z) -->
+    </div>
+    
+    
+</body>
+</apex:page>

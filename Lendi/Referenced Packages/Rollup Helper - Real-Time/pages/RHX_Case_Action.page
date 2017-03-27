@@ -1,0 +1,3 @@
+<apex:page standardController="Case">
+    <c:RHX_Rollup_Runner scope="CaseArticle, CaseMilestone"/>
+</apex:page>

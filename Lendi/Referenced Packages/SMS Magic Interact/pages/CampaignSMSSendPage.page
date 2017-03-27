@@ -1,0 +1,172 @@
+<apex:page controller="smagicinteract.CampaignManageController">
+<script type="text/javascript">
+	
+	function charaterCounter(textAreaId, msgId){
+		var maxLimit = 700;
+		//var txtField = document.getElementById("{!$Component.formId.main.contactTextContent}");
+		var txtField = document.getElementById(textAreaId);
+		var currentCount =	txtField.value.length;
+		//var remainingCharMsgDiv = document.getElementById("{!$Component.formId.main.textSection.charaterCountMsg.numberOfChars}");
+		var remainingCharMsgDiv = document.getElementById(msgId);
+		var noOfCharMsg = remainingCharMsgDiv.innerHTML;
+		var remaingChars = 700;
+		var msg = "";
+		if(currentCount > maxLimit){
+			txtField.value = txtField.value.substring(0, maxLimit);
+			remaingChars = 0; 
+		}
+		else{
+			remaingChars = maxLimit - currentCount;
+		}
+		msg = "You can type maximum "+remaingChars+" characters.";
+		if(remaingChars == 0)
+			msg = "You have reached to the maximum charater limit of 700.";
+		remainingCharMsgDiv.innerHTML = msg;
+	}
+</script>
+<apex:form id="formId">
+ 
+ <apex:pageMessages /><br/>
+  
+ <apex:pageBlock id="main" title="Run SMS Campaign" rendered="{!isRegistered}" helpTitle="Help For this Page?" helpUrl="/apex/SMSMagicHelp?from=CampaignSMSSend" >
+ 
+ <table>
+ <tr><td>
+ 	<table> 
+ 	<tr>
+ 	<td class="labelCol">
+     Campaign Name : 
+    </td>
+    <td> 
+     <apex:outputLabel id="campaginName" value="{!campaignName}" style="width: 165px; font-family: Times New Roman; font-size:15px; " /> <br /><br />
+    </td>
+    </tr>
+    <tr>
+    <td class="labelCol">
+    Sender Id : 
+    </td>
+    <td>
+    <apex:selectList id="senderIdList" value="{!senderId}" size="1" style="max-width:150px;width:150px;">
+         <apex:selectOptions value="{!senderIdDropDown}" />
+    </apex:selectList>
+    </td>
+    </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    </tr> 
+    <tr>
+    <td class="labelCol"> 
+    	Select Template For Contact : 
+    </td>
+    <td>
+    <apex:selectList id="contactTemplateList" value="{!contactTemplateName}" size="1" onchange="changeContactTpl();" style="max-width:150px;width:150px;">
+        <!--  <apex:actionSupport event="onchange" rerender="contactTextContent" status="contactTemplateLoadingStatus" /> -->
+        <apex:selectOption itemValue="" itemLabel="Choose the template" />
+        <apex:selectOptions value="{!contactTemplateDropDown}" />
+    </apex:selectList>
+    </td>
+    </tr>
+    <tr>
+    <td ><apex:actionFunction name="changeContactTpl" action="{!changeTemplateText}" status="contactTemplateLoadingStatus" rerender="contactTextContent" oncomplete="charaterCounter('{!$Component.formId.main.contactTextContent}','{!$Component.formId.main.numberOfCharsForContact}');"/></td>
+    <td>
+    	<apex:actionStatus id="contactTemplateLoadingStatus" startText="loading contact template..." stopText="" layout="inline" />
+    </td>
+    </tr>
+    <tr>
+    	<td>
+    		&nbsp;
+    	</td>
+    	<td>
+    		<apex:outputText style="color:green;font-size:12px;" id="numberOfCharsForContact" value="You can type maximum 700 characters."></apex:outputText>
+    	</td>
+    </tr>
+    <tr>
+    	<td class="labelCol">
+    	Contact SMS Text
+    	</td>
+    <td>
+    	<apex:inputTextarea id="contactTextContent" value="{!contactTextContent}" style="width:300px;height:80px;text-align:left;" onkeyup="charaterCounter('{!$Component.formId.main.contactTextContent}','{!$Component.formId.main.numberOfCharsForContact}');"/><br /><br />
+    </td>
+    </tr>
+      
+    <tr>
+    <td class="labelCol">    
+    	Select Template For Lead : 
+    </td>
+    <td>
+    <apex:selectList id="leadTempleteList" value="{!leadTemplateName}" size="1" onchange="changeLeadTpl();" style="max-width:150px;width:150px;">
+    	<!--  <apex:actionSupport event="onchange" rerender="leadTextContent" status="leadTemplateLoadingStatus"/>-->
+        <apex:selectOption itemValue="" itemLabel="Choose the template" />
+        <apex:selectOptions value="{!leadTemplateDropDown}" />
+    </apex:selectList>
+    </td></tr>
+    <tr>
+    <td><apex:actionFunction name="changeLeadTpl" action="{!changeTemplateText}" status="leadTemplateLoadingStatus" rerender="leadTextContent" oncomplete="charaterCounter('{!$Component.formId.main.leadTextContent}','{!$Component.formId.main.numberOfCharsForLead}');"/></td>
+    <td>
+    	<apex:actionStatus id="leadTemplateLoadingStatus" startText="loading lead template..." stopText="" layout="inline" />
+    </td>
+    </tr> 
+    <tr>
+    	<td>
+    		&nbsp;
+    	</td>
+    	<td>
+    		<apex:outputText style="color:green;font-size:12px;" id="numberOfCharsForLead" value="You can type maximum 700 characters."></apex:outputText>
+    	</td>
+    </tr> 
+    <tr><td class="labelCol"> Lead SMS Text</td><td>
+    <apex:inputTextarea id="leadTextContent" value="{!leadTextContent}" style="width:300px;height:80px;text-align:left;" onkeyup="charaterCounter('{!$Component.formId.main.leadTextContent}','{!$Component.formId.main.numberOfCharsForLead}');"/><br /><br />
+    </td></tr>
+     
+    <tr>
+    <td class="labelCol">
+    Filter Members by Status : 
+    </td>
+     
+    <td>
+    
+    
+	<apex:repeat value="{!statusFieldDropDown}" var="statusVar" id="theRepeat">
+		<apex:inputCheckbox value="{!statusVar.selected}" id="theCheckbox"> 
+		<apex:actionSupport event="onchange" action="{!getTotalCount}" rerender="statusWiseDetails"/>
+		</apex:inputCheckbox>{!statusVar.status} 
+	</apex:repeat>
+	
+    </td></tr>
+     
+	<tr><td class="labelCol">
+     Send to Optout members : 
+    </td>
+     
+    <td> 
+    <apex:selectList id="optOutList" value="{!optOutFieldValue}" size="1" >
+    	<apex:actionSupport event="onchange" action="{!getTotalCount}" rerender="statusWiseDetails"/>
+    	<apex:selectOption itemValue="no" itemLabel="No" />
+        <apex:selectOption itemValue="yes" itemLabel="Yes" />
+    </apex:selectList><br /><br />
+    </td>
+    </tr>
+     
+	</table>
+	</td>
+	<td style="width: 200px;">&nbsp;</td>
+	
+	<td>
+		
+	</td>
+	</tr>
+	</table>
+	
+	<apex:outputPanel id="statusWiseDetails" styleClass="labelCol" >
+		SMS will be send to the {!totalLeads} Leads and {!totalContacts} Contacts.
+	</apex:outputPanel>
+		
+    <apex:pageBlockButtons location="bottom">
+        <apex:commandButton id="sendSms" value="Run Campaign" title="Send SMS" action="{!sendSMS}" disabled="{!IF (disableMe,true, false)}" rendered="{!isRegistered}"/>
+        <apex:commandButton id="Cancel" value="Cancel" title="Cancel" action="{!cancelSMS}" rendered="{!isRegistered}"/>
+    </apex:pageBlockButtons>
+ 
+ </apex:pageBlock>
+ </apex:form>
+</apex:page>

@@ -1,0 +1,128 @@
+<apex:page controller="WLId_VerifyController" docType="html-5.0" cache="false"  sidebar="false" showHeader="false" applyHtmlTag="false" id="pgId" action="{!redirect}" standardStylesheets="false" >
+  <head>
+   <link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.ACFFavicon2)}" type="image/x-icon"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link href="http://externalcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+<title>Dashboard</title>
+
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap-datepicker3.min.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/bootstrap.min.css')}" rel="stylesheet" type="text/css"/>
+
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/style2.css')}" rel="stylesheet" type="text/css"/>
+<link href="{!URLFOR($Resource.acfNewResources, 'acfNewResources/css/layout.css')}" rel="stylesheet" type="text/css"/>
+
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery.min.js')}"/>   
+<apex:includeScript value="{!URLFOR($Resource.postcodeJS,'jquery-ui.min.js')}"/>
+
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/html5.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/nav.js')}"></script>
+
+<apex:includeScript value="{!URLFOR($Resource.acfNewResources,'acfNewResources/js/bootstrap-datepicker.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.acfNewResources,'acfNewResources/js/bootstrap-datepicker.min.js')}"/>
+
+<script src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/js/bootstrap.min.js')}"></script>
+
+<!--
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+
+<style>
+body{
+    background-color: #f5f5f5;
+}
+
+.plcholder_61:before {
+          left:28px;
+          top: 14px;
+          color: #999;
+}
+.slider .slide-heading,
+.slider .slide-heading2,
+.dashboard-heading{
+color:#1f8acb;
+font-size:1.8em;
+font-family: 'open_sanslight';
+}
+
+.slider .slide-peregraph,
+.slider .slide-peregraph2,
+.slider .slide-peregraph.id-verifi-prg{
+color:#666666;
+font-size:1.05em;
+line-height:30px;
+font-family: 'open_sanslight';
+}
+
+.slider .slide-peregraph.id-verifi-prg{
+font-size:1.3em;
+line-height:30px;
+color:#999999;
+} 
+
+.top-tab ul li a.sign_in {
+    border-radius: 5px;
+    border: 1px #f98b02 solid;
+    display: inline-block!important;
+    padding: 5px 15px 5px 20px;
+    line-height: normal;
+  }  
+ .progress-bar {background-color: #f98b02;}
+
+</style>
+</head>
+<c:WLMobileHeaderMenu ></c:WLMobileHeaderMenu>
+<body id="bd">
+
+<main class="container-fluid" id="mn">
+<div class="header row">
+ <c:WLHeader ></c:WLHeader>
+</div>
+<div class="clearfix"></div>
+
+<section class="row">
+    <div class="container container_cstm">
+        
+        <section class="post_login">
+        
+          <article class="col-md-8 col-sm-12 post_log_back" >
+                      <section class="row-fluid slider id-slider">
+                                            
+                          <div class="col-sm-12 col-sm-offset-0 col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2">
+                            <article>
+                                <h2 class="slide-heading id-veryfi-heading text-center" >Would you like to  <span class="upd-bold">verify your ID online?</span></h2>
+                                <p class="slide-peregraph id-verifi-prg update-font text-center">This will shorten the process for you.</p>
+                                <p class="slide-peregraph id-verifi-prg text-center">You will need your Drivers Licence</p>
+                                <p class="slide-peregraph id-verifi-prg text-center">or Passport to complete this step</p>
+                            </article>
+                            <div class="clearfix"></div>
+                            <apex:form >
+                                <div class="col-md-6 col-xs-12 col-sm-12">
+                                    <apex:commandButton action="{!redirectToNextPage}" value="Skip" styleClass="btn-virifie btn-light_blue btn-virifie_orange"/> 
+                                </div>
+                                <div class="col-md-6 col-xs-12 col-sm-12">
+                                    <apex:commandButton action="{!redirectToJumio}" value="Continue" styleClass="btn-virifie btn-virifie_orange"/> 
+                                </div> 
+                            </apex:form>          
+                        </div><!--colxs-8 close-->        
+                    
+                    </section>           
+                                     
+                  </article> <!--left panel close here-->
+                  <c:ClickQuoteDetail > </c:ClickQuoteDetail>
+        </section>
+        
+  </div><!--container close-->
+</section><!--row fluid close-->
+
+
+<!---Feature section start here-------->
+<footer class="footer row">
+    <c:WLFooter ></c:WLFooter>
+</footer>
+<!---Footer ends here--------------->
+</main>
+</body>
+</apex:page>

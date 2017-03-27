@@ -1,0 +1,84 @@
+<apex:page controller="smagicinteract.BulkSMSController" tabStyle="SM_Home__tab" >
+<apex:includeScript value="/soap/ajax/15.0/connection.js"/>
+<apex:includeScript value="/soap/ajax/15.0/apex.js"/>
+<apex:includeScript value="{!$Resource.smagicinteract__BulkSMSJS}"/>
+<script type="text/javascript">
+	
+	function charaterCounter(){
+		var maxLimit = 700;
+		var txtField = document.getElementById("{!$Component.formId.main.textSection.SMSText}");
+		var currentCount =	txtField.value.length;
+		var remainingCharMsgDiv = document.getElementById("{!$Component.formId.main.textSection.charaterCountMsg.numberOfChars}");
+		var noOfCharMsg = remainingCharMsgDiv.innerHTML;
+		var remaingChars = 700;
+		var msg = "";
+		if(currentCount > maxLimit){
+			txtField.value = txtField.value.substring(0, maxLimit);
+			remaingChars = 0; 
+		}
+		else{
+			remaingChars = maxLimit - currentCount;
+		}
+		msg = "You can type maximum "+remaingChars+" characters.";
+		if(remaingChars == 0)
+			msg = "You have reached to the maximum charater limit of 700.";
+		remainingCharMsgDiv.innerHTML = msg;
+	}
+</script>
+<apex:form id="formId">
+<apex:pageBlock id="main" title="Compose New SMS for Selected Contacts" helpTitle="Help For this Page?" helpUrl="/apex/SMSMagicHelp?from=BulkSendSMS" >
+
+<apex:pageMessages /><br/>
+<apex:pageBlockSection id="sectionSenderId" title="Sender Id" rendered="{!isRegistered}">
+    <apex:selectList size="1"  value="{!senderId}">
+    <apex:selectOptions value="{!senderIds}"/>
+    </apex:selectList>
+</apex:pageBlockSection>
+
+<apex:pageBlockSection id="sectionSenderName" title="Users" rendered="{!showUserDropDown}">
+    <apex:selectList size="1"  value="{!userId}" title="Choose SenderId" style="max-width:150px; width:150px;">
+    <apex:selectOptions value="{!senderList}" />
+    </apex:selectList>
+</apex:pageBlockSection>
+
+  
+<apex:pageBlockSection columns="2" title="Selected Numbers" rendered="{!isRegistered}">    
+	<apex:pageBlockTable value="{!smsObjects}" var="item">
+		<apex:column value="{!item.smagicinteract__Name__c}"/>
+		<apex:column value="{!item.smagicinteract__PhoneNumber__c}"/>
+		<apex:column value="{!item.smagicinteract__ObjectType__c}"/>
+	</apex:pageBlockTable>
+</apex:pageBlockSection>
+
+<apex:pageBlockSection title="Use Templates" rendered="{!isRegistered}">
+	<apex:selectList value="{!template}" size="1" title="Choose a template" onchange="sayHello();" style="max-width:150px;width:150px;">
+	    <!--  <apex:actionSupport event="onchange" rerender="textSection" action="{!changeTemplateText}" />-->
+	    <apex:selectOptions value="{!items}"/>
+	</apex:selectList>
+</apex:pageBlockSection>
+
+<apex:actionFunction name="sayHello" action="{!changeTemplateText}" rerender="textSection" oncomplete="charaterCounter();"/>
+
+<apex:pageBlockSection id="textSection" columns="2" title="SMS Text" rendered="{!isRegistered}">  
+	<apex:pageBlockSectionItem id="charaterCountMsg" >
+		<apex:outputText style="color:green;font-size:14px;" id="numberOfChars" value="You can type maximum 700 characters."></apex:outputText> 
+	</apex:pageBlockSectionItem>
+	<br/>
+	<apex:inputTextArea id="SMSText"  style="width:400px;height:80px;" value="{!smsText}" onkeyup="charaterCounter();" />
+</apex:pageBlockSection>
+
+<apex:pageBlockSection id="optOut" columns="2" title="Send to Optout members" rendered="{!showOptoutSection}">
+	<apex:selectList id="optOutList" value="{!optOutFieldValue}" size="1" rendered="{!showOptoutSection}" title="Send to optout members" >
+    	<apex:selectOption itemValue="yes" itemLabel="Yes" />
+        <apex:selectOption itemValue="no" itemLabel="No" />
+    </apex:selectList>
+</apex:pageBlockSection>
+
+<apex:pageBlockButtons >
+	<apex:commandButton action="{!send}" value="Send" title="Send" rendered="{!isRegistered}" disabled="{!IF (disableMe,true, false)}" />
+	<apex:commandButton action="{!cancel}" rendered="{!isRegistered}" value="Cancel" title="Cancel" />
+</apex:pageBlockButtons>
+
+</apex:pageBlock>
+</apex:form>
+</apex:page>

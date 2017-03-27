@@ -1,0 +1,64 @@
+<apex:component id="cmpOrderForm" controller="sendEmailTemplateOnOppController" access="global">   
+    <apex:attribute name="paramOppId" description="Passes the ID of the opportunity to the custom controller" type="Id" assignTo="{!accId}"/> 
+    <html>
+    <body>
+        <div class="logo">
+        <a href="https://www.clickloans.com.au/?utm_source=Salesforce&utm_medium=Email&utm_content=Logo&utm_campaign=Concierge%20Welcome%20Email%20%232">
+        <img alt="logo" height="57" src="https://www.clickloans.com.au/resource/1440743340000/acfResources/acfResources/images/logo.jpg" style="margin: 35px auto 31px; display: block; height: 57px; width: 150px;" width="150"/>
+        </a>
+        </div>
+    
+        <div class="content">
+        <div class="main" style="font-family: Arial, sans-serif;
+                    font-size: 16px; margin: 0 auto; max-width: 520px;
+                    padding: 50px; border: 1px solid #e2e2e2;
+                    line-height: 25px;"><span class="name" style="color: #333333; display: block; margin-bottom: 48px;">Hi there, </span> <span class="text" style="color: #6D6D6D;">I would like to personally congratulate you on joining Click Loans .<br/>
+        <br/>
+        I'm your personal home loan concierge here to help you with your home loan journey from start to finish. My top priority is to answer any questions you have, help guide you through the process and above all have a great experience. &nbsp;&nbsp;<br/>
+        <br/>
+        If you have questions I recommend checking out <a href="https://www.clickloans.com.au/clickfaq?utm_source=Salesforce&utm_medium=Email&utm_term=FAQ&utm_content=Concierge%20Introduction&utm_campaign=Concierge%20Welcome%20Email%20%231">our faq</a> section or you can call me direct or reply this email.&nbsp;<br/>
+        <br/>
+        Look forward to speaking with you.&nbsp;</span><br/>
+        <br/>
+        &nbsp;
+        <div class="manager">
+        <!--<img align="left" alt="avatar" height="50" src="{!objWrapOppInfo.strOwnerImgUrl}" style="float: left; display: block; border-radius: 50%; margin-right: 14px; width: 50px; height: 50px;" width="50"/>-->
+        <div style="font-size: 13px; line-height: 20px;">
+        <span style="display: block; font-weight: bold;">{!objWrapOppInfo.strOwnerName}</span>        
+        <span style="color: #888888;display: block;">Home Loan Concierge at Click Loans</span>
+        <span style="color: #6D6D6D;display: block;">{!objWrapOppInfo.strOwnerEmail}</span>     
+        <span style="color: #6D6D6D;">{!objWrapOppInfo.strOwnerPhone}</span>
+        &nbsp;</div>
+        </div>
+        </div>
+        </div>
+        
+        <div class="footer" style="margin-top: 49px;">
+        <div class="footer_logo" style="height: 30px;">
+        <a href="https://www.clickloans.com.au/?utm_source=Salesforce&utm_medium=Email&utm_content=Logo&utm_campaign=Concierge%20Welcome%20Email%20%232">
+        <img alt="footer logo" height="45" src="https://www.clickloans.com.au/resource/1440743340000/acfResources/acfResources/images/logo.jpg" style="height: 45px; margin: 0px auto; display: block; width: 120px;" width="120"/>
+        </a>
+        </div>
+        
+        <div class="desc" style="text-align: center;
+                            width: 500px;
+                            margin: 19px auto 0;
+                            font-size: 13px;
+                            color: #888888;
+                            line-height: 20px;
+                            font-family: Arial, sans-serif;"><br/>
+        Click Loans is the trading name of Click Loans Pty Ltd, the parent company of your licensed credit assistance provider, Auscred Services Pty Ltd (ACN 164 638 171, Australian Credit Licence Number 442732</div>
+        
+        <div class="desc" style="text-align: center;
+                            width: 400px;
+                            margin: 19px auto 0;
+                            font-size: 13px;
+                            color: #888888;
+                            line-height: 20px;
+                            font-family: Arial, sans-serif;">Level 11, 37 Pitt Street, Sydney NSW 2000<br/>
+        <br/>
+            <a href="http://go.creditandfinance.com.au/emailPreference/e/63832/617" style="text-decoration:none;color: #888888;">Unsubscribe</a>&nbsp;from this email</div>
+        </div>
+    </body>
+</html>
+</apex:component>

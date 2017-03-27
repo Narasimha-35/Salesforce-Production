@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RightSignature</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <description>Adds the RightSignature Documents custom tab and adds the ability to send new RightSignature Documents for e-signature via Opportunities and Contacts.</description>
+    <namespacePrefix>rightsig</namespacePrefix>
+    <types>
+        <members>RightSignatureMain</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>RightSignature_Documents</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>public</members>
+        <name>Document</name>
+    </types>
+    <types>
+        <members>Contact.Related_RightSignature_Documents</members>
+        <members>Contact.Send_RightSignature_Document</members>
+        <members>Opportunity.Related_RightSignature_Documents</members>
+        <members>Opportunity.Send_RightSignature_Document</members>
+        <name>WebLink</name>
+    </types>
+    <version>30.0</version>
+</Package>

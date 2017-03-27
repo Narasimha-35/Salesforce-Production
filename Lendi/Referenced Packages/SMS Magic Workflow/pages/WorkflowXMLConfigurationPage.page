@@ -1,0 +1,356 @@
+<apex:page standardcontroller="smagicworkflow__WorkflowXMLMap__c" extensions="smagicworkflow.WorkflowAndTaskConfiguration" action="{!registerUserForAddon}" title="New Configuration For SMS Workflow">
+
+<apex:stylesheet value="{!$Resource.smagicworkflow__WorkflowCSS}"/>
+   
+<apex:includeScript value="{!URLFOR($Resource.smagicworkflow__WorkflowJS)}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.smagicinteract__jquery)}"/>
+        
+  <apex:form id="confForm">
+<apex:pageMessages />
+ 
+    <apex:pageBlock id="objDropDown">
+        <apex:pageBlockSection id="xmlGeneraterSection" title="Create New Configuration For SMS Workflow" onClick="collapseSection('xmlGeneraterDiv');" />
+        <div id="xmlGeneraterDiv" style="display:block;">
+        <table>
+        <tr>
+            <apex:actionRegion >
+            <td class="labelCol" style="width:115px;" title="Workflow Rule/Action will or needs to be set on this object">
+                Lookup Object
+            </td>
+            <td class="labelCol">
+                :
+            </td>
+            <td>
+                <apex:selectList id="allObjectDropDown" value="{!selectedObjName}" onchange="showPanel();" size="1">
+                <apex:selectOption itemValue="" itemLabel="Select"/>
+               <apex:selectOptions value="{!lookupObjects}" />
+                </apex:selectList>
+            </td>
+            </apex:actionRegion>
+            <apex:actionFunction name="showPanel" action="{!showPanelUI}" rerender="mainPanel" />
+        </tr>
+        </table>
+        <br/>
+        <apex:outputPanel id="mainPanel">
+        <apex:outputPanel id="objectPanel" rendered="{!showObjectPanel}">
+        <table>
+        <tr>
+            <apex:actionRegion >
+            <td class="labelCol" style="width:115px;" title="Recipient of SMS Message on Rule Trigger">
+                Recipient Type
+            </td>
+            <td class="labelCol">
+                :
+            </td>
+            <td>
+               <apex:selectList id="searchFieldDropDown" value="{!searchFieldName}" title="Configuration" size="1" style="width:130px;">
+                <apex:actionSupport event="onchange" action="{!updateLists}" rerender="availableRecipient"/>
+                <apex:selectOption itemValue="" itemLabel="Select"/>
+                <apex:selectOptions value="{!searchFields}" />
+                </apex:selectList>
+            </td>
+            </apex:actionRegion>
+        </tr>
+        </table>
+        <br/>
+        <table>
+                <tr>
+                    <td class="labelCol" style="width:115px;" title="It shows all the fields which may contain mobile numbers or Fields of type User.">Available Recipients</td>
+                    <td>&nbsp;</td>
+                    <td class="labelCol" style="width:115px;" title="Selected recipients who will receive SMSes">Selected Recipients</td>
+                </tr>
+                <tr>
+                    <td style="width:115px;">
+                        <apex:selectList id="availableRecipient" multiselect="false" size="6" style="width:100%;">
+                            <apex:actionSupport event="onchange" action="{!updateLists}" rerender="availableRecipient"/>
+                              <apex:selectOptions value="{!availableRecipient}" />  
+                        </apex:selectList>
+                    </td>
+                     <td>
+                        <br />  
+                        <apex:outputLink value="#" id="leftLink" disabled="{!disableButton}"  onclick="addToList('{!$Component.availableRecipient}','{!$Component.selectedRecipient}','1', 'sObject','{!$Component.confForm.objDropDown.fieldList}', '{!$Component.confForm.objDropDown.mobileFieldList}','{!$Component.confForm.objDropDown.searchFieldDropDown}','{!$Component.confForm.recipientSection.availableRecipient}','{!$Component.confForm.objDropDown.campaignRelatedUserList}');"  styleClass="buttonCls"> {!leftToRight} </apex:outputLink><br/> <br/>
+                        <apex:outputLink value="#" id="rightLink" disabled="{!disableButton}"  onclick="addToList('{!$Component.selectedRecipient}','{!$Component.availableRecipient}','2', 'sObject','{!$Component.confForm.objDropDown.fieldList}', '{!$Component.confForm.objDropDown.mobileFieldList}','{!$Component.confForm.objDropDown.searchFieldDropDown}','{!$Component.confForm.recipientSection.availableRecipient}','{!$Component.confForm.objDropDown.campaignRelatedUserList}');" styleClass="buttonCls"> {!rightToLeft} </apex:outputLink>
+                       
+                    </td>
+                   
+                    <td style="width:115px;">
+                        <apex:selectList id="selectedRecipient" multiselect="false" size="6" style="width:100%;">
+                          <apex:selectOptions value="{!selectedRecipient}" />  
+                        </apex:selectList>
+                    </td>
+                   
+                </tr>
+          </table>
+         
+            <br/>
+            
+          <table>
+            <tr>
+                <td class="labelCol" style="width:115px;" title="Name of recipient will show up in SMS HIstory.">
+                    Name
+                </td>
+                <td class="labelCol">
+                    :
+                </td>
+                <td>
+                  <apex:selectList id="nameDropDown" size="1"  value="{!selectedNameField}" style="width:130px;">
+                        <apex:selectOptions value="{!nameFieldList}" />  
+                  </apex:selectList>
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <table>
+            <tr>
+                <td class="labelCol" style="width:115px;" title="SMS Recipient will see it as  Sender when he/she receives SMS.">
+                    SenderId
+                </td>
+                <td class="labelCol">
+                    :
+                </td>
+                <td>
+                  <apex:selectList id="senderIdDropDown" size="1" value="{!selectedSenderId}" style="width:130px;">
+                        <apex:selectOptions value="{!senderIdList}" />  
+                  </apex:selectList>
+                </td>
+            </tr>
+        </table>
+            <br/>
+        <table>
+            <tr>
+                <td class="labelCol" style="width:115px;" title="Text Message which will be sent in SMS">
+                    Template
+                </td>
+                <td class="labelCol">
+                    :
+                </td>
+                <td>
+                  <apex:selectList id="templateListDropDown" value="{!templateFieldName}" size="1" style="width:130px;">
+                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                        <apex:selectOptions value="{!templateNamesList}" />  
+                  </apex:selectList>
+                </td>
+            </tr>
+        </table>
+        <br/>
+        </apex:outputPanel>
+       
+        <apex:outputPanel id="campaignPanel" rendered="{!showCampaignPanel}">
+              <apex:selectRadio value="{!smsTo}" layout="pageDirection">
+                    <apex:actionSupport event="onchange" action="{!renderCampaignUI}" />    
+                    <apex:selectOption itemValue="campaignMembers" itemLabel="Send SMS to Campaign Members"/>
+                    <apex:selectOption itemValue="relatedUsersOfCampaign" itemLabel="Send SMS to related Users of Campaign"/>
+              </apex:selectRadio><p/>
+             
+              <apex:outputPanel id="campaignMembersPanel" rendered="{!showCampaignMembersPanel}">
+                <table>
+                    <tr>
+                        <td class="labelCol">
+                            Select Template for Leads
+                        </td>
+                        <td class="labelCol">
+                            :
+                        </td>
+                        <td>
+                            <apex:selectList id="leadTemplateDropDown" value="{!leadTemplateText}" size="1" style="width:130px;">
+                                <apex:selectOption itemValue="" itemLabel="Choose Template"/>
+                                <apex:selectOptions value="{!leadTemplateDropDown}" />  
+                          </apex:selectList>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labelCol">
+                            Select Mobile Field for Leads
+                        </td>
+                   
+                        <td class="labelCol">
+                            :
+                        </td>
+                        <td>
+                            <apex:selectList id="leadMobileDropDown" value="{!leadMobileField}" size="1" style="width:130px;">
+                                <apex:selectOption itemValue="" itemLabel="Choose Field"/>
+                                <apex:selectOptions value="{!leadMobileFields}" />  
+                          </apex:selectList>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labelCol">
+                            Select Template for Contacts
+                        </td>
+                        <td class="labelCol">
+                            :
+                        </td>
+                        <td>
+                            <apex:selectList id="contactTemplateDropDown" value="{!contactTemplateText}" size="1" style="width:130px;">
+                                <apex:selectOption itemValue="" itemLabel="Choose Template"/>
+                                <apex:selectOptions value="{!contactTemplateDropDown}" />  
+                          </apex:selectList>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labelCol">
+                            Select Mobile Field for Contacts
+                        </td>
+                        <td class="labelCol">
+                            :
+                        </td>
+                        <td>
+                            <apex:selectList id="contactMobileDropDown" value="{!contactMobileField}" size="1" style="width:130px;">
+                                <apex:selectOption itemValue="" itemLabel="Choose Field"/>
+                                <apex:selectOptions value="{!contactMobileFields}" />  
+                          </apex:selectList>
+                        </td>
+                    </tr>
+                     <tr>
+                            <td class="labelCol" style="width:130px;">
+                                SenderId
+                            </td>
+                            <td class="labelCol">
+                                :
+                            </td>
+                            <td>
+                              <apex:selectList id="senderIdDropDown1" size="1" value="{!selectedSenderId}" style="width:130px;">
+                                  <apex:selectOption itemValue="" itemLabel="Select"/>
+                                    <apex:selectOptions value="{!senderIdList}" />  
+                              </apex:selectList>
+                            </td>
+                        </tr>
+                </table>
+                <br/><br/>
+              
+              </apex:outputPanel>
+             
+              <apex:outputPanel id="campaignsRelatedUsersPanel" rendered="{!showCampaignsRelatedUsersPanel}">
+                               
+                      <table>
+                            <tr>
+                                <td class="labelCol">Available Recipients</td>
+                                <td>&nbsp;</td>
+                                <td class="labelCol">Selected Recipients</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <apex:selectList id="availableRecipientForCampaign" multiselect="false" size="6" style="width:100%;">
+                                        <apex:selectOptions value="{!availableRecipientForCampaign}" />  
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <br /><br />  
+                                    <apex:outputLink value="#" id="leftLinkForCampaign" disabled="{!disableButton}"  onclick="addToList('{!$Component.availableRecipientForCampaign}','{!$Component.selectedRecipientForCampaign}','1', 'Campaign','{!$Component.confForm.objDropDown.fieldList}', '{!$Component.confForm.objDropDown.mobileFieldList}','{!$Component.confForm.objDropDown.searchFieldDropDown}','{!$Component.confForm.recipientSection.availableRecipient}','{!$Component.confForm.objDropDown.campaignRelatedUserList}');"  styleClass="buttonCls"> {!leftToRight} </apex:outputLink><br/> <br/>
+                                    <apex:outputLink value="#" id="rightLinkForCampaign"  disabled="{!disableButton}" onclick="addToList('{!$Component.availableRecipientForCampaign}','{!$Component.selectedRecipientForCampaign}','2', 'Campaign','{!$Component.confForm.objDropDown.fieldList}', '{!$Component.confForm.objDropDown.mobileFieldList}','{!$Component.confForm.objDropDown.searchFieldDropDown}','{!$Component.confForm.recipientSection.availableRecipient}','{!$Component.confForm.objDropDown.campaignRelatedUserList}');" styleClass="buttonCls"> {!rightToLeft} </apex:outputLink>
+                                </td>
+                                <td>
+                                    <apex:selectList id="selectedRecipientForCampaign" multiselect="false" size="6" style="width:100%;">
+                                        <apex:selectOptions value="{!selectedRecipientForCampaign}" />  
+                                    </apex:selectList>
+                                </td>
+                            </tr>
+                      </table>
+                      <br/>
+                      
+                      <table>
+                        <tr>
+                            <td class="labelCol" style="width:115px;">
+                                SenderId
+                            </td>
+                            <td class="labelCol">
+                                :
+                            </td>
+                            <td>
+                              <apex:selectList id="senderIdDropDown2" size="1" value="{!selectedSenderId}" style="width:130px;">
+                                  <apex:selectOption itemValue="" itemLabel="Select"/>
+                                    <apex:selectOptions value="{!senderIdList}" />  
+                              </apex:selectList>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                      <table>
+                      <tr>
+                          <td class="labelCol" style="width:115px;">
+                            Template Name
+                          </td>
+                          <td class="labelCol">
+                            :
+                          </td>
+                          <td>
+                            <apex:selectList id="campaignTemplateListDropDown" value="{!campaignUserTemplate}" size="1" style="width:130px;">
+                                <apex:selectOption itemValue="" itemLabel="Choose Template"/>
+                                <apex:selectOptions value="{!campaignUserTemplateNamesList}" />  
+                            </apex:selectList>
+                          </td>
+                      </tr>
+                      </table>
+                       <br/>
+                     
+              </apex:outputPanel>
+          </apex:outputPanel>
+        </apex:outputPanel>
+       
+        
+        <apex:inputHidden value="{!selectedFieldValue}" id="fieldList" />
+        <apex:inputHidden value="{!selectedMobileFieldsValue}" id="mobileFieldList" />
+        <apex:inputHidden value="{!campaignRelatedUserFieldValue}" id="campaignRelatedUserList" />
+       
+        <apex:commandButton value="Reset" title="Reset" action="{!reset}" style="margin-left:14%;margin-top:5px;"/>&#160;&#160;&#160;&#160;&#160;
+         <apex:commandButton value="Create" title="Create Configuration" action="{!generate}" disabled="{!disableButton}"  reRender="{!$Component.confForm.ConfigurationSection.configPanel.configNameNotificationMessage.configUrl}" onclick="clearList('{!$Component.confForm.objDropDown.allObjectDropDown}','{!$Component.confForm.objDropDown.selectedRecipientForCampaign}','{!$Component.confForm.objDropDown.selectedRecipient}');"/>&#160;&#160;&#160;&#160;&#160;
+          <apex:commandButton value="Cancel" title="Cancel Configuration" action="{!cancel}"/>
+         </div>
+        <apex:pageBlockSection id="ConfigurationSection" title="Copy Configuration Name" onclick="collapseSection('configNameSection');" />
+       <div id="configNameSection" style="display:block;">
+         <apex:outputPanel id="configPanel">
+            <table>
+                <tr>
+                    <td class="labelCol">
+                        Configuration Name
+                    </td>
+                    <td class="labelCol">
+                        :
+                    </td>
+                    <td>
+                        <apex:outputLabel value="{!xmlName}" id="xmlName" style="font-weight:bold;"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                         <apex:outputLink id="configUrl" value="{!configUrl}" target="_blank" rendered="{!hideConfigLink}">View configuration</apex:outputLink>
+                    </td>
+                  <!--  <td>
+                        <input type="button" id ="copy-button" value ="Copy To Clipboard" onClick="copyText();"/>
+                    </td>
+                   -->
+                    
+                </tr>
+            </table>
+            
+              <br/>
+              <apex:outputPanel id="configNameNotificationMessage" style="width: 165px; color:green;margin-left:13px; ">
+              </apex:outputPanel>
+          </apex:outputPanel>
+          </div>
+ 
+         <apex:pageBlockSection id="RuleSection" title="Create Workflow Rule And New Task" onclick="collapseSection('ruleSection');" />
+   
+        <div id="ruleSection" style="display:block;">
+        <table>
+            <tr>
+                <td>1.Go to Setup ==>Workflows And Approvals or &nbsp; <apex:outputLink id="workflowUrl" target="_blank" value="{!workflowUrl}">Click here</apex:outputLink></td>
+            </tr>
+            <tr>
+                <td>2.Create New Workflow Rule</td>
+            </tr>
+            <tr>
+                <td>3.Create new Task as Action,</td>
+            </tr>
+            <tr>
+                <td>&#160;&#160;&#160;&#160;&#160;i.Set "SMS Notification" as Subject</td>
+            </tr>
+            <tr>
+                <td>&#160;&#160;&#160;&#160;&#160;ii.Paste configuration name in comments and save</td>
+            </tr>
+            <tr>
+                <td>4.Activate Workflow</td>
+            </tr>
+        </table>
+         </div>
+    </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

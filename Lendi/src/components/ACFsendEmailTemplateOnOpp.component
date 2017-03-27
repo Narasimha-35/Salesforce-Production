@@ -1,0 +1,95 @@
+<apex:component id="cmpOrderForm" controller="sendEmailTemplateOnOppController" access="global">   
+    <apex:attribute name="paramOppId" description="Passes the ID of the opportunity to the custom controller" type="Id" assignTo="{!accId}"/> 
+    <html>
+       <body>      
+           <!-- Header -->
+            <div class="logo">
+           <!--     <img alt="logo" height="57" src="https://www.clickloans.com.au/resource/1440743340000/acfResources/acfResources/images/logo.jpg" style="margin: 35px auto 31px; display: block; height: 57px; width: 150px;" width="150"/>-->
+           <!--         <img alt="logo" height="57" src="https://creditandfinance.com.au/wp-content/uploads/2016/04/logo-large.png" style="margin: 35px auto 31px; display: block; height: 57px; width: 150px;" width="150"/>   -->
+                       <img alt="logo" src="https://s3-ap-southeast-2.amazonaws.com/acf-main/images/acflendi.png" style="margin: 35px auto 31px; display: block; height: auto; width: auto;" />
+                <!--     <img alt="logo" src="{!URLFOR($Resource.acfNewResources, 'acfNewResources/images/Whitelabel_headerlogo.png')}" />  -->
+            </div>
+                
+            <!-- Content -->          
+            <div class="content">
+                <div class="main" style="font-family: Arial, sans-serif;font-size: 16px; margin: 0 auto; max-width: 520px;padding: 50px; border: 1px solid #e2e2e2;line-height: 25px;">
+                 <!--    <span class="name" style="color: #6D6D6D;; display: block; margin-bottom: 48px;">Hi {!objWrapOppInfo.strAccName},</span> -->
+                     <span class="text" style="color: #6D6D6D;">You are almost there! We need some documentation before we can process the application. Below is a list of documents we require and you can upload these directly to the website. Login<strong>&nbsp;<a href="{!$Label.site_URL}/ACFlogin?email={!objWrapOppInfo.strAccEmail}" style="text-decoration:none;color:#2196F3;">here.</a></strong><br/><br/>
+                         <!-- Pending Document Section starts Here -->
+                             <table border="0" style="color: #6D6D6D;">
+                                <tr>
+                                   <th style="text-align: left;">Document Name</th>
+                                   <th style="text-align: left;">Status</th>
+                                </tr>
+                                <apex:repeat var="reqDoc" value="{!lstReqDocs}">                           
+                                    <tr>
+                                        <td>{!reqDoc.Name}</td>
+                                        <td>{!reqDoc.acfStatus__c}</td>
+                                    </tr>                                  
+                                </apex:repeat>                 
+                              </table>
+                         <!-- Pending Document Section ends Here -->
+                         <br/>
+                         <!-- https://creditandfinance.com.au/?email={!accountEmail}&amp;utm_source=Required%20Docs&amp;utm_medium=email&amp;utm_campaign=Upload%20required%20docs   -->
+                        <a href="{!$Label.site_URL}/ACFDashboard?email={!objWrapOppInfo.strAccEmail}" style=" margin: auto;
+                        cursor: pointer;
+                        display: block;
+                        width: 250px;
+                        text-decoration: none;
+                        text-align: center;
+                        height: 50px;
+                        line-height: 50px;
+                        background-color: #2196F3;
+                        border: none;
+                        color: white;
+                        font-size: 16px;
+                        border-radius: 3px;
+                        font-family: Arial,cursive;">Upload Documents</a><br/>
+                        
+                        
+                     <div class="manager">
+                       <!-- <img align="left" alt="avatar" height="50" src="{!objWrapOppInfo.strOwnerImgUrl}" style="float: left; display: block; border-radius: 50%; margin-right: 14px; width: 50px; height: 50px;" width="50"/>-->
+                        <div style="font-family: Arial, sans-serif;font-size: 16px; line-height: 20px;">
+                            <span style="color: #666666;display: block;">Best Regards,</span> <br/><br/>
+                            <span style="display: block; color: #6D6D6D;">{!objWrapOppInfo.strOwnerName}</span><br/>
+                            <span style="color: #666666;"> D: {!objWrapOppInfo.strOwnerPhone}</span>
+                        <!--    <span style="color: #6D6D6D;display: block;">Home Loan Concierge at Click Loans</span>  -->
+                            <span style="color: #666666;display: block;"> P: 1300 737 868 </span>
+                            <span style="color: #666666;display: block;"> E: {!objWrapOppInfo.strOwnerEmail}</span>     
+                                                    
+                         </div>
+                     </div>
+                     
+                     <br/><font color="#666666" style="font-family: Arial, sans-serif; line-height: 25px;"><span style="font-size: 14px;">If you need help please Call us </span></font><strong><a style="text-decoration:none;color:#FF5722;"><b/>1300 737 868 </a> </strong>, <font style="font-family: Arial, sans-serif; line-height: 25px;"><span style="font-size: 14px;">reply to this email or visit our </span></font><strong>&nbsp;<a href="{!$Label.site_URL}" style="text-decoration:none;color: #FF4500;">website</a></strong>
+                     </span><br/><br/>
+                    
+                  </div>
+            </div>
+            
+            
+            <!-- Footer Section -->
+           
+                <div class="desc" style="text-align: center;width: 400px;margin: 19px auto 0;font-size: 13px;color: #888888;line-height: 20px;font-family: Arial, sans-serif;">
+                    Australian Credit and Finance © 2015 All rights reserved. Australian Credit and Finance is the trading name of Auscred Pty Ltd, the parent company of your licensed credit assistance provider, Auscred Services Pty Ltd (ACN 164 638 171, Australian Credit Licence Number 442732.
+                <br/><br/>We are located at Level 11, 37 PItt Street, Sydney NSW 2000
+                
+                </div>   
+                
+                 <div class="footer" style="margin-top: 49px;">
+                <div class="footer_logo" style="height: 30px;">
+                <!--   <img alt="footer logo" height="45" src="https://www.clickloans.com.au/resource/1440743340000/acfResources/acfResources/images/logo.jpg" style="height: 45px; margin: 0px auto; display: block; width: 120px;" width="120"/> -->
+                   <!--    <img alt="footer logo" height="45" src="https://creditandfinance.com.au/wp-content/uploads/2016/04/logo-large.png" style="height: 45px; margin: 0px auto; display: block; width: 120px;" width="120" height="45"/>   -->
+                        <img alt ="footer logo" src="https://creditandfinance.com.au/wp-content/uploads/2016/04/ACF-icon.png" style="height: auto; margin: 0px auto; display: block; width: auto;" />
+                        
+                </div>
+            <!--    <div class="desc" style="text-align: center;width: 400px;margin: 19px auto 0font-size: 13px;color: #888888;line-height: 20px;font-family: Arial, sans-serif;">
+                  <!--  Our mailing address is:<br/>
+                    %%account_address%%<br/>
+               <center><a href="http://go.creditandfinance.com.au/emailPreference/e/63832/617" style="color: #0b6be2;">Unsubscribe</a> </center>
+                </div>  -->
+               
+            </div>
+                     
+       </body>
+    </html>      
+</apex:component>

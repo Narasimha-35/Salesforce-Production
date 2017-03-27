@@ -1,0 +1,690 @@
+<!-- Initially created to test/reorganize the mappings and syncing sections. -->
+<apex:page controller="Zendesk.ZendeskSetting" extensions="Zendesk.CtrlZendeskOrgSFAccountmapping,Zendesk.CtrlZendeskUserMapping" title="Edit Zendesk organization settings" id="pageId" tabstyle="Zendesk__tab"> 
+
+  <!-- For vertical tabs -->
+  <apex:includeScript value="{!URLFOR($Resource.Zendesk__ZendeskStaticResource, '/Plugins/jVertTabs/js/jquery-1.4.1.min.js')}"/>
+  <apex:includeScript value="{!URLFOR($Resource.Zendesk__ZendeskStaticResource, '/Plugins/jVertTabs/js/jquery-jvert-tabs-1.1.4.js')}"/>  
+  <apex:stylesheet value="{!URLFOR($Resource.Zendesk__ZendeskStaticResource, '/Plugins/jVertTabs/css/jquery-jvert-tabs-1.1.4.css')}"/>
+
+  <apex:stylesheet value="{!URLFOR($Resource.Zendesk__ZendeskStaticResource, '/Styles/Styles.css')}"/>
+  
+  <apex:actionStatus id="tab">
+	  <apex:facet name="start">
+	  <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+	      &nbsp;
+	  </div>
+	  <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+	      <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+	          <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+	          <span style="display: inline-block; padding: 10px 0px;">Please Wait...</span>
+	      </div>
+	  </div>
+	  </apex:facet>
+ </apex:actionStatus>
+  
+  <script>
+    
+    var j$ = jQuery.noConflict();
+
+    function setjVertTabs(tabname, selectedTab){
+      //Convert the divs into vertical tabs
+      if(selectedTab == null || selectedTab == ''){
+        j$(tabname).jVertTabs({});
+      }else{
+        j$(tabname).jVertTabs({
+          selected: selectedTab
+        });
+      }
+
+    }
+      //-------------------------------------
+      //VERTICAL TABS END
+
+    function changeCSSOpacity(chosen, blockClass){
+      //Usage: changeCSSOpacity('{!chosenTriggerValue}', '.orgSectionEnable');
+      chosen = escape(chosen);
+      //alert(chosen);
+      if(chosen == 'No'){
+          j$(blockClass).fadeTo('slow', 0.20);
+      }else{
+          j$(blockClass).fadeTo('slow', 1);
+      }
+    }
+    
+    function checkRerenderTable(a) {
+        if (a == true)
+            RerenderMappingTable();
+    }
+  </script>
+
+  <style>
+    .vtabs .vtabs-tab-column ul li a.open{
+      color: #78A300;
+    }
+
+    .vtabs .vtabs-tab-column ul li a.closed{
+      color: black;
+    }
+
+    .myActiveTab { background-color: #78A300; color:white; background-image:none; padding: 7px 10px 7px 10px;}
+    .myInactiveTab { background-color: white; color:black; background-image:none; padding: 7px 10px 7px 10px;}
+    .whiteBG { /*background-color: white; */}
+
+  </style>
+
+  <apex:sectionHeader title="Zendesk for Salesforce" subtitle="Global Settings" />
+
+  
+  
+  <apex:form id="formid">
+    
+    <apex:actionFunction id="ValidateAll" name="ValidateAll" action="{!ValidateSettings}" rerender="ValidationSts"  status="ValidationSts" oncomplete="checkRerenderTable({!ValidationErrors})"/>
+    <apex:actionFunction id="RerenderMappingTable" name="RerenderMappingTable" rerender="mainTabPanelDiv"  status="ValidationSts" />
+    
+    <apex:outputPanel id="pageMessages">
+        <apex:pageMessages escape="false" id="errMsgs"/>
+    </apex:outputPanel>
+  <c:ZendeskAuthentication settingsMode="Global" ParentPgAPIName="ZendeskOrgTab" />
+
+  <apex:pageBlock title="Logging Level" mode="edit" tabstyle="Zendesk__tab">
+      <apex:pageBlockButtons location="top">
+          <apex:commandButton action="{!SaveLoggingLevel}" value="Save Logging Level"/>
+      </apex:pageBlockButtons>
+      <apex:pageBlockSection columns="1">
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Logging Level" />
+              <apex:selectList value="{!LoggingLevel}" size="1">
+                <apex:selectOption itemValue="None" itemLabel="None" />
+                  <apex:selectOption itemValue="Error" itemLabel="Error" />
+                  <apex:selectOption itemValue="Debug" itemLabel="Debug" />
+              </apex:selectList>
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Weeks to Retain Logs" />
+            <apex:selectList value="{!WeeksToRetainLogs}" size="1">
+                <apex:selectOption itemValue="2" itemLabel="2" />
+                  <apex:selectOption itemValue="4" itemLabel="4" />
+                  <apex:selectOption itemValue="6" itemLabel="6" />
+                  <apex:selectOption itemValue="8" itemLabel="8" />
+              </apex:selectList>
+          </apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+      <apex:pageBlockSection columns="2">
+      <apex:pageBlockSectionItem >
+        <apex:outputText >
+          Export Debug Data
+        </apex:outputText>
+        <apex:outputPanel >
+          <apex:commandLink action="{!ExportDebugData}" value="Export Debug Data" />
+          <br />
+          <apex:outputText >
+            <span style="font-weight:700;">Note:  </span>The "Export Debug Data" link above can be used to generate a .csv file for debugging purposes.  This should only be done upon request by your Zendesk support representative. 
+          </apex:outputText>
+        </apex:outputPanel>
+      </apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+  </apex:pageBlock>
+  
+  <apex:outputPanel layout="block" id="mainTabPanelDiv">  
+    
+    <apex:actionStatus id="ValidationSts">
+            <apex:facet name="start">
+                <apex:pageMessage id="ValidationRunning" summary="Verifying your saved preferences.  Please wait." severity="INFO" strength="3"  />
+            </apex:facet>
+            <apex:facet name="stop">
+			    <apex:pageMessage id="validationError" summary="Invalid mappings were detected and removed.  Please refresh the page and then verify your settings before continuing." severity="ERROR" strength="3" rendered="{!ValidationErrors}"  />
+        </apex:facet>
+</apex:actionStatus>
+    
+    <apex:tabPanel switchType="ajax" value="{!TabInFocus}" id="mainTabPanel" tabClass="myActiveTab" inactiveTabClass="myInactiveTab" rendered="{!!ValidationErrors}">
+	        
+          <!-- =============================== -->
+          <!-- ORG - ACCOUNT TAB -->
+          <!-- =============================== -->
+          
+          <apex:tab label="Org - Account" name="account" id="tabAccount" styleClass="whiteBG" status="tab">
+            <apex:outputPanel layout="block" id="vTabOrgPanel">
+            <apex:inputHidden value="{!LeftTabInFocus}" /> <!-- Bind within each ajax tab -->
+            <script>
+              //Necessary for this script to be here for ajax loaded tab
+              var j$ = jQuery.noConflict();
+              j$(document).ready(function(){
+                setjVertTabs("#vtabOrg", "{!LeftTabInFocus}");
+                changeCSSOpacity('{!chosenTriggerValue}', '.orgSectionEnable');
+              });
+            </script>
+            
+            <div id="vtabOrg">
+            <div>
+              <ul>              
+                <li class="Zendesk_optionsTab"><a href="#vtabsOrg-options">Filters</a></li>
+                <li class="Zendesk_tagsTab"><a href="#vtabsOrg-tags">Tag Mapping</a></li>
+                <li class="Zendesk_mappingsTab"><a href="#vtabsOrg-mappings">Field Mapping</a></li>
+              </ul>
+            </div>
+
+            <div>
+              
+              <div class="Zendesk_optionsTab" id="#vtabsOrg-options">
+
+                <apex:pageblock mode="edit" id="orgOptionsBlock" tabstyle="Zendesk__tab">                      
+                  <apex:pageblockSection id="orgSettingsSect" columns="1">
+
+                    <apex:outputpanel layout="block" styleClass="buttons">                                
+                      <apex:commandlink action="{!saveOrgMapping}" value="Save" styleClass="btn" style="text-decoration:none;padding:4px;" >
+                        <apex:param name="leftSel" value="0" assignTo="{!LeftTabInFocus}" />
+                      </apex:commandlink>
+                    </apex:outputPanel>
+
+                    <strong>Enable automatic updates</strong><br/>                    
+                    Enable Zendesk to create or update organizations automatically when changes are made to Salesforce Accounts. If you enable updates, map the fields below.
+                    <apex:pageblockSectionItem id="item" >
+                        <apex:outputlabel escape="false" value="Enable updates to organizations"/>
+                        <apex:outputPanel layout="block" id="orgTriggerPanel">                              
+                          <apex:selectlist value="{!chosenTriggerValue}" size="1" style="width: 100px;" id="selectOrg" onChange="changeCSSOpacity(this.value, '.orgSectionEnable');">
+                              <apex:selectoptions value="{!triggerOptions}"/>
+                          </apex:selectlist>                          
+                        </apex:outputPanel>
+                    </apex:pageblockSectionItem>
+
+                    <apex:outputPanel layout="block" styleClass="orgSectionEnable">
+                      <br/><strong>Set sync filters</strong><br/>                    
+                      Select the record types (when available) and field values you want to sync to Zendesk. 
+                      The top-most record type and field value will be used as the default for new Accounts 
+                      created from Zendesk during bulk sync.
+                    </apex:outputPanel>
+
+                    <apex:pageblockSectionItem rendered="{!selectedAccountRecTypes != null}">
+                      <apex:outputPanel layout="block" styleClass="orgSectionEnable">                                   
+                        <apex:outputlabel value="Sync these record types" />
+                      </apex:outputPanel>
+                      <apex:outputPanel layout="block" styleClass="orgSectionEnable">                                   
+                        <c:MultiSelectList id="accRecTypesComp" availableFields="{!AccountRecTypes}" activeFields="{!selectedAccountRecTypes}" />
+                      </apex:outputPanel>
+                    </apex:pageblockSectionItem>
+                    <apex:pageblockSectionItem id="acctFilterSectionItem">
+                        <apex:outputPanel layout="block" styleClass="orgSectionEnable">
+                            <apex:outputlabel value="Filter by Account Field" />
+                        </apex:outputPanel>
+                        <apex:outputPanel id="picklistFilter" layout="block" styleClass="orgSectionEnable">
+                            <apex:selectlist value="{!selectedPicklistField}" size="1" >
+                                <apex:actionSupport event="onchange" action="{!ChangePicklistFilter}" rerender="picklistFilter" status="PicklistFilterStatus"/>
+                                <apex:selectoptions value="{!AccountPicklistFields}"/>
+                            </apex:selectlist>
+                            <apex:actionStatus id="PicklistFilterStatus">
+                                <apex:facet name="start"><apex:image url="{!URLFOR($Resource.Zendesk__ZendeskStaticResource,'images/dotted_bar.gif')}" /></apex:facet>
+                            </apex:actionStatus>
+                            <c:MultiSelectList id="acctFilterValOptions"  availableFields="{!AccountPicklistValues}" activeFields="{!selectedPicklistValues}" rendered="{!selectedPicklistField != 'Not Selected'}"/>
+                        </apex:outputPanel>
+                    </apex:pageblockSectionItem>
+                    
+                  </apex:pageblockSection>
+                </apex:pageblock>
+                  
+              </div>
+
+              <div class="Zendesk_tagsTab" id="#vtabsOrg-tags">             
+                
+                <apex:outputPanel layout="block" styleClass="orgSectionEnable">
+                  <apex:pageblock mode="edit" id="orgTagsBlock" tabstyle="Zendesk__tab">
+                  
+                    <apex:pageblockSection columns="1" >
+                          <apex:outputpanel layout="block" styleClass="buttons">                              
+                            <apex:commandlink action="{!saveOrgMapping}" value="Save" styleClass="btn" style="text-decoration:none;padding:4px;" >
+                              <apex:param name="leftSel" value="1" assignTo="{!LeftTabInFocus}" />
+                            </apex:commandlink>                              
+                          </apex:outputPanel>
+                            <strong>Map Zendesk organizations and Salesforce Accounts</strong><br/>
+                            Select the Salesforce fields you want to map to Zendesk organization fields for new or updated Accounts.<br/>
+                    
+                            <apex:pageblockSectionItem >
+                                  <apex:repeat value="{!listofzendeskSFAccountMapping}" var="val">
+                                      <apex:pageblockSection columns="1">
+                                          <apex:pageblockSectionItem >
+                                              <apex:outputpanel layout="block" style="margin-left:47px;float:left;">
+                                                  <apex:outputpanel layout="block" style="width:120px;float:left;">
+                                                      <apex:outputlabel escape="false" value="Zendesk domain<br/>names" styleclass="labelCol" rendered="{!IF(val.zendeskOrgField == 'domain_names',TRUE,FALSE)}"/>
+                                                      <apex:outputlabel value="Zendesk tags" styleclass="labelCol" rendered="{!IF(val.zendeskOrgField == 'tags',TRUE,FALSE)}"/>
+                                                      <apex:outputlabel value="Zendesk notes" styleclass="labelCol" rendered="{!IF(val.zendeskOrgField == 'notes',TRUE,FALSE)}"/>
+                                                  </apex:outputpanel>
+                                                  <apex:outputpanel layout="block" style="width:500px;float:left;">
+                                                      <apex:outputpanel rendered="{!IF(val.zendeskOrgField == 'tags',TRUE,FALSE)}">
+                                                         <c:MultiSelectList availableFields="{!val.listOfsfAccountFields}" activeFields="{!activeTags}" />
+                                                      </apex:outputpanel>
+                                                      <apex:selectlist value="{!val.sfAccountField}" size="1" style="width: 300px;" rendered="{!IF(val.zendeskOrgField == 'tags',FALSE,TRUE)}">
+                                                          <apex:selectoptions value="{!val.listOfsfAccountFields}"/>
+                                                      </apex:selectlist>
+                                                  </apex:outputpanel>
+                                               </apex:outputpanel>
+                                           </apex:pageblockSectionItem>
+                                       </apex:pageblockSection>
+                                  </apex:repeat>
+                              </apex:pageblockSectionItem>
+                          </apex:pageblockSection>
+                    </apex:pageblock>
+                  </apex:outputPanel>
+                  
+              </div>
+
+              <div class="Zendesk_mappingsTab" id="#vtabsOrg-mappings">
+                <apex:outputPanel layout="block" styleClass="orgSectionEnable">
+                  
+                    <c:ZendeskCustomFields objectType="account" />
+					
+                </apex:outputPanel>
+              </div>
+
+            </div>
+          </div>
+        </apex:outputPanel>
+        
+      </apex:tab>
+
+
+          <!-- =============================== -->
+          <!-- USER - CONTACT TAB -->
+          <!-- =============================== -->
+          
+          <apex:tab label="User - Contact" name="contact" id="tabContact" styleClass="whiteBG" status="tab">
+            <apex:outputPanel layout="block" id="vTabConPanel">
+              <apex:inputHidden value="{!LeftTabInFocus}" /> <!-- Bind within each ajax tab -->
+              <script>
+                //Necessary for this script to be here for ajax loaded tab
+                var j$ = jQuery.noConflict();
+                j$(document).ready(function(){
+                    setjVertTabs("#vtabContact", "{!LeftTabInFocus}");
+                    changeCSSOpacity('{!chosenTriggerValueUser}', '.contactSectionEnable');
+              });
+            </script>
+            
+            <div id="vtabContact">
+            <div>
+              <ul>
+                <li class="Zendesk_optionsTab"><a href="#vtabsContact-Options">Filters</a></li>
+                <li class="Zendesk_tagsTab"><a href="#vtabsContact-tags">Tag Mapping</a></li>
+                <li class="Zendesk_mappingsTab"><a href="#vtabsContact-mappings">Field Mapping</a></li>              
+              </ul>
+            </div>
+            <div>
+              <div class="Zendesk_optionsTab" id="#vtabsContact-Options">
+
+                <apex:pageblock mode="edit" id="contactOptionsBlock" tabstyle="Zendesk__tab"> 
+                  
+                    <apex:pageblockSection columns="1" id="userSectContact">
+                      <apex:outputpanel layout="block" styleClass="buttons">                                
+                        <apex:commandlink action="{!saveMapping}" value="Save" styleClass="btn" style="text-decoration:none;padding:4px;" >
+                          <apex:param name="leftSel" value="0" assignTo="{!LeftTabInFocus}" />
+                        </apex:commandlink>
+                      </apex:outputPanel>
+
+                      <strong>Enable automatic updates</strong><br/>                    
+                      Enable Zendesk to create or update users automatically when changes are made to Salesforce Contacts and Leads.  If you enable updates, map the fields below.
+                      <apex:pageblockSectionItem id="itemContact">
+                        <apex:outputlabel value="Enable updates to users"/>
+                        <apex:outputPanel layout="block" id="contactTriggerPanel">                              
+                          <apex:selectlist value="{!chosenTriggerValueUser}" size="1" style="width: 100px;" id="selectContact" onChange="changeCSSOpacity(this.value, '.contactSectionEnable');">
+                              <apex:selectoptions value="{!triggerOptionsUser}"/>                                 
+                          </apex:selectlist>
+                        </apex:outputPanel>                     
+                      </apex:pageblockSectionItem>
+
+                      <apex:outputPanel layout="block" styleClass="contactSectionEnable">
+                        <br/><strong>Set sync filters</strong><br/>                    
+                        Select the record types (when available) and field values you want to sync to Zendesk. 
+                        The top-most record type and field value will be used as the default for new Contacts created 
+                        from Zendesk during bulk sync.
+                      </apex:outputPanel>
+
+                      <!-- Contact:  Record Type -->
+                      <apex:pageblockSectionItem rendered="{!selectedContactRecTypes != null}">
+                          <apex:outputPanel layout="block" styleClass="contactSectionEnable">
+                              <apex:outputlabel value="Sync these record types" />
+                          </apex:outputPanel>
+                          <apex:outputPanel layout="block" styleClass="contactSectionEnable">
+                              <c:MultiSelectList availableFields="{!ContactRecTypes}" activeFields="{!selectedContactRecTypes}" />
+                          </apex:outputPanel>                          
+                      </apex:pageblockSectionItem>
+                      
+                      <!-- Contact:  Picklist -->   
+                      <apex:pageblockSectionItem >
+                          <apex:outputPanel layout="block" styleClass="contactSectionEnable">
+                              <apex:outputlabel value="Filter by Contact Field" />
+                          </apex:outputPanel>
+                          <apex:outputPanel id="ContactPicklistFilter" layout="block" styleClass="contactSectionEnable">
+                              <apex:selectlist value="{!Obj2SelectedPicklistFields['contact']}" size="1" >
+                                  <apex:actionSupport event="onchange" action="{!ContactChangePicklistFilter}" rerender="ContactPicklistFilter" status="ContactPicklistFilterStatus"/>
+                                  <apex:selectoptions value="{!obj2PicklistFields['contact']}"/>
+                              </apex:selectlist>
+                              <apex:actionStatus id="ContactPicklistFilterStatus">
+                                  <apex:facet name="start"><apex:image url="{!URLFOR($Resource.Zendesk__ZendeskStaticResource,'images/dotted_bar.gif')}" /></apex:facet>
+                              </apex:actionStatus>
+                              <c:MultiSelectList availableFields="{!ContactObj2PicklistValues}" activeFields="{!Obj2SelectedPicklistValues['contact']}" rendered="{!Obj2SelectedPicklistFields['contact'] != 'Not Selected'}"/>
+                          </apex:outputPanel>
+                      </apex:pageblockSectionItem>
+                    </apex:pageblockSection>
+                </apex:pageblock>
+                
+              </div>
+
+              <div class="Zendesk_tagsTab" id="#vtabsContact-tags">
+                <apex:outputPanel layout="block" styleClass="contactSectionEnable">
+                  <apex:pageblock mode="edit" id="contactTagsBlock" tabstyle="Zendesk__tab">
+                    <apex:pageblockSection columns="1" id="mappingBlock">                   
+                            <apex:outputpanel layout="block" styleClass="buttons">
+                              <apex:commandlink action="{!saveMapping}" value="Save" styleClass="btn" style="text-decoration:none;padding:4px;" >
+                                <apex:param name="leftSel" value="1" assignTo="{!LeftTabInFocus}" />
+                              </apex:commandlink>
+                            </apex:outputPanel>
+                            <strong>Map Zendesk Users and Salesforce Contacts</strong><br/>
+                            Select the Salesforce fields you want to map to Zendesk user fields for new or updated Contacts.<br/>
+                            <apex:pageblockSectionItem id="item">
+                                <apex:outputPanel >
+                                  <apex:repeat value="{!listofzendeskSFContactMapping}" var="val">
+                                      <apex:pageblockSection columns="1">
+                                          <apex:pageblockSectionItem >
+                                              <apex:outputpanel layout="block" style="margin-left:47px;float:left;">
+                                              <apex:outputpanel layout="block" style="width:120px;float:left;">
+                                                   <apex:outputlabel value="Zendesk details" styleclass="labelCol" rendered="{!IF(val.zendeskUserField == 'details',TRUE,FALSE)}"/>
+                                                  <apex:outputlabel value="Zendesk tags" styleclass="labelCol" rendered="{!IF(val.zendeskUserField == 'tags',TRUE,FALSE)}"/>
+                                                  <apex:outputlabel value="Zendesk notes" styleclass="labelCol" rendered="{!IF(val.zendeskUserField == 'notes',TRUE,FALSE)}"/>
+                                              </apex:outputpanel>
+                                              <apex:outputpanel layout="block" style="width:500px;float:left;">
+                                                <c:MultiSelectList availableFields="{!val.listOfsfUserFields}" activeFields="{!ContactactiveTags}" rendered="{!IF(val.zendeskUserField == 'tags',TRUE,FALSE)}"/>
+                                                    <apex:selectlist value="{!val.sfUserField}" size="1" style="width: 300px;" rendered="{!IF(val.zendeskUserField == 'tags',FALSE,TRUE)}">
+                                                        <apex:selectoptions value="{!val.listOfsfUserFields}"/>
+                                                      </apex:selectlist>
+                                              </apex:outputpanel>
+                                              </apex:outputpanel>
+                                          </apex:pageblockSectionItem>
+                                      </apex:pageblockSection>
+                                  </apex:repeat>
+                                </apex:outputPanel>
+                            </apex:pageblockSectionItem>
+                        </apex:pageblockSection>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+              </div>
+
+              <div class="Zendesk_mappingsTab" id="#vtabsContact-mappings">
+                <apex:outputPanel layout="block" styleClass="contactSectionEnable">
+                          
+                    <c:ZendeskCustomFields objectType="contact" />
+					
+                        </apex:outputPanel>
+              </div>
+
+            </div>
+          </div>
+        </apex:outputPanel>
+          </apex:tab> 
+
+
+
+          <!-- =============================== --> 
+          <!-- USER - LEAD TAB -->
+          <!-- =============================== -->
+          <apex:tab label="User - Lead" name="lead" id="tabLead" styleClass="whiteBG" status="tab">
+
+            <apex:outputPanel layout="block" id="vTabLeadPanel">
+              <apex:inputHidden value="{!LeftTabInFocus}" /> <!-- Bind within each ajax tab -->
+              <script>
+                //Necessary for this script to be here for ajax loaded tab
+                var j$ = jQuery.noConflict();
+                j$(document).ready(function(){
+                setjVertTabs("#vtabLead", "{!LeftTabInFocus}");
+                changeCSSOpacity('{!chosenTriggerValueUser}', '.leadSectionEnable');
+                });
+              </script>
+
+              <div id="vtabLead">
+            <div>
+              <ul>
+                <li class="Zendesk_optionsTab"><a href="#vtabsLead-Options">Filters</a></li>
+                <li class="Zendesk_tagsTab"><a href="#vtabsLead-tags">Tag Mapping</a></li>
+                <li class="Zendesk_mappingsTab"><a href="#vtabsLead-mappings">Field Mapping</a></li>
+              </ul>
+            </div>
+            <div>
+              <div class="Zendesk_optionsTab" id="#vtabsLead-Options">
+                <apex:pageblock mode="edit" id="LeadOptionsBlock" tabstyle="Zendesk__tab">
+                    <apex:pageblockSection columns="1" id="userSectLead">
+                      <apex:outputpanel layout="block" styleClass="buttons">                                
+                        <apex:commandlink action="{!saveMapping}" value="Save" styleClass="btn" style="text-decoration:none;padding:4px;" >
+                          <apex:param name="leftSel" value="0" assignTo="{!LeftTabInFocus}" />
+                        </apex:commandlink>
+                      </apex:outputPanel>
+
+                      <strong>Enable automatic updates</strong><br/>
+                      Enable Zendesk to create or update users automatically when changes are made to Salesforce Contacts and Leads.  If you enable updates, map the fields below.
+                      <apex:pageblockSectionItem id="itemLead">                 
+                        <apex:outputlabel value="Enable updates to users"/>
+                        <apex:outputPanel layout="block" id="leadTriggerPanel">                              
+                              <apex:selectlist value="{!chosenTriggerValueUser}" size="1" style="width: 100px;" id="selectLead" onChange="changeCSSOpacity(this.value, '.leadSectionEnable');">
+                                  <apex:selectoptions value="{!triggerOptionsUser}"/>
+                              </apex:selectlist>                              
+                          </apex:outputPanel>
+                      </apex:pageblockSectionItem>
+                      
+                      <apex:outputPanel layout="block" styleClass="leadSectionEnable">
+                        <br/><strong>Set sync filters</strong><br/>
+                        Select the record types (when available) and field values you want to sync to Zendesk. 
+                         The top-most record type and field value will be used as the default for new Leads created 
+                         from Zendesk during bulk sync.
+                      </apex:outputPanel>
+
+                      <!-- Lead:  Record Type -->
+                       <apex:pageblockSectionItem rendered="{!selectedLeadRecTypes != null}">
+                           <apex:outputPanel layout="block" styleClass="leadSectionEnable">
+                              <apex:outputlabel value="Sync these record types" />
+                           </apex:outputPanel>
+                           <apex:outputPanel layout="block" styleClass="leadSectionEnable">
+                              <c:MultiSelectList availableFields="{!LeadRecTypes}" activeFields="{!selectedLeadRecTypes}" />
+                           </apex:outputPanel>
+                       </apex:pageblockSectionItem>
+                       
+                       <!-- Contact:  Picklist -->   
+                       <apex:pageblockSectionItem >
+                           <apex:outputPanel layout="block" styleClass="leadSectionEnable">
+                               <apex:outputlabel value="Filter by Lead Field" />
+                           </apex:outputPanel>
+                           <apex:outputPanel id="LeadPicklistFilter" layout="block" styleClass="leadSectionEnable">
+                               <apex:selectlist value="{!Obj2SelectedPicklistFields['lead']}" size="1" >
+                                   <apex:actionSupport event="onchange" action="{!LeadChangePicklistFilter}" rerender="LeadPicklistFilter" status="LeadPicklistFilterStatus"/>
+                                   <apex:selectoptions value="{!obj2PicklistFields['lead']}"/>
+                               </apex:selectlist>
+                               <apex:actionStatus id="LeadPicklistFilterStatus">
+                                   <apex:facet name="start"><apex:image url="{!URLFOR($Resource.Zendesk__ZendeskStaticResource,'images/dotted_bar.gif')}" /></apex:facet>
+                               </apex:actionStatus>
+                               <c:MultiSelectList availableFields="{!LeadObj2PicklistValues}" activeFields="{!Obj2SelectedPicklistValues['lead']}" rendered="{!Obj2SelectedPicklistFields['lead'] != 'Not Selected'}"/>
+                           </apex:outputPanel>
+                        </apex:pageblockSectionItem>
+                      </apex:pageblockSection>
+                    </apex:pageblock>                
+              </div>
+
+              <div class="Zendesk_tagsTab" id="#vtabsLead-tags">
+                <apex:outputPanel layout="block" styleClass="leadSectionEnable">
+                  <apex:pageblock mode="edit" id="LeadTagsBlock" tabstyle="Zendesk__tab">
+                    <apex:pageblockSection columns="1">
+                            <apex:outputpanel layout="block" styleClass="buttons">
+                              <apex:commandlink action="{!saveMapping}" value="Save" styleClass="btn" style="text-decoration:none;padding:4px;" >
+                                <apex:param name="leftSel" value="1" assignTo="{!LeftTabInFocus}" />
+                              </apex:commandlink>
+                            </apex:outputPanel>
+                            <strong>Map Zendesk User and Salesforce Leads</strong><br/>
+                            Select the Salesforce fields you want to map to Zendesk user fields for new or updated Leads.<br/>
+                            <apex:pageblockSectionItem >
+                                <apex:outputPanel >
+                                  <apex:repeat value="{!listofzendeskSFLeadMapping}" var="val">
+                                        <apex:pageblockSection columns="1">
+                                            <apex:pageblockSectionItem >
+                                                <apex:outputpanel layout="block" style="margin-left:47px;float:left;">
+                                                  <apex:outputpanel layout="block" style="width:120px;float:left;">
+                                                      <apex:outputlabel value="Zendesk details" styleclass="labelCol" rendered="{!IF(val.zendeskUserField == 'details',TRUE,FALSE)}"/>
+                                                      <apex:outputlabel value="Zendesk tags" styleclass="labelCol" rendered="{!IF(val.zendeskUserField == 'tags',TRUE,FALSE)}"/>
+                                                      <apex:outputlabel value="Zendesk notes" styleclass="labelCol" rendered="{!IF(val.zendeskUserField == 'notes',TRUE,FALSE)}"/>
+                                                  </apex:outputpanel>
+                                                  <apex:outputpanel layout="block" style="width:500px;float:left;">
+                                                       <c:MultiSelectList availableFields="{!val.listOfsfUserFields}" activeFields="{!LeadactiveTags}" rendered="{!IF(val.zendeskUserField == 'tags',TRUE,FALSE)}"/>
+                                                       <apex:selectlist value="{!val.sfUserField}" size="1" style="width: 300px;"  rendered="{!IF(val.zendeskUserField == 'tags',FALSE,TRUE)}">
+                                                           <apex:selectoptions value="{!val.listOfsfUserFields}"/>
+                                                       </apex:selectlist>
+                                                  </apex:outputpanel>
+                                                </apex:outputpanel>
+                                            </apex:pageblockSectionItem>
+                                        </apex:pageblockSection>
+                                    </apex:repeat>
+                                </apex:outputPanel>
+                              </apex:pageblockSectionItem>
+                          </apex:pageblockSection>
+                      </apex:pageblock>
+                  </apex:outputPanel>
+              </div>
+
+              <div class="Zendesk_mappingsTab" id="#vtabsLead-mappings">
+                <apex:outputPanel layout="block" styleClass="leadSectionEnable">
+                	
+                    <c:ZendeskCustomFields objectType="lead" />
+					
+                          </apex:outputPanel>
+              </div>
+
+            </div>
+          </div>
+        </apex:outputPanel>
+          </apex:tab>
+    </apex:tabPanel>
+
+  </apex:outputPanel>
+
+  <br/>
+  
+  <!--  Multiple Domains Ticket mapping -->
+  <apex:outputPanel layout="block" id="multipleDomainFormId">
+    <c:MultipleDomainTicketMapping />
+  </apex:outputPanel> 
+  
+  <apex:pageBlock title="Ticket List View for Salesforce Objects" mode="edit" tabstyle="Zendesk__tab">
+  
+    <apex:pageBlockButtons location="top">
+      <apex:commandButton action="{!saveSettings}" value="Save"/>
+    </apex:pageBlockButtons>
+    
+    <apex:pageBlockSection title="Filtering" columns="1">
+    
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Status filter" />
+        <apex:selectList value="{!statusFilter}" size="1">
+         <apex:selectOptions value="{!statusFilterOptions}"/>
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Priority filter" />
+        <apex:selectList value="{!priorityFilter}" size="1">
+          <apex:selectOptions value="{!priorityFilterOptions}"/>
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Type filter" />
+        <apex:selectList value="{!typeFilter}" size="1">
+          <apex:selectOptions value="{!typeFilterOptions}"/>
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Sorting" columns="1">
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Sort field" />
+        <apex:selectList value="{!sortField}" size="1">
+          <apex:selectOptions value="{!sortColumns}"/>
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Sort descending" />
+        <apex:inputCheckbox value="{!sortDesc}"/>
+      </apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Mapping" columns="2">
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Find account tickets by" />
+        <apex:selectList size="1" value="{!accountLookupType}">
+          <apex:selectOption itemLabel="Default" itemValue=""  />
+          <apex:selectOption itemLabel="Zendesk organization" itemValue="organization" />
+          <apex:selectOption itemLabel="Zendesk tag" itemValue="tags" />
+          <apex:selectOption itemLabel="Requester email address" itemValue="requester" />
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="using field" />
+        <apex:selectList size="1" value="{!accountLookupField}">
+          <apex:selectOptions value="{!accountFieldOptions}" />
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Find contact tickets by" />
+        <apex:selectList size="1" value="{!contactLookupType}">
+          <apex:selectOption itemLabel="Requester email address" itemValue="requester" />
+          <apex:selectOption itemLabel="Zendesk tag" itemValue="tags" />
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="using field" />
+        <apex:selectList size="1" value="{!contactLookupField}">
+          <apex:selectOptions value="{!contactFieldOptions}" />
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Find opportunity tickets by" />
+        <apex:selectList size="1" value="{!opportunityLookupType}">
+          <apex:selectOption itemLabel="Default" itemValue=""  />
+          <apex:selectOption itemLabel="Zendesk organization" itemValue="organization" />
+          <apex:selectOption itemLabel="Zendesk tag" itemValue="tags" />
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="using field" />
+        <apex:selectList size="1" value="{!opportunityLookupField}">
+          <apex:selectOptions value="{!opportunityFieldOptions}" />
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Find lead tickets by" />
+        <apex:selectList size="1" value="{!leadLookupType}">
+          <apex:selectOption itemLabel="Requester email address" itemValue="requester" />
+          <apex:selectOption itemLabel="Zendesk tag" itemValue="tags" />
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+      <apex:pageBlockSectionItem >
+        <apex:outputLabel value="using field" />
+        <apex:selectList size="1" value="{!leadLookupField}">
+          <apex:selectOptions value="{!leadFieldOptions}" />
+        </apex:selectList>
+      </apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Advanced" columns="1">
+      <apex:pageBlockSectionItem helpText="Show tickets from the Zendesk organization that matches the Account name.">
+        <apex:outputLabel escape="false" value="Show Account tickets by<br/>Zendesk organization" />
+        <apex:inputCheckbox value="{!accountNameOverride}"/>
+      </apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+
+  </apex:pageBlock>
+
+
+  </apex:form>
+ 
+ <script>
+    
+    
+    //  Kick off Validation
+    ValidateAll();
+ </script>
+</apex:page>

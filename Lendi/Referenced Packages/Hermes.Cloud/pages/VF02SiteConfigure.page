@@ -1,0 +1,2 @@
+<apex:page controller="vhc.Ctrl02SiteConfigure" action="{!doRedirect}">
+</apex:page>

@@ -1,0 +1,146 @@
+<apex:page controller="rh2.PS_SelectMaster_Controller" standardStylesheets="false" sidebar="false" applyBodyTag="false" docType="html-5.0" tabStyle="PS_Rollup_Helper__tab" >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <head> 
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>    
+        <apex:includeScript value="//code.jquery.com/jquery-1.11.3.min.js"/>
+        <apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />    
+
+     </head>
+      <style>
+    
+        [id$=heading] { padding-top:20px; padding-bottom:5px;}
+        .h_scroll {overflow-x:auto;}
+        .caption {font-size:smallest; padding-left:10px; padding-bottom:5px; padding-top:5px;}
+        .breadcrumb {font-size:small;}
+        
+        @media screen and (max-width: 1024px){
+          .hideFullColumn tr > .hidecol
+          {
+          display:none;
+      }
+        }
+        #progressbar { height: 10px; margin-left:50px; margin-top: 10px; }
+    
+    </style>
+    
+    <script>
+    
+        //Verify namespace is ready
+        var rh = rh || {};
+        rh.j$ = jQuery.noConflict();
+        
+        var val = {!activeRollupCount};
+        val == 3 ? val = 100 : val *= 33;
+        
+        rh.j$(function() {
+            rh.j$( "#progressbar" ).progressbar({
+                value: val
+            });
+             
+        
+            rh.j$( "[id$=menu]" ).menu({ icons: { submenu: "ui-icon-circle-triangle-e" } } );
+            rh.j$( "[id$=menu]" ).animate({width:'45px'});
+
+            
+        });
+        
+        
+        
+        if(val == 100) {
+            var css = '.ui-widget-header { background: red; }',
+                head = document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
+        
+            style.type = 'text/css';
+            if (style.styleSheet){
+              style.styleSheet.cssText = css;
+            } else {
+              style.appendChild(document.createTextNode(css));
+            }
+            
+            head.appendChild(style);
+        }
+    
+    </script> 
+      
+     <body>
+     <apex:form >
+     <div class="slds slds-p-around--xx-large slds-container--large slds-container--center" role="main">
+         
+        <div class="slds-card slds-card--empty">
+            <header class="slds-card__header slds-grid grid--flex-spread slds-text-heading--small slds-truncate">
+                Step 1:  Select Destination Object
+            </header>
+            <header class="slds-card__header slds-grid grid--flex-spread">
+                <nav role="navigation">
+                    <ol class="slds-breadcrumb slds-list--horizontal">
+                        <li class="slds-list__item slds-text-heading--label"><a href="{!URLFOR($Page.PS_AllSettings)}">All Rollup Settings</a></li>
+                    </ol>
+                </nav>
+            </header>
+        </div>
+            
+            <div class="slds-card slds-m-bottom--medium">
+                <header class="slds-card__header slds-grid">
+                    <div class="slds-media__body">
+                            <h3 class="slds-text-heading--small slds-truncate">Select Where You Would Like Your Rollup Results to Reside</h3>
+                            
+                        </div>
+                </header>
+                    <apex:outputpanel id="table">
+                     <apex:pageMessages /> 
+                     <section class="slds-card__body slds-grid">
+                        <div class="" style="width:95%; height:400px; margin-left:auto; margin-right:auto;">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked"  >
+                        <c:Paginate pageController="{! targetObjectController }" renderedComponent="selectTarget, table" /> 
+                            <thead>
+                                <tr style="width:100%;">
+                                    <th class="slds-text-heading--label" scope="col">Action</th>
+                                    <th class="slds-text-heading--label slds-is-sortable hidecol" scope="col">
+                                        <apex:commandLink value="Label" action="{! doMasterObjectSort }" rerender="table">
+                                            <apex:param name="sortField" value="Label__c" assignTo="{!sortField}"/>
+                                            <apex:outputText value="{!IF(sortField=='Label__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                        </apex:commandLink>
+                                    </th>
+                                    <th class="slds-text-heading--label slds-is-sortable" scope="col">
+                                        <apex:commandLink value="API Name" action="{!doMasterObjectSort}" rerender="table">
+                                            <apex:param name="sortField" value="Object__c" assignTo="{!sortField}"/>
+                                            <apex:outputText value="{!IF(sortField=='Object__c', IF(sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                        </apex:commandLink>
+                                    </th> 
+                                </tr>
+                            </thead>
+                        </table>
+                        <div class="slds-scrollable--y" style="width:100%; height:350px; margin-left:auto; margin-right:auto;">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" >
+                            <tbody>
+                            <apex:repeat value="{!PaginatedListForTargetObjects}" var="item" id="repeat">
+                                <tr>
+                                    <td style="width:33%;" data-label="Action"> 
+                                        <apex:commandLink value="Select" action="{! doSelectMasterObject }" rerender="error, table">
+                                            <apex:param name="masterAPI" value="{!item.rh2__Object__c}" assignTo="{!masterAPI}"/>
+                                        </apex:commandLink>
+                                    </td>                   
+                                    <td style="width:28%;">
+                                       {! item.Label__c }
+                                    </td>
+                                    <td style="width:39%;">
+                                       {! item.Object__c }
+                                    </td>
+                                </tr>                        
+                            </apex:repeat>
+                            </tbody>
+                        </table>
+                        </div>
+                        </div>
+                    </section>
+                    </apex:outputpanel>
+            </div>
+        </div>  
+        <c:PS_additionalInformation />
+        
+     </apex:form>       
+     </body>
+</html>
+</apex:page>

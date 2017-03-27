@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>To store sort order and filters</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>AccountNameOverride__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Account Name Override</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PriorityFilter__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Be careful when changing the label as it may affect existing merge templates.</description>
+        <externalId>false</externalId>
+        <label>Account Filter</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SortDesc__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Sort Descending</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>SortField__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Sort by</label>
+        <length>32</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>StatusFilter__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Status Filter</label>
+        <length>16</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TypeFilter__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Type Filter</label>
+        <length>32</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>password__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Password</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>url__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Zendesk URL</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>username__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Login</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Zendesk Session Deprecated</label>
+</CustomObject>

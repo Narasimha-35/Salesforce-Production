@@ -1,0 +1,204 @@
+<apex:page standardController="smagicinteract__smsMagic__c" extensions="smagicinteract.smsMagicExtension" tabStyle="SM_Home__tab">
+    
+    
+
+     
+<script type="text/javascript">
+
+	function clearTextAll(fieldId){
+		var fieldVal = document.getElementById(fieldId).value;
+		document.getElementById(fieldId).value = "";
+	}
+
+	function clearText(fieldId, from){
+		var fieldVal = document.getElementById(fieldId).value;
+		var nameStrToCheck = 'Enter name here';
+		var mobileStrToCheck = 'Enter mobile number here';
+		if(from == 'name' && fieldVal.toLowerCase() === nameStrToCheck.toLowerCase()){
+			document.getElementById(fieldId).value = "";
+		}
+		if(from == 'mobile' && fieldVal.toLowerCase() === mobileStrToCheck.toLowerCase()){
+			document.getElementById(fieldId).value = "";
+		}
+		document.getElementById(fieldId).style.color = "black";  
+	}
+	
+	function setText(fieldId, from){
+		var fieldVal = document.getElementById(fieldId).value;
+		if(from == 'name' && fieldVal.toLowerCase() == 'Enter name here'){
+			document.getElementById(fieldId).style.color = "gray";
+			document.getElementById(fieldId).value = 'Enter name here';
+		}
+		if(from == 'mobile' && fieldVal.toLowerCase() == 'Enter mobile number here'){
+			document.getElementById(fieldId).value = 'Enter mobile number here';
+			document.getElementById(fieldId).style.color = "gray";
+		}
+		else{
+			fieldVal = fieldVal.replace(/^\s+|\s+$/g,'');
+			
+			if(fieldVal.length == 0){
+				if(from == 'name'){
+					document.getElementById(fieldId).value = 'Enter name here';
+					document.getElementById(fieldId).style.color = "gray";
+				}
+				if(from == 'mobile'){
+					document.getElementById(fieldId).value = 'Enter mobile number here';
+					document.getElementById(fieldId).style.color = "gray";
+				}
+			}
+			else{
+				document.getElementById(fieldId).style.color = "black";
+			}
+		}
+	}
+	
+	function charaterCounter(){
+		var maxLimit = 700;
+		var txtField = document.getElementById("{!$Component.formId.main.textSection.smsTextSection.SMSText}");
+		var currentCount =	txtField.value.length;
+		var remainingCharMsgDiv = document.getElementById("{!$Component.formId.main.textSection.charaterCountMsg.numberOfChars}");
+		var noOfCharMsg = remainingCharMsgDiv.innerHTML;
+		var remaingChars = 700;
+		var msg = "";
+		if(currentCount > maxLimit){
+			txtField.value = txtField.value.substring(0, maxLimit);
+			//document.getElementById("remainingChar").innerHTML = 0;
+			remaingChars = 0;
+		}
+		else{
+			//document.getElementById("remainingChar").innerHTML = maxLimit - currentCount;
+			remaingChars = maxLimit - currentCount;
+		}
+		msg = "You can type maximum "+remaingChars+" characters.";
+		if(remaingChars == 0)
+			msg = "You have reached to the maximum charater limit of 700.";
+		remainingCharMsgDiv.innerHTML = msg;
+	}
+	
+	function collapseSection(){
+		var displayElement = document.getElementById('lookupSectionDiv');
+		var addButtonDisplayElement = document.getElementById('addButtonDiv');
+		var looupDropDownSection = document.getElementById("{!$Component.formId.main.lookupDropDownPanel}");
+		var divDisplayVal = displayElement.style.display;
+		var addButtonDivDisplayVal = addButtonDisplayElement.style.display;
+		var looupDropDownDivDisplayVal = looupDropDownSection.style.display;
+		
+		if(divDisplayVal == "block" && addButtonDivDisplayVal == "block"  && looupDropDownDivDisplayVal == "block"){
+			displayElement.style.display = "none";
+			addButtonDisplayElement.style.display = "none";
+			looupDropDownSection.style.display = "none";
+		}
+		if(divDisplayVal == "none" && addButtonDivDisplayVal == "none" && looupDropDownDivDisplayVal == "none"){
+			displayElement.style.display = "block";
+			addButtonDisplayElement.style.display = "block";
+			looupDropDownSection.style.display = "block";
+		}
+	}
+</script>
+     
+<apex:includeScript value="/soap/ajax/15.0/connection.js"/>
+<apex:includeScript value="/soap/ajax/15.0/apex.js"/>
+<apex:includeScript value="{!$Resource.smagicinteract__BulkSMSJS}"/>
+
+    <apex:sectionHeader title="SMS Magic - {!$User.FirstName} {!$User.LastName}" subtitle="New SMS" />
+      
+<apex:form id="formId">
+<apex:pageBlock id="main" title="Compose New SMS" helpTitle="Help For this Page?" helpUrl="/apex/SMSMagicHelp?from=NewSMS" >
+<apex:pageMessages /><br/>
+	<apex:pageBlockButtons location="top">
+		<apex:commandButton value="Dashboard" immediate="true" onclick="redirectTo('/apex/SMHome','');return false;" title="Dashboard"/>
+		<apex:commandButton value="New SMS Template" immediate="true" onclick="redirectTo('/apex/NewSMSTemplate','/apex/SMHome');return false;" title="New SMS Template"/>
+		<!-- <apex:outputLink style="float:right;margin-right:10px;" value="{!returnURL}" title="Back">back</apex:outputLink> -->
+		<apex:commandLink value="Back" id="theCommandLink" title="Back" onclick="redirectTo('{!returnURL}','');return false;" />
+	</apex:pageBlockButtons>  
+	
+	<apex:pageBlockSection id="sectionSenderId" title="Sender Id" >
+	<apex:selectList size="1"  value="{!senderId}" style="width:100px;">
+        <apex:selectOptions value="{!senderIds}"/>
+    </apex:selectList>
+    </apex:pageBlockSection>
+	
+	<apex:pageBlockSection id="section" title="Send To (Please prefix ISD code)" onClick="collapseSection();" />
+	
+	<apex:outPutPanel id="lookupDropDownPanel" style="margin-left:10px; margin-top:5px; display:block;">
+	<apex:selectList size="1"  value="{!lookupType}" style="width:100px;" >
+	    <apex:actionSupport event="onchange" rerender="lookupSection" action="{!changeLookupType}" status="lookupStatus"/>
+	    <apex:selectOption itemValue="MobileNumber"/>
+	    <apex:selectOption itemValue="Contact"/>
+	    <apex:selectOption itemValue="User"/>
+	    <apex:selectOption itemValue="Lead"/>
+	</apex:selectList>
+	</apex:outPutPanel> 
+	
+	<div id="lookupSectionDiv" style="width:400px;float:left;margin-top:0px; display:block;">
+	<apex:pageBlockSection id="lookupSection" columns="2" >
+	    <apex:pageBlockSectionItem id="nameSectionItem" rendered="{!isMobile}" > 
+	        <apex:inputText id="name" value="{!smagicinteract__smsMagic__c.smagicinteract__Name__c}" onfocus="clearText(this.id, 'name');" onblur="setText(this.id, 'name');" style="color:gray;" maxlength="20"/>
+	    </apex:pageBlockSectionItem>
+	    <apex:pageBlockSectionItem id="mobileSectionItem" rendered="{!isMobile}">
+	        <apex:inputText id="phonenumber" value="{!smagicinteract__smsMagic__c.smagicinteract__PhoneNumber__c}" onfocus="clearText(this.id, 'mobile');" onblur="setText(this.id, 'mobile');" maxlength="15" style="color:gray;"/>
+	    </apex:pageBlockSectionItem>
+	
+	    <apex:pageBlockSectionItem rendered="{!isContact}"  >
+	    </apex:pageBlockSectionItem>
+	    <apex:pageBlockSectionItem rendered="{!isContact}"  >
+	        <apex:inputField value="{!smagicinteract__smsMagic__c.smagicinteract__Contact__c}" />
+		</apex:pageBlockSectionItem>
+		
+		<apex:pageBlockSectionItem rendered="{!isUser}" >
+	    </apex:pageBlockSectionItem>
+		<apex:pageBlockSectionItem rendered="{!isUser}"  >
+			<apex:inputField value="{!smagicinteract__smsMagic__c.smagicinteract__User__c}" />
+		</apex:pageBlockSectionItem>
+		
+		<apex:pageBlockSectionItem rendered="{!isLead}"  >
+	    </apex:pageBlockSectionItem>
+		<apex:pageBlockSectionItem rendered="{!isLead}"   >
+	        <apex:inputField value="{!smagicinteract__smsMagic__c.smagicinteract__Lead__c}" />
+		</apex:pageBlockSectionItem>
+	
+	</apex:pageBlockSection>
+	</div>
+	<div id="addButtonDiv" style="float:left;margin-top:5px; margin-left:25px; display:block;">
+		<apex:commandButton id="addButton" value="add" action="{!addToList}" rerender="main" status="rcptListStatus" title="Add To List" oncomplete="clearTextAll('{!$Component.formId.main.lookupSection.nameSectionItem.name}');clearTextAll('{!$Component.formId.main.lookupSection.mobileSectionItem.phonenumber}');" />
+	</div>  
+	<div style="clear:both"></div>
+	<apex:actionStatus id="lookupStatus" startText="wait..." stopText="" layout="inline" />
+	<apex:pageBlockSection id="RecipientsList" title="Recipients"  >
+	<apex:pageBlockTable value="{!smsObjects}" var="item" >
+	    <apex:column >
+	        <apex:facet name="header">Name</apex:facet>
+	         <apex:outputText value="{!item.smagicinteract__Name__c}"/>
+	    </apex:column>
+	    <apex:column >
+	        <apex:facet name="header">MobileNumber</apex:facet>
+	        <apex:outputText value="{!item.smagicinteract__PhoneNumber__c}"/>
+	    </apex:column>
+	 </apex:pageBlockTable>
+	<br/>     
+	<apex:actionStatus id="rcptListStatus" startText="reloading recipients list..." stopText=""/>
+	</apex:pageBlockSection>
+	             
+	<apex:pageBlockSection id="textSection"  title="SMS Text">
+		<apex:pageBlockSectionItem id="charaterCountMsg" >
+			<apex:outputText style="color:green;font-size:14px;" id="numberOfChars" value="You can type maximum 700 characters."></apex:outputText> 
+		</apex:pageBlockSectionItem>
+	<br/>
+	<apex:pageBlockSectionItem labelStyle="text-align:left;" id="smsTextSection">
+	<apex:inputField id="SMSText" style="width:400px;height:80px;text-align:left;" value="{!smagicinteract__smsMagic__c.smagicinteract__SMSText__c}" onkeyup="charaterCounter();" onkeydown="charaterCounter();" />
+	<br/>
+	<!-- 
+	<div id="charaterCountMsg"> Remaining Characters : <span id="remainingChar">700</span> </div>
+	 -->   	
+	</apex:pageBlockSectionItem>
+	</apex:pageBlockSection>
+	
+	<apex:pageBlockButtons location="bottom" >
+	    <apex:commandButton action="{!send}" value="send" disabled="{!IF (disableMe,true, false)}" title="Send"/>
+	    <apex:commandButton action="{!cancel}" value="cancel" title="Cancel"/>
+	</apex:pageBlockButtons>
+
+</apex:pageBlock>
+</apex:form>
+   
+</apex:page>

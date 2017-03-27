@@ -1,0 +1,238 @@
+<apex:page standardController="acfContentManagementSystem__c" extensions="acfCMSPage" tabstyle="acfContentManagementSystem__c" cache="false" >
+    <apex:sectionHeader title="Content Management System" subtitle="{!cms_obj.Name}"/>
+    <script>
+        function sectionRefresh(){
+           showRequiredFields();
+        }
+    </script>
+    <apex:form id="frmId">
+        <!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-N5NLKF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-N5NLKF');</script>
+<!-- End Google Tag Manager -->
+        <apex:actionFunction action="{!changeEvent}" name="showRequiredFields"/>
+        <apex:pageBlock >
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save"  action="{!mySave}"/>
+                <apex:commandButton value="Cancel" action="{!Cancel}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:outputPanel rendered="{!if(err_msg != null && err_msg != '', true,false)}" style="color:red;margin-bottom:20px;"><p>{!$Label[err_msg]}</p></apex:outputPanel>
+            <apex:outputPanel rendered="{!AND(cms_obj.acfSectionName__c != 'Footer Links',cms_obj.acfSectionName__c != 'Footer Link Content',cms_obj.acfSectionName__c != 'Dashboard',cms_obj.acfSectionName__c != 'Registration Popup',cms_obj.acfSectionName__c != 'Resend OTP Popup',cms_obj.acfSectionName__c != 'OTP Popup',cms_obj.acfSectionName__c !='Top Products Page',cms_obj.acfSectionName__c !='About Us',cms_obj.acfSectionName__c != 'Preliminary Quote')}">
+            <apex:pageblockSection >
+               <!-- <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Page Name</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfPageName__c}"/>
+                </apex:pageBlockSectionItem> -->
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Section Name</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfSectionName__c}" onchange="sectionRefresh();">
+                    </apex:inputField>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Heading</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfHeading__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!cms_obj.acfSectionName__c != 'Refinance Loan'}">
+                    <apex:outputLabel >Heading Caption</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfHeading_Caption__c}"/>
+                </apex:pageBlockSectionItem>
+                    
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Long Description</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfDescription__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Short Description</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfShort_Description__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!cms_obj.acfSectionName__c != 'Refinance Loan'}">
+                    <apex:outputLabel >Sequence</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfSequence__c}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Heading Image</apex:outputLabel>
+                    <apex:inputFile value="{!attach_obj.body}" fileName="{!attach_obj.name}" fileSize="{!attach_obj.BodyLength}" ></apex:inputFile>  
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!cms_obj.acfSectionName__c != 'Refinance Loan'}">
+                    <apex:outputLabel >Description Image</apex:outputLabel>
+                    <apex:inputFile value="{!attach_obj1.body}" fileName="{!attach_obj1.name}" fileSize="{!attach_obj1.BodyLength}" ></apex:inputFile>  
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >CMS page</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfCMS_Page__c}"/>
+                </apex:pageBlockSectionItem>
+              <!--  
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Link URL</apex:outputLabel>
+                        <apex:inputField value="{!cms_obj.acfLink_URL__c}"/>
+                </apex:pageBlockSectionItem>
+                -->
+              <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Is Active</apex:outputLabel>
+                        <apex:inputField value="{!cms_obj.acfIs_Checked__c}"/>
+                </apex:pageBlockSectionItem>     
+            </apex:pageblockSection>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!cms_obj.acfSectionName__c == 'Dashboard' || cms_obj.acfSectionName__c == 'Registration Popup' || cms_obj.acfSectionName__c == 'Resend OTP Popup' || cms_obj.acfSectionName__c == 'Top Products Page' || cms_obj.acfSectionName__c == 'Preliminary Quote'}">
+              <apex:pageblockSection >
+               <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Section Name</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfSectionName__c}" onchange="sectionRefresh();">
+                    </apex:inputField>
+                </apex:pageBlockSectionItem> 
+               <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Header Text</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfHeading__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!cms_obj.acfSectionName__c != 'Preliminary Quote'}">
+                    <apex:outputLabel >Header Description Text</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfDescription__c}"/>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem rendered="{!cms_obj.acfSectionName__c == 'Resend OTP Popup'}">
+                    <apex:outputLabel >Water Mark Text</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfHeading_Caption__c}"/>
+                 </apex:pageBlockSectionItem>    
+                  <apex:pageBlockSectionItem rendered="{!cms_obj.acfSectionName__c == 'Registration Popup'}">
+                    <apex:outputLabel >Email Description Text</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfShort_Description__c}"/>
+                 </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem rendered="{!cms_obj.acfSectionName__c == 'Registration Popup'}">
+                    <apex:outputLabel >Mobile Description Text</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfHeading_Caption__c}"/>
+                 </apex:pageBlockSectionItem>
+               </apex:pageblockSection>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!cms_obj.acfSectionName__c == 'Footer Links'}">
+              <apex:pageblockSection >
+              
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Section Name</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfSectionName__c}" onchange="sectionRefresh();">
+                    </apex:inputField>
+                </apex:pageBlockSectionItem>
+              
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >CMS page</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfCMS_Page__c}"/>
+                </apex:pageBlockSectionItem>
+ 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Link Name</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfHeading__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Sequence</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfSequence__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Is Active</apex:outputLabel>
+                        <apex:inputField value="{!cms_obj.acfIs_Checked__c}"/>
+                </apex:pageBlockSectionItem>
+               </apex:pageblockSection>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!cms_obj.acfSectionName__c == 'Footer Link Content'}">
+              <apex:pageblockSection >
+              
+               <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Section Name</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfSectionName__c}" onchange="sectionRefresh();">
+                    </apex:inputField>
+                </apex:pageBlockSectionItem>
+              
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Footer link page</apex:outputLabel>
+                        <apex:inputField value="{!cms_obj.acfCMS_Page__c}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Heading Name</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfHeading__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Sequence</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfSequence__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Long Description</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfDescription__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Heading Image</apex:outputLabel>
+                    <apex:inputFile value="{!attach_obj.body}" fileName="{!attach_obj.name}" fileSize="{!attach_obj.BodyLength}" ></apex:inputFile>  
+                </apex:pageBlockSectionItem>    
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Is Active</apex:outputLabel>
+                        <apex:inputField value="{!cms_obj.acfIs_Checked__c}"/>
+                </apex:pageBlockSectionItem>
+               </apex:pageblockSection>
+            </apex:outputPanel>
+           <apex:outputPanel rendered="{!cms_obj.acfSectionName__c == 'OTP Popup'}">
+              <apex:pageblockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Section Name</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfSectionName__c}" onchange="sectionRefresh();">
+                    </apex:inputField>
+                </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Header Text</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfHeading__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >OTP Water mark Text</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfHeading_Caption__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Description Text</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfShort_Description__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Terms and conditions Description</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfDescription__c}"/>
+                </apex:pageBlockSectionItem>
+               </apex:pageblockSection>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!cms_obj.acfSectionName__c == 'About Us'}">
+              <apex:pageblockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Section Name</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfSectionName__c}" onchange="sectionRefresh();">
+                    </apex:inputField>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Employee Name</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfHeading__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Employee Image</apex:outputLabel>
+                    <apex:inputFile value="{!attach_obj1.body}" fileName="{!attach_obj1.name}" fileSize="{!attach_obj1.BodyLength}" ></apex:inputFile>  
+                </apex:pageBlockSectionItem>  
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Description</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfDescription__c}"/>
+                </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Sequence</apex:outputLabel>
+                    <apex:inputField value="{!cms_obj.acfSequence__c}"/>
+                </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Is Active</apex:outputLabel>
+                        <apex:inputField value="{!cms_obj.acfIs_Checked__c}"/>
+                </apex:pageBlockSectionItem>
+               </apex:pageblockSection>         
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

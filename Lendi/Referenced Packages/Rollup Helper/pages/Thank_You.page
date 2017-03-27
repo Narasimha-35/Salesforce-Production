@@ -1,0 +1,27 @@
+<apex:page standardStylesheets="false"  sidebar="false" applyBodyTag="false" docType="html-5.0" tabStyle="PS_Rollup_Helper__tab">
+     <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+     <head> 
+     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+     <apex:stylesheet value="{! URLFOR($Resource.SFStyleSheets, 'SFStyleSheets/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
+     
+     </head> 
+<div class="slds slds-p-around--xx-large slds-container--large slds-container--center" role="main">
+<div class="slds-card slds-card--empty">
+    <header class="slds-card__header slds-grid">
+        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+             <div class="slds-media__body">
+                <h4 class="slds-text-heading--small slds-truncate">Thank you!</h4>
+             </div> 
+        </div>
+    </header>
+    <section class="slds-card__body">
+                
+       <h3 class="slds-text-heading--small slds-p-top--large slds-p-bottom--large">Thank you for your referral! Your email has been sent.</h3>
+       <button type="button" onclick="window.open('{!URLFOR($Page.PS_AllSettings)}', '_self')"
+               class="slds-button slds-button--neutral slds-button--small slds-m-bottom--x-large">Return to Rollup Helper</button>  
+  	</section>
+
+</div>
+</div>  
+</html>
+</apex:page>

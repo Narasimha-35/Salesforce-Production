@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
+    <backgroundEndColor>#FFFFFF</backgroundEndColor>
+    <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
+    <backgroundStartColor>#FFFFFF</backgroundStartColor>
+    <dashboardType>SpecifiedUser</dashboardType>
+    <leftSection>
+        <columnSize>Medium</columnSize>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <header>Activity Metrics</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Posts</metricLabel>
+            <report>Communities_Reports_2_0/G_Metric_Total_Group_Posts_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Posts Last 30 Days</metricLabel>
+            <report>Communities_Reports_2_0/G_Metric_Group_Posts_30_Days_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Comments</metricLabel>
+            <report>Communities_Reports_2_0/G_Metric_Total_Group_Comments_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Comments Last 30 Days</metricLabel>
+            <report>Communities_Reports_2_0/G_Metric_Group_Comments_30_Days_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Comments Per Post</metricLabel>
+            <report>Communities_Reports_2_0/G_Metric_Group_Comments_Per_Post_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Comments Per Post Last 30 Days</metricLabel>
+            <report>Communities_Reports_2_0/G_Metric_Group_Comments_Per_Post_30_Days_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Line</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>false</enableHover>
+            <expandOthers>false</expandOthers>
+            <header>Last 30 Days Trend</header>
+            <legendPosition>Bottom</legendPosition>
+            <report>Communities_Reports_2_0/G_Group_Posts</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Group Posts</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Line</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>false</enableHover>
+            <expandOthers>false</expandOthers>
+            <legendPosition>Bottom</legendPosition>
+            <report>Communities_Reports_2_0/G_Group_Comments</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Group Comments</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Pie</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>false</enableHover>
+            <expandOthers>false</expandOthers>
+            <legendPosition>Bottom</legendPosition>
+            <report>Communities_Reports_2_0/G_Group_Posts_by_Type</report>
+            <showPercentage>false</showPercentage>
+            <showValues>true</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Group Posts By Type</title>
+            <useReportChart>false</useReportChart>
+        </components>
+    </leftSection>
+    <middleSection>
+        <columnSize>Medium</columnSize>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <header>Group Metrics</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Groups</metricLabel>
+            <report>Communities_Reports_2_0/G_Metric_Total_Groups_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Groups Added Last 30 Days</metricLabel>
+            <report>Communities_Reports_2_0/G_Metric_Groups_Added_30_Days_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <header>Most Active Groups</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/G_Top_10_Groups_By_Members_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueDescending</sortBy>
+            <title>By Members</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/G_Top_10_Groups_By_Contributions_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueDescending</sortBy>
+            <title>By Contributions</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <header>Groups Activity In Last 30 Days</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/G_Most_Active_Groups_30_Days_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueDescending</sortBy>
+            <title>Most Active</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/G_Least_Active_Groups_30_Days_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueAscending</sortBy>
+            <title>Least Active</title>
+        </components>
+    </middleSection>
+    <rightSection>
+        <columnSize>Medium</columnSize>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <header>Membership Metrics</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Group Members</metricLabel>
+            <report>Communities_Reports_2_0/G_Metric_Total_Group_Members_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel># Group Members Added Last 30 Days</metricLabel>
+            <report>Communities_Reports_2_0/G_Metric_Total_Group_Members_30_Days_2_0</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <header>Most Active Members</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/G_Top_10_Group_Posters_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueDescending</sortBy>
+            <title>Top 10 Posters</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Communities_Reports_2_0/G_Top_10_Group_Commenters_2_0</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <sortBy>RowValueDescending</sortBy>
+            <title>Top 10 Commenters</title>
+        </components>
+    </rightSection>
+    <runningUser>david@creditandfinance.com.au</runningUser>
+    <textColor>#000000</textColor>
+    <title>Groups 2.0</title>
+    <titleColor>#000000</titleColor>
+    <titleSize>12</titleSize>
+</Dashboard>

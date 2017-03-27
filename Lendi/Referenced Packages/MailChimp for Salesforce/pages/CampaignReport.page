@@ -1,0 +1,11 @@
+<apex:page showHeader="false" standardController="MC4SF__MC_Campaign__c">
+
+<apex:outputPanel layout="none" rendered="{!ISNULL(MC4SF__MC_Campaign__c.MC4SF__Report_Secure_URL__c) && ISNULL(MC4SF__MC_Campaign__c.MC4SF__Report_URL__c)}">
+	<h2 style="color: red;">Report not available yet.</h2>
+</apex:outputPanel>
+
+<apex:outputPanel layout="none" rendered="{!NOT(ISNULL(MC4SF__MC_Campaign__c.MC4SF__Report_Secure_URL__c)) || NOT(ISNULL(MC4SF__MC_Campaign__c.MC4SF__Report_URL__c))}">
+	<iframe src="{!SUBSTITUTE(IF(NOT(ISNULL(MC_Campaign__c.Report_Secure_URL__c)), MC_Campaign__c.Report_Secure_URL__c, MC_Campaign__c.Report_URL__c), 'http://', 'https://')}" width="100%" height="600" frameBorder="0" seamless="seamless"></iframe>
+</apex:outputPanel>
+
+</apex:page>

@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <content>VF02Site</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <content>VF02Site</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>VF02Site</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>VF02Site</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <content>VF02CustomerTab</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>VF14Training</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>The Company section enables you to define your call center details.</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Country__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Country</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Customer Id</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultPhoneNumber__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Phone Number To Display To Prospect</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ForceCreateOM__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Force Create Outbound Message</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ForcePhoneDisplay__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The Real Phone Number:Default Vocalcom System phone number displayed to customers.
+A Specific Phone Number:Custom phone number displayed to customers.</inlineHelpText>
+        <label>Display to prospect</label>
+        <picklist>
+            <picklistValues>
+                <fullName>The Real Phone Number</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>A Specific Phone Number</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>ManagerTel__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Manager phone number</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manager_email__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Manager email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manager_name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Manager name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oid__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Oid</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PlateformUrl__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>PlateformUrl</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Region__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Region</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>didCount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of Did assigned to your company.
+Default value : 2
+Please contact Vocalcom to modify this value.</inlineHelpText>
+        <label>DID count</label>
+        <length>5</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>maxAgents__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Maximum number of agents simultaneously connected.
+Default value : 5
+Contact Vocalcom to modify this value.</inlineHelpText>
+        <label>Maximum number of connected agents</label>
+        <length>5</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>maxInboundLines__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Maximum number of lines used for receiving calls.
+Each call being processed by an agent and each queued call used one line.
+Default value : 30
+Please contact Vocalcom to modify this value.</inlineHelpText>
+        <label>Maximum number of inbound lines</label>
+        <length>5</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>maxOutboundLines__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Maximum number of lines used for outgoing calls.
+Each call being processed by an agent and each dialing calls for a predictive campaign used on line.
+Default value : 30
+Please contact Vocalcom to modify this value.</inlineHelpText>
+        <label>Maximum number of outbound lines</label>
+        <length>5</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>maxQueues__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Maximum number of telephony queues. A queue can be used by several inbound campaigns.
+Please contact Vocalcom to modify this value.</inlineHelpText>
+        <label>Maximum number of distribution queues</label>
+        <length>5</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>maxStartedOutboundCampaigns__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Maximum number of outbound campaigns simultaneously activated.
+You can prepare your outbound campaigns and not activate it.
+Default value : 2 
+Please contact Vocalcom to modify this value.</inlineHelpText>
+        <label>Max number activated outbound campaigns</label>
+        <length>5</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Company</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Customer_Id__c</columns>
+        <columns>Manager_name__c</columns>
+        <columns>Manager_email__c</columns>
+        <columns>ManagerTel__c</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>maxAgents__c</columns>
+        <columns>maxInboundLines__c</columns>
+        <columns>maxQueues__c</columns>
+        <columns>maxOutboundLines__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Company name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Company</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Company_name_is_alphanumeric</fullName>
+        <active>false</active>
+        <errorConditionFormula>FALSE</errorConditionFormula>
+        <errorDisplayField>Name</errorDisplayField>
+        <errorMessage>Company Name only allows numbers and letters.</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Blacklist_Management</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>DNC List Management</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/connection.js&quot;)}
+		{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+		var pageUrl = sforce.apex.execute(&quot;vhc.PageUrl&quot;, &quot;getUrlForVF29BlackListManagement&quot;, {});
+		window.location.href = pageUrl;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>CTI_Adapter</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>CTI Adapter</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.location.href = &apos;/apex/vhc__VF12CallCenterAdapter&apos;;
+setTimeout(&quot;window.location.href = &apos;/04v&apos;&quot;, 2000);</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Easy_Campaign_Creation</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Easy Campaign Creation</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+var pageUrl = sforce.apex.execute(&quot;vhc.PageUrl&quot;, &quot;getUrlForVF26TemplateHome&quot;, {});
+window.location.href =  pageUrl;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Oauth_Settings</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Oauth Settings</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/connection.js&quot;)}
+		{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+		var pageUrl = sforce.apex.execute(&quot;vhc.PageUrl&quot;, &quot;getUrlForVF30SetOauth&quot;, {});
+		window.location.href = pageUrl;</url>
+    </webLinks>
+</CustomObject>

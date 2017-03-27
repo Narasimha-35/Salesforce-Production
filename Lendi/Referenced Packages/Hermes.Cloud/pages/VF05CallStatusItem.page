@@ -1,0 +1,49 @@
+<apex:page StandardController="vhc__Call_Status_Item__c" extensions="vhc.Ctrl05CallStatusItem" action="{!init}">
+<apex:sectionHeader title="{!$Label.New_Call_Status_Item}" subtitle="{!$Label.Call_Status_Item_Edit}" rendered="{!obj.id==null}"/>
+<apex:sectionHeader title="{!$Label.Call_Status_Item_Edit}" subtitle="{!obj.Name}" rendered="{!obj.id!=null}"/>
+<apex:outputText value="{!$Label.Call_Status_Item_Description}" rendered="{!ISValid}"/>
+<apex:pageMessages />
+<br/>&nbsp;
+    <apex:form id="myForm" rendered="{!ISValid}">
+        <apex:pageBlock title="{!$Label.Call_Status_Item_Edit}" mode="edit">
+            <apex:pageBlockButtons > 
+                <apex:commandButton action="{!Save}" value="{!$Label.Save}"/>
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}"/> 
+            </apex:pageBlockButtons>
+
+			<apex:pageBlockSection columns="1">
+            		<p>
+            		Each call status set (or group) is identified by a unique number between 0 and 99. Statuses codes 88 to 97 are 
+identified by the system as specific ones. It is referred to as System Statuses. 
+            		
+            		</p>
+            		<p>
+            		These codes will have an impact on the system behavior. For example in Preview mode for an outcoming 
+campaign, it is the agent who specifies why the call was not processed using these statuses. 
+            		</p>
+            		<p>
+            			<ul>
+            				<apex:outputText escape="false" value="{!$Label.CallStatusWarning3}">
+            				
+            				</apex:outputText>
+            				
+						</ul>
+					</p>
+            	
+            	</apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Informations}">
+            	
+            	<apex:inputField value="{!obj.Name}" required="true"/>
+            	<apex:outputField value="{!obj.vhc__Call_Status_Group__c}"/>
+            	<apex:inputField value="{!obj.vhc__Status_Code__c}" required="true" rendered="{!obj.ID==null}"/>
+            	<apex:outputField value="{!obj.vhc__Status_Code__c}" rendered="{!obj.ID!=null}"/>
+            </apex:pageBlockSection> 
+            <apex:pageBlockSection title="{!$Label.Call_Status}">
+            	<apex:inputField value="{!obj.vhc__Category__c}" required="true"/>
+            	<apex:inputField value="{!obj.vhc__Profit__c}"/>
+            	<!--  <apex:inputField value="{!obj.Quota_Validation__c}"/>-->
+            </apex:pageBlockSection> 
+        </apex:pageBlock>
+    </apex:form>
+ 
+</apex:page>

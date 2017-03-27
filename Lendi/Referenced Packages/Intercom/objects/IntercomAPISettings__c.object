@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>intercom_app_api_key__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>intercom_app_api_key</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>intercom_app_id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>intercom_app_id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>IntercomAPISettings</label>
+</CustomObject>
